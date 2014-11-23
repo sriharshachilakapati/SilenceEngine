@@ -18,6 +18,7 @@ public class GameTest extends Game
     public void init()
     {
         batcher = new Batcher();
+        Display.setTitle("GameTest");
     }
 
     @Override

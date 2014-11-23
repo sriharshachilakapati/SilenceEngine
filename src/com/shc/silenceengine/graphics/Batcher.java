@@ -2,6 +2,7 @@ package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.math.Vector4;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -111,6 +112,8 @@ public class Batcher
 
     public void addVertex(Vector2 v)
     {
+        flushOnOverflow(1);
+
         vertexCount++;
         vBuffer.put(v.getX()).put(v.getY()).put(0).put(1);
         cBuffer.put(1).put(1).put(1).put(1);
@@ -118,9 +121,26 @@ public class Batcher
 
     public void addVertex(Vector3 v)
     {
+        flushOnOverflow(1);
+
         vertexCount++;
         vBuffer.put(v.getX()).put(v.getY()).put(v.getZ()).put(1);
         cBuffer.put(1).put(1).put(1).put(1);
+    }
+
+    public void addVertex(Vector4 v)
+    {
+        flushOnOverflow(1);
+
+        vertexCount++;
+        vBuffer.put(v.getX()).put(v.getY()).put(v.getZ()).put(v.getW());
+        cBuffer.put(1).put(1).put(1).put(1);
+    }
+
+    public void flushOnOverflow(int capacity)
+    {
+        if (vertexCount + capacity > MAX_VERTICES_IN_BATCH)
+            flush();
     }
 
     public void dispose()

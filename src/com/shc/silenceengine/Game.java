@@ -40,14 +40,12 @@ public class Game
                 }
             }
         });
+
+        // Load the natives
+        NativesLoader.load();
     }
 
     private static boolean running = false;
-
-    public Game()
-    {
-        NativesLoader.loadNatives();
-    }
 
     public void init() {}
     public void update(long delta) {}

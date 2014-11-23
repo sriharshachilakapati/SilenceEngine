@@ -1,6 +1,7 @@
 package com.shc.silenceengine;
 
 import com.shc.silenceengine.graphics.Shader;
+import org.lwjgl.opencl.CLContextCallback;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.system.glfw.ErrorCallback;
 import org.lwjgl.system.glfw.GLFWvidmode;
@@ -22,50 +23,41 @@ public class Display
 {
     private static long displayHandle   = NULL;
 
-    private static int  width           = 640;
-    private static int  height          = 480;
-    private static int  oldWidth        = 640;
-    private static int  oldHeight       = 480;
+    private static int    width         = 640;
+    private static int    height        = 480;
+    private static int    oldWidth      = 640;
+    private static int    oldHeight     = 480;
+    private static String title         = "SilenceEngine";
 
     private static boolean resized = false;
 
     private static boolean fullScreen = false;
 
-    public static void create()
+    private static long createWindow(int width, int height, String title, long monitor, long parent, boolean visible)
     {
-        glfwSetErrorCallback(ErrorCallback.Util.getDefault());
-
-        // Initialize GLFW
-        if (glfwInit() != GL_TRUE)
-            throw new SilenceException("Error creating Display. Your system is unsupported.");
-
         // Window Hints for OpenGL context
         glfwWindowHint(GLFW_SAMPLES, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
 
-        // Create the window
-        displayHandle = glfwCreateWindow(width, height, "SilenceEngine", NULL, NULL);
+        if (!visible)
+            glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
 
-        if (displayHandle == NULL)
+        long window = glfwCreateWindow(width, height, title, monitor, parent);
+
+        if (window == NULL)
             throw new SilenceException("Error creating Display. Your system is unsupported.");
 
-        centerOnScreen();
-
-        glfwMakeContextCurrent(displayHandle);
+        glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
 
         // Make the context current
         GLContext.createFromCurrent();
 
-        // OpenGL version
-        System.out.println(glGetString(GL_VERSION));
-
         // Window callbacks
-        WindowCallback.set(displayHandle, new WindowCallbackAdapter()
+        WindowCallback.set(window, new WindowCallbackAdapter()
         {
             @Override
             public void windowSize(long window, int width, int height)
@@ -82,6 +74,24 @@ public class Display
                 // TODO:
             }
         });
+
+        return window;
+    }
+
+    public static void create()
+    {
+        glfwSetErrorCallback(ErrorCallback.Util.getDefault());
+
+        // Initialize GLFW
+        if (glfwInit() != GL_TRUE)
+            throw new SilenceException("Error creating Display. Your system is unsupported.");
+
+        // Create the window
+        displayHandle = createWindow(width, height, title, NULL, NULL, false);
+        centerOnScreen();
+
+        // OpenGL version
+        System.out.println(glGetString(GL_VERSION));
     }
 
     public static void show()
@@ -174,37 +184,26 @@ public class Display
         }
 
         // Create new window
-        long fsDisplayHandle = glfwCreateWindow(width, height, "SilenceEngine", fullScreen ? glfwGetPrimaryMonitor() : NULL, displayHandle);
+        long fsDisplayHandle = createWindow(width, height, title, fullScreen ? glfwGetPrimaryMonitor() : NULL, displayHandle, true);
         glfwDestroyWindow(displayHandle);
         displayHandle = fsDisplayHandle;
-
-        glfwMakeContextCurrent(displayHandle);
-        glfwSwapInterval(1);
-
-        GLContext.createFromCurrent();
-        resized = true;
-
-        WindowCallback.set(displayHandle, new WindowCallbackAdapter()
-        {
-            @Override
-            public void windowSize(long window, int width, int height)
-            {
-                Display.width  = width;
-                Display.height = height;
-
-                resized = true;
-            }
-
-            @Override
-            public void key(long window, int key, int scanCode, int action, int mods)
-            {
-                // TODO:
-            }
-        });
 
         Shader.DEFAULT.use();
         show();
         centerOnScreen();
+    }
+
+    public static String getTitle()
+    {
+        return title;
+    }
+
+    public static void setTitle(String title)
+    {
+        Display.title = title;
+
+        if (displayHandle != NULL)
+            glfwSetWindowTitle(displayHandle, title);
     }
 
     public static boolean wasResized()

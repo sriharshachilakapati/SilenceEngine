@@ -90,5 +90,133 @@ public class Vector4
         return this;
     }
 
+    public float dot(Vector4 v)
+    {
+        return x*v.x + y*v.y + z*v.z + w*v.w;
+    }
 
+    public float lengthSquared()
+    {
+        return x*x + y*y + z*z + w*w;
+    }
+
+    public float length()
+    {
+        return (float) Math.sqrt(lengthSquared());
+    }
+
+    public Vector4 normalize()
+    {
+        float l = length();
+
+        x /= l;
+        y /= l;
+        z /= l;
+        w /= l;
+
+        return this;
+    }
+
+    public Vector4 multiply(Vector4 v)
+    {
+        return scale(v.x, v.y, v.z, v.w);
+    }
+
+    public Vector4 copy()
+    {
+        return new Vector4(this);
+    }
+
+    public float getX()
+    {
+        return x;
+    }
+
+    public void setX(float x)
+    {
+        this.x = x;
+    }
+
+    public float getY()
+    {
+        return y;
+    }
+
+    public void setY(float y)
+    {
+        this.y = y;
+    }
+
+    public float getZ()
+    {
+        return z;
+    }
+
+    public void setZ(float z)
+    {
+        this.z = z;
+    }
+
+    public float getW()
+    {
+        return w;
+    }
+
+    public void setW(float w)
+    {
+        this.w = w;
+    }
+
+    /* Swizzling */
+    public float getR()
+    {
+        return x;
+    }
+
+    public void setR(float r)
+    {
+        x = r;
+    }
+
+    public float getG()
+    {
+        return y;
+    }
+
+    public void setG(float g)
+    {
+        y = g;
+    }
+
+    public float getB()
+    {
+        return z;
+    }
+
+    public void setB(float b)
+    {
+        z = b;
+    }
+
+    public float getA()
+    {
+        return w;
+    }
+
+    public void setA(float a)
+    {
+        w = a;
+    }
+
+    public Vector2 getXY()
+    {
+        return new Vector2(x, y);
+    }
+
+    public Vector2 getYZ()
+    {
+        return new Vector2(y, z);
+    }
+
+    // TODO: Implement more swizzling
 }
