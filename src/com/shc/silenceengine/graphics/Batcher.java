@@ -27,16 +27,19 @@ public class Batcher
 
     private FloatBuffer vBuffer;
     private FloatBuffer cBuffer;
+    private FloatBuffer tBuffer;
 
     private int vaoID;
     private int vboVertID;
     private int vboColID;
+    private int vboTexID;
     private int vertexCount;
 
     public Batcher()
     {
-        vBuffer = BufferUtils.createFloatBuffer(SIZE_OF_VERTEX * MAX_VERTICES_IN_BATCH);
-        cBuffer = BufferUtils.createFloatBuffer(SIZE_OF_COLOR  * MAX_VERTICES_IN_BATCH);
+        vBuffer = BufferUtils.createFloatBuffer(SIZE_OF_VERTEX   * MAX_VERTICES_IN_BATCH);
+        cBuffer = BufferUtils.createFloatBuffer(SIZE_OF_COLOR    * MAX_VERTICES_IN_BATCH);
+        tBuffer = BufferUtils.createFloatBuffer(SIZE_OF_TEXCOORD * MAX_VERTICES_IN_BATCH);
 
         initGLHandles();
     }
@@ -48,12 +51,16 @@ public class Batcher
 
         vboVertID = glGenBuffers();
         vboColID = glGenBuffers();
+        vboTexID = glGenBuffers();
 
         glBindBuffer(GL_ARRAY_BUFFER, vboVertID);
         glBufferData(GL_ARRAY_BUFFER, SIZE_OF_VERTEX * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
 
         glBindBuffer(GL_ARRAY_BUFFER, vboColID);
         glBufferData(GL_ARRAY_BUFFER, SIZE_OF_COLOR * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vboTexID);
+        glBufferData(GL_ARRAY_BUFFER, SIZE_OF_TEXCOORD * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
     }
 
     private void uploadData()
@@ -67,6 +74,11 @@ public class Batcher
         glBufferSubData(GL_ARRAY_BUFFER, 0, cBuffer);
 
         glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vboTexID);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, tBuffer);
+
+        glVertexAttribPointer(2, 2, GL_FLOAT, false, 0, 0);
     }
 
     public void begin()
@@ -91,10 +103,12 @@ public class Batcher
     {
         vBuffer.flip();
         cBuffer.flip();
+        tBuffer.flip();
 
         glBindVertexArray(vaoID);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
 
         uploadData();
 
@@ -102,6 +116,7 @@ public class Batcher
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
         glBindVertexArray(0);
 
         vBuffer.clear();
@@ -134,6 +149,15 @@ public class Batcher
 
         vertexCount++;
         vBuffer.put(v.getX()).put(v.getY()).put(v.getZ()).put(v.getW());
+        cBuffer.put(1).put(1).put(1).put(1);
+    }
+
+    public void addVertex(float x, float y, float z, float w)
+    {
+        flushOnOverflow(1);
+
+        vertexCount++;
+        vBuffer.put(x).put(y).put(z).put(w);
         cBuffer.put(1).put(1).put(1).put(1);
     }
 

@@ -132,9 +132,10 @@ public class Vector4
         return x;
     }
 
-    public void setX(float x)
+    public Vector4 setX(float x)
     {
         this.x = x;
+        return this;
     }
 
     public float getY()
@@ -142,9 +143,10 @@ public class Vector4
         return y;
     }
 
-    public void setY(float y)
+    public Vector4 setY(float y)
     {
         this.y = y;
+        return this;
     }
 
     public float getZ()
@@ -152,9 +154,10 @@ public class Vector4
         return z;
     }
 
-    public void setZ(float z)
+    public Vector4 setZ(float z)
     {
         this.z = z;
+        return this;
     }
 
     public float getW()
@@ -162,9 +165,10 @@ public class Vector4
         return w;
     }
 
-    public void setW(float w)
+    public Vector4 setW(float w)
     {
         this.w = w;
+        return this;
     }
 
     /* Swizzling */
@@ -173,9 +177,10 @@ public class Vector4
         return x;
     }
 
-    public void setR(float r)
+    public Vector4 setR(float r)
     {
         x = r;
+        return this;
     }
 
     public float getG()
@@ -183,9 +188,10 @@ public class Vector4
         return y;
     }
 
-    public void setG(float g)
+    public Vector4 setG(float g)
     {
         y = g;
+        return this;
     }
 
     public float getB()
@@ -193,9 +199,10 @@ public class Vector4
         return z;
     }
 
-    public void setB(float b)
+    public Vector4 setB(float b)
     {
         z = b;
+        return this;
     }
 
     public float getA()
@@ -203,9 +210,10 @@ public class Vector4
         return w;
     }
 
-    public void setA(float a)
+    public Vector4 setA(float a)
     {
         w = a;
+        return this;
     }
 
     public Vector2 getXY()

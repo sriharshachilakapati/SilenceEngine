@@ -17,8 +17,8 @@ public class GameTest extends Game
 
     public void init()
     {
-        batcher = new Batcher();
         Display.setTitle("GameTest");
+        batcher = new Batcher();
     }
 
     @Override
@@ -28,7 +28,14 @@ public class GameTest extends Game
             end();
 
         if (Keyboard.isPressed(Keyboard.KEY_F1))
+        {
             Display.setFullScreen(!Display.isFullScreen());
+
+            if (Display.isFullScreen())
+                Display.hideCursor();
+            else
+                Display.showCursor();
+        }
     }
 
     @Override

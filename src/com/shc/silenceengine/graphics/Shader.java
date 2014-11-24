@@ -21,6 +21,7 @@ public class Shader
     private int fragShaderID;
 
     public static Shader DEFAULT = null;
+    public static Shader CURRENT = DEFAULT;
 
     public Shader(String vShader, String fShader)
     {
@@ -59,16 +60,20 @@ public class Shader
     {
         if (DEFAULT == null)
             DEFAULT = new Shader("com/shc/silenceengine/res/default-shader.vert", "com/shc/silenceengine/res/default-shader.frag");
+
+        CURRENT = DEFAULT;
     }
 
     public void use()
     {
         glUseProgram(programID);
+        CURRENT = this;
     }
 
     public static void unbind()
     {
         DEFAULT.use();
+        CURRENT = DEFAULT;
     }
 
     public void setUniform(String name, float... values)

@@ -120,9 +120,10 @@ public class Vector3
         return x;
     }
 
-    public void setX(float x)
+    public Vector3 setX(float x)
     {
         this.x = x;
+        return this;
     }
 
     public float getY()
@@ -130,9 +131,10 @@ public class Vector3
         return y;
     }
 
-    public void setY(float y)
+    public Vector3 setY(float y)
     {
         this.y = y;
+        return this;
     }
 
     public float getZ()
@@ -140,9 +142,10 @@ public class Vector3
         return z;
     }
 
-    public void setZ(float z)
+    public Vector3 setZ(float z)
     {
         this.z = z;
+        return this;
     }
 
     /* Swizzling */
@@ -151,9 +154,10 @@ public class Vector3
         return x;
     }
 
-    public void setR(float r)
+    public Vector3 setR(float r)
     {
         x = r;
+        return this;
     }
 
     public float getG()
@@ -161,9 +165,10 @@ public class Vector3
         return y;
     }
 
-    public void setG(float g)
+    public Vector3 setG(float g)
     {
         y = g;
+        return this;
     }
 
     public float getB()
@@ -171,9 +176,10 @@ public class Vector3
         return z;
     }
 
-    public void setB(float b)
+    public Vector3 setB(float b)
     {
         z = b;
+        return this;
     }
 
     public Vector2 getXY()
