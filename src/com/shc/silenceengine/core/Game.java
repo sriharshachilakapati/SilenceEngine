@@ -127,10 +127,6 @@ public class Game
 
         init();
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
         long lastTime = TimeUtils.currentMillis();
         long thisTime;
 
@@ -140,6 +136,9 @@ public class Game
         {
             if (Display.isCloseRequested())
                 break;
+
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
             glClear(GL_COLOR_BUFFER_BIT);
 

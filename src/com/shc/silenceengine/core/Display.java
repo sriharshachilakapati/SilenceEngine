@@ -49,6 +49,9 @@ public class Display
     private static boolean resized    = false;
     private static boolean fullScreen = false;
 
+    // Clear color
+    private static Color clearColor;
+
     /**
      * A private method to handle the creation of GLFW windows. Takes care of creating
      * the window with windowing hints, a size, a title, fullscreen or not, parent window
@@ -188,6 +191,8 @@ public class Display
     {
         glfwSwapBuffers(displayHandle);
         glfwPollEvents();
+
+        glClearColor(clearColor.getRed(), clearColor.getGreen(), clearColor.getBlue(), clearColor.getAlpha());
     }
 
     /**
@@ -262,7 +267,7 @@ public class Display
 
     public static void setClearColor(Color c)
     {
-        glClearColor(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+        clearColor = c;
     }
 
     public static boolean isFullScreen()

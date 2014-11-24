@@ -29,6 +29,9 @@ public class TextureTest extends Game
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
+
+        if (Keyboard.isPressed(Keyboard.KEY_F1))
+            Display.setFullScreen(!Display.isFullScreen());
     }
 
     public void render(long delta)
@@ -39,13 +42,13 @@ public class TextureTest extends Game
         {
             if (Keyboard.isPressed(Keyboard.KEY_SPACE))
             {
-                batcher.addVertex(new Vector2(-0.5f, +0.5f), Color.SADDLE_BROWN, new Vector2(0, 0));
-                batcher.addVertex(new Vector2(+0.5f, +0.5f), Color.SADDLE_BROWN, new Vector2(1, 0));
-                batcher.addVertex(new Vector2(+0.5f, -0.5f), Color.SADDLE_BROWN, new Vector2(1, 1));
+                batcher.addVertex(new Vector2(-0.5f, +0.5f), Color.GOLDEN_ROD, new Vector2(0, 0));
+                batcher.addVertex(new Vector2(+0.5f, +0.5f), Color.GOLDEN_ROD, new Vector2(1, 0));
+                batcher.addVertex(new Vector2(+0.5f, -0.5f), Color.GOLDEN_ROD, new Vector2(1, 1));
 
-                batcher.addVertex(new Vector2(-0.5f, +0.5f), Color.SADDLE_BROWN, new Vector2(0, 0));
-                batcher.addVertex(new Vector2(-0.5f, -0.5f), Color.SADDLE_BROWN, new Vector2(0, 1));
-                batcher.addVertex(new Vector2(+0.5f, -0.5f), Color.SADDLE_BROWN, new Vector2(1, 1));
+                batcher.addVertex(new Vector2(-0.5f, +0.5f), Color.GOLDEN_ROD, new Vector2(0, 0));
+                batcher.addVertex(new Vector2(-0.5f, -0.5f), Color.GOLDEN_ROD, new Vector2(0, 1));
+                batcher.addVertex(new Vector2(+0.5f, -0.5f), Color.GOLDEN_ROD, new Vector2(1, 1));
             }
             else
             {
