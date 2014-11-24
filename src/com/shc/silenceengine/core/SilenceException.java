@@ -1,4 +1,4 @@
-package com.shc.silenceengine;
+package com.shc.silenceengine.core;
 
 /**
  * Default Exception class of SilenceEngine.

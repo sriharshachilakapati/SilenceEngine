@@ -107,6 +107,23 @@ public class Matrix4
                             .setW(m[0][3] * v.getW());
     }
 
+    public Matrix4 transpose()
+    {
+        float[][] temp = new float[4][4];
+
+        for (int i=0; i<4; i++)
+        {
+            for (int j=0; j<4; j++)
+            {
+                temp[i][j] = m[j][i];
+            }
+        }
+
+        m = temp;
+
+        return this;
+    }
+
     public Matrix4 copy()
     {
         return new Matrix4(this);

@@ -1,6 +1,8 @@
 package com.shc.silenceengine.input;
 
-import com.shc.silenceengine.Display;
+import com.shc.silenceengine.core.Display;
+
+import java.util.ArrayList;
 
 import static org.lwjgl.system.glfw.GLFW.*;
 
@@ -136,13 +138,31 @@ public class Keyboard
     public static final int KEY_MENU          = GLFW_KEY_MENU;
     public static final int KEY_LAST          = GLFW_KEY_LAST;
 
+    private static ArrayList<Integer> events = new ArrayList<Integer>();
+
     public static boolean isPressed(int key)
     {
-        return glfwGetKey(Display.getDisplayHandle(), key) == GLFW_PRESS;
+        return glfwGetKey(Display.getDisplayHandle(), key) == GLFW_PRESS || isClicked(key);
     }
 
     public static boolean isReleased(int key)
     {
-        return glfwGetKey(Display.getDisplayHandle(), key) == GLFW_RELEASE;
+        return glfwGetKey(Display.getDisplayHandle(), key) == GLFW_RELEASE || !isClicked(key);
+    }
+
+    public static boolean isClicked(int key)
+    {
+        return events.contains(key);
+    }
+
+    public static void setKey(int key, boolean pressed)
+    {
+        if (pressed)
+            events.add(key);
+    }
+
+    public static void clearEventFrame()
+    {
+        events.clear();
     }
 }

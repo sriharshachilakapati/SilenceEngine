@@ -99,6 +99,23 @@ public class Matrix3
         return this;
     }
 
+    public Matrix3 transpose()
+    {
+        float[][] temp = new float[3][3];
+
+        for (int i=0; i<3; i++)
+        {
+            for (int j=0; j<3; j++)
+            {
+                temp[i][j] = m[j][i];
+            }
+        }
+
+        m = temp;
+
+        return this;
+    }
+
     public Vector3 multiply(Vector3 v)
     {
         return new Vector3().setX(m[0][0] * v.getX())

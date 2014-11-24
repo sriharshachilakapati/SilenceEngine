@@ -101,6 +101,9 @@ public class Batcher
 
     public void flush()
     {
+        // Shader uniforms
+        Shader.CURRENT.setUniform("tex", Texture.getActiveUnit());
+
         vBuffer.flip();
         cBuffer.flip();
         tBuffer.flip();
@@ -121,44 +124,122 @@ public class Batcher
 
         vBuffer.clear();
         cBuffer.clear();
+        tBuffer.clear();
 
         vertexCount = 0;
     }
 
+    /* addVertex variations */
+
     public void addVertex(Vector2 v)
     {
-        flushOnOverflow(1);
+        addVertex(v.getX(), v.getY(), 0, 1);
+    }
 
-        vertexCount++;
-        vBuffer.put(v.getX()).put(v.getY()).put(0).put(1);
-        cBuffer.put(1).put(1).put(1).put(1);
+    public void addVertex(Vector2 v, Vector2 t)
+    {
+        addVertex(v.getX(), v.getY(), 0, 1, 0, 0, 0, 1, t.getX(), t.getY());
+    }
+
+    public void addVertex(Vector2 v, Color c)
+    {
+        addVertex(v.getX(), v.getY(), 0, 1, c.getR(), c.getG(), c.getB(), c.getA());
+    }
+
+    public void addVertex(Vector2 v, Color c, Vector2 t)
+    {
+        addVertex(v.getX(), v.getY(), 0, 1, c.getR(), c.getG(), c.getB(), c.getA(), t.getX(), t.getY());
     }
 
     public void addVertex(Vector3 v)
     {
-        flushOnOverflow(1);
+        addVertex(v.getX(), v.getY(), v.getZ(), 1);
+    }
 
-        vertexCount++;
-        vBuffer.put(v.getX()).put(v.getY()).put(v.getZ()).put(1);
-        cBuffer.put(1).put(1).put(1).put(1);
+    public void addVertex(Vector3 v, Vector2 t)
+    {
+        addVertex(v.getX(), v.getY(), v.getZ(), 1, 0, 0, 0, 1, t.getX(), t.getY());
+    }
+
+    public void addVertex(Vector3 v, Color c)
+    {
+        addVertex(v.getX(), v.getY(), v.getZ(), 1, c.getR(), c.getG(), c.getB(), c.getA());
+    }
+
+    public void addVertex(Vector3 v, Color c, Vector2 t)
+    {
+        addVertex(v.getX(), v.getY(), v.getZ(), 1, c.getR(), c.getG(), c.getB(), c.getA(), t.getX(), t.getY());
     }
 
     public void addVertex(Vector4 v)
     {
-        flushOnOverflow(1);
+        addVertex(v.getX(), v.getY(), v.getZ(), v.getW());
+    }
 
-        vertexCount++;
-        vBuffer.put(v.getX()).put(v.getY()).put(v.getZ()).put(v.getW());
-        cBuffer.put(1).put(1).put(1).put(1);
+    public void addVertex(Vector4 v, Vector2 t)
+    {
+        addVertex(v.getX(), v.getY(), v.getZ(), v.getW(), 0, 0, 0, 1, t.getX(), t.getY());
+    }
+
+    public void addVertex(Vector4 v, Color c)
+    {
+        addVertex(v.getX(), v.getY(), v.getZ(), v.getW(), c.getR(), c.getG(), c.getB(), c.getA());
+    }
+
+    public void addVertex(Vector4 v, Color c, Vector2 t)
+    {
+        addVertex(v.getX(), v.getY(), v.getZ(), v.getW(), c.getR(), c.getG(), c.getB(), c.getA(), t.getX(), t.getY());
     }
 
     public void addVertex(float x, float y, float z, float w)
+    {
+        addVertex(x, y, z, w, 1, 1, 1, 1, 0, 0);
+    }
+
+    public void addVertex(float x, float y, float z, float w, float u, float v)
+    {
+        addVertex(x, y, z, w, 0, 0, 0, 0, u, v);
+    }
+
+    public void addVertex(float x, float y, float z, float w, float r, float g, float b, float a)
+    {
+        addVertex(x, y, z, w, r, g, b, a, 0, 0);
+    }
+
+    public void addVertex(float x, float y, float z, float w, float r, float g, float b, float a, float u, float v)
     {
         flushOnOverflow(1);
 
         vertexCount++;
         vBuffer.put(x).put(y).put(z).put(w);
-        cBuffer.put(1).put(1).put(1).put(1);
+        cBuffer.put(r).put(g).put(b).put(a);
+        tBuffer.put(u).put(v);
+    }
+
+    /* addTriangle variations */
+
+    public void addTriangle(float x1, float y1, float z1, float w1,
+                            float x2, float y2, float z2, float w2,
+                            float x3, float y3, float z3, float w3)
+    {
+        addTriangle(x1, y1, z1, w1, x2, y2, z2, w2, x3, y3, z3, w3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0);
+    }
+
+    public void addTriangle(float x1, float y1, float z1, float w1,
+                            float x2, float y2, float z2, float w2,
+                            float x3, float y3, float z3, float w3,
+                            float r1, float g1, float b1, float a1,
+                            float r2, float g2, float b2, float a2,
+                            float r3, float g3, float b3, float a3,
+                            float u1, float v1,
+                            float u2, float v2,
+                            float u3, float v3)
+    {
+        flushOnOverflow(3);
+
+        addVertex(x1, y1, z1, w1, r1, g1, b1, a1, u1, v1);
+        addVertex(x2, y2, z2, w2, r2, g2, b2, a2, u2, v2);
+        addVertex(x3, y3, z3, w3, r3, g3, b3, a3, u3, v3);
     }
 
     public void flushOnOverflow(int capacity)

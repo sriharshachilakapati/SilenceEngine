@@ -1,12 +1,15 @@
 package com.shc.silenceengine.tests;
 
-import com.shc.silenceengine.Display;
-import com.shc.silenceengine.Game;
+import com.shc.silenceengine.core.Game;
+import com.shc.silenceengine.core.Display;
+
+import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Batcher;
+
 import com.shc.silenceengine.input.Keyboard;
+
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -27,7 +30,7 @@ public class GameTest extends Game
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
 
-        if (Keyboard.isPressed(Keyboard.KEY_F1))
+        if (Keyboard.isClicked(Keyboard.KEY_F1))
         {
             Display.setFullScreen(!Display.isFullScreen());
 
@@ -43,9 +46,9 @@ public class GameTest extends Game
     {
         batcher.begin();
         {
-            batcher.addVertex(new Vector2(+0.0f, +0.5f));
-            batcher.addVertex(new Vector2(-0.5f, -0.5f));
-            batcher.addVertex(new Vector2(+0.5f, -0.5f));
+            batcher.addVertex(new Vector2(+0.0f, +0.5f), Color.CORN_FLOWER_BLUE);
+            batcher.addVertex(new Vector2(-0.5f, -0.5f), Color.INDIAN_RED);
+            batcher.addVertex(new Vector2(+0.5f, -0.5f), Color.OLIVE_DRAB);
 
             batcher.addVertex(new Vector3(+1.0f, +1.0f, +0.0f));
             batcher.addVertex(new Vector3(+1.0f, -1.0f, +0.0f));
@@ -57,7 +60,7 @@ public class GameTest extends Game
     @Override
     public void resize()
     {
-        GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
+        Display.setViewport(0, 0, Display.getWidth(), Display.getHeight());
     }
 
     @Override

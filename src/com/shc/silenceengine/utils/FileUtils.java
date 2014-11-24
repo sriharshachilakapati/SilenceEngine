@@ -1,6 +1,6 @@
 package com.shc.silenceengine.utils;
 
-import com.shc.silenceengine.SilenceException;
+import com.shc.silenceengine.core.SilenceException;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

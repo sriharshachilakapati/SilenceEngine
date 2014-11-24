@@ -1,5 +1,7 @@
-package com.shc.silenceengine;
+package com.shc.silenceengine.core;
 
+import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.input.Keyboard;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.system.glfw.ErrorCallback;
 import org.lwjgl.system.glfw.GLFWvidmode;
@@ -98,7 +100,7 @@ public class Display
             @Override
             public void key(long window, int key, int scanCode, int action, int mods)
             {
-                // TODO:
+                Keyboard.setKey(key, action == GLFW_PRESS);
             }
 
             @Override
@@ -144,6 +146,19 @@ public class Display
     public static boolean isCloseRequested()
     {
         return glfwWindowShouldClose(displayHandle) == GL_TRUE;
+    }
+
+    /**
+     * Sets the viewport of the display.
+     *
+     * @param x      The x-coordinate of the top-left point
+     * @param y      The y-coordinate of the top-left point
+     * @param width  The width of the window
+     * @param height The height of the window
+     */
+    public static void setViewport(int x, int y, int width, int height)
+    {
+        glViewport(x, y, width, height);
     }
 
     /**
@@ -233,6 +248,7 @@ public class Display
                                         (GLFWvidmode.height(vidMode) - height)/2);
     }
 
+
     public static void setPosition(int x, int y)
     {
         if (fullScreen || displayHandle == NULL)
@@ -242,6 +258,11 @@ public class Display
         posY = y;
 
         glfwSetWindowPos(displayHandle, x, y);
+    }
+
+    public static void setClearColor(Color c)
+    {
+        glClearColor(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
     }
 
     public static boolean isFullScreen()

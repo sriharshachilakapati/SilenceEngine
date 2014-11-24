@@ -1,6 +1,8 @@
-package com.shc.silenceengine;
+package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.graphics.Shader;
+import com.shc.silenceengine.graphics.Texture;
+import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.utils.TimeUtils;
 
 import java.io.PrintWriter;
@@ -118,11 +120,16 @@ public class Game
         running = true;
 
         Display.create();
+        Display.show();
+
         Shader.loadDefaultShader();
+        Texture.loadNullTexture();
 
         init();
 
-        Display.show();
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
         long lastTime = TimeUtils.currentMillis();
         long thisTime;
@@ -141,6 +148,8 @@ public class Game
 
             // Apply Shaders
             Shader.CURRENT.use();
+            Texture.EMPTY.bind();
+            Texture.setActiveUnit(0);
 
             update(delta);
             render(delta);
@@ -153,11 +162,13 @@ public class Game
 
             lastTime = thisTime;
 
+            Keyboard.clearEventFrame();
             Display.update();
         }
 
         dispose();
         Shader.DEFAULT.dispose();
+        Texture.EMPTY.dispose();
         Display.destroy();
     }
 

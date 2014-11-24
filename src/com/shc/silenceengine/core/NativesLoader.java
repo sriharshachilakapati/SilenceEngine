@@ -1,4 +1,4 @@
-package com.shc.silenceengine;
+package com.shc.silenceengine.core;
 
 import java.io.*;
 import java.nio.file.Files;

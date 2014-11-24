@@ -1,12 +1,12 @@
 package com.shc.silenceengine.graphics;
 
-import com.shc.silenceengine.SilenceException;
-import com.shc.silenceengine.math.Vector2;
-import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.math.Vector4;
+import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.math.*;
 import com.shc.silenceengine.utils.FileUtils;
+import org.lwjgl.BufferUtils;
 
 import java.io.InputStream;
+import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -113,6 +113,40 @@ public class Shader
     public void setUniform(String name, Vector4 value)
     {
         setUniform(name, value.getX(), value.getY(), value.getZ(), value.getW());
+    }
+
+    public void setUniform(String name, Matrix3 matrix)
+    {
+        int location = glGetUniformLocation(programID, name);
+        FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(9);
+
+        for (int i=0; i<3; i++)
+        {
+            for (int j=0; j<3; j++)
+            {
+                floatBuffer.put(matrix.get(i, j));
+            }
+        }
+
+        floatBuffer.flip();
+        glUniformMatrix3(location, false, floatBuffer);
+    }
+
+    public void setUniform(String name, Matrix4 matrix)
+    {
+        int location = glGetUniformLocation(programID, name);
+        FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(16);
+
+        for (int i=0; i<4; i++)
+        {
+            for (int j=0; j<4; j++)
+            {
+                floatBuffer.put(matrix.get(i, j));
+            }
+        }
+
+        floatBuffer.flip();
+        glUniformMatrix3(location, false, floatBuffer);
     }
 
     public void dispose()
