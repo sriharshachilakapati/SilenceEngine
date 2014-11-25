@@ -5,8 +5,6 @@ import com.shc.silenceengine.utils.FileUtils;
 import org.lwjgl.BufferUtils;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -115,17 +113,30 @@ public class Texture
         return new Texture(width, height, textureID);
     }
 
+    public static Texture fromColor(Color c, int width, int height)
+    {
+        ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4);
+
+        for (int i=0; i<height; i++)
+        {
+            for (int j=0; j<width; j++)
+            {
+                buffer.put((byte) (c.getR() * 255f))
+                      .put((byte) (c.getG() * 255f))
+                      .put((byte) (c.getB() * 255f))
+                      .put((byte) (c.getA() * 255f));
+            }
+        }
+
+        buffer.flip();
+
+        return fromByteBuffer(buffer, width, height);
+    }
+
     public static void loadNullTexture()
     {
         if (EMPTY == null)
-        {
-            BufferedImage img = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g = img.createGraphics();
-            g.setColor(Color.BLACK);
-            g.fillRect(0, 0, 32, 32);
-            g.dispose();
-            EMPTY = fromBufferedImage(img);
-        }
+            EMPTY = fromColor(Color.TRANSPARENT, 16, 16);
     }
 
     public int getWidth()

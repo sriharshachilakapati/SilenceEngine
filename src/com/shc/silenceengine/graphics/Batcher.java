@@ -218,11 +218,43 @@ public class Batcher
 
     /* addTriangle variations */
 
-    public void addTriangle(float x1, float y1, float z1, float w1,
-                            float x2, float y2, float z2, float w2,
-                            float x3, float y3, float z3, float w3)
+    public void addTriangle(Vector2 v1, Vector2 v2, Vector2 v3,
+                            Color   c1, Color   c2, Color   c3,
+                            Vector2 t1, Vector2 t2, Vector2 t3)
     {
-        addTriangle(x1, y1, z1, w1, x2, y2, z2, w2, x3, y3, z3, w3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0);
+        addTriangle(v1.getX(), v1.getY(), 0, 1,
+                    v2.getX(), v2.getY(), 0, 1,
+                    v3.getX(), v3.getY(), 0, 1,
+                    c1.getR(), c1.getG(), c1.getB(), c1.getA(),
+                    c2.getR(), c2.getG(), c2.getB(), c2.getA(),
+                    c3.getR(), c3.getG(), c3.getB(), c3.getA(),
+                    t1.getX(), t1.getY(),
+                    t2.getX(), t2.getY(),
+                    t3.getX(), t3.getY());
+    }
+
+    public void addTriangle(Vector2 v1, Vector2 v2, Vector2 v3)
+    {
+        addTriangle(v1, v2, v3, Color.WHITE, Color.WHITE, Color.WHITE, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO);
+    }
+
+    public void addTriangle(Vector2 v1, Vector2 v2, Vector2 v3,
+                            Color   c1, Color   c2, Color   c3)
+    {
+        addTriangle(v1, v2, v3, c1, c2, c3, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO);
+    }
+
+    public void addTriangle(Vector2 v1, Vector2 v2, Vector2 v3,
+                            Vector2 t1, Vector2 t2, Vector2 t3)
+    {
+        addTriangle(v1, v2, v3, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, t1, t2, t3);
+    }
+
+    public void addTriangle(Vector3 v1, Vector3 v2, Vector3 v3,
+                            Color   c1, Color   c2, Color   c3,
+                            Vector2 t1, Vector2 t2, Vector2 t3)
+    {
+
     }
 
     public void addTriangle(float x1, float y1, float z1, float w1,

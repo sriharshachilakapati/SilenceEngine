@@ -18,7 +18,6 @@ public class TextureTest extends Game
 
     public void init()
     {
-        Display.setTitle("TextureTest");
         Display.setClearColor(Color.CORN_FLOWER_BLUE);
 
         batcher = new Batcher();

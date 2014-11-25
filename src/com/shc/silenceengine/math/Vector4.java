@@ -117,6 +117,12 @@ public class Vector4
         return this;
     }
 
+    public Vector4 negate()
+    {
+        x = -x; y = -y; z = -z; w = -w;
+        return this;
+    }
+
     public Vector4 multiply(Vector4 v)
     {
         return scale(v.x, v.y, v.z, v.w);

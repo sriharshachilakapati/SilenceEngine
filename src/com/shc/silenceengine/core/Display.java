@@ -52,7 +52,7 @@ public class Display
     private static boolean fullScreen = false;
 
     // Clear color
-    private static Color clearColor;
+    private static Color clearColor = Color.BLACK;
 
     // Mouse Coordinates
     public static int mouseX;

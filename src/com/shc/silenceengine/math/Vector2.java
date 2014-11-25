@@ -5,6 +5,10 @@ package com.shc.silenceengine.math;
  */
 public class Vector2
 {
+    public static final Vector2 ZERO   = new Vector2(0, 0);
+    public static final Vector2 AXIS_X = new Vector2(1, 0);
+    public static final Vector2 AXIS_Y = new Vector2(0, 1);
+
     private float x, y;
 
     public Vector2()
@@ -92,6 +96,12 @@ public class Vector2
         x /= l;
         y /= l;
 
+        return this;
+    }
+
+    public Vector2 negate()
+    {
+        x = -x; y = -y;
         return this;
     }
 
