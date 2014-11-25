@@ -124,7 +124,7 @@ public class Shader
         {
             for (int j=0; j<3; j++)
             {
-                floatBuffer.put(matrix.get(i, j));
+                floatBuffer.put(matrix.get(j, i));
             }
         }
 
@@ -141,12 +141,12 @@ public class Shader
         {
             for (int j=0; j<4; j++)
             {
-                floatBuffer.put(matrix.get(i, j));
+                floatBuffer.put(matrix.get(j, i));
             }
         }
 
         floatBuffer.flip();
-        glUniformMatrix3(location, false, floatBuffer);
+        glUniformMatrix4(location, false, floatBuffer);
     }
 
     public void dispose()

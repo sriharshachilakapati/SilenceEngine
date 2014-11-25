@@ -89,7 +89,7 @@ public class Matrix3
             {
                 for (int k=0; k<3; k++)
                 {
-                    temp[i][j] += this.m[i][k] * m.get(k, i);
+                    temp[i][j] += this.m[i][k] * m.get(k, j);
                 }
             }
         }

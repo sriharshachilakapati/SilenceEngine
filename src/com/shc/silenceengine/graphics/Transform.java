@@ -29,5 +29,37 @@ public class Transform
         return this;
     }
 
+    public Transform rotate(Vector3 axis, float angle)
+    {
+        tMatrix.multiply(TransformUtils.createRotation(axis, angle));
+        return this;
+    }
 
+    public Transform scale(Vector2 scale)
+    {
+        return scale(new Vector3(scale, 0));
+    }
+
+    public Transform scale(Vector3 scale)
+    {
+        tMatrix.multiply(TransformUtils.createScaling(scale));
+        return this;
+    }
+
+    public Transform apply(Transform transform)
+    {
+        tMatrix.multiply(transform.getMatrix());
+        return this;
+    }
+
+    public Transform reset()
+    {
+        tMatrix.initIdentity();
+        return this;
+    }
+
+    public Matrix4 getMatrix()
+    {
+        return tMatrix;
+    }
 }

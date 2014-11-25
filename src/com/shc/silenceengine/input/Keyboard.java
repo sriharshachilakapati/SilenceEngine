@@ -138,16 +138,23 @@ public class Keyboard
     public static final int KEY_MENU          = GLFW_KEY_MENU;
     public static final int KEY_LAST          = GLFW_KEY_LAST;
 
-    private static ArrayList<Integer> events = new ArrayList<Integer>();
+    private static ArrayList<Integer> events         = new ArrayList<Integer>();
+    private static int                numKeysPressed = 0;
 
     public static boolean isPressed(int key)
     {
-        return glfwGetKey(Display.getDisplayHandle(), key) == GLFW_PRESS || isClicked(key);
+        if (glfwGetKey(Display.getDisplayHandle(), key) == GLFW_PRESS || isClicked(key))
+        {
+            numKeysPressed++;
+            return true;
+        }
+        else
+            return false;
     }
 
     public static boolean isReleased(int key)
     {
-        return glfwGetKey(Display.getDisplayHandle(), key) == GLFW_RELEASE || !isClicked(key);
+        return !isPressed(key);
     }
 
     public static boolean isClicked(int key)
@@ -161,8 +168,14 @@ public class Keyboard
             events.add(key);
     }
 
+    public static boolean isAnyKeyPressed()
+    {
+        return numKeysPressed > 0;
+    }
+
     public static void clearEventFrame()
     {
+        numKeysPressed = 0;
         events.clear();
     }
 }

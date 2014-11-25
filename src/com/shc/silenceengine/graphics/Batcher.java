@@ -35,11 +35,15 @@ public class Batcher
     private int vboTexID;
     private int vertexCount;
 
+    private Transform transform;
+
     public Batcher()
     {
         vBuffer = BufferUtils.createFloatBuffer(SIZE_OF_VERTEX   * MAX_VERTICES_IN_BATCH);
         cBuffer = BufferUtils.createFloatBuffer(SIZE_OF_COLOR    * MAX_VERTICES_IN_BATCH);
         tBuffer = BufferUtils.createFloatBuffer(SIZE_OF_TEXCOORD * MAX_VERTICES_IN_BATCH);
+
+        transform = new Transform();
 
         initGLHandles();
     }
@@ -97,12 +101,15 @@ public class Batcher
 
         active = false;
         flush();
+
+        transform.reset();
     }
 
     public void flush()
     {
         // Shader uniforms
         Shader.CURRENT.setUniform("tex", Texture.getActiveUnit());
+        Shader.CURRENT.setUniform("mTransform", transform.getMatrix());
 
         vBuffer.flip();
         cBuffer.flip();
@@ -127,6 +134,15 @@ public class Batcher
         tBuffer.clear();
 
         vertexCount = 0;
+    }
+
+    public void applyTransform(Transform t)
+    {
+        // Flush the data first
+        flush();
+
+        // Apply transform
+        transform.apply(t);
     }
 
     /* addVertex variations */
@@ -254,7 +270,13 @@ public class Batcher
                             Color   c1, Color   c2, Color   c3,
                             Vector2 t1, Vector2 t2, Vector2 t3)
     {
-
+        addTriangle(v1.getX(), v1.getY(), v1.getZ(), 1,
+                    v2.getX(), v2.getY(), v2.getZ(), 1,
+                    v3.getX(), v3.getY(), v3.getZ(), 1,
+                    c1.getR(), c1.getG(), c1.getB(), c1.getA(),
+                    c2.getR(), c2.getG(), c2.getB(), c2.getA(),
+                    c3.getR(), c3.getG(), c3.getB(), c3.getA(),
+                    t1.getX(), t1.getY(), t2.getX(), t2.getY(), t3.getX(), t3.getY());
     }
 
     public void addTriangle(float x1, float y1, float z1, float w1,
