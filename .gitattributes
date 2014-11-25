@@ -1,2 +1,3 @@
 libs/* linguist-vendored
 out/* linguist-vendored
+*.glsl linguist-language=GLSL
