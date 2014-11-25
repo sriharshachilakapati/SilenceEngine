@@ -1,6 +1,8 @@
 package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.Shader;
+import com.shc.silenceengine.graphics.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.system.glfw.ErrorCallback;
@@ -52,6 +54,12 @@ public class Display
     // Clear color
     private static Color clearColor;
 
+    // Mouse Coordinates
+    public static int mouseX;
+    public static int mouseY;
+
+
+
     /**
      * A private method to handle the creation of GLFW windows. Takes care of creating
      * the window with windowing hints, a size, a title, fullscreen or not, parent window
@@ -88,6 +96,18 @@ public class Display
 
         GLContext.createFromCurrent();
 
+        // Initialize OpenGL
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        if (Shader.DEFAULT == null)
+            Shader.loadDefaultShader();
+        if (Texture.EMPTY == null)
+            Texture.loadNullTexture();
+
+        Shader.DEFAULT.use();
+        Texture.EMPTY.bind();
+
         // Window callbacks
         WindowCallback.set(window, new WindowCallbackAdapter()
         {
@@ -111,6 +131,13 @@ public class Display
             {
                 Display.posX = xPos;
                 Display.posY = yPos;
+            }
+
+            @Override
+            public void cursorPos(long window, double xPos, double yPos)
+            {
+                mouseX = (int) xPos;
+                mouseY = (int) yPos;
             }
         });
 
@@ -180,6 +207,9 @@ public class Display
      */
     public static void destroy()
     {
+        Shader.DEFAULT.dispose();
+        Texture.EMPTY.dispose();
+
         glfwDestroyWindow(displayHandle);
         glfwTerminate();
     }

@@ -1,6 +1,5 @@
 package com.shc.silenceengine.core;
 
-import com.shc.silenceengine.graphics.Shader;
 import com.shc.silenceengine.graphics.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.utils.TimeUtils;
@@ -122,9 +121,6 @@ public class Game
         Display.create();
         Display.show();
 
-        Shader.loadDefaultShader();
-        Texture.loadNullTexture();
-
         init();
 
         long lastTime = TimeUtils.currentMillis();
@@ -145,16 +141,10 @@ public class Game
             thisTime = TimeUtils.currentMillis();
             delta    = thisTime - lastTime;
 
-            // Apply Shaders
-            Shader.CURRENT.use();
-            Texture.EMPTY.bind();
             Texture.setActiveUnit(0);
 
             update(delta);
             render(delta);
-
-            // Unbind Shaders
-            Shader.unbind();
 
             if (Display.wasResized())
                 resize();
@@ -166,8 +156,6 @@ public class Game
         }
 
         dispose();
-        Shader.DEFAULT.dispose();
-        Texture.EMPTY.dispose();
         Display.destroy();
     }
 
