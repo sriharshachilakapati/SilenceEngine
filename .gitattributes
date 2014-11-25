@@ -1,3 +1,5 @@
 libs/* linguist-vendored
 out/* linguist-vendored
 *.glsl linguist-language=GLSL
+*.vert linguist-language=GLSL
+*.frag linguist-language=GLSL
