@@ -1,5 +1,7 @@
 package com.shc.silenceengine.core;
 
+import org.lwjgl.Sys;
+
 import java.io.*;
 import java.nio.file.Files;
 
@@ -13,6 +15,9 @@ class NativesLoader
 
     public static void load()
     {
+        if (System.getProperty("NativesLoader", "true").equalsIgnoreCase("false"))
+            return;
+
         try
         {
             File tmp = Files.createTempDirectory("SilenceEngine").toFile();

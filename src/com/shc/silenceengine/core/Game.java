@@ -133,7 +133,7 @@ public class Game
             if (Display.isCloseRequested())
                 break;
 
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             thisTime = TimeUtils.currentMillis();
             delta    = thisTime - lastTime;
