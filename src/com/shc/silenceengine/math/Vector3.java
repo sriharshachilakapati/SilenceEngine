@@ -207,4 +207,10 @@ public class Vector3
     {
         return new Vector2(x, z);
     }
+
+    @Override
+    public String toString()
+    {
+        return "[" + x + ", " + y + ", " + z + "]";
+    }
 }

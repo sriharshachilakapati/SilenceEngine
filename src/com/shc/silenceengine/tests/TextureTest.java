@@ -13,8 +13,8 @@ import com.shc.silenceengine.math.Vector2;
  */
 public class TextureTest extends Game
 {
-    Batcher batcher;
-    Texture texture;
+    private Batcher batcher;
+    private Texture texture;
 
     public void init()
     {

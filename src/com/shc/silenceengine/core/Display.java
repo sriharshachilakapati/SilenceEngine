@@ -18,31 +18,33 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 /**
  * The Display class takes care of creating a display and managing it.
+ * As a user of SilenceEngine, I don't expect you to create the Display,
+ * the display creation will be handled automatically by the Game class.
  *
  * @author Sri Harsha Chilakapati
  */
-public class Display
+public final class Display
 {
     // The display handle
     private static long displayHandle   = NULL;
 
     // Width and height of the display
-    private static int    width         = 640;
-    private static int    height        = 480;
+    private static int width         = 640;
+    private static int height        = 480;
 
     // Width and height of windowed display, used to
     // restore the properties to the newly created one
-    private static int    oldWidth      = 640;
-    private static int    oldHeight     = 480;
+    private static int oldWidth      = 640;
+    private static int oldHeight     = 480;
 
     // Position of the windowed display, restored when
     // fullscreen is switched off
-    private static int    oldPosX       = 0;
-    private static int    oldPosY       = 0;
+    private static int oldPosX       = 0;
+    private static int oldPosY       = 0;
 
     // The position of the display in screen coordinates
-    private static int    posX          = 0;
-    private static int    posY          = 0;
+    private static int posX          = 0;
+    private static int posY          = 0;
 
     // The title of the Display
     private static String title         = "SilenceEngine";
@@ -58,7 +60,10 @@ public class Display
     public static int mouseX;
     public static int mouseY;
 
-
+    /** Private constructor. Prevent instantiation */
+    private Display()
+    {
+    }
 
     /**
      * A private method to handle the creation of GLFW windows. Takes care of creating
@@ -99,6 +104,7 @@ public class Display
         // Initialize OpenGL
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glEnable(GL_DEPTH_TEST);
 
         if (Shader.DEFAULT == null)
@@ -272,6 +278,14 @@ public class Display
     }
 
     /**
+     * @return The aspect ratio of the Display
+     */
+    public static float getAspectRatio()
+    {
+        return ((float)width)/((float)height);
+    }
+
+    /**
      * Centers the display on screen.
      */
     public static void centerOnScreen()
@@ -284,7 +298,11 @@ public class Display
                                         (GLFWvidmode.height(vidMode) - height)/2);
     }
 
-
+    /**
+     * Sets the window position on the screen
+     * @param x The x-coordinate of the window (in screen coordinates)
+     * @param y The y-coordinate of the window (in screen coordinates)
+     */
     public static void setPosition(int x, int y)
     {
         if (fullScreen || displayHandle == NULL)
@@ -296,16 +314,27 @@ public class Display
         glfwSetWindowPos(displayHandle, x, y);
     }
 
+    /**
+     * Sets the clear color of the Display, i.e., the background color
+     * @param c The background color to clear the window
+     */
     public static void setClearColor(Color c)
     {
         clearColor = c;
     }
 
+    /**
+     * @return whether the Display is fullscreen or not
+     */
     public static boolean isFullScreen()
     {
         return fullScreen;
     }
 
+    /**
+     * Sets the state of fullscreen of the Display.
+     * @param fullScreen If true, window will be made fullscreen
+     */
     public static void setFullScreen(boolean fullScreen)
     {
         if (Display.fullScreen == fullScreen)
@@ -348,11 +377,18 @@ public class Display
         show();
     }
 
+    /**
+     * @return The title of the Display
+     */
     public static String getTitle()
     {
         return title;
     }
 
+    /**
+     * Sets the title of the Display
+     * @param title The title of the window
+     */
     public static void setTitle(String title)
     {
         Display.title = title;
@@ -361,6 +397,9 @@ public class Display
             glfwSetWindowTitle(displayHandle, title);
     }
 
+    /**
+     * @return True if the display has been resized
+     */
     public static boolean wasResized()
     {
         if (resized)
@@ -372,11 +411,17 @@ public class Display
         return false;
     }
 
+    /**
+     * Hides the cursor over the Display
+     */
     public static void hideCursor()
     {
         glfwSetInputMode(displayHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 
+    /**
+     * Shows the cursor over the Display
+     */
     public static void showCursor()
     {
         glfwSetInputMode(displayHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);

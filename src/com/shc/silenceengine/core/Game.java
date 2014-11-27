@@ -75,6 +75,7 @@ public class Game
         NativesLoader.load();
     }
 
+    // Is the game running?
     private static boolean running = false;
 
     /**

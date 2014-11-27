@@ -1,6 +1,8 @@
 #version 330 core
 
 uniform mat4 mTransform;
+uniform mat4 camProj;
+uniform mat4 camView;
 
 layout(location = 0) in vec4 pos;
 layout(location = 1) in vec4 col;
@@ -13,5 +15,5 @@ void main()
 {
     vColor      = col;
     vTexCoords  = tex;
-    gl_Position = mTransform * pos;
+    gl_Position = camProj * camView * mTransform * pos;
 }

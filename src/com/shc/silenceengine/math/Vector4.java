@@ -233,4 +233,10 @@ public class Vector4
     }
 
     // TODO: Implement more swizzling
+
+    @Override
+    public String toString()
+    {
+        return "[" + x + ", " + y + ", " + z + ", " + w + "]";
+    }
 }

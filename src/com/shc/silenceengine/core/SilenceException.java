@@ -7,6 +7,9 @@ package com.shc.silenceengine.core;
  */
 public class SilenceException extends RuntimeException
 {
+    /**
+     * Constructs the SilenceException with a message
+     */
     public SilenceException(String message)
     {
         super(message);

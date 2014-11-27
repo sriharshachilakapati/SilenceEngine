@@ -14,9 +14,9 @@ import com.shc.silenceengine.math.Vector2;
  */
 public class TransformTest extends Game
 {
-    Transform transform;
-    Texture   texture;
-    Batcher   batcher;
+    private Transform transform;
+    private Texture   texture;
+    private Batcher   batcher;
 
     public void init()
     {

@@ -56,17 +56,15 @@ public class TransformUtils
 
     public static Matrix4 createOrtho2d(float left, float right, float bottom, float top, float zNear, float zFar)
     {
-        Matrix4 result = new Matrix4().initIdentity();
+        Matrix4 result = new Matrix4();
 
-        float tx = - (right + left) / (right - left);
-        float ty = - (top + bottom) / (top - bottom);
-        float tz = - (zFar + zNear) / (zFar - zNear);
-
-        result.set(0, 0, 2/(right - left))
-              .set(1, 1, 2/(top - bottom))
-              .set(2, 2, 2/(zNear - zFar));
-
-        result.set(0, 3, tx).set(1, 3, ty).set(2, 3, tz);
+        result.set(0, 0, 2 / (right - left))
+              .set(1, 1, 2 / (top - bottom))
+              .set(2, 2, -2 / (zFar - zNear))
+              .set(0, 3, -(right + left) / (right - left))
+              .set(1, 3, -(top + bottom) / (top - bottom))
+              .set(2, 3, -(zFar + zNear) / (zFar - zNear))
+              .set(3, 3, 1);
 
         return result;
     }
@@ -75,13 +73,43 @@ public class TransformUtils
     {
         Matrix4 result = new Matrix4().initZero();
 
-        float f = (float) (1f/Math.tan(fovy/2));
+        float yScale = 1f / (float) Math.tan(Math.toRadians(fovy / 2f));
+        float xScale = yScale / aspect;
+        float frustumLength = zFar - zNear;
 
-        result.set(0, 0, f/aspect)
-              .set(1, 1, f)
-              .set(2, 2, (zFar+zNear)/(zFar-zNear))
-              .set(2, 3, 2*zFar*zNear/(zNear-zFar))
-              .set(3, 2, -1);
+        result.set(0, 0, xScale)
+              .set(1, 1, yScale)
+              .set(2, 2, -((zFar + zNear) / frustumLength))
+              .set(3, 2, -1)
+              .set(2, 3, -((2 * zFar * zNear) / frustumLength))
+              .set(3, 3, 0);
+
+        return result;
+    }
+
+    public static Matrix4 createLookAt(Vector3 eye, Vector3 center, Vector3 up)
+    {
+        Matrix4 result = new Matrix4().initIdentity();
+
+        Vector3 f = center.copy().subtract(eye).normalize();
+        Vector3 s = f.copy().cross(up).normalize();
+        Vector3 u = s.copy().cross(f);
+
+        result.set(0, 0, s.getX())
+              .set(0, 1, s.getY())
+              .set(0, 2, s.getZ());
+
+        result.set(1, 0, u.getX())
+              .set(1, 1, u.getY())
+              .set(1, 2, u.getZ());
+
+        result.set(2, 0, -f.getX())
+              .set(2, 1, -f.getY())
+              .set(2, 2, -f.getZ());
+
+        result.set(0, 3, -s.dot(eye))
+              .set(1, 3, -u.dot(eye))
+              .set(2, 3, f.dot(eye));
 
         return result;
     }

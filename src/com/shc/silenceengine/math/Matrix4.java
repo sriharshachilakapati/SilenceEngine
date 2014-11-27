@@ -15,6 +15,8 @@ public class Matrix4
 
     public Matrix4(Matrix4 m)
     {
+        this();
+
         for (int i=0; i<4; i++)
         {
             for (int j=0; j<4; j++)
@@ -139,5 +141,22 @@ public class Matrix4
         m[x][j] = val;
 
         return this;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder s = new StringBuilder();
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j=0; j<4; j++)
+            {
+                s.append(m[i][j]).append(' ');
+            }
+            s.append('\n');
+        }
+
+        return s.toString();
     }
 }

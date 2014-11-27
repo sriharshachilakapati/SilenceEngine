@@ -1,5 +1,6 @@
 package com.shc.silenceengine.graphics;
 
+import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.Vector4;
@@ -13,6 +14,8 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
 /**
+ * 
+ *
  * @author Sri Harsha Chilakapati
  */
 public class Batcher
@@ -36,6 +39,8 @@ public class Batcher
     private int vertexCount;
 
     private Transform transform;
+    private Matrix4   camProj;
+    private Matrix4   camView;
 
     public Batcher()
     {
@@ -44,6 +49,8 @@ public class Batcher
         tBuffer = BufferUtils.createFloatBuffer(SIZE_OF_TEXCOORD * MAX_VERTICES_IN_BATCH);
 
         transform = new Transform();
+        camProj   = new Matrix4();
+        camView   = new Matrix4();
 
         initGLHandles();
     }
@@ -85,6 +92,25 @@ public class Batcher
         glVertexAttribPointer(2, 2, GL_FLOAT, false, 0, 0);
     }
 
+    public void begin(Transform t)
+    {
+        applyTransform(t);
+        begin();
+    }
+
+    public void begin(ICamera c)
+    {
+        applyCamera(c);
+        begin();
+    }
+
+    public void begin(ICamera c, Transform t)
+    {
+        applyCamera(c);
+        applyTransform(t);
+        begin();
+    }
+
     public void begin()
     {
         if (active)
@@ -103,13 +129,21 @@ public class Batcher
         flush();
 
         transform.reset();
+        camProj.initIdentity();
+        camView.initIdentity();
     }
 
     public void flush()
     {
+        // Avoid doing unnecessary flushes
+        if (vertexCount == 0)
+            return;
+
         // Shader uniforms
         Shader.CURRENT.setUniform("tex", Texture.getActiveUnit());
         Shader.CURRENT.setUniform("mTransform", transform.getMatrix());
+        Shader.CURRENT.setUniform("camProj", camProj);
+        Shader.CURRENT.setUniform("camView", camView);
 
         vBuffer.flip();
         cBuffer.flip();
@@ -143,6 +177,15 @@ public class Batcher
 
         // Apply transform
         transform.apply(t);
+    }
+
+    public void applyCamera(ICamera c)
+    {
+        // Flush the data first
+        flush();
+
+        camProj.initIdentity().multiply(c.getProjection());
+        camView.initIdentity().multiply(c.getView());
     }
 
     /* addVertex variations */

@@ -16,7 +16,7 @@ import com.shc.silenceengine.math.Vector3;
  */
 public class GameTest extends Game
 {
-    Batcher batcher;
+    private Batcher batcher;
 
     public void init()
     {
