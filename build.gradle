@@ -1,0 +1,17 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+repositories {
+    jcenter()
+}
+
+jar {
+    into("com/shc/silenceengine/res") {
+        from("${projectDir}/src/main/java/com/shc/silenceengine/res")
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', includes: ["*.jar"])
+}

@@ -1,5 +1,20 @@
 # Created by https://www.gitignore.io
 
+### Java ###
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 
@@ -49,17 +64,34 @@ crashlytics.properties
 crashlytics-build.properties
 
 
-### Java ###
-*.class
+### Eclipse ###
+*.pydevproject
+.metadata
+.gradle
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# External tool builders
+.externalToolBuilders/
 
-# Package Files #
-*.jar
-*.war
-*.ear
+# Locally stored "Eclipse launch configurations"
+*.launch
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# CDT-specific
+.cproject
 
+# PDT-specific
+.buildpath
+
+# sbteclipse plugin
+.target
+
+# TeXlipse plugin
+.texlipse
