@@ -419,6 +419,34 @@ public class Batcher
         addVertex(x3, y3, z3, w3, r3, g3, b3, a3, u3, v3);
     }
 
+    /* Draw Texture */
+
+    public void drawTexture2d(Texture texture, Vector2 position)
+    {
+        Texture current = Texture.CURRENT;
+        flush();
+
+        texture.bind();
+        addTriangle(new Vector2(0, 0).add(position),
+                    new Vector2(texture.getWidth(), 0).add(position),
+                    new Vector2(0, texture.getHeight()).add(position),
+
+                    new Vector2(0, 0),
+                    new Vector2(1, 0),
+                    new Vector2(0, 1));
+
+        addTriangle(new Vector2(texture.getWidth(), 0).add(position),
+                new Vector2(texture.getWidth(), texture.getHeight()).add(position),
+                new Vector2(0, texture.getHeight()).add(position),
+
+                new Vector2(1, 0),
+                new Vector2(1, 1),
+                new Vector2(0, 1));
+
+        flush();
+        current.bind();
+    }
+
     public void flushOnOverflow(int capacity)
     {
         if (vertexCount + capacity > MAX_VERTICES_IN_BATCH)

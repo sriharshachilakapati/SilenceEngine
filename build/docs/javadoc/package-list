@@ -1,4 +1,5 @@
 com.shc.silenceengine.core
+com.shc.silenceengine.geom2d
 com.shc.silenceengine.graphics
 com.shc.silenceengine.input
 com.shc.silenceengine.math
