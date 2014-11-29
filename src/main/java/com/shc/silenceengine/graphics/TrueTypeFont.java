@@ -82,19 +82,31 @@ public class TrueTypeFont
         int textureWidth = 0;
         int textureHeight = 0;
 
+        int positionX = 0;
+        int positionY = 0;
+
         // Find texture size and FontChar info
         for (int i=0; i<STANDARD_CHARACTERS; i++)
         {
             char ch = (char) i;
             chars[i] = new FontChar();
 
-            chars[i].x = textureWidth;
-            chars[i].y = 0;
-            chars[i].w = fontMetrics.charWidth(ch);
+            // Max texture Width is 512px
+            if (positionX + fontMetrics.charWidth(ch) > 512)
+            {
+                textureHeight += fontMetrics.getHeight();
+                positionX = 0;
+                positionY = textureHeight;
+            }
+
+            textureWidth = Math.max(textureWidth, positionX);
+
+            chars[i].x = positionX;
+            chars[i].y = positionY;
+            chars[i].w = fontMetrics.stringWidth("_" + ch) - fontMetrics.charWidth('_');
             chars[i].h = fontMetrics.getHeight();
 
-            textureWidth += chars[i].w;
-            textureHeight = Math.max(textureHeight, chars[i].h);
+            positionX += chars[i].w + 5;
         }
 
         g2d.dispose();
@@ -111,10 +123,12 @@ public class TrueTypeFont
 
         for (int i=0; i<STANDARD_CHARACTERS; i++)
         {
-            g2d.drawString(String.valueOf((char) i), chars[i].x, fontMetrics.getAscent());
+            g2d.drawString(String.valueOf((char) i), chars[i].x, chars[i].y + fontMetrics.getAscent());
         }
 
         g2d.dispose();
+
+        System.out.println("[width=" + texImage.getWidth() + ", height=" + texImage.getHeight() + "]");
 
         fontTexture = Texture.fromBufferedImage(texImage);
     }
@@ -146,15 +160,15 @@ public class TrueTypeFont
             }
 
             float minU = c.x / (float) fontTexture.getWidth();
-            float maxU = (c.x + c.w) / (float) fontTexture.getWidth();
+            float maxU = (c.x + c.w + 2) / (float) fontTexture.getWidth();
             float minV = c.y / (float) fontTexture.getHeight();
             float maxV = (c.y + c.h) / (float) fontTexture.getHeight();
 
             b.addVertex(x, y, 0, 1, col.getR(), col.getG(), col.getB(), col.getA(), minU, minV);
-            b.addVertex(x + c.w, y, 0, 1, col.getR(), col.getG(), col.getB(), col.getA(), maxU, minV);
+            b.addVertex(x + c.w + 2, y, 0, 1, col.getR(), col.getG(), col.getB(), col.getA(), maxU, minV);
             b.addVertex(x, y + c.h, 0, 1, col.getR(), col.getG(), col.getB(), col.getA(), minU, maxV);
 
-            b.addVertex(x + c.w, y, 0, 1, col.getR(), col.getG(), col.getB(), col.getA(), maxU, minV);
+            b.addVertex(x + c.w + 2, y, 0, 1, col.getR(), col.getG(), col.getB(), col.getA(), maxU, minV);
             b.addVertex(x + c.w, y + c.h, 0, 1, col.getR(), col.getG(), col.getB(), col.getA(), maxU, maxV);
             b.addVertex(x, y + c.h, 0, 1, col.getR(), col.getG(), col.getB(), col.getA(), minU, maxV);
 
