@@ -4,7 +4,7 @@ import com.shc.silenceengine.core.Display;
 
 import java.util.ArrayList;
 
-import static org.lwjgl.system.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * A class for handling polled keyboard input.

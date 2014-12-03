@@ -2,7 +2,7 @@ package com.shc.silenceengine.input;
 
 import com.shc.silenceengine.core.Display;
 
-import static org.lwjgl.system.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * @author Sri Harsha Chilakapati

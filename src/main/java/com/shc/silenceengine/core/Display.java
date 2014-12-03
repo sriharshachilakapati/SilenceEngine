@@ -4,16 +4,19 @@ import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Shader;
 import com.shc.silenceengine.graphics.Texture;
 import com.shc.silenceengine.input.Keyboard;
+import org.lwjgl.glfw.GLFWcursorposfun;
+import org.lwjgl.glfw.GLFWerrorfun;
+import org.lwjgl.glfw.GLFWkeyfun;
+import org.lwjgl.glfw.GLFWwindowposfun;
+import org.lwjgl.glfw.GLFWwindowsizefun;
 import org.lwjgl.opengl.GLContext;
-import org.lwjgl.system.glfw.ErrorCallback;
-import org.lwjgl.system.glfw.GLFWvidmode;
-import org.lwjgl.system.glfw.WindowCallback;
-import org.lwjgl.system.glfw.WindowCallbackAdapter;
+import org.lwjgl.glfw.GLFWvidmode;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 /**
@@ -47,7 +50,7 @@ public final class Display
     private static int posY          = 0;
 
     // The title of the Display
-    private static String title         = "SilenceEngine";
+    private static String title      = "SilenceEngine";
 
     // Private flags to maintain the Display
     private static boolean resized    = false;
@@ -59,6 +62,13 @@ public final class Display
     // Mouse Coordinates
     public static int mouseX;
     public static int mouseY;
+
+    // Callbacks from GLFW
+    private static GLFWwindowsizefun winSizeCallback;
+    private static GLFWkeyfun        winKeyCallback;
+    private static GLFWwindowposfun  winPosCallback;
+    private static GLFWcursorposfun  winCurPosCallback;
+    private static GLFWerrorfun      errorCallback;
 
     /** Private constructor. Prevent instantiation */
     private Display()
@@ -116,37 +126,42 @@ public final class Display
         Texture.EMPTY.bind();
 
         // Window callbacks
-        WindowCallback.set(window, new WindowCallbackAdapter()
+        if (winSizeCallback != null)
+            winSizeCallback.release();
+
+        if (winKeyCallback != null)
+            winKeyCallback.release();
+
+        if (winPosCallback != null)
+            winPosCallback.release();
+
+        if (winCurPosCallback != null)
+            winCurPosCallback.release();
+
+        glfwSetWindowSizeCallback(window, winSizeCallback = GLFWwindowsizefun((win, w, h) ->
         {
-            @Override
-            public void windowSize(long window, int width, int height)
-            {
-                Display.width  = width;
-                Display.height = height;
+            Display.width  = width;
+            Display.height = height;
 
-                resized = true;
-            }
+            resized = true;
+        }));
 
-            @Override
-            public void key(long window, int key, int scanCode, int action, int mods)
-            {
-                Keyboard.setKey(key, action == GLFW_PRESS);
-            }
+        glfwSetKeyCallback(window, winKeyCallback = GLFWkeyfun((win, key, scanCode, action, mods) ->
+        {
+            Keyboard.setKey(key, action == GLFW_PRESS);
+        }));
 
-            @Override
-            public void windowPos(long window, int xPos, int yPos)
-            {
-                Display.posX = xPos;
-                Display.posY = yPos;
-            }
+        glfwSetWindowPosCallback(window, winPosCallback = GLFWwindowposfun((win, xPos, yPos) ->
+        {
+            Display.posX = xPos;
+            Display.posY = yPos;
+        }));
 
-            @Override
-            public void cursorPos(long window, double xPos, double yPos)
-            {
-                mouseX = (int) xPos;
-                mouseY = (int) yPos;
-            }
-        });
+        glfwSetCursorPosCallback(window, winCurPosCallback = GLFWcursorposfun((win, xPos, yPos) ->
+        {
+            mouseX = (int) xPos;
+            mouseY = (int) yPos;
+        }));
 
         return window;
     }
@@ -156,7 +171,11 @@ public final class Display
      */
     public static void create()
     {
-        glfwSetErrorCallback(ErrorCallback.Util.getDefault());
+        // Set error callback
+        glfwSetErrorCallback(errorCallback = GLFWerrorfun((error, description) ->
+        {
+            throw new SilenceException("" + error + ": " + MemoryUtil.memDecodeUTF8(description));
+        }));
 
         // Initialize GLFW
         if (glfwInit() != GL_TRUE)
@@ -218,6 +237,9 @@ public final class Display
         Texture.EMPTY.dispose();
 
         glfwDestroyWindow(displayHandle);
+
+        errorCallback.release();
+
         glfwTerminate();
     }
 
