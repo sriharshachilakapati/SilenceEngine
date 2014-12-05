@@ -28,7 +28,7 @@ public class CameraTest extends Game
         orthoCam  = new OrthoCam();
         perspCam  = new PerspCam();
 
-        texture = Texture.fromResource("com/shc/silenceengine/res/texture2.png");
+        texture = Texture.fromResource("resources/texture2.png");
     }
 
     public void update(long delta)

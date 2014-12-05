@@ -22,7 +22,7 @@ public class TransformTest extends Game
     {
         batcher   = new Batcher();
         transform = new Transform();
-        texture   = Texture.fromResource("com/shc/silenceengine/res/texture.png");
+        texture   = Texture.fromResource("resources/texture.png");
     }
 
     public void update(long delta)

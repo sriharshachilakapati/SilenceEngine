@@ -25,7 +25,7 @@ public class TrueTypeFontTest extends Game
         batcher = new Batcher();
         cam = new OrthoCam();
 
-        logo = Texture.fromResource("com/shc/silenceengine/res/logo.png");
+        logo = Texture.fromResource("resources/logo.png");
 
         font = new TrueTypeFont("Comic Sans MS", TrueTypeFont.STYLE_ITALIC | TrueTypeFont.STYLE_BOLD, 36);
     }

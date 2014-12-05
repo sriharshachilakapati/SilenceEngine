@@ -1,17 +1,27 @@
 apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
 
 repositories {
     jcenter()
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'resources'
+        }
+    }
+}
+
 jar {
-    into("com/shc/silenceengine/res") {
-        from("${projectDir}/src/main/java/com/shc/silenceengine/res")
+    into("") {
+        from("${projectDir}/resources")
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', includes: ["*.jar"])
+    runtime fileTree(dir: 'libs', includes: ["*.jar"])
 }

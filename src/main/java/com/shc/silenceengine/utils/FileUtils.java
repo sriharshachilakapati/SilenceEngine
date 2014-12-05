@@ -47,6 +47,11 @@ public class FileUtils
 
     public static InputStream getResource(String name)
     {
-        return FileUtils.class.getClassLoader().getResourceAsStream(name);
+        InputStream is =  FileUtils.class.getClassLoader().getResourceAsStream(name);
+
+        if (is == null)
+            throw new SilenceException("Resource not found: " + name);
+
+        return is;
     }
 }

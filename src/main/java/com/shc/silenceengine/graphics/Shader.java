@@ -59,7 +59,7 @@ public class Shader
     public static void loadDefaultShader()
     {
         if (DEFAULT == null)
-            DEFAULT = new Shader("com/shc/silenceengine/res/default-shader.vert", "com/shc/silenceengine/res/default-shader.frag");
+            DEFAULT = new Shader("resources/default-shader.vert", "resources/default-shader.frag");
 
         CURRENT = DEFAULT;
     }

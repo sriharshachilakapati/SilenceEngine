@@ -21,7 +21,7 @@ public class TextureTest extends Game
         Display.setClearColor(Color.CORN_FLOWER_BLUE);
 
         batcher = new Batcher();
-        texture = Texture.fromResource("com/shc/silenceengine/res/logo.png");
+        texture = Texture.fromResource("resources/logo.png");
     }
 
     public void update(long delta)
