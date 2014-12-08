@@ -4,24 +4,15 @@ repositories {
     jcenter()
 }
 
-sourceSets {
-    main {
-        java {
-            srcDir 'src'
-        }
-        resources {
-            srcDir 'resources'
-        }
-    }
-}
-
-jar {
-    into("") {
-        from("${projectDir}/resources")
-    }
-}
-
 dependencies {
     compile fileTree(dir: 'libs', includes: ["*.jar"])
     runtime fileTree(dir: 'libs', includes: ["*.jar"])
 }
+
+// Fix the resources not found in classpath
+task copyResources(type: Copy) {
+    from("${projectDir}/src/main/resources")
+    into("${buildDir}/classes/main")
+}
+
+processResources.dependsOn copyResources

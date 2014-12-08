@@ -4,11 +4,11 @@ import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Shader;
 import com.shc.silenceengine.graphics.Texture;
 import com.shc.silenceengine.input.Keyboard;
-import org.lwjgl.glfw.GLFWcursorposfun;
-import org.lwjgl.glfw.GLFWerrorfun;
-import org.lwjgl.glfw.GLFWkeyfun;
-import org.lwjgl.glfw.GLFWwindowposfun;
-import org.lwjgl.glfw.GLFWwindowsizefun;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWWindowPosCallback;
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.system.MemoryUtil;
@@ -29,28 +29,28 @@ import static org.lwjgl.system.MemoryUtil.*;
 public final class Display
 {
     // The display handle
-    private static long displayHandle   = NULL;
+    private static long displayHandle = NULL;
 
     // Width and height of the display
-    private static int width         = 640;
-    private static int height        = 480;
+    private static int width  = 640;
+    private static int height = 480;
 
     // Width and height of windowed display, used to
     // restore the properties to the newly created one
-    private static int oldWidth      = 640;
-    private static int oldHeight     = 480;
+    private static int oldWidth  = 640;
+    private static int oldHeight = 480;
 
     // Position of the windowed display, restored when
     // fullscreen is switched off
-    private static int oldPosX       = 0;
-    private static int oldPosY       = 0;
+    private static int oldPosX = 0;
+    private static int oldPosY = 0;
 
     // The position of the display in screen coordinates
-    private static int posX          = 0;
-    private static int posY          = 0;
+    private static int posX = 0;
+    private static int posY = 0;
 
     // The title of the Display
-    private static String title      = "SilenceEngine";
+    private static String title = "SilenceEngine";
 
     // Private flags to maintain the Display
     private static boolean resized    = false;
@@ -64,11 +64,11 @@ public final class Display
     public static int mouseY;
 
     // Callbacks from GLFW
-    private static GLFWwindowsizefun winSizeCallback;
-    private static GLFWkeyfun        winKeyCallback;
-    private static GLFWwindowposfun  winPosCallback;
-    private static GLFWcursorposfun  winCurPosCallback;
-    private static GLFWerrorfun      errorCallback;
+    private static GLFWWindowSizeCallback winSizeCallback;
+    private static GLFWKeyCallback        winKeyCallback;
+    private static GLFWWindowPosCallback  winPosCallback;
+    private static GLFWCursorPosCallback  winCurPosCallback;
+    private static GLFWErrorCallback      errorCallback;
 
     /** Private constructor. Prevent instantiation */
     private Display()
@@ -138,26 +138,24 @@ public final class Display
         if (winCurPosCallback != null)
             winCurPosCallback.release();
 
-        glfwSetWindowSizeCallback(window, winSizeCallback = GLFWwindowsizefun((win, w, h) ->
+        glfwSetWindowSizeCallback(window, winSizeCallback = GLFWWindowSizeCallback((win, w, h) ->
         {
-            Display.width  = width;
+            Display.width = width;
             Display.height = height;
 
             resized = true;
         }));
 
-        glfwSetKeyCallback(window, winKeyCallback = GLFWkeyfun((win, key, scanCode, action, mods) ->
-        {
-            Keyboard.setKey(key, action == GLFW_PRESS);
-        }));
+        glfwSetKeyCallback(window, winKeyCallback = GLFWKeyCallback((win, key, scanCode, action, mods) ->
+                Keyboard.setKey(key, action == GLFW_PRESS)));
 
-        glfwSetWindowPosCallback(window, winPosCallback = GLFWwindowposfun((win, xPos, yPos) ->
+        glfwSetWindowPosCallback(window, winPosCallback = GLFWWindowPosCallback((win, xPos, yPos) ->
         {
             Display.posX = xPos;
             Display.posY = yPos;
         }));
 
-        glfwSetCursorPosCallback(window, winCurPosCallback = GLFWcursorposfun((win, xPos, yPos) ->
+        glfwSetCursorPosCallback(window, winCurPosCallback = GLFWCursorPosCallback((win, xPos, yPos) ->
         {
             mouseX = (int) xPos;
             mouseY = (int) yPos;
@@ -172,7 +170,7 @@ public final class Display
     public static void create()
     {
         // Set error callback
-        glfwSetErrorCallback(errorCallback = GLFWerrorfun((error, description) ->
+        glfwSetErrorCallback(errorCallback = GLFWErrorCallback((error, description) ->
         {
             throw new SilenceException("" + error + ": " + MemoryUtil.memDecodeUTF8(description));
         }));
