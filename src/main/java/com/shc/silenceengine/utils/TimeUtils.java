@@ -1,27 +1,29 @@
 package com.shc.silenceengine.utils;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 /**
  * A standard Time Utility class
  */
 public class TimeUtils
 {
-    public static long currentNanos()
+    public static double currentNanos()
     {
-        return System.nanoTime();
+        return currentMicros() * 1000.0;
     }
 
-    public static long currentMicros()
+    public static double currentMicros()
     {
-        return currentNanos()/1000;
+        return currentMillis() * 1000.0;
     }
 
-    public static long currentMillis()
+    public static double currentMillis()
     {
-        return currentNanos()/1000000;
+        return currentSeconds() * 1000.0;
     }
 
-    public static long currentSeconds()
+    public static double currentSeconds()
     {
-        return currentNanos()/1000000000;
+        return glfwGetTime();
     }
 }

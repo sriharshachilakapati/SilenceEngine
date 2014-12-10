@@ -36,6 +36,9 @@ public class Texture
 
     public void bind()
     {
+        if (CURRENT == this)
+            return;
+
         CURRENT = this;
         glBindTexture(GL_TEXTURE_2D, id);
     }

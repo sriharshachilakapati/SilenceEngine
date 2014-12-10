@@ -35,14 +35,14 @@ public class TrueTypeFont
 
     public TrueTypeFont(InputStream is)
     {
-        this (is, true);
+        this(is, true);
     }
 
     public TrueTypeFont(InputStream is, boolean antiAlias)
     {
         try
         {
-            this.awtFont   = Font.createFont(Font.TRUETYPE_FONT, is);
+            this.awtFont = Font.createFont(Font.TRUETYPE_FONT, is);
             this.antiAlias = antiAlias;
 
             createSet();
@@ -177,6 +177,16 @@ public class TrueTypeFont
         b.flush();
 
         current.bind();
+    }
+
+    public int getWidth(String str)
+    {
+        int width = 0;
+
+        for (char ch : str.toCharArray())
+            width += chars[(int) ch].w;
+
+        return width;
     }
 
     public TrueTypeFont derive(float size)

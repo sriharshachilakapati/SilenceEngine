@@ -147,7 +147,7 @@ public final class Display
         }));
 
         glfwSetKeyCallback(window, winKeyCallback = GLFWKeyCallback((win, key, scanCode, action, mods) ->
-                Keyboard.setKey(key, action == GLFW_PRESS)));
+            Keyboard.setKey(key, action != GLFW_RELEASE)));
 
         glfwSetWindowPosCallback(window, winPosCallback = GLFWWindowPosCallback((win, xPos, yPos) ->
         {

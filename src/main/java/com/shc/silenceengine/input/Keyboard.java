@@ -3,6 +3,7 @@ package com.shc.silenceengine.input;
 import com.shc.silenceengine.core.Display;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -138,18 +139,13 @@ public class Keyboard
     public static final int KEY_MENU          = GLFW_KEY_MENU;
     public static final int KEY_LAST          = GLFW_KEY_LAST;
 
-    private static ArrayList<Integer> events         = new ArrayList<Integer>();
-    private static int                numKeysPressed = 0;
+    private static ArrayList<Integer> events          = new ArrayList<>();
+    private static ArrayList<Integer> eventsThisFrame = new ArrayList<>();
+    private static ArrayList<Integer> eventsLastFrame = new ArrayList<>();
 
     public static boolean isPressed(int key)
     {
-        if (glfwGetKey(Display.getDisplayHandle(), key) == GLFW_PRESS || isClicked(key))
-        {
-            numKeysPressed++;
-            return true;
-        }
-        else
-            return false;
+        return glfwGetKey(Display.getDisplayHandle(), key) == GLFW_PRESS || isClicked(key);
     }
 
     public static boolean isReleased(int key)
@@ -159,23 +155,37 @@ public class Keyboard
 
     public static boolean isClicked(int key)
     {
-        return events.contains(key);
+        return eventsThisFrame.contains(key) && !eventsLastFrame.contains(key);
     }
 
     public static void setKey(int key, boolean pressed)
     {
-        if (pressed)
+        if (pressed && !events.contains(key))
             events.add(key);
+
+        if (!pressed && events.contains(key))
+            events.remove((Integer) key);
     }
 
     public static boolean isAnyKeyPressed()
     {
-        return numKeysPressed > 0;
+        return getNumKeysPressed() > 0;
+    }
+
+    public static void startEventFrame()
+    {
+        eventsThisFrame.clear();
+        eventsThisFrame.addAll(events);
     }
 
     public static void clearEventFrame()
     {
-        numKeysPressed = 0;
-        events.clear();
+        eventsLastFrame.clear();
+        eventsLastFrame.addAll(eventsThisFrame);
+    }
+
+    public static int getNumKeysPressed()
+    {
+        return events.size();
     }
 }

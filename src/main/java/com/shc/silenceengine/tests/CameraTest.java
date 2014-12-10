@@ -3,6 +3,7 @@ package com.shc.silenceengine.tests;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.*;
+import com.shc.silenceengine.graphics.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
@@ -22,18 +23,18 @@ public class CameraTest extends Game
 
     public void init()
     {
-        batcher   = new Batcher();
+        batcher = new Batcher();
         transform = new Transform();
 
-        orthoCam  = new OrthoCam();
-        perspCam  = new PerspCam();
+        orthoCam = new OrthoCam();
+        perspCam = new PerspCam();
 
         texture = Texture.fromResource("resources/texture2.png");
     }
 
     public void update(long delta)
     {
-        transform.rotate(Vector3.AXIS_Y, delta/1000f);
+        transform.rotate(Vector3.AXIS_Y, 4 * delta / 1000.0f);
 
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
