@@ -17,14 +17,13 @@ public class VertexArrayObject
     private int     id;
     private boolean disposed;
 
-    private static VertexArrayObject current = null;
-
     /**
      * Constructs a VertexArrayObject.
      */
     public VertexArrayObject()
     {
         id = glGenVertexArrays();
+        GLError.check();
     }
 
     /**
@@ -35,12 +34,8 @@ public class VertexArrayObject
         if (disposed)
             throw new GLException("VertexArray is disposed!");
 
-        // Avoid unnecessary bindings, they are costly
-        if (current == this)
-            return;
-
         glBindVertexArray(id);
-        current = this;
+        GLError.check();
     }
 
     /**
@@ -51,6 +46,7 @@ public class VertexArrayObject
     {
         bind();
         glEnableVertexAttribArray(index);
+        GLError.check();
     }
 
     /**
@@ -61,6 +57,7 @@ public class VertexArrayObject
     {
         bind();
         glDisableVertexAttribArray(index);
+        GLError.check();
     }
 
     /**
@@ -114,6 +111,7 @@ public class VertexArrayObject
         bind();
         buffer.bind();
         glVertexAttribPointer(index, count, type, normalized, stride, offset);
+        GLError.check();
     }
 
     /**
@@ -124,7 +122,9 @@ public class VertexArrayObject
     public void dispose()
     {
         glBindVertexArray(0);
+        GLError.check();
         glDeleteVertexArrays(id);
+        GLError.check();
         disposed = true;
     }
 

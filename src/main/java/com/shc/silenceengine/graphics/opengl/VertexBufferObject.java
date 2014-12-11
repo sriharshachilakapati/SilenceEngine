@@ -51,6 +51,8 @@ public class VertexBufferObject
     {
         id = glGenBuffers();
         this.target = target;
+
+        GLError.check();
     }
 
     /**
@@ -68,6 +70,8 @@ public class VertexBufferObject
 
         glBindBuffer(target, id);
         current.put(target, this);
+
+        GLError.check();
     }
 
     /**
@@ -99,6 +103,8 @@ public class VertexBufferObject
 
         else if (data instanceof ShortBuffer)
             glBufferData(target, (ShortBuffer) data, usage);
+
+        GLError.check();
     }
 
     /**
@@ -116,6 +122,8 @@ public class VertexBufferObject
         bind();
         this.capacity = capacity;
         glBufferData(target, capacity, usage);
+
+        GLError.check();
     }
 
     /**
@@ -146,6 +154,8 @@ public class VertexBufferObject
 
         else if (data instanceof ShortBuffer)
             glBufferSubData(target, offset, (ShortBuffer) data);
+
+        GLError.check();
     }
 
     /**
@@ -178,6 +188,9 @@ public class VertexBufferObject
     {
         bind();
         glGetBufferSubData(target, offset, length, data);
+
+        GLError.check();
+
         return data;
     }
 
@@ -210,7 +223,9 @@ public class VertexBufferObject
     public void dispose()
     {
         glBindBuffer(target, 0);
+        GLError.check();
         glDeleteBuffers(id);
+        GLError.check();
         disposed = true;
     }
 

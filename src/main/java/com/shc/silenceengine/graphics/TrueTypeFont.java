@@ -9,6 +9,9 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
+import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.math.Vector2;
+
 /**
  * @author Sri Harsha Chilakapati
  */
@@ -128,8 +131,6 @@ public class TrueTypeFont
 
         g2d.dispose();
 
-        System.out.println("[width=" + texImage.getWidth() + ", height=" + texImage.getHeight() + "]");
-
         fontTexture = Texture.fromBufferedImage(texImage);
     }
 
@@ -159,18 +160,13 @@ public class TrueTypeFont
                 continue;
             }
 
-            float minU = c.x / (float) fontTexture.getWidth();
-            float maxU = (c.x + c.w + 2) / (float) fontTexture.getWidth();
-            float minV = c.y / (float) fontTexture.getHeight();
-            float maxV = (c.y + c.h) / (float) fontTexture.getHeight();
+            float minU = c.x / fontTexture.getWidth();
+            float maxU = (c.x + c.w + 2) / fontTexture.getWidth();
+            float minV = c.y / fontTexture.getHeight();
+            float maxV = (c.y + c.h) / fontTexture.getHeight();
 
-            b.addVertex(x, y, 0, 1, col.getR(), col.getG(), col.getB(), col.getA(), minU, minV);
-            b.addVertex(x + c.w + 2, y, 0, 1, col.getR(), col.getG(), col.getB(), col.getA(), maxU, minV);
-            b.addVertex(x, y + c.h, 0, 1, col.getR(), col.getG(), col.getB(), col.getA(), minU, maxV);
-
-            b.addVertex(x + c.w + 2, y, 0, 1, col.getR(), col.getG(), col.getB(), col.getA(), maxU, minV);
-            b.addVertex(x + c.w, y + c.h, 0, 1, col.getR(), col.getG(), col.getB(), col.getA(), maxU, maxV);
-            b.addVertex(x, y + c.h, 0, 1, col.getR(), col.getG(), col.getB(), col.getA(), minU, maxV);
+            // Draw the SubTexture!
+            b.drawTexture2d(fontTexture.getSubTexture(minU, minV, maxU, maxV), new Vector2(x, y), col);
 
             x += c.w;
         }

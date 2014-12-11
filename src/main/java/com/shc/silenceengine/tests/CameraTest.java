@@ -3,9 +3,8 @@ package com.shc.silenceengine.tests;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.*;
-import com.shc.silenceengine.graphics.Texture;
+import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
-import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 
 /**
@@ -14,7 +13,6 @@ import com.shc.silenceengine.math.Vector3;
 public class CameraTest extends Game
 {
     private Texture texture;
-    private Batcher batcher;
 
     private OrthoCam orthoCam;
     private PerspCam perspCam;
@@ -23,7 +21,6 @@ public class CameraTest extends Game
 
     public void init()
     {
-        batcher = new Batcher();
         transform = new Transform();
 
         orthoCam = new OrthoCam();
@@ -32,31 +29,48 @@ public class CameraTest extends Game
         texture = Texture.fromResource("resources/texture2.png");
     }
 
-    public void update(long delta)
+    public void update(double delta)
     {
-        transform.rotate(Vector3.AXIS_Y, 4 * delta / 1000.0f);
+        transform.rotate(Vector3.AXIS_Y, (float) (4 * delta));
 
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
     }
 
-    public void render(long delta)
+    public void render(double delta, Batcher batcher)
     {
         texture.bind();
 
+        orthoCam.apply();
+
         // 2D triangle in the left-top
-        batcher.begin(orthoCam);
+        batcher.begin();
         {
-            batcher.addTriangle(new Vector2(50, 0),   new Vector2(0, 100), new Vector2(100, 100),
-                                new Vector2(0.5f, 0), new Vector2(0, 1),   new Vector2(1, 1));
+            batcher.vertex(50, 0);
+            batcher.texCoord(0.5f, 0);
+
+            batcher.vertex(0, 100);
+            batcher.texCoord(0, 1);
+
+            batcher.vertex(100, 100);
+            batcher.texCoord(1, 1);
         }
         batcher.end();
 
+        perspCam.apply();
+
         // 3D triangle in the center
-        batcher.begin(perspCam, transform);
+        batcher.applyTransform(transform);
+        batcher.begin();
         {
-            batcher.addTriangle(new Vector2(+0.0f, +0.5f), new Vector2(-0.5f, -0.5f), new Vector2(+0.5f, -0.5f),
-                                new Vector2(0.5f, 0),      new Vector2(0, 1),         new Vector2(1, 1));
+            batcher.vertex(0, 0.5f);
+            batcher.texCoord(0.5f, 0);
+
+            batcher.vertex(-0.5f, -0.5f);
+            batcher.texCoord(0, 1);
+
+            batcher.vertex(0.5f, -0.5f);
+            batcher.texCoord(1, 1);
         }
         batcher.end();
     }
@@ -70,7 +84,6 @@ public class CameraTest extends Game
     public void dispose()
     {
         texture.dispose();
-        batcher.dispose();
     }
 
     public static void main(String[] args)

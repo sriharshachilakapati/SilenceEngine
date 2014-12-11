@@ -8,7 +8,7 @@ import com.shc.silenceengine.utils.TransformUtils;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class PerspCam implements ICamera
+public class PerspCam extends BaseCamera
 {
     private Matrix4 mProj;
     private Matrix4 mView;
@@ -55,13 +55,9 @@ public class PerspCam implements ICamera
         return this;
     }
 
-    public Matrix4 getProjection()
+    public void apply()
     {
-        return mProj;
-    }
-
-    public Matrix4 getView()
-    {
-        return mView;
+        BaseCamera.projection = mProj;
+        BaseCamera.view       = mView;
     }
 }

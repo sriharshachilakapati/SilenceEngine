@@ -12,9 +12,9 @@ public class TransformUtils
     {
         Matrix4 result = new Matrix4().initIdentity();
 
-        result.set(0, 3, translation.getX())
-              .set(1, 3, translation.getY())
-              .set(2, 3, translation.getZ());
+        result.set(3, 0, translation.getX())
+              .set(3, 1, translation.getY())
+              .set(3, 2, translation.getZ());
 
         return result;
     }
@@ -40,15 +40,15 @@ public class TransformUtils
         Vector3 v = axis.copy().normalize();
 
         result.set(0, 0, v.getX() * v.getX() * (1-c) + c)
-              .set(0, 1, v.getX() * v.getY() * (1-c) - v.getZ() * s)
-              .set(0, 2, v.getX() * v.getZ() * (1-c) + v.getY() * s);
+              .set(1, 0, v.getX() * v.getY() * (1-c) - v.getZ() * s)
+              .set(2, 0, v.getX() * v.getZ() * (1-c) + v.getY() * s);
 
-        result.set(1, 0, v.getY() * v.getX() * (1-c) + v.getZ() * s)
+        result.set(0, 1, v.getY() * v.getX() * (1-c) + v.getZ() * s)
               .set(1, 1, v.getY() * v.getY() * (1-c) + c)
-              .set(1, 2, v.getY() * v.getZ() * (1-c) - v.getX() * s);
+              .set(2, 1, v.getY() * v.getZ() * (1-c) - v.getX() * s);
 
-        result.set(2, 0, v.getX() * v.getZ() * (1-c) - v.getY() * s)
-              .set(2, 1, v.getY() * v.getZ() * (1-c) + v.getX() * s)
+        result.set(0, 2, v.getX() * v.getZ() * (1-c) - v.getY() * s)
+              .set(1, 2, v.getY() * v.getZ() * (1-c) + v.getX() * s)
               .set(2, 2, v.getZ() * v.getZ() * (1-c) + c);
 
         return result;
@@ -61,9 +61,9 @@ public class TransformUtils
         result.set(0, 0, 2 / (right - left))
               .set(1, 1, 2 / (top - bottom))
               .set(2, 2, -2 / (zFar - zNear))
-              .set(0, 3, -(right + left) / (right - left))
-              .set(1, 3, -(top + bottom) / (top - bottom))
-              .set(2, 3, -(zFar + zNear) / (zFar - zNear))
+              .set(3, 0, -(right + left) / (right - left))
+              .set(3, 1, -(top + bottom) / (top - bottom))
+              .set(3, 2, -(zFar + zNear) / (zFar - zNear))
               .set(3, 3, 1);
 
         return result;
@@ -80,8 +80,8 @@ public class TransformUtils
         result.set(0, 0, xScale)
               .set(1, 1, yScale)
               .set(2, 2, -((zFar + zNear) / frustumLength))
-              .set(3, 2, -1)
-              .set(2, 3, -((2 * zFar * zNear) / frustumLength))
+              .set(2, 3, -1)
+              .set(3, 2, -((2 * zFar * zNear) / frustumLength))
               .set(3, 3, 0);
 
         return result;
@@ -96,20 +96,20 @@ public class TransformUtils
         Vector3 u = s.copy().cross(f);
 
         result.set(0, 0, s.getX())
-              .set(0, 1, s.getY())
-              .set(0, 2, s.getZ());
+              .set(1, 0, s.getY())
+              .set(2, 0, s.getZ());
 
-        result.set(1, 0, u.getX())
+        result.set(0, 1, u.getX())
               .set(1, 1, u.getY())
-              .set(1, 2, u.getZ());
+              .set(2, 1, u.getZ());
 
-        result.set(2, 0, -f.getX())
-              .set(2, 1, -f.getY())
+        result.set(0, 2, -f.getX())
+              .set(1, 2, -f.getY())
               .set(2, 2, -f.getZ());
 
-        result.set(0, 3, -s.dot(eye))
-              .set(1, 3, -u.dot(eye))
-              .set(2, 3, f.dot(eye));
+        result.set(3, 0, -s.dot(eye))
+              .set(3, 1, -u.dot(eye))
+              .set(3, 2, f.dot(eye));
 
         return result;
     }

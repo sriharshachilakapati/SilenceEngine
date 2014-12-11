@@ -4,7 +4,7 @@ import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.Texture;
+import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.graphics.Transform;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
@@ -16,16 +16,14 @@ public class TransformTest extends Game
 {
     private Transform transform;
     private Texture   texture;
-    private Batcher   batcher;
 
     public void init()
     {
-        batcher   = new Batcher();
         transform = new Transform();
-        texture   = Texture.fromResource("resources/texture.png");
+        texture   = Texture.fromResource("resources/texture2.png");
     }
 
-    public void update(long delta)
+    public void update(double delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
@@ -43,33 +41,37 @@ public class TransformTest extends Game
             transform.translate(new Vector2(0, -0.01f));
     }
 
-    public void render(long delta)
+    public void render(double delta, Batcher batcher)
     {
         texture.bind();
 
+        batcher.applyTransform(transform);
         batcher.begin();
         {
-            batcher.applyTransform(transform);
-
             if (Keyboard.isAnyKeyPressed())
             {
-                batcher.addVertex(new Vector2(-0.5f, +0.5f), Color.GOLDEN_ROD, new Vector2(0, 0));
-                batcher.addVertex(new Vector2(+0.5f, +0.5f), Color.GOLDEN_ROD, new Vector2(1, 0));
-                batcher.addVertex(new Vector2(+0.5f, -0.5f), Color.GOLDEN_ROD, new Vector2(1, 1));
+                batcher.vertex(0, 0.5f);
+                batcher.color(Color.GOLDEN_ROD);
+                batcher.texCoord(0.5f, 0);
 
-                batcher.addVertex(new Vector2(-0.5f, +0.5f), Color.GOLDEN_ROD, new Vector2(0, 0));
-                batcher.addVertex(new Vector2(-0.5f, -0.5f), Color.GOLDEN_ROD, new Vector2(0, 1));
-                batcher.addVertex(new Vector2(+0.5f, -0.5f), Color.GOLDEN_ROD, new Vector2(1, 1));
+                batcher.vertex(-0.5f, -0.5f);
+                batcher.color(Color.GOLDEN_ROD);
+                batcher.texCoord(0, 1);
+
+                batcher.vertex(0.5f, -0.5f);
+                batcher.color(Color.GOLDEN_ROD);
+                batcher.texCoord(1, 1);
             }
             else
             {
-                batcher.addVertex(new Vector2(-0.5f, +0.5f), new Vector2(0, 0));
-                batcher.addVertex(new Vector2(+0.5f, +0.5f), new Vector2(1, 0));
-                batcher.addVertex(new Vector2(+0.5f, -0.5f), new Vector2(1, 1));
+                batcher.vertex(0, 0.5f);
+                batcher.texCoord(0.5f, 0);
 
-                batcher.addVertex(new Vector2(-0.5f, +0.5f), new Vector2(0, 0));
-                batcher.addVertex(new Vector2(-0.5f, -0.5f), new Vector2(0, 1));
-                batcher.addVertex(new Vector2(+0.5f, -0.5f), new Vector2(1, 1));
+                batcher.vertex(-0.5f, -0.5f);
+                batcher.texCoord(0, 1);
+
+                batcher.vertex(0.5f, -0.5f);
+                batcher.texCoord(1, 1);
             }
         }
         batcher.end();
@@ -82,7 +84,6 @@ public class TransformTest extends Game
 
     public void dispose()
     {
-        batcher.dispose();
         texture.dispose();
     }
 

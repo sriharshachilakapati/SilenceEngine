@@ -9,7 +9,7 @@ import com.shc.silenceengine.utils.TransformUtils;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class OrthoCam implements ICamera
+public class OrthoCam extends BaseCamera
 {
     private Matrix4 mProj;
     private Matrix4 mView;
@@ -79,13 +79,9 @@ public class OrthoCam implements ICamera
         return this;
     }
 
-    public Matrix4 getProjection()
+    public void apply()
     {
-        return mProj;
-    }
-
-    public Matrix4 getView()
-    {
-        return mView;
+        BaseCamera.projection = mProj;
+        BaseCamera.view       = mView;
     }
 }

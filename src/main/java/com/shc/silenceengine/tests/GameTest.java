@@ -8,24 +8,18 @@ import com.shc.silenceengine.graphics.Batcher;
 
 import com.shc.silenceengine.input.Keyboard;
 
-import com.shc.silenceengine.math.Vector2;
-import com.shc.silenceengine.math.Vector3;
-
 /**
  * @author Sri Harsha Chilakapati
  */
 public class GameTest extends Game
 {
-    private Batcher batcher;
-
     public void init()
     {
         Display.setTitle("GameTest");
-        batcher = new Batcher();
     }
 
     @Override
-    public void update(long delta)
+    public void update(double delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
@@ -42,17 +36,22 @@ public class GameTest extends Game
     }
 
     @Override
-    public void render(long delta)
+    public void render(double delta, Batcher batcher)
     {
         batcher.begin();
         {
-            batcher.addVertex(new Vector2(+0.0f, +0.5f), Color.CORN_FLOWER_BLUE);
-            batcher.addVertex(new Vector2(-0.5f, -0.5f), Color.INDIAN_RED);
-            batcher.addVertex(new Vector2(+0.5f, -0.5f), Color.OLIVE_DRAB);
+            batcher.vertex(0, 0.5f);
+            batcher.color(Color.CORN_FLOWER_BLUE);
 
-            batcher.addVertex(new Vector3(+1.0f, +1.0f, +0.0f));
-            batcher.addVertex(new Vector3(+1.0f, -1.0f, +0.0f));
-            batcher.addVertex(new Vector3(+0.5f, +0.0f, +1.0f));
+            batcher.vertex(-0.5f, -0.5f);
+            batcher.color(Color.INDIAN_RED);
+
+            batcher.vertex(0.5f, -0.5f);
+            batcher.color(Color.OLIVE_DRAB);
+
+            batcher.vertex(1, 1, 0);
+            batcher.vertex(1, -1, 0);
+            batcher.vertex(0.5f, 0, 1);
         }
         batcher.end();
     }
@@ -66,7 +65,6 @@ public class GameTest extends Game
     @Override
     public void dispose()
     {
-        batcher.dispose();
     }
 
     public static void main(String[] args)

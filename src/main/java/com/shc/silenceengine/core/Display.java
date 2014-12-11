@@ -1,8 +1,10 @@
 package com.shc.silenceengine.core;
 
+import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.Shader;
-import com.shc.silenceengine.graphics.Texture;
+import com.shc.silenceengine.graphics.opengl.GLError;
+import com.shc.silenceengine.graphics.opengl.Program;
+import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -116,13 +118,17 @@ public final class Display
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glEnable(GL_DEPTH_TEST);
+        GLError.check();
 
-        if (Shader.DEFAULT == null)
-            Shader.loadDefaultShader();
+        if (Game.getBatcher() == null)
+            Game.setBatcher(new Batcher());
+
+        if (Program.DEFAULT == null)
+            Program.loadDefaultProgram();
         if (Texture.EMPTY == null)
             Texture.loadNullTexture();
 
-        Shader.DEFAULT.use();
+        Program.DEFAULT.use();
         Texture.EMPTY.bind();
 
         // Window callbacks
@@ -231,7 +237,7 @@ public final class Display
      */
     public static void destroy()
     {
-        Shader.DEFAULT.dispose();
+        Program.DEFAULT.dispose();
         Texture.EMPTY.dispose();
 
         glfwDestroyWindow(displayHandle);
@@ -250,6 +256,7 @@ public final class Display
         glfwPollEvents();
 
         glClearColor(clearColor.getRed(), clearColor.getGreen(), clearColor.getBlue(), clearColor.getAlpha());
+        GLError.check();
     }
 
     /**

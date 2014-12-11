@@ -1,6 +1,6 @@
 package com.shc.silenceengine.graphics;
 
-import com.shc.silenceengine.math.Matrix4;
+import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.Vector4;
@@ -10,8 +10,12 @@ import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+
+import com.shc.silenceengine.graphics.opengl.GLError;
+import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.graphics.opengl.VertexArrayObject;
+import com.shc.silenceengine.graphics.opengl.VertexBufferObject;
 
 /**
  * A simple class which eases the rendering of Graphics by batching
@@ -51,19 +55,19 @@ public class Batcher
     private FloatBuffer cBuffer;
     private FloatBuffer tBuffer;
 
-    // VAO and VBO handles
-    private int vaoID;
-    private int vboVertID;
-    private int vboColID;
-    private int vboTexID;
+    // VAO and VBOs
+    private VertexArrayObject  vao;
+    private VertexBufferObject vboVert;
+    private VertexBufferObject vboCol;
+    private VertexBufferObject vboTex;
 
     // The no. of vertices in the current batch
     private int vertexCount;
+    private int colorCount;
+    private int texCoordCount;
 
     // The transform, and projection and view matrices
     private Transform transform;
-    private Matrix4   camProj;
-    private Matrix4   camView;
 
     /**
      * Creates the Batcher, and initialises OpenGL
@@ -77,8 +81,6 @@ public class Batcher
 
         // Create the transformations
         transform = new Transform();
-        camProj   = new Matrix4();
-        camView   = new Matrix4();
 
         // Initialise OpenGL handles
         initGLHandles();
@@ -91,25 +93,25 @@ public class Batcher
     private void initGLHandles()
     {
         // Create a VAO
-        vaoID = glGenVertexArrays();
-        glBindVertexArray(vaoID);
+        vao = new VertexArrayObject();
+        vao.bind();
 
         // Create VBOs
-        vboVertID = glGenBuffers();
-        vboColID = glGenBuffers();
-        vboTexID = glGenBuffers();
+        vboVert = new VertexBufferObject(GL_ARRAY_BUFFER);
+        vboCol  = new VertexBufferObject(GL_ARRAY_BUFFER);
+        vboTex  = new VertexBufferObject(GL_ARRAY_BUFFER);
 
-        // Create vertex-buffer
-        glBindBuffer(GL_ARRAY_BUFFER, vboVertID);
-        glBufferData(GL_ARRAY_BUFFER, SIZE_OF_VERTEX * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
+        // Initialize vertex-buffer
+        vboVert.bind();
+        vboVert.uploadData(SIZE_OF_VERTEX * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
 
-        // Create color-buffer
-        glBindBuffer(GL_ARRAY_BUFFER, vboColID);
-        glBufferData(GL_ARRAY_BUFFER, SIZE_OF_COLOR * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
+        // Initialize color-buffer
+        vboCol.bind();
+        vboCol.uploadData(SIZE_OF_COLOR * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
 
-        // Create texcoord-buffer
-        glBindBuffer(GL_ARRAY_BUFFER, vboTexID);
-        glBufferData(GL_ARRAY_BUFFER, SIZE_OF_TEXCOORD * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
+        // Initialize texcoord-buffer
+        vboTex.bind();
+        vboTex.uploadData(SIZE_OF_TEXCOORD * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
     }
 
     /**
@@ -118,56 +120,17 @@ public class Batcher
     private void uploadData()
     {
         // Upload vertices
-        glBindBuffer(GL_ARRAY_BUFFER, vboVertID);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, vBuffer);
+        vboVert.bind();
+        vboVert.uploadSubData(vBuffer, 0);
+        vao.pointAttribute(0, 4, GL_FLOAT, vboVert);
 
-        glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
+        vboCol.bind();
+        vboCol.uploadSubData(cBuffer, 0);
+        vao.pointAttribute(1, 4, GL_FLOAT, vboCol);
 
-        // Upload colors
-        glBindBuffer(GL_ARRAY_BUFFER, vboColID);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, cBuffer);
-
-        glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
-
-        // Upload tex-coords
-        glBindBuffer(GL_ARRAY_BUFFER, vboTexID);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, tBuffer);
-
-        glVertexAttribPointer(2, 2, GL_FLOAT, false, 0, 0);
-    }
-
-    /**
-     * Begins the batcher with a Transform. All the vertices
-     * collected will get applied with that Transform
-     *
-     * @param t The transform object to do transformation
-     */
-    public void begin(Transform t)
-    {
-        applyTransform(t);
-        begin();
-    }
-
-    /**
-     * Begins the batcher with a Camera.
-     * @param c The camera to use.
-     */
-    public void begin(ICamera c)
-    {
-        applyCamera(c);
-        begin();
-    }
-
-    /**
-     * Begins the batcher with a Camera and a Transform
-     * @param c The camera to use.
-     * @param t The transform object to do transformation
-     */
-    public void begin(ICamera c, Transform t)
-    {
-        applyCamera(c);
-        applyTransform(t);
-        begin();
+        vboTex.bind();
+        vboTex.uploadSubData(tBuffer, 0);
+        vao.pointAttribute(2, 2, GL_FLOAT, vboTex);
     }
 
     /**
@@ -179,7 +142,10 @@ public class Batcher
             throw new IllegalStateException("Batcher Already Active!");
 
         active = true;
-        vertexCount = 0;
+
+        vertexCount   = 0;
+        colorCount    = 0;
+        texCoordCount = 0;
     }
 
     /**
@@ -195,8 +161,6 @@ public class Batcher
 
         // Reset Transform and camera matrices
         transform.reset();
-        camProj.initIdentity();
-        camView.initIdentity();
     }
 
     /**
@@ -208,11 +172,10 @@ public class Batcher
         if (vertexCount == 0)
             return;
 
-        // Shader uniforms
-        Shader.CURRENT.setUniform("tex", Texture.getActiveUnit());
-        Shader.CURRENT.setUniform("mTransform", transform.getMatrix());
-        Shader.CURRENT.setUniform("camProj", camProj);
-        Shader.CURRENT.setUniform("camView", camView);
+        // Fill the buffers
+        fillBuffers();
+
+        Program.CURRENT.setupUniforms();
 
         // Flip the buffers
         vBuffer.flip();
@@ -220,22 +183,24 @@ public class Batcher
         tBuffer.flip();
 
         // Bind the VAO
-        glBindVertexArray(vaoID);
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
+        vao.bind();
+        vao.enableAttributeArray(0);
+        vao.enableAttributeArray(1);
+        vao.enableAttributeArray(2);
 
         // Upload the data
         uploadData();
 
         // Do a rendering
         glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+        GLError.check();
 
         // Unbind the VAO
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
+        vao.disableAttributeArray(0);
+        vao.disableAttributeArray(1);
+        vao.disableAttributeArray(2);
         glBindVertexArray(0);
+        GLError.check();
 
         // Clear the buffers
         vBuffer.clear();
@@ -243,12 +208,14 @@ public class Batcher
         tBuffer.clear();
 
         // Clear the vertex count
-        vertexCount = 0;
+        vertexCount   = 0;
+        colorCount    = 0;
+        texCoordCount = 0;
     }
 
     /**
-     *
-     * @param t
+     * Applies a Transform to the batcher data
+     * @param t The transform to use
      */
     public void applyTransform(Transform t)
     {
@@ -259,189 +226,132 @@ public class Batcher
         transform.apply(t);
     }
 
-    public void applyCamera(ICamera c)
+    private void fillBuffers()
     {
-        // Flush the data first
-        flush();
+        // Determine the fill color
+        Color col = texCoordCount == vertexCount ? Color.TRANSPARENT : Color.WHITE;
 
-        camProj.initIdentity().multiply(c.getProjection());
-        camView.initIdentity().multiply(c.getView());
+        // Fill the color buffers
+        while (colorCount < vertexCount)
+        {
+            cBuffer.put(col.getR()).put(col.getG()).put(col.getB()).put(col.getA());
+            colorCount++;
+        }
+
+        // Fill the texcoord buffers
+        while (texCoordCount < vertexCount)
+        {
+            tBuffer.put(0).put(0);
+            texCoordCount++;
+        }
     }
 
-    /* addVertex variations */
-
-    public void addVertex(Vector2 v)
+    public void vertex(float x, float y)
     {
-        addVertex(v.getX(), v.getY(), 0, 1);
+        vertex(x, y, 0, 1);
     }
 
-    public void addVertex(Vector2 v, Vector2 t)
+    public void vertex(float x, float y, float z)
     {
-        addVertex(v.getX(), v.getY(), 0, 1, 0, 0, 0, 1, t.getX(), t.getY());
+        vertex(x, y, z, 1);
     }
 
-    public void addVertex(Vector2 v, Color c)
-    {
-        addVertex(v.getX(), v.getY(), 0, 1, c.getR(), c.getG(), c.getB(), c.getA());
-    }
-
-    public void addVertex(Vector2 v, Color c, Vector2 t)
-    {
-        addVertex(v.getX(), v.getY(), 0, 1, c.getR(), c.getG(), c.getB(), c.getA(), t.getX(), t.getY());
-    }
-
-    public void addVertex(Vector3 v)
-    {
-        addVertex(v.getX(), v.getY(), v.getZ(), 1);
-    }
-
-    public void addVertex(Vector3 v, Vector2 t)
-    {
-        addVertex(v.getX(), v.getY(), v.getZ(), 1, 0, 0, 0, 1, t.getX(), t.getY());
-    }
-
-    public void addVertex(Vector3 v, Color c)
-    {
-        addVertex(v.getX(), v.getY(), v.getZ(), 1, c.getR(), c.getG(), c.getB(), c.getA());
-    }
-
-    public void addVertex(Vector3 v, Color c, Vector2 t)
-    {
-        addVertex(v.getX(), v.getY(), v.getZ(), 1, c.getR(), c.getG(), c.getB(), c.getA(), t.getX(), t.getY());
-    }
-
-    public void addVertex(Vector4 v)
-    {
-        addVertex(v.getX(), v.getY(), v.getZ(), v.getW());
-    }
-
-    public void addVertex(Vector4 v, Vector2 t)
-    {
-        addVertex(v.getX(), v.getY(), v.getZ(), v.getW(), 0, 0, 0, 1, t.getX(), t.getY());
-    }
-
-    public void addVertex(Vector4 v, Color c)
-    {
-        addVertex(v.getX(), v.getY(), v.getZ(), v.getW(), c.getR(), c.getG(), c.getB(), c.getA());
-    }
-
-    public void addVertex(Vector4 v, Color c, Vector2 t)
-    {
-        addVertex(v.getX(), v.getY(), v.getZ(), v.getW(), c.getR(), c.getG(), c.getB(), c.getA(), t.getX(), t.getY());
-    }
-
-    public void addVertex(float x, float y, float z, float w)
-    {
-        addVertex(x, y, z, w, 1, 1, 1, 1, 0, 0);
-    }
-
-    public void addVertex(float x, float y, float z, float w, float u, float v)
-    {
-        addVertex(x, y, z, w, 0, 0, 0, 0, u, v);
-    }
-
-    public void addVertex(float x, float y, float z, float w, float r, float g, float b, float a)
-    {
-        addVertex(x, y, z, w, r, g, b, a, 0, 0);
-    }
-
-    public void addVertex(float x, float y, float z, float w, float r, float g, float b, float a, float u, float v)
+    public void vertex(float x, float y, float z, float w)
     {
         flushOnOverflow(1);
+        fillBuffers();
 
-        vertexCount++;
         vBuffer.put(x).put(y).put(z).put(w);
+        vertexCount++;
+    }
+
+    public void vertex(Vector2 v)
+    {
+        vertex(v.getX(), v.getY(), 0, 1);
+    }
+
+    public void vertex(Vector3 v)
+    {
+        vertex(v.getX(), v.getY(), v.getZ(), 1);
+    }
+
+    public void vertex(Vector4 v)
+    {
+        vertex(v.getX(), v.getY(), v.getZ(), v.getW());
+    }
+
+    public void color(float r, float g, float b, float a)
+    {
+        // Add the specified color
         cBuffer.put(r).put(g).put(b).put(a);
+        colorCount++;
+    }
+
+    public void color(Color c)
+    {
+        color(c.getR(), c.getG(), c.getB(), c.getA());
+    }
+
+    public void color(Vector4 c)
+    {
+        color(c.getR(), c.getG(), c.getB(), c.getA());
+    }
+
+    public void texCoord(float u, float v)
+    {
+        // Add the specified texcoord
         tBuffer.put(u).put(v);
+        texCoordCount++;
     }
 
-    /* addTriangle variations */
-
-    public void addTriangle(Vector2 v1, Vector2 v2, Vector2 v3,
-                            Color   c1, Color   c2, Color   c3,
-                            Vector2 t1, Vector2 t2, Vector2 t3)
+    public void texCoord(Vector2 v)
     {
-        addTriangle(v1.getX(), v1.getY(), 0, 1,
-                    v2.getX(), v2.getY(), 0, 1,
-                    v3.getX(), v3.getY(), 0, 1,
-                    c1.getR(), c1.getG(), c1.getB(), c1.getA(),
-                    c2.getR(), c2.getG(), c2.getB(), c2.getA(),
-                    c3.getR(), c3.getG(), c3.getB(), c3.getA(),
-                    t1.getX(), t1.getY(),
-                    t2.getX(), t2.getY(),
-                    t3.getX(), t3.getY());
-    }
-
-    public void addTriangle(Vector2 v1, Vector2 v2, Vector2 v3)
-    {
-        addTriangle(v1, v2, v3, Color.WHITE, Color.WHITE, Color.WHITE, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO);
-    }
-
-    public void addTriangle(Vector2 v1, Vector2 v2, Vector2 v3,
-                            Color   c1, Color   c2, Color   c3)
-    {
-        addTriangle(v1, v2, v3, c1, c2, c3, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO);
-    }
-
-    public void addTriangle(Vector2 v1, Vector2 v2, Vector2 v3,
-                            Vector2 t1, Vector2 t2, Vector2 t3)
-    {
-        addTriangle(v1, v2, v3, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, t1, t2, t3);
-    }
-
-    public void addTriangle(Vector3 v1, Vector3 v2, Vector3 v3,
-                            Color   c1, Color   c2, Color   c3,
-                            Vector2 t1, Vector2 t2, Vector2 t3)
-    {
-        addTriangle(v1.getX(), v1.getY(), v1.getZ(), 1,
-                    v2.getX(), v2.getY(), v2.getZ(), 1,
-                    v3.getX(), v3.getY(), v3.getZ(), 1,
-                    c1.getR(), c1.getG(), c1.getB(), c1.getA(),
-                    c2.getR(), c2.getG(), c2.getB(), c2.getA(),
-                    c3.getR(), c3.getG(), c3.getB(), c3.getA(),
-                    t1.getX(), t1.getY(), t2.getX(), t2.getY(), t3.getX(), t3.getY());
-    }
-
-    public void addTriangle(float x1, float y1, float z1, float w1,
-                            float x2, float y2, float z2, float w2,
-                            float x3, float y3, float z3, float w3,
-                            float r1, float g1, float b1, float a1,
-                            float r2, float g2, float b2, float a2,
-                            float r3, float g3, float b3, float a3,
-                            float u1, float v1,
-                            float u2, float v2,
-                            float u3, float v3)
-    {
-        flushOnOverflow(3);
-
-        addVertex(x1, y1, z1, w1, r1, g1, b1, a1, u1, v1);
-        addVertex(x2, y2, z2, w2, r2, g2, b2, a2, u2, v2);
-        addVertex(x3, y3, z3, w3, r3, g3, b3, a3, u3, v3);
+        texCoord(v.getX(), v.getY());
     }
 
     /* Draw Texture */
 
-    public void drawTexture2d(Texture texture, Vector2 position)
+    public void drawTexture2d(Texture texture, Vector2 p)
+    {
+        drawTexture2d(texture, p, Color.TRANSPARENT);
+    }
+
+    public void drawTexture2d(Texture texture, Vector2 p, Color color)
     {
         Texture current = Texture.CURRENT;
         flush();
 
         texture.bind();
-        addTriangle(new Vector2(0, 0).add(position),
-                    new Vector2(texture.getWidth(), 0).add(position),
-                    new Vector2(0, texture.getHeight()).add(position),
 
-                    new Vector2(0, 0),
-                    new Vector2(1, 0),
-                    new Vector2(0, 1));
+        // First triangle
+        {
+            vertex(p.getX(), p.getY(), 0, 1);
+            color(color);
+            texCoord(texture.getMinU(), texture.getMinV());
 
-        addTriangle(new Vector2(texture.getWidth(), 0).add(position),
-                new Vector2(texture.getWidth(), texture.getHeight()).add(position),
-                new Vector2(0, texture.getHeight()).add(position),
+            vertex(p.getX() + texture.getWidth(), p.getY(), 0, 1);
+            color(color);
+            texCoord(texture.getMaxU(), texture.getMinV());
 
-                new Vector2(1, 0),
-                new Vector2(1, 1),
-                new Vector2(0, 1));
+            vertex(p.getX(), p.getY() + texture.getHeight(), 0, 1);
+            color(color);
+            texCoord(texture.getMinU(), texture.getMaxV());
+        }
+
+        // Second triangle
+        {
+            vertex(p.getX() + texture.getWidth(), p.getY(), 0, 1);
+            color(color);
+            texCoord(texture.getMaxU(), texture.getMinV());
+
+            vertex(p.getX(), p.getY() + texture.getHeight(), 0, 1);
+            color(color);
+            texCoord(texture.getMinU(), texture.getMaxV());
+
+            vertex(p.getX() + texture.getWidth(), p.getY() + texture.getHeight(), 0, 1);
+            color(color);
+            texCoord(texture.getMaxU(), texture.getMaxV());
+        }
 
         flush();
         current.bind();
@@ -453,12 +363,18 @@ public class Batcher
             flush();
     }
 
+    public Transform getTransform()
+    {
+        return transform;
+    }
+
     public void dispose()
     {
         glBindVertexArray(0);
-        glDeleteVertexArrays(vaoID);
+        vao.dispose();
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDeleteBuffers(vboVertID);
-        glDeleteBuffers(vboColID);
+        vboVert.dispose();
+        vboCol.dispose();
+        vboTex.dispose();
     }
 }

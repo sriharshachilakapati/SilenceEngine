@@ -1,6 +1,8 @@
 package com.shc.silenceengine.core;
 
-import com.shc.silenceengine.graphics.Texture;
+import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.opengl.GLError;
+import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.utils.TimeUtils;
 
@@ -21,10 +23,10 @@ import static org.lwjgl.opengl.GL11.*;
  *         public void init() {}
  *
  *         // Update game logic
- *         public void update(long delta) {}
+ *         public void update(double delta) {}
  *
  *         // Render to screen
- *         public void render(long delta) {}
+ *         public void render(double delta, Batcher batcher) {}
  *
  *         // Handle window resize event
  *         public void resize() {}
@@ -75,17 +77,32 @@ public class Game
         NativesLoader.load();
     }
 
+    /**
+     * Specifies the development status of the game. Before distributing
+     * make sure to change this to false, leaving this enabled causes the
+     * GLExceptions, if any, to be displayed to the user.
+     */
+    public static boolean development = true;
+
     // Is the game running?
     private static boolean running = false;
 
-    private static int fps       = 60;
-    private static int targetFps = 60;
+    // Game logic rate
+    private static int ups       = 60;
+    private static int targetUps = 60;
+
+    // Game frame rate
+    private static int fps = 60;
+
+    private static Batcher batcher;
 
     /**
      * Initialize the Game. Loads the resources, and
      * sets the game states.
      */
-    public void init() {}
+    public void init()
+    {
+    }
 
     /**
      * Performs game logic. Also, it is a place to check
@@ -94,25 +111,34 @@ public class Game
      *
      * @param delta It is the time taken by the last update (in ms)
      */
-    public void update(long delta) {}
+    public void update(double delta)
+    {
+    }
 
     /**
      * Renders the game to the OpenGL Scene.
      *
-     * @param delta It is the time taken by the last render (in ms)
+     * @param delta   It is the time taken by the last render (in ms)
+     * @param batcher The Batcher to batch OpenGL calls
      */
-    public void render(long delta) {}
+    public void render(double delta, Batcher batcher)
+    {
+    }
 
     /**
      * Handle the window-resize event. Used to set the view-port
      * and re-size the camera.
      */
-    public void resize() {}
+    public void resize()
+    {
+    }
 
     /**
      * Properly disposes all the resources created in init method
      */
-    public void dispose() {}
+    public void dispose()
+    {
+    }
 
     /**
      * Starts the game. Initiates the game life-cycle and starts
@@ -127,93 +153,88 @@ public class Game
 
         init();
 
-        final double millisPerFrame = 1000.0 / targetFps;
+        final double secondsPerFrame = 1.0 / targetUps;
+        final double maxFrameSkips = 5;
 
         double previous;
         double current;
         double elapsed;
         double lag;
 
+        double lastUPSUpdate;
         double lastFPSUpdate;
-        int    framesProcessed;
 
-        lag             = 0;
-        previous        = TimeUtils.currentMillis();
+        int updatesProcessed;
+        int framesProcessed;
+        int skippedFrames;
+
+        lag = 0;
+        previous = TimeUtils.currentSeconds();
+
+        updatesProcessed = 0;
         framesProcessed = 0;
-        lastFPSUpdate   = 0;
 
-        while (running)
+        lastUPSUpdate = 0;
+        lastFPSUpdate = 0;
+
+        while (true)
         {
-            if (Display.isCloseRequested())
-                break;
-
-            current = TimeUtils.currentMillis();
+            current = TimeUtils.currentSeconds();
             elapsed = current - previous;
+
+            skippedFrames = 0;
 
             lag += elapsed;
 
-            while (lag >= millisPerFrame)
+            while (lag >= secondsPerFrame && skippedFrames < maxFrameSkips)
             {
                 Keyboard.startEventFrame();
 
-                update((long) elapsed);
+                update(elapsed);
 
                 Keyboard.clearEventFrame();
 
-                framesProcessed++;
+                updatesProcessed++;
 
-                if (current - lastFPSUpdate >= 1000)
+                if (current - lastUPSUpdate >= 1000)
                 {
-                    fps = framesProcessed;
-                    framesProcessed = 0;
-                    lastFPSUpdate = current;
+                    ups = updatesProcessed;
+                    updatesProcessed = 0;
+                    lastUPSUpdate = current;
                 }
 
-                lag -= millisPerFrame;
+                lag -= secondsPerFrame;
+                skippedFrames++;
             }
+
+            if (Display.isCloseRequested() || !running)
+                break;
 
             if (Display.wasResized())
                 resize();
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            GLError.check();
             Texture.setActiveUnit(0);
 
-            render((long) elapsed);
+            render(elapsed, batcher);
+            GLError.check();
+
+            framesProcessed++;
+
+            if (current - lastFPSUpdate >= 1000)
+            {
+                fps = framesProcessed;
+                framesProcessed = 0;
+                lastFPSUpdate = current;
+            }
 
             previous = current;
 
             Display.update();
         }
 
-//        long lastTime = TimeUtils.currentMillis();
-//        long thisTime;
-//
-//        long delta;
-//
-//        while (running)
-//        {
-//            if (Display.isCloseRequested())
-//                break;
-//
-//            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//
-//            thisTime = TimeUtils.currentMillis();
-//            delta    = thisTime - lastTime;
-//
-//            Texture.setActiveUnit(0);
-//
-//            update(delta);
-//            render(delta);
-//
-//            if (Display.wasResized())
-//                resize();
-//
-//            lastTime = thisTime;
-//
-//            Keyboard.clearEventFrame();
-//            Display.update();
-//        }
-
+        batcher.dispose();
         dispose();
         Display.destroy();
     }
@@ -229,14 +250,16 @@ public class Game
     /**
      * @return number of frames rendered in last second
      */
-    public static int getFps()
+    public static int getUps()
     {
-        return fps;
+        return ups;
     }
 
-    public static int getTargetFps()
+    public static int getFps() { return fps; }
+
+    public static int getTargetUps()
     {
-        return targetFps;
+        return targetUps;
     }
 
     /**
@@ -247,8 +270,18 @@ public class Game
         return running;
     }
 
-    public static void setTargetFps(int targetFps)
+    public static void setTargetUps(int targetUps)
     {
-        Game.targetFps = targetFps;
+        Game.targetUps = targetUps;
+    }
+
+    public static Batcher getBatcher()
+    {
+        return batcher;
+    }
+
+    public static void setBatcher(Batcher batcher)
+    {
+        Game.batcher = batcher;
     }
 }

@@ -4,27 +4,24 @@ import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.Texture;
+import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
-import com.shc.silenceengine.math.Vector2;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class TextureTest extends Game
 {
-    private Batcher batcher;
     private Texture texture;
 
     public void init()
     {
         Display.setClearColor(Color.CORN_FLOWER_BLUE);
 
-        batcher = new Batcher();
         texture = Texture.fromResource("resources/logo.png");
     }
 
-    public void update(long delta)
+    public void update(double delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
@@ -33,31 +30,57 @@ public class TextureTest extends Game
             Display.setFullScreen(!Display.isFullScreen());
     }
 
-    public void render(long delta)
+    public void render(double delta, Batcher batcher)
     {
         texture.bind();
 
         batcher.begin();
         {
-            if (Keyboard.isPressed(Keyboard.KEY_SPACE))
+            if (Keyboard.isAnyKeyPressed())
             {
-                batcher.addVertex(new Vector2(-0.5f, +0.5f), Color.GOLDEN_ROD, new Vector2(0, 0));
-                batcher.addVertex(new Vector2(+0.5f, +0.5f), Color.GOLDEN_ROD, new Vector2(1, 0));
-                batcher.addVertex(new Vector2(+0.5f, -0.5f), Color.GOLDEN_ROD, new Vector2(1, 1));
+                batcher.vertex(-0.5f, 0.5f);
+                batcher.color(Color.GOLDEN_ROD);
+                batcher.texCoord(0, 0);
 
-                batcher.addVertex(new Vector2(-0.5f, +0.5f), Color.GOLDEN_ROD, new Vector2(0, 0));
-                batcher.addVertex(new Vector2(-0.5f, -0.5f), Color.GOLDEN_ROD, new Vector2(0, 1));
-                batcher.addVertex(new Vector2(+0.5f, -0.5f), Color.GOLDEN_ROD, new Vector2(1, 1));
+                batcher.vertex(0.5f, 0.5f);
+                batcher.color(Color.GOLDEN_ROD);
+                batcher.texCoord(1, 0);
+
+                batcher.vertex(-0.5f, -0.5f);
+                batcher.color(Color.GOLDEN_ROD);
+                batcher.texCoord(0, 1);
+
+                batcher.vertex(0.5f, 0.5f);
+                batcher.color(Color.GOLDEN_ROD);
+                batcher.texCoord(1, 0);
+
+                batcher.vertex(-0.5f, -0.5f);
+                batcher.color(Color.GOLDEN_ROD);
+                batcher.texCoord(0, 1);
+
+                batcher.vertex(0.5f, -0.5f);
+                batcher.color(Color.GOLDEN_ROD);
+                batcher.texCoord(1, 1);
             }
             else
             {
-                batcher.addVertex(new Vector2(-0.5f, +0.5f), new Vector2(0, 0));
-                batcher.addVertex(new Vector2(+0.5f, +0.5f), new Vector2(1, 0));
-                batcher.addVertex(new Vector2(+0.5f, -0.5f), new Vector2(1, 1));
+                batcher.vertex(-0.5f, 0.5f);
+                batcher.texCoord(0, 0);
 
-                batcher.addVertex(new Vector2(-0.5f, +0.5f), new Vector2(0, 0));
-                batcher.addVertex(new Vector2(-0.5f, -0.5f), new Vector2(0, 1));
-                batcher.addVertex(new Vector2(+0.5f, -0.5f), new Vector2(1, 1));
+                batcher.vertex(0.5f, 0.5f);
+                batcher.texCoord(1, 0);
+
+                batcher.vertex(-0.5f, -0.5f);
+                batcher.texCoord(0, 1);
+
+                batcher.vertex(0.5f, 0.5f);
+                batcher.texCoord(1, 0);
+
+                batcher.vertex(-0.5f, -0.5f);
+                batcher.texCoord(0, 1);
+
+                batcher.vertex(0.5f, -0.5f);
+                batcher.texCoord(1, 1);
             }
         }
         batcher.end();
@@ -71,7 +94,6 @@ public class TextureTest extends Game
     public void dispose()
     {
         texture.dispose();
-        batcher.dispose();
     }
 
     public static void main(String[] args)
