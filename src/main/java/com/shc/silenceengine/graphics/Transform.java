@@ -46,10 +46,20 @@ public class Transform
         return this;
     }
 
+    public Transform apply(Matrix4 matrix)
+    {
+        tMatrix.multiply(matrix);
+        return this;
+    }
+
     public Transform apply(Transform transform)
     {
-        tMatrix.multiply(transform.getMatrix());
-        return this;
+        return apply(transform.getMatrix());
+    }
+
+    public Transform copy()
+    {
+        return new Transform().apply(tMatrix);
     }
 
     public Transform reset()

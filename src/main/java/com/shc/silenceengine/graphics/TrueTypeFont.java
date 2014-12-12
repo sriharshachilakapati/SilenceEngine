@@ -141,36 +141,38 @@ public class TrueTypeFont
 
     public void drawString(Batcher b, String text, float x, float y, Color col)
     {
-        b.flush();
-
         Texture current = Texture.CURRENT;
-        fontTexture.bind();
 
-        float startX = x;
-
-        for (char ch : text.toCharArray())
+        b.begin();
         {
-            FontChar c = chars[(int) ch];
+            fontTexture.bind();
 
-            if (ch == '\n')
+            float startX = x;
+
+            for (char ch : text.toCharArray())
             {
-                y += fontMetrics.getHeight();
-                x = startX;
+                FontChar c = chars[(int) ch];
 
-                continue;
+                if (ch == '\n')
+                {
+                    y += fontMetrics.getHeight();
+                    x = startX;
+
+                    continue;
+                }
+
+                float minU = c.x / fontTexture.getWidth();
+                float maxU = (c.x + c.w + 2) / fontTexture.getWidth();
+                float minV = c.y / fontTexture.getHeight();
+                float maxV = (c.y + c.h) / fontTexture.getHeight();
+
+                // Draw the SubTexture!
+                b.drawTexture2d(fontTexture.getSubTexture(minU, minV, maxU, maxV), new Vector2(x, y), col);
+
+                x += c.w;
             }
-
-            float minU = c.x / fontTexture.getWidth();
-            float maxU = (c.x + c.w + 2) / fontTexture.getWidth();
-            float minV = c.y / fontTexture.getHeight();
-            float maxV = (c.y + c.h) / fontTexture.getHeight();
-
-            // Draw the SubTexture!
-            b.drawTexture2d(fontTexture.getSubTexture(minU, minV, maxU, maxV), new Vector2(x, y), col);
-
-            x += c.w;
         }
-        b.flush();
+        b.end();
 
         current.bind();
     }

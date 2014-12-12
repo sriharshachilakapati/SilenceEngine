@@ -70,12 +70,4 @@ public final class GLError
                 throw new GLException("GL_STACK_OVERFLOW: An attempt has been made to perform an operation that would cause an internal stack to overflow.");
         }
     }
-
-    public static void clear()
-    {
-        while (true)
-        {
-            if (glGetError() == GL_NO_ERROR) break;
-        }
-    }
 }

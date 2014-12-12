@@ -62,11 +62,6 @@ public class GameTest extends Game
         Display.setViewport(0, 0, Display.getWidth(), Display.getHeight());
     }
 
-    @Override
-    public void dispose()
-    {
-    }
-
     public static void main(String[] args)
     {
         new GameTest().start();
