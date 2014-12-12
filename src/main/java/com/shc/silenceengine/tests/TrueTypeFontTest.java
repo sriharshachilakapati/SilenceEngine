@@ -45,7 +45,7 @@ public class TrueTypeFontTest extends Game
             font.drawString(batcher, "Colored Text!!", 10, 10 + font.getHeight(), Color.RED);
             font.drawString(batcher, "Multi line\nText!!", 10, 10 + 2 * font.getHeight(), Color.GOLD);
 
-            String fpsString = "FPS: " + getUps();
+            String fpsString = "FPS: " + getFps();
             font.drawString(batcher, fpsString, Display.getWidth() - font.getWidth(fpsString) - 10, 10, Color.CORN_FLOWER_BLUE);
 
             batcher.drawTexture2d(logo, new Vector2(Display.getWidth() - logo.getWidth(),
