@@ -32,6 +32,8 @@ public class TransformUtils
 
     public static Matrix4 createRotation(Vector3 axis, float angle)
     {
+        assert axis != Vector3.ZERO;
+
         Matrix4 result = new Matrix4().initIdentity();
 
         float c = (float) Math.cos(angle);
@@ -69,20 +71,36 @@ public class TransformUtils
         return result;
     }
 
-    public static Matrix4 createPerspective(float fovy, float aspect, float zNear, float zFar)
+    public static Matrix4 createFrustum(float left, float right, float bottom, float top, float zNear, float zFar)
     {
+        assert zFar > zNear;
+
         Matrix4 result = new Matrix4().initZero();
 
-        float yScale = 1f / (float) Math.tan(Math.toRadians(fovy / 2f));
-        float xScale = yScale / aspect;
-        float frustumLength = zFar - zNear;
-
-        result.set(0, 0, xScale)
-              .set(1, 1, yScale)
-              .set(2, 2, -((zFar + zNear) / frustumLength))
+        result.set(0, 0, (2 * zNear) / (right - left))
+              .set(1, 1, (2 * zNear) / (top - bottom))
+              .set(2, 0, (right + left) / (right - left))
+              .set(2, 1, (top + bottom) / (top - bottom))
+              .set(2, 2, (zFar + zNear) / (zNear - zFar))
               .set(2, 3, -1)
-              .set(3, 2, -((2 * zFar * zNear) / frustumLength))
-              .set(3, 3, 0);
+              .set(3, 2, (-2 * zFar * zNear) / (zFar - zNear));
+
+        return result;
+    }
+
+    public static Matrix4 createPerspective(float fovy, float aspect, float zNear, float zFar)
+    {
+        assert zFar > zNear;
+
+        Matrix4 result = new Matrix4().initZero();
+
+        float tanHalfFovy = (float) Math.tan(Math.toRadians(fovy) / 2);
+
+        result.set(0, 0, 1 / (aspect * tanHalfFovy))
+              .set(1, 1, 1 / tanHalfFovy)
+              .set(2, 2, (zFar + zNear) / (zNear - zFar))
+              .set(2, 3, -1)
+              .set(3, 2, (-2 * zFar * zNear) / (zFar - zNear));
 
         return result;
     }

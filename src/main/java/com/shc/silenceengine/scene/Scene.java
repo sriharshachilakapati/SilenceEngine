@@ -25,14 +25,32 @@ public final class Scene
 
     public static void update(double delta)
     {
-        for (SceneNode child : children)
-            child.update(delta);
+        for (int i = 0; i < children.size(); i++)
+        {
+            SceneNode child = children.get(i);
+            child.preUpdate(delta);
+
+            if (child.isDestroyed())
+            {
+                removeChild(child);
+                i--;
+            }
+        }
     }
 
     public static void render(double delta, Batcher batcher)
     {
-        for (SceneNode child : children)
-            child.render(delta, batcher);
+        for (int i = 0; i < children.size(); i++)
+        {
+            SceneNode child = children.get(i);
+            child.preRender(delta, batcher);
+
+            if (child.isDestroyed())
+            {
+                removeChild(child);
+                i--;
+            }
+        }
     }
 
     public static void addChild(SceneNode child)
@@ -49,8 +67,11 @@ public final class Scene
 
     public static void removeChildren()
     {
-        for (SceneNode child : children)
-            removeChild(child);
+        for (int i = 0; i < children.size(); i++)
+        {
+            removeChild(children.get(i));
+            i--;
+        }
     }
 
     public static Transform getTransform()

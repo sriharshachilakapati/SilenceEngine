@@ -43,12 +43,6 @@ public class PerspCam extends BaseCamera
         return this;
     }
 
-    public PerspCam setPositionAndLookAt(Vector3 position, Vector3 location)
-    {
-        mView = TransformUtils.createLookAt(position, location, Vector3.AXIS_Y);
-        return this;
-    }
-
     public PerspCam initProjection(float fovy, float aspect, float zNear, float zFar)
     {
         mProj = TransformUtils.createPerspective(fovy, aspect, zNear, zFar);

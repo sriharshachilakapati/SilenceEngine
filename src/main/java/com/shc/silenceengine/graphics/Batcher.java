@@ -14,6 +14,7 @@ import static org.lwjgl.opengl.GL30.*;
 
 import com.shc.silenceengine.graphics.opengl.GLError;
 import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.VertexArrayObject;
 import com.shc.silenceengine.graphics.opengl.VertexBufferObject;
 
@@ -65,6 +66,9 @@ public class Batcher
     private int vertexCount;
     private int colorCount;
     private int texCoordCount;
+
+    // The rendering mode
+    private Primitive beginMode;
 
     // The transform, and projection and view matrices
     private Transform transform;
@@ -135,8 +139,10 @@ public class Batcher
 
     /**
      * Begins the batcher and marks it active.
+     *
+     * @param beginMode The Mode to begin rendering with
      */
-    public void begin()
+    public void begin(Primitive beginMode)
     {
         if (active)
             throw new IllegalStateException("Batcher Already Active!");
@@ -146,6 +152,13 @@ public class Batcher
         vertexCount   = 0;
         colorCount    = 0;
         texCoordCount = 0;
+
+        this.beginMode = beginMode;
+    }
+
+    public void begin()
+    {
+        begin(Primitive.TRIANGLES);
     }
 
     /**
@@ -192,7 +205,7 @@ public class Batcher
         uploadData();
 
         // Do a rendering
-        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+        glDrawArrays(beginMode.getGlPrimitive(), 0, vertexCount);
         GLError.check();
 
         // Unbind the VAO

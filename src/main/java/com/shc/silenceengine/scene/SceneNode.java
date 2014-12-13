@@ -14,6 +14,7 @@ public class SceneNode
     private ArrayList<SceneNode> children;
     private SceneNode            parent;
     private Transform            transform;
+    private boolean              destroyed;
 
     public SceneNode()
     {
@@ -42,26 +43,54 @@ public class SceneNode
         child.init();
     }
 
+    public void preUpdate(double delta)
+    {
+        update(delta);
+        updateChildren(delta);
+    }
+
     public void update(double delta)
     {
-        updateChildren(delta);
     }
 
     public void updateChildren(double delta)
     {
-        for (SceneNode child : children)
-            child.update(delta);
+        for (int i = 0; i < children.size(); i++)
+        {
+            SceneNode child = children.get(i);
+            child.preUpdate(delta);
+
+            if (child.isDestroyed())
+            {
+                removeChild(child);
+                i--;
+            }
+        }
+    }
+
+    public void preRender(double delta, Batcher batcher)
+    {
+        render(delta, batcher);
+        renderChildren(delta, batcher);
     }
 
     public void render(double delta, Batcher batcher)
     {
-        renderChildren(delta, batcher);
     }
 
     public void renderChildren(double delta, Batcher batcher)
     {
-        for (SceneNode child : children)
-            child.render(delta, batcher);
+        for (int i = 0; i < children.size(); i++)
+        {
+            SceneNode child = children.get(i);
+            child.preRender(delta, batcher);
+
+            if (child.isDestroyed())
+            {
+                removeChild(child);
+                i--;
+            }
+        }
     }
 
     public void removeChild(SceneNode child)
@@ -76,19 +105,28 @@ public class SceneNode
 
     public void removeChildren()
     {
-        for (SceneNode child : children)
-            removeChild(child);
+        for (int i = 0; i < children.size(); i++)
+        {
+            removeChild(children.get(i));
+            i--;
+        }
     }
 
     public void destroy()
     {
+        destroyed = true;
         destroyChildren();
     }
 
     public void destroyChildren()
     {
-        for (SceneNode child : children)
+        for (int i = 0; i < children.size(); i++)
+        {
+            SceneNode child = children.get(i);
             child.destroy();
+            removeChild(child);
+            i--;
+        }
     }
 
     public SceneNode getParent()
@@ -104,13 +142,18 @@ public class SceneNode
     public Transform getTransform()
     {
         if (getParent() != null)
-            return getParent().getTransform().copy().apply(transform);
+            return transform.copy().apply(parent.getTransform());
         else
-            return Scene.getTransform().copy().apply(transform);
+            return transform.copy().apply(Scene.getTransform());
     }
 
     public Transform getLocalTransform()
     {
         return transform;
+    }
+
+    public boolean isDestroyed()
+    {
+        return destroyed;
     }
 }

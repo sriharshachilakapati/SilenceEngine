@@ -13,6 +13,19 @@ public class Matrix4
         initIdentity();
     }
 
+    public Matrix4(Matrix3 m)
+    {
+        this();
+
+        for (int i=0; i<3; i++)
+        {
+            for (int j=0; j<3; j++)
+            {
+                this.m[i][j] = m.get(i, j);
+            }
+        }
+    }
+
     public Matrix4(Matrix4 m)
     {
         this();
