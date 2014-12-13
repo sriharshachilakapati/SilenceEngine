@@ -120,6 +120,9 @@ public final class Display
         glEnable(GL_DEPTH_TEST);
         GLError.check();
 
+        glViewport(0, 0, width, height);
+        GLError.check();
+
         if (Game.getBatcher() == null)
             Game.setBatcher(new Batcher());
 
@@ -143,8 +146,8 @@ public final class Display
 
         glfwSetWindowSizeCallback(window, winSizeCallback = GLFWWindowSizeCallback((win, w, h) ->
         {
-            Display.width = width;
-            Display.height = height;
+            Display.width = w;
+            Display.height = h;
 
             resized = true;
         }));

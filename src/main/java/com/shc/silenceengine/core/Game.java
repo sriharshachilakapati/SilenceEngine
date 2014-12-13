@@ -211,7 +211,12 @@ public class Game
                 break;
 
             if (Display.wasResized())
+            {
+                glViewport(0, 0, Display.getWidth(), Display.getHeight());
+                GLError.check();
+
                 resize();
+            }
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             GLError.check();
