@@ -128,13 +128,6 @@ public final class Display
         if (Texture.EMPTY == null)
             Texture.loadNullTexture();
 
-        // Force binding
-        Program.CURRENT = null;
-        Texture.CURRENT = null;
-
-        Program.DEFAULT.use();
-        Texture.EMPTY.bind();
-
         // Window callbacks
         if (winSizeCallback != null)
             winSizeCallback.release();
@@ -261,6 +254,13 @@ public final class Display
 
         glClearColor(clearColor.getRed(), clearColor.getGreen(), clearColor.getBlue(), clearColor.getAlpha());
         GLError.check();
+
+        // Force binding
+        Program.CURRENT = null;
+        Texture.CURRENT = null;
+
+        Program.DEFAULT.use();
+        Texture.EMPTY.bind();
     }
 
     /**
@@ -305,6 +305,14 @@ public final class Display
     public static void setWidth(int width)
     {
         Display.width = width;
+        glfwSetWindowSize(displayHandle, width, height);
+    }
+
+    public static void setSize(int width, int height)
+    {
+        Display.width = width;
+        Display.height = height;
+
         glfwSetWindowSize(displayHandle, width, height);
     }
 
@@ -406,6 +414,9 @@ public final class Display
 
         setPosition(posX, posY);
         show();
+
+        // Make an update
+        update();
     }
 
     /**

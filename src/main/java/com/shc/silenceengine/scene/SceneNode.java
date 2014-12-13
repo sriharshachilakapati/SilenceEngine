@@ -23,14 +23,20 @@ public class SceneNode
         parent = null;
     }
 
+    public void preInit()
+    {
+        init();
+        initChildren();
+    }
+
     public void init()
     {
     }
 
     public void initChildren()
     {
-        for (SceneNode child : children)
-            child.init();
+        for (int i = 0; i < children.size(); i++)
+            children.get(i).preInit();
     }
 
     public void addChild(SceneNode child)
@@ -144,7 +150,7 @@ public class SceneNode
         if (getParent() != null)
             return transform.copy().apply(parent.getTransform());
         else
-            return transform.copy().apply(Scene.getTransform());
+            return transform;
     }
 
     public Transform getLocalTransform()

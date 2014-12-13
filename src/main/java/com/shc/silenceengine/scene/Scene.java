@@ -1,89 +1,38 @@
 package com.shc.silenceengine.scene;
 
 import com.shc.silenceengine.graphics.Batcher;
-import com.shc.silenceengine.graphics.Transform;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
-
-import java.util.ArrayList;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public final class Scene
+public final class Scene extends SceneNode
 {
-    private static Transform            transform;
-    private static ArrayList<SceneNode> children;
+    public Scene()
+    {
+//        Program.CURRENT = null;
+//        Texture.CURRENT = null;
+//
+//        Program.DEFAULT.use();
+//        Texture.EMPTY.bind();
+    }
 
-    private Scene()
+    public void preUpdate(double delta)
     {
     }
 
-    public static void init()
+    public void preRender(double delta, Batcher batcher)
     {
-        transform = new Transform();
-        children = new ArrayList<>();
-
-        Program.CURRENT = null;
-        Texture.CURRENT = null;
-
-        Program.DEFAULT.use();
-        Texture.EMPTY.bind();
     }
 
-    public static void update(double delta)
+    public void update(double delta)
     {
-        for (int i = 0; i < children.size(); i++)
-        {
-            SceneNode child = children.get(i);
-            child.preUpdate(delta);
-
-            if (child.isDestroyed())
-            {
-                removeChild(child);
-                i--;
-            }
-        }
+        updateChildren(delta);
     }
 
-    public static void render(double delta, Batcher batcher)
+    public void render(double delta, Batcher batcher)
     {
-        for (int i = 0; i < children.size(); i++)
-        {
-            SceneNode child = children.get(i);
-            child.preRender(delta, batcher);
-
-            if (child.isDestroyed())
-            {
-                removeChild(child);
-                i--;
-            }
-        }
-    }
-
-    public static void addChild(SceneNode child)
-    {
-        children.add(child);
-        child.init();
-    }
-
-    public static void removeChild(SceneNode child)
-    {
-        child.destroy();
-        children.remove(child);
-    }
-
-    public static void removeChildren()
-    {
-        for (int i = 0; i < children.size(); i++)
-        {
-            removeChild(children.get(i));
-            i--;
-        }
-    }
-
-    public static Transform getTransform()
-    {
-        return transform;
+        renderChildren(delta, batcher);
     }
 }

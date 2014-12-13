@@ -22,24 +22,25 @@ public class SceneTest extends Game
     private PerspCam     cam;
     private OrthoCam     fontCam;
     private TrueTypeFont font;
+    private Scene        scene;
 
     public void init()
     {
         cam = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
         fontCam = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
-        cam.apply();
 
         font = new TrueTypeFont("Arial", TrueTypeFont.STYLE_NORMAL, 18);
-        Display.setFullScreen(true);
 
-        Scene.init();
+        scene = new Scene();
         SceneObject root = new SceneObject(new Vector2(0, 0), Color.RED);
         {
             root.addChild(new SceneObject(new Vector2(-0.5f, 0.5f), Color.GREEN));
             root.addChild(new SceneObject(new Vector2(0.5f, 0.5f), Color.BLUE));
             root.addChild(new SceneObject(new Vector2(0, -0.5f), Color.SILVER));
         }
-        Scene.addChild(root);
+        scene.addChild(root);
+
+        scene.init();
     }
 
     public void update(double delta)
@@ -47,7 +48,7 @@ public class SceneTest extends Game
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
 
-        Scene.update(delta);
+        scene.update(delta);
     }
 
     public void resize()
@@ -59,7 +60,7 @@ public class SceneTest extends Game
     public void render(double delta, Batcher batcher)
     {
         cam.apply();
-        Scene.render(delta, batcher);
+        scene.render(delta, batcher);
 
         fontCam.apply();
         font.drawString(batcher, "FPS: " + getFps(), 10, 10);
@@ -69,7 +70,7 @@ public class SceneTest extends Game
 
     public void dispose()
     {
-        Scene.removeChildren();
+        scene.destroy();
         font.dispose();
     }
 
@@ -92,7 +93,7 @@ public class SceneTest extends Game
 
         public void update(double delta)
         {
-            rotation += (getParent() == null) ? (float) 4 * delta : (float) -delta * 8;
+            rotation += (float) 4 * delta;
 
             float z = -Math.abs((float) Math.sin(TimeUtils.currentSeconds()));
 
