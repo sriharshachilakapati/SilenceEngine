@@ -34,11 +34,20 @@ public class DefaultProgram extends Program
         use();
     }
 
-    public void setupUniforms()
+    public void prepareFrame()
     {
+        Batcher batcher = Game.getBatcher();
+
+        // Uniforms
         setUniform("tex", Texture.getActiveUnit());
-        setUniform("mTransform", Game.getBatcher().getTransform().getMatrix());
+        setUniform("mTransform", batcher.getTransform().getMatrix());
         setUniform("camProj", BaseCamera.projection);
         setUniform("camView", BaseCamera.view);
+
+        // Batcher locations
+        batcher.setVertexLocation(0);
+        batcher.setColorLocation(1);
+        batcher.setTexCoordLocation(2);
+        batcher.setNormalLocation(3);
     }
 }

@@ -162,7 +162,7 @@ public class TrueTypeFont
                 }
 
                 float minU = c.x / fontTexture.getWidth();
-                float maxU = (c.x + c.w + 2) / fontTexture.getWidth();
+                float maxU = (c.x + c.w) / fontTexture.getWidth();
                 float minV = c.y / fontTexture.getHeight();
                 float maxV = (c.y + c.h) / fontTexture.getHeight();
 

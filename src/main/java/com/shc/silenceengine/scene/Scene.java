@@ -2,6 +2,8 @@ package com.shc.silenceengine.scene;
 
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Transform;
+import com.shc.silenceengine.graphics.opengl.Program;
+import com.shc.silenceengine.graphics.opengl.Texture;
 
 import java.util.ArrayList;
 
@@ -21,6 +23,12 @@ public final class Scene
     {
         transform = new Transform();
         children = new ArrayList<>();
+
+        Program.CURRENT = null;
+        Texture.CURRENT = null;
+
+        Program.DEFAULT.use();
+        Texture.EMPTY.bind();
     }
 
     public static void update(double delta)

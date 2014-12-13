@@ -7,7 +7,6 @@ import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.Vector4;
-import com.shc.silenceengine.utils.FileUtils;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -45,10 +44,10 @@ public class Program
 
         CURRENT = this;
 
-        setupUniforms();
+        prepareFrame();
     }
 
-    public void setupUniforms(){}
+    public void prepareFrame(){}
 
     public void attach(Shader shader)
     {

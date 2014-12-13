@@ -22,16 +22,16 @@ import com.shc.silenceengine.graphics.opengl.VertexBufferObject;
  * A simple class which eases the rendering of Graphics by batching
  * the vertices, colors, textures to the shaders using VAOs and VBOs.
  * The Batcher is where, all the rendering takes place in SilenceEngine.
- *
+ * <p>
  * The batcher is just instantiated like an object, usually only once
  * in a game. Then, you can use the methods defined to add various
  * shapes, or even raw vertices. They get rendered whenever the end
  * method is called.
- *
+ * <p>
  * A batcher can also take transforms, and Cameras and render using
  * them. To use them, either pass them to the begin method, or apply
  * them manually using the apply[Camera/Transform] methods.
- *
+ * <p>
  * After the game completes, before the termination, the dispose method
  * should be called by the user. Better place it in the dispose method
  * of the game.
@@ -45,6 +45,7 @@ public class Batcher
 
     // The sizes (no. of components) in vertex, color, texcoord
     public static final int SIZE_OF_VERTEX = 4;
+    public static final int SIZE_OF_NORMAL = 4;
     public static final int SIZE_OF_COLOR  = 4;
     public static final int SIZE_OF_TEXCOORD = 2;
 
@@ -55,17 +56,26 @@ public class Batcher
     private FloatBuffer vBuffer;
     private FloatBuffer cBuffer;
     private FloatBuffer tBuffer;
+    private FloatBuffer nBuffer;
 
     // VAO and VBOs
     private VertexArrayObject  vao;
     private VertexBufferObject vboVert;
     private VertexBufferObject vboCol;
     private VertexBufferObject vboTex;
+    private VertexBufferObject vboNorm;
+
+    // VBO index locations in shader
+    private int vertexLocation;
+    private int colorLocation;
+    private int texCoordLocation;
+    private int normalLocation;
 
     // The no. of vertices in the current batch
     private int vertexCount;
     private int colorCount;
     private int texCoordCount;
+    private int normalCount;
 
     // The rendering mode
     private Primitive beginMode;
@@ -82,6 +92,7 @@ public class Batcher
         vBuffer = BufferUtils.createFloatBuffer(SIZE_OF_VERTEX   * MAX_VERTICES_IN_BATCH);
         cBuffer = BufferUtils.createFloatBuffer(SIZE_OF_COLOR    * MAX_VERTICES_IN_BATCH);
         tBuffer = BufferUtils.createFloatBuffer(SIZE_OF_TEXCOORD * MAX_VERTICES_IN_BATCH);
+        nBuffer = BufferUtils.createFloatBuffer(SIZE_OF_NORMAL   * MAX_VERTICES_IN_BATCH);
 
         // Create the transformations
         transform = new Transform();
@@ -104,6 +115,7 @@ public class Batcher
         vboVert = new VertexBufferObject(GL_ARRAY_BUFFER);
         vboCol  = new VertexBufferObject(GL_ARRAY_BUFFER);
         vboTex  = new VertexBufferObject(GL_ARRAY_BUFFER);
+        vboNorm = new VertexBufferObject(GL_ARRAY_BUFFER);
 
         // Initialize vertex-buffer
         vboVert.bind();
@@ -116,6 +128,10 @@ public class Batcher
         // Initialize texcoord-buffer
         vboTex.bind();
         vboTex.uploadData(SIZE_OF_TEXCOORD * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
+
+        // Initialize normal-buffer
+        vboNorm.bind();
+        vboNorm.uploadData(SIZE_OF_NORMAL * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
     }
 
     /**
@@ -126,15 +142,19 @@ public class Batcher
         // Upload vertices
         vboVert.bind();
         vboVert.uploadSubData(vBuffer, 0);
-        vao.pointAttribute(0, 4, GL_FLOAT, vboVert);
+        vao.pointAttribute(vertexLocation, 4, GL_FLOAT, vboVert);
 
         vboCol.bind();
         vboCol.uploadSubData(cBuffer, 0);
-        vao.pointAttribute(1, 4, GL_FLOAT, vboCol);
+        vao.pointAttribute(colorLocation, 4, GL_FLOAT, vboCol);
 
         vboTex.bind();
         vboTex.uploadSubData(tBuffer, 0);
-        vao.pointAttribute(2, 2, GL_FLOAT, vboTex);
+        vao.pointAttribute(texCoordLocation, 2, GL_FLOAT, vboTex);
+
+        vboNorm.bind();
+        vboNorm.uploadSubData(nBuffer, 0);
+        vao.pointAttribute(normalLocation, 4, GL_FLOAT, vboNorm);
     }
 
     /**
@@ -152,6 +172,7 @@ public class Batcher
         vertexCount   = 0;
         colorCount    = 0;
         texCoordCount = 0;
+        normalCount   = 0;
 
         this.beginMode = beginMode;
     }
@@ -188,18 +209,20 @@ public class Batcher
         // Fill the buffers
         fillBuffers();
 
-        Program.CURRENT.setupUniforms();
+        Program.CURRENT.prepareFrame();
 
         // Flip the buffers
         vBuffer.flip();
         cBuffer.flip();
         tBuffer.flip();
+        nBuffer.flip();
 
         // Bind the VAO
         vao.bind();
-        vao.enableAttributeArray(0);
-        vao.enableAttributeArray(1);
-        vao.enableAttributeArray(2);
+        vao.enableAttributeArray(vertexLocation);
+        vao.enableAttributeArray(colorLocation);
+        vao.enableAttributeArray(texCoordLocation);
+        vao.enableAttributeArray(normalLocation);
 
         // Upload the data
         uploadData();
@@ -209,9 +232,10 @@ public class Batcher
         GLError.check();
 
         // Unbind the VAO
-        vao.disableAttributeArray(0);
-        vao.disableAttributeArray(1);
-        vao.disableAttributeArray(2);
+        vao.disableAttributeArray(vertexLocation);
+        vao.disableAttributeArray(colorLocation);
+        vao.disableAttributeArray(texCoordLocation);
+        vao.disableAttributeArray(normalLocation);
         glBindVertexArray(0);
         GLError.check();
 
@@ -219,11 +243,13 @@ public class Batcher
         vBuffer.clear();
         cBuffer.clear();
         tBuffer.clear();
+        nBuffer.clear();
 
         // Clear the vertex count
         vertexCount   = 0;
         colorCount    = 0;
         texCoordCount = 0;
+        normalCount   = 0;
     }
 
     /**
@@ -256,6 +282,14 @@ public class Batcher
         {
             tBuffer.put(0).put(0);
             texCoordCount++;
+        }
+
+        // Fill the normal buffers
+        while (normalCount < vertexCount)
+        {
+            // Junk normal
+            nBuffer.put(0).put(0).put(0).put(0);
+            normalCount++;
         }
     }
 
@@ -320,6 +354,22 @@ public class Batcher
     public void texCoord(Vector2 v)
     {
         texCoord(v.getX(), v.getY());
+    }
+
+    public void normal(float x, float y, float z, float w)
+    {
+        nBuffer.put(x).put(y).put(z).put(w);
+        normalCount++;
+    }
+
+    public void normal(float x, float y, float z)
+    {
+        normal(x, y, z, 1);
+    }
+
+    public void normal(Vector3 n)
+    {
+        normal(n.getX(), n.getY(), n.getZ(), 1);
     }
 
     /* Draw Texture */
@@ -389,5 +439,45 @@ public class Batcher
         vboVert.dispose();
         vboCol.dispose();
         vboTex.dispose();
+    }
+
+    public int getVertexLocation()
+    {
+        return vertexLocation;
+    }
+
+    public void setVertexLocation(int vertexLocation)
+    {
+        this.vertexLocation = vertexLocation;
+    }
+
+    public int getColorLocation()
+    {
+        return colorLocation;
+    }
+
+    public void setColorLocation(int colorLocation)
+    {
+        this.colorLocation = colorLocation;
+    }
+
+    public int getTexCoordLocation()
+    {
+        return texCoordLocation;
+    }
+
+    public void setTexCoordLocation(int texCoordLocation)
+    {
+        this.texCoordLocation = texCoordLocation;
+    }
+
+    public int getNormalLocation()
+    {
+        return normalLocation;
+    }
+
+    public void setNormalLocation(int normalLocation)
+    {
+        this.normalLocation = normalLocation;
     }
 }

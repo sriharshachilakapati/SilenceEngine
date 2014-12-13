@@ -4,7 +4,9 @@ import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.OrthoCam;
 import com.shc.silenceengine.graphics.PerspCam;
+import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
@@ -17,11 +19,18 @@ import com.shc.silenceengine.utils.TimeUtils;
  */
 public class SceneTest extends Game
 {
-    private PerspCam cam;
+    private PerspCam     cam;
+    private OrthoCam     fontCam;
+    private TrueTypeFont font;
 
     public void init()
     {
         cam = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
+        fontCam = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
+        cam.apply();
+
+        font = new TrueTypeFont("Arial", TrueTypeFont.STYLE_NORMAL, 18);
+        Display.setFullScreen(true);
 
         Scene.init();
         SceneObject root = new SceneObject(new Vector2(0, 0), Color.RED);
@@ -41,15 +50,27 @@ public class SceneTest extends Game
         Scene.update(delta);
     }
 
+    public void resize()
+    {
+        cam.initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
+        fontCam.initProjection(Display.getWidth(), Display.getHeight());
+    }
+
     public void render(double delta, Batcher batcher)
     {
         cam.apply();
         Scene.render(delta, batcher);
+
+        fontCam.apply();
+        font.drawString(batcher, "FPS: " + getFps(), 10, 10);
+        font.drawString(batcher, "\nUPS: " + getUps(), 10, 10);
+        font.drawString(batcher, "\n\nDelta: " + delta, 10, 10);
     }
 
     public void dispose()
     {
         Scene.removeChildren();
+        font.dispose();
     }
 
     public static void main(String[] args)
@@ -67,12 +88,11 @@ public class SceneTest extends Game
         {
             this.color = color;
             this.position = position;
-            getLocalTransform().translate(position);
         }
 
         public void update(double delta)
         {
-            rotation += (getParent() == null) ? (float) delta : (float) -delta * 2;
+            rotation += (getParent() == null) ? (float) 4 * delta : (float) -delta * 8;
 
             float z = -Math.abs((float) Math.sin(TimeUtils.currentSeconds()));
 

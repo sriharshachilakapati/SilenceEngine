@@ -128,6 +128,10 @@ public final class Display
         if (Texture.EMPTY == null)
             Texture.loadNullTexture();
 
+        // Force binding
+        Program.CURRENT = null;
+        Texture.CURRENT = null;
+
         Program.DEFAULT.use();
         Texture.EMPTY.bind();
 
