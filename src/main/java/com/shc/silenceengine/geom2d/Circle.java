@@ -1,9 +1,11 @@
 package com.shc.silenceengine.geom2d;
 
+import com.shc.silenceengine.math.Vector2;
+
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Circle
+public class Circle extends Polygon
 {
     private float radius;
     private float x;
@@ -19,11 +21,48 @@ public class Circle
         this.x = x;
         this.y = y;
         this.radius = radius;
+
+        setPosition(new Vector2(x, y));
+        updateVertices();
     }
 
-    public boolean intersects(Circle c)
+    private void updateVertices()
     {
-        return (x*c.x + y*c.y) <= (radius + c.radius) * (radius + c.radius);
+        float numSegments = 10 * radius;
+
+        float theta = (float) (2 * Math.PI / numSegments);
+        float c = (float) Math.cos(theta);
+        float s = (float) Math.sin(theta);
+        float t;
+
+        float x = radius;
+        float y = 0;
+
+        clearVertices();
+        for (int i = 0; i < numSegments; i++)
+        {
+            addVertex(new Vector2(x, y));
+
+            t = x;
+            x = c * x - s * y;
+            y = s * t + c * y;
+        }
+    }
+
+    public boolean intersects(Polygon p)
+    {
+        if (p instanceof Circle)
+        {
+            Circle c = (Circle) p;
+            return (((x - c.x) * (x - c.x)) + ((y - c.y) * (y - c.y))) < (radius + c.radius) * (radius + c.radius);
+        }
+        else
+            return super.intersects(p);
+    }
+
+    public boolean contains(Point p)
+    {
+        return (((x - p.getX()) * (x - p.getX())) + ((y - p.getY()) * (y - p.getY()))) < radius * radius;
     }
 
     public float getX()
@@ -34,6 +73,7 @@ public class Circle
     public void setX(float x)
     {
         this.x = x;
+        setPosition(new Vector2(x, y));
     }
 
     public float getY()
@@ -44,6 +84,7 @@ public class Circle
     public void setY(float y)
     {
         this.y = y;
+        setPosition(new Vector2(x, y));
     }
 
     public float getRadius()
@@ -54,6 +95,7 @@ public class Circle
     public void setRadius(float radius)
     {
         this.radius = radius;
+        updateVertices();
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.shc.silenceengine.geom2d;
 
+import com.shc.silenceengine.math.Vector2;
+
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Rectangle
+public class Rectangle extends Polygon
 {
     private float x, y, width, height;
 
@@ -19,11 +21,30 @@ public class Rectangle
 
         this.width  = width;
         this.height = height;
+
+        setPosition(new Vector2(x, y));
+        updateVertices();
     }
 
-    public boolean intersects(Rectangle r)
+    private void updateVertices()
     {
-        return (x < r.x + r.width) && (r.x < x + width) && (y < r.y + r.height) && (r.y < y + height);
+        clearVertices();
+
+        addVertex(new Vector2(0, 0));
+        addVertex(new Vector2(width, 0));
+        addVertex(new Vector2(width, height));
+        addVertex(new Vector2(0, height));
+    }
+
+    public boolean intersects(Polygon p)
+    {
+        if (p instanceof Rectangle)
+        {
+            Rectangle r = (Rectangle) p;
+            return (x < r.x + r.width) && (r.x < x + width) && (y < r.y + r.height) && (r.y < y + height);
+        }
+        else
+            return super.intersects(p);
     }
 
     public float getX()
@@ -34,6 +55,7 @@ public class Rectangle
     public void setX(float x)
     {
         this.x = x;
+        setPosition(new Vector2(x, y));
     }
 
     public float getY()
@@ -44,6 +66,7 @@ public class Rectangle
     public void setY(float y)
     {
         this.y = y;
+        setPosition(new Vector2(x, y));
     }
 
     public float getWidth()
@@ -54,6 +77,7 @@ public class Rectangle
     public void setWidth(float width)
     {
         this.width = width;
+        updateVertices();
     }
 
     public float getHeight()
@@ -64,6 +88,12 @@ public class Rectangle
     public void setHeight(float height)
     {
         this.height = height;
+        updateVertices();
+    }
+
+    public Rectangle getBounds()
+    {
+        return this;
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.shc.silenceengine.graphics.opengl.GLError;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.math.Vector2;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -317,6 +318,11 @@ public final class Display
         Display.height = height;
 
         glfwSetWindowSize(displayHandle, width, height);
+    }
+
+    public static Vector2 getSize()
+    {
+        return new Vector2(width, height);
     }
 
     /**

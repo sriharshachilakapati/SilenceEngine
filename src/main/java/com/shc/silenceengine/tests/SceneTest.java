@@ -12,7 +12,6 @@ import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.scene.Scene;
 import com.shc.silenceengine.scene.SceneNode;
-import com.shc.silenceengine.utils.TimeUtils;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -93,9 +92,9 @@ public class SceneTest extends Game
 
         public void update(double delta)
         {
-            rotation += (float) 4 * delta;
+            rotation += (float) (4.0 * delta);
 
-            float z = -Math.abs((float) Math.sin(TimeUtils.currentSeconds()));
+            float z = -Math.abs((float) Math.sin(rotation));
 
             getLocalTransform().reset().rotate(Vector3.AXIS_Z, rotation)
                                        .translate(new Vector3(position.getX(), position.getY(), z));
