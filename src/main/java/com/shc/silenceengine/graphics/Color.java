@@ -217,4 +217,9 @@ public class Color extends Vector4
     {
         setA(a);
     }
+
+    public static Color random()
+    {
+        return new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), (float) Math.random());
+    }
 }

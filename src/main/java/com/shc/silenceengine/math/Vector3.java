@@ -10,7 +10,7 @@ public class Vector3
     public static final Vector3 AXIS_Y = new Vector3(0, 1, 0);
     public static final Vector3 AXIS_Z = new Vector3(0, 0, 1);
 
-    private float x, y, z;
+    public float x, y, z;
 
     public Vector3()
     {
@@ -41,11 +41,7 @@ public class Vector3
 
     public Vector3 add(float x, float y, float z)
     {
-        this.x += x;
-        this.y += y;
-        this.z += z;
-
-        return this;
+        return new Vector3(this.x + x, this.y + y, this.z + z);
     }
 
     public Vector3 add(Vector3 v)
@@ -65,11 +61,7 @@ public class Vector3
 
     public Vector3 scale(float sx, float sy, float sz)
     {
-        x *= sx;
-        y *= sy;
-        z *= sz;
-
-        return this;
+        return new Vector3(x * sx, y * sy, z * sz);
     }
 
     public Vector3 scale(float s)
@@ -88,28 +80,19 @@ public class Vector3
         float y = this.z * vx - this.x * vz;
         float z = this.x * vy - this.y * vx;
 
-        this.x = x;
-        this.y = y;
-        this.z = z;
-
-        return this;
+        return new Vector3(x, y, z);
     }
 
     public Vector3 normalize()
     {
         float l = length();
 
-        x /= l;
-        y /= l;
-        z /= l;
-
-        return this;
+        return new Vector3(x/l, y/l, z/l);
     }
 
     public Vector3 negate()
     {
-        x = -x; y = -y; z = -z;
-        return this;
+        return new Vector3(-x, -y, -z);
     }
 
     public float dot(Vector3 v)

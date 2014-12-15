@@ -7,7 +7,7 @@ import com.shc.silenceengine.math.Vector2;
  */
 public class Rectangle extends Polygon
 {
-    private float x, y, width, height;
+    private float width, height;
 
     public Rectangle()
     {
@@ -16,9 +16,6 @@ public class Rectangle extends Polygon
 
     public Rectangle(float x, float y, float width, float height)
     {
-        this.x = x;
-        this.y = y;
-
         this.width  = width;
         this.height = height;
 
@@ -38,10 +35,17 @@ public class Rectangle extends Polygon
 
     public boolean intersects(Polygon p)
     {
-        if (p instanceof Rectangle)
+        if (p instanceof Rectangle && p.getRotation() == 0 && getRotation() == 0)
         {
             Rectangle r = (Rectangle) p;
-            return (x < r.x + r.width) && (r.x < x + width) && (y < r.y + r.height) && (r.y < y + height);
+
+            float x = getPosition().getX();
+            float y = getPosition().getY();
+
+            float rx = r.getX();
+            float ry = r.getY();
+
+            return (x < rx + r.width) && (rx < x + width) && (y < ry + r.height) && (ry < y + height);
         }
         else
             return super.intersects(p);
@@ -49,24 +53,26 @@ public class Rectangle extends Polygon
 
     public float getX()
     {
-        return x;
+        return getPosition().getX();
     }
 
     public void setX(float x)
     {
-        this.x = x;
-        setPosition(new Vector2(x, y));
+        Vector2 position = getPosition();
+        position.setX(x);
+        setPosition(position);
     }
 
     public float getY()
     {
-        return y;
+        return getPosition().getY();
     }
 
     public void setY(float y)
     {
-        this.y = y;
-        setPosition(new Vector2(x, y));
+        Vector2 position = getPosition();
+        position.setY(y);
+        setPosition(position);
     }
 
     public float getWidth()
@@ -85,23 +91,23 @@ public class Rectangle extends Polygon
         return height;
     }
 
+    public Rectangle copy()
+    {
+        return new Rectangle(getX(), getY(), width, height);
+    }
+
     public void setHeight(float height)
     {
         this.height = height;
         updateVertices();
     }
 
-    public Rectangle getBounds()
-    {
-        return this;
-    }
-
     @Override
     public String toString()
     {
         return "Rectangle{" +
-               "x=" + x +
-               ", y=" + y +
+               "x=" + getX() +
+               ", y=" + getY() +
                ", width=" + width +
                ", height=" + height +
                '}';
@@ -115,19 +121,17 @@ public class Rectangle extends Polygon
 
         Rectangle rectangle = (Rectangle) o;
 
-        if (Float.compare(rectangle.height, height) != 0) return false;
-        if (Float.compare(rectangle.width, width) != 0) return false;
-        if (Float.compare(rectangle.x, x) != 0) return false;
-        if (Float.compare(rectangle.y, y) != 0) return false;
-
-        return true;
+        return Float.compare(rectangle.height, height) == 0 &&
+               Float.compare(rectangle.width, width)   == 0 &&
+               Float.compare(rectangle.getX(), getX()) == 0 &&
+               Float.compare(rectangle.getY(), getY()) == 0;
     }
 
     @Override
     public int hashCode()
     {
-        int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
-        result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+        int result = (getX() != +0.0f ? Float.floatToIntBits(getX()) : 0);
+        result = 31 * result + (getY() != +0.0f ? Float.floatToIntBits(getY()) : 0);
         result = 31 * result + (width != +0.0f ? Float.floatToIntBits(width) : 0);
         result = 31 * result + (height != +0.0f ? Float.floatToIntBits(height) : 0);
         return result;

@@ -48,6 +48,30 @@ public class SceneTest extends Game
             end();
 
         scene.update(delta);
+
+        if (Keyboard.isPressed(Keyboard.KEY_W))
+            cam.moveForward((float) delta);
+
+        if (Keyboard.isPressed(Keyboard.KEY_S))
+            cam.moveBackward((float) delta);
+
+        if (Keyboard.isPressed(Keyboard.KEY_A))
+            cam.moveLeft((float) delta);
+
+        if (Keyboard.isPressed(Keyboard.KEY_D))
+            cam.moveRight((float) delta);
+
+        if (Keyboard.isPressed(Keyboard.KEY_UP))
+            cam.rotateX(-1);
+
+        if (Keyboard.isPressed(Keyboard.KEY_DOWN))
+            cam.rotateX(1);
+
+        if (Keyboard.isPressed(Keyboard.KEY_LEFT))
+            cam.rotateY(1);
+
+        if (Keyboard.isPressed(Keyboard.KEY_RIGHT))
+            cam.rotateY(-1);
     }
 
     public void resize()

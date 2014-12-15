@@ -11,8 +11,6 @@ import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.utils.TimeUtils;
 
-import static com.shc.silenceengine.utils.MathUtils.*;
-
 /**
  * @author Sri Harsha Chilakapati
  */
@@ -52,10 +50,8 @@ public class Geom2DTest extends Game
         circle2.setY(rectangle.getY() + rectangle2.getHeight()/2f);
 
         // Rotating the geometry
-        rectangle.rotate((float) delta);
-        rectangle2.rotate((float) delta);
-        circle.rotate((float) delta);
-        circle2.rotate((float) delta);
+        rectangle.rotate(1);
+        rectangle2.rotate(-1);
     }
 
     public void render(double delta, Batcher batcher)
@@ -66,7 +62,7 @@ public class Geom2DTest extends Game
         boolean collision = rectangle.intersects(circle);
 
         // Determine the color and primitive
-        Color rectColor     = collision ? Color.RED : Color.WHITE;
+        Color     color     = collision ? Color.RED : Color.random();
         Primitive primitive = collision ? Primitive.LINE_LOOP : Primitive.TRIANGLE_FAN;
 
         // Draw first rectangle
@@ -74,19 +70,41 @@ public class Geom2DTest extends Game
         {
             for (int i = 0; i < rectangle.vertexCount(); i++)
             {
-                batcher.vertex(add(rectangle.getVertex(i), rectangle.getPosition()));
-                batcher.color(rectColor);
+                batcher.vertex(rectangle.getVertex(i).add(rectangle.getPosition()));
+                batcher.color(color);
             }
         }
         batcher.end();
 
-        // Draw second rectangle
+        // Draw bounds of first rectangle
+        batcher.begin(Primitive.LINE_LOOP);
+        {
+            for (int i = 0; i < rectangle.getBounds().vertexCount(); i++)
+            {
+                batcher.vertex(rectangle.getBounds().getVertex(i).add(rectangle.getBounds().getPosition()));
+                batcher.color(Color.GREEN);
+            }
+        }
+        batcher.end();
+
+        // Draw first circle
         batcher.begin(primitive);
         {
             for (int i = 0; i < circle.vertexCount(); i++)
             {
-                batcher.vertex(add(circle.getVertex(i), circle.getPosition()));
-                batcher.color(rectColor);
+                batcher.vertex(circle.getVertex(i).add(circle.getPosition()));
+                batcher.color(color);
+            }
+        }
+        batcher.end();
+
+        // Draw bounds of first circle
+        batcher.begin(Primitive.LINE_LOOP);
+        {
+            for (int i = 0; i < circle.getBounds().vertexCount(); i++)
+            {
+                batcher.vertex(circle.getBounds().getVertex(i).add(circle.getBounds().getPosition()));
+                batcher.color(Color.GREEN);
             }
         }
         batcher.end();
@@ -95,7 +113,7 @@ public class Geom2DTest extends Game
         collision = rectangle2.intersects(circle2);
 
         // Determine color and primitive again
-        rectColor = collision ? Color.RED : Color.WHITE;
+        color     = collision ? Color.RED : Color.random();
         primitive = collision ? Primitive.LINE_LOOP : Primitive.TRIANGLE_FAN;
 
         // Draw second rectangle
@@ -103,8 +121,19 @@ public class Geom2DTest extends Game
         {
             for (int i = 0; i < rectangle2.vertexCount(); i++)
             {
-                batcher.vertex(add(rectangle2.getVertex(i), rectangle2.getPosition()));
-                batcher.color(rectColor);
+                batcher.vertex(rectangle2.getVertex(i).add(rectangle2.getPosition()));
+                batcher.color(color);
+            }
+        }
+        batcher.end();
+
+        // Draw bounds of second rectangle
+        batcher.begin(Primitive.LINE_LOOP);
+        {
+            for (int i = 0; i < rectangle2.getBounds().vertexCount(); i++)
+            {
+                batcher.vertex(rectangle2.getBounds().getVertex(i).add(rectangle2.getBounds().getPosition()));
+                batcher.color(Color.GREEN);
             }
         }
         batcher.end();
@@ -114,8 +143,19 @@ public class Geom2DTest extends Game
         {
             for (int i = 0; i < circle2.vertexCount(); i++)
             {
-                batcher.vertex(add(circle2.getVertex(i), circle2.getPosition()));
-                batcher.color(rectColor);
+                batcher.vertex(circle2.getVertex(i).add(circle2.getPosition()));
+                batcher.color(color);
+            }
+        }
+        batcher.end();
+
+        // Draw bounds of second circle
+        batcher.begin(Primitive.LINE_LOOP);
+        {
+            for (int i = 0; i < circle2.getBounds().vertexCount(); i++)
+            {
+                batcher.vertex(circle2.getBounds().getVertex(i).add(circle2.getBounds().getPosition()));
+                batcher.color(Color.GREEN);
             }
         }
         batcher.end();

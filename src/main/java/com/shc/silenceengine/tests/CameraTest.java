@@ -35,6 +35,30 @@ public class CameraTest extends Game
 
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
+
+        if (Keyboard.isPressed(Keyboard.KEY_W))
+            perspCam.moveForward((float) delta);
+
+        if (Keyboard.isPressed(Keyboard.KEY_S))
+            perspCam.moveBackward((float) delta);
+
+        if (Keyboard.isPressed(Keyboard.KEY_A))
+            perspCam.moveLeft((float) delta);
+
+        if (Keyboard.isPressed(Keyboard.KEY_D))
+            perspCam.moveRight((float) delta);
+
+        if (Keyboard.isPressed(Keyboard.KEY_UP))
+            perspCam.rotateX(-1);
+
+        if (Keyboard.isPressed(Keyboard.KEY_DOWN))
+            perspCam.rotateX(1);
+
+        if (Keyboard.isPressed(Keyboard.KEY_LEFT))
+            perspCam.rotateY(1);
+
+        if (Keyboard.isPressed(Keyboard.KEY_RIGHT))
+            perspCam.rotateY(-1);
     }
 
     public void render(double delta, Batcher batcher)

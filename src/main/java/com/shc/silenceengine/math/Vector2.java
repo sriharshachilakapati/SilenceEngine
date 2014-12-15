@@ -9,7 +9,7 @@ public class Vector2
     public static final Vector2 AXIS_X = new Vector2(1, 0);
     public static final Vector2 AXIS_Y = new Vector2(0, 1);
 
-    private float x, y;
+    public float x, y;
 
     public Vector2()
     {
@@ -45,10 +45,7 @@ public class Vector2
 
     public Vector2 add(float x, float y)
     {
-        this.x += x;
-        this.y += y;
-
-        return this;
+        return new Vector2(this.x + x, this.y + y);
     }
 
     public Vector2 add(Vector2 v)
@@ -73,10 +70,7 @@ public class Vector2
 
     public Vector2 scale(float sx, float sy)
     {
-        x *= sx;
-        y *= sy;
-
-        return this;
+        return new Vector2(x * sx, y * sy);
     }
 
     public float dot(Vector2 v)
@@ -93,16 +87,12 @@ public class Vector2
     {
         float l = length();
 
-        x /= l;
-        y /= l;
-
-        return this;
+        return new Vector2(x/l, y/l);
     }
 
     public Vector2 negate()
     {
-        x = -x; y = -y;
-        return this;
+        return new Vector2(-x, -y);
     }
 
     public float getX()

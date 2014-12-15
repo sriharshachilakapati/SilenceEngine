@@ -5,7 +5,7 @@ package com.shc.silenceengine.math;
  */
 public class Vector4
 {
-    private float x, y, z, w;
+    public float x, y, z, w;
 
     public Vector4()
     {
@@ -52,12 +52,7 @@ public class Vector4
 
     public Vector4 add(float x, float y, float z, float w)
     {
-        this.x += x;
-        this.y += y;
-        this.z += z;
-        this.w += w;
-
-        return this;
+        return new Vector4(this.x + x, this.y + y, this.z + z, this.w + w);
     }
 
     public Vector4 add(Vector4 v)
@@ -82,12 +77,7 @@ public class Vector4
 
     public Vector4 scale(float sx, float sy, float sz, float sw)
     {
-        x *= sx;
-        y *= sy;
-        z *= sz;
-        w *= sw;
-
-        return this;
+        return new Vector4(x * sx, y * sy, z * sz, w * sw);
     }
 
     public float dot(Vector4 v)
@@ -109,18 +99,12 @@ public class Vector4
     {
         float l = length();
 
-        x /= l;
-        y /= l;
-        z /= l;
-        w /= l;
-
-        return this;
+        return new Vector4(x/l, y/l, z/l, w/l);
     }
 
     public Vector4 negate()
     {
-        x = -x; y = -y; z = -z; w = -w;
-        return this;
+        return new Vector4(-x, -y, -z, -w);
     }
 
     public Vector4 multiply(Vector4 v)

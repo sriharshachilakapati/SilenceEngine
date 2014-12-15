@@ -1,6 +1,7 @@
 package com.shc.silenceengine.utils;
 
 import com.shc.silenceengine.math.Matrix4;
+import com.shc.silenceengine.math.Quaternion;
 import com.shc.silenceengine.math.Vector3;
 
 /**
@@ -39,7 +40,7 @@ public class TransformUtils
         float c = (float) Math.cos(angle);
         float s = (float) Math.sin(angle);
 
-        Vector3 v = axis.copy().normalize();
+        Vector3 v = axis.normalize();
 
         result.set(0, 0, v.getX() * v.getX() * (1-c) + c)
               .set(1, 0, v.getX() * v.getY() * (1-c) - v.getZ() * s)
@@ -71,22 +72,22 @@ public class TransformUtils
         return result;
     }
 
-    public static Matrix4 createFrustum(float left, float right, float bottom, float top, float zNear, float zFar)
-    {
-        assert zFar > zNear;
-
-        Matrix4 result = new Matrix4().initZero();
-
-        result.set(0, 0, (2 * zNear) / (right - left))
-              .set(1, 1, (2 * zNear) / (top - bottom))
-              .set(2, 0, (right + left) / (right - left))
-              .set(2, 1, (top + bottom) / (top - bottom))
-              .set(2, 2, (zFar + zNear) / (zNear - zFar))
-              .set(2, 3, -1)
-              .set(3, 2, (-2 * zFar * zNear) / (zFar - zNear));
-
-        return result;
-    }
+//    public static Matrix4 createFrustum(float left, float right, float bottom, float top, float zNear, float zFar)
+//    {
+//        assert zFar > zNear;
+//
+//        Matrix4 result = new Matrix4().initZero();
+//
+//        result.set(0, 0, (2 * zNear) / (right - left))
+//              .set(1, 1, (2 * zNear) / (top - bottom))
+//              .set(2, 0, (right + left) / (right - left))
+//              .set(2, 1, (top + bottom) / (top - bottom))
+//              .set(2, 2, (zFar + zNear) / (zNear - zFar))
+//              .set(2, 3, -1)
+//              .set(3, 2, (-2 * zFar * zNear) / (zFar - zNear));
+//
+//        return result;
+//    }
 
     public static Matrix4 createPerspective(float fovy, float aspect, float zNear, float zFar)
     {
@@ -105,29 +106,60 @@ public class TransformUtils
         return result;
     }
 
-    public static Matrix4 createLookAt(Vector3 eye, Vector3 center, Vector3 up)
+//    public static Matrix4 createLookAt(Vector3 eye, Vector3 center, Vector3 up)
+//    {
+//        Matrix4 result = new Matrix4().initIdentity();
+//
+//        final Vector3 f = center.subtract(eye).normalize();
+//        final Vector3 s = f.cross(up).normalize();
+//        final Vector3 u = s.cross(f);
+//
+//        result.set(0, 0, s.x)
+//              .set(1, 0, s.y)
+//              .set(2, 0, s.z);
+//
+//        result.set(0, 1, u.x)
+//              .set(1, 1, u.y)
+//              .set(2, 1, u.z);
+//
+//        result.set(0, 2, -f.x)
+//              .set(1, 2, -f.y)
+//              .set(2, 2, -f.z);
+//
+//        result.set(3, 0, -s.dot(eye))
+//              .set(3, 1, -u.dot(eye))
+//              .set(3, 2, f.dot(eye));
+//
+//        return result;
+//    }
+
+    public static Matrix4 createRotation(Quaternion q)
     {
-        Matrix4 result = new Matrix4().initIdentity();
+        q = q.normalize();
 
-        Vector3 f = center.copy().subtract(eye).normalize();
-        Vector3 s = f.copy().cross(up).normalize();
-        Vector3 u = s.copy().cross(f);
+        Matrix4 result = new Matrix4();
 
-        result.set(0, 0, s.getX())
-              .set(1, 0, s.getY())
-              .set(2, 0, s.getZ());
+        float x2 = q.x * q.x;
+        float y2 = q.y * q.y;
+        float z2 = q.z * q.z;
+        float xy = q.x * q.y;
+        float xz = q.x * q.z;
+        float yz = q.y * q.z;
+        float wx = q.w * q.x;
+        float wy = q.w * q.y;
+        float wz = q.w * q.z;
 
-        result.set(0, 1, u.getX())
-              .set(1, 1, u.getY())
-              .set(2, 1, u.getZ());
+        result.set(0, 0, 1.0f - 2.0f * (y2 + z2))
+              .set(0, 1, 2.0f * (xy - wz))
+              .set(0, 2, 2.0f * (xz + wy));
 
-        result.set(0, 2, -f.getX())
-              .set(1, 2, -f.getY())
-              .set(2, 2, -f.getZ());
+        result.set(1, 0, 2.0f * (xy + wz))
+              .set(1, 1, 1.0f - 2.0f * (x2 + z2))
+              .set(1, 2, 2.0f * (yz - wx));
 
-        result.set(3, 0, -s.dot(eye))
-              .set(3, 1, -u.dot(eye))
-              .set(3, 2, f.dot(eye));
+        result.set(2, 0, 2.0f * (xz - wy))
+              .set(2, 1, 2.0f * (yz + wx))
+              .set(2, 2, 1.0f - 2.0f * (x2 + y2));
 
         return result;
     }
