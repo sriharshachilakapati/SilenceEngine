@@ -48,6 +48,12 @@ public class CameraTest extends Game
         if (Keyboard.isPressed(Keyboard.KEY_D))
             perspCam.moveRight((float) delta);
 
+        if (Keyboard.isPressed(Keyboard.KEY_Q))
+            perspCam.moveUp((float) delta);
+
+        if (Keyboard.isPressed(Keyboard.KEY_E))
+            perspCam.moveDown((float) delta);
+
         if (Keyboard.isPressed(Keyboard.KEY_UP))
             perspCam.rotateX(-1);
 
