@@ -24,6 +24,7 @@ public class GridSceneColliderTest extends Game
 
     public void init()
     {
+        Display.setTitle("GridSceneCollider Test");
         cam = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
 
         // Create and initialize the scene
@@ -72,7 +73,7 @@ public class GridSceneColliderTest extends Game
 
     public static void main(String[] args)
     {
-        new QuadTreeSceneColliderTest().start();
+        new GridSceneColliderTest().start();
     }
 
     public static class Box extends Entity2D
@@ -104,23 +105,19 @@ public class GridSceneColliderTest extends Game
 
         public void update(double delta)
         {
-            Vector2 velocity = new Vector2();
-
             float speed = 4;
 
             if (Keyboard.isPressed(Keyboard.KEY_UP))
-                velocity.y -= speed;
+                getVelocity().y -= speed;
 
             if (Keyboard.isPressed(Keyboard.KEY_DOWN))
-                velocity.y += speed;
+                getVelocity().y += speed;
 
             if (Keyboard.isPressed(Keyboard.KEY_LEFT))
-                velocity.x -= speed;
+                getVelocity().x -= speed;
 
             if (Keyboard.isPressed(Keyboard.KEY_RIGHT))
-                velocity.x += speed;
-
-            setVelocity(velocity);
+                getVelocity().x += speed;
         }
 
         public void collision(Entity2D other)

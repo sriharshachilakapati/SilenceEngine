@@ -30,6 +30,8 @@ public class Entity2D extends SceneNode
 
         position = position.add(velocity);
         polygon.setPosition(position);
+
+        velocity.x = velocity.y = 0;
     }
 
     public void collision(Entity2D other)
