@@ -68,10 +68,10 @@ public class SceneTest extends Game
             cam.moveDown((float) delta);
 
         if (Keyboard.isPressed(Keyboard.KEY_UP))
-            cam.rotateX(-1);
+            cam.rotateX(1);
 
         if (Keyboard.isPressed(Keyboard.KEY_DOWN))
-            cam.rotateX(1);
+            cam.rotateX(-1);
 
         if (Keyboard.isPressed(Keyboard.KEY_LEFT))
             cam.rotateY(1);

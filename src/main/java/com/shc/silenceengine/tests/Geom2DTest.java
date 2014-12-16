@@ -9,7 +9,7 @@ import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.OrthoCam;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.input.Keyboard;
-import com.shc.silenceengine.utils.TimeUtils;
+import com.shc.silenceengine.utils.*;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -58,107 +58,39 @@ public class Geom2DTest extends Game
     {
         cam.apply();
 
-        // Did collision happen?
         boolean collision = rectangle.intersects(circle);
+        Color   color     = collision ? Color.RED : Color.random();
 
-        // Determine the color and primitive
-        Color     color     = collision ? Color.RED : Color.random();
-        Primitive primitive = collision ? Primitive.LINE_LOOP : Primitive.TRIANGLE_FAN;
-
-        // Draw first rectangle
-        batcher.begin(primitive);
+        if (collision)
         {
-            for (int i = 0; i < rectangle.vertexCount(); i++)
-            {
-                batcher.vertex(rectangle.getVertex(i).add(rectangle.getPosition()));
-                batcher.color(color);
-            }
+            RenderUtils.tracePolygon(batcher, rectangle, color);
+            RenderUtils.tracePolygon(batcher, circle, color);
         }
-        batcher.end();
-
-        // Draw bounds of first rectangle
-        batcher.begin(Primitive.LINE_LOOP);
+        else
         {
-            for (int i = 0; i < rectangle.getBounds().vertexCount(); i++)
-            {
-                batcher.vertex(rectangle.getBounds().getVertex(i).add(rectangle.getBounds().getPosition()));
-                batcher.color(Color.GREEN);
-            }
+            RenderUtils.fillPolygon(batcher, rectangle, color);
+            RenderUtils.fillPolygon(batcher, circle, color);
         }
-        batcher.end();
 
-        // Draw first circle
-        batcher.begin(primitive);
-        {
-            for (int i = 0; i < circle.vertexCount(); i++)
-            {
-                batcher.vertex(circle.getVertex(i).add(circle.getPosition()));
-                batcher.color(color);
-            }
-        }
-        batcher.end();
+        RenderUtils.tracePolygon(batcher, rectangle.getBounds(), Color.GREEN);
+        RenderUtils.tracePolygon(batcher, circle.getBounds(), Color.GREEN);
 
-        // Draw bounds of first circle
-        batcher.begin(Primitive.LINE_LOOP);
-        {
-            for (int i = 0; i < circle.getBounds().vertexCount(); i++)
-            {
-                batcher.vertex(circle.getBounds().getVertex(i).add(circle.getBounds().getPosition()));
-                batcher.color(Color.GREEN);
-            }
-        }
-        batcher.end();
-
-        // Did the collision happen?
         collision = rectangle2.intersects(circle2);
-
-        // Determine color and primitive again
         color     = collision ? Color.RED : Color.random();
-        primitive = collision ? Primitive.LINE_LOOP : Primitive.TRIANGLE_FAN;
 
-        // Draw second rectangle
-        batcher.begin(primitive);
+        if (collision)
         {
-            for (int i = 0; i < rectangle2.vertexCount(); i++)
-            {
-                batcher.vertex(rectangle2.getVertex(i).add(rectangle2.getPosition()));
-                batcher.color(color);
-            }
+            RenderUtils.tracePolygon(batcher, rectangle2, color);
+            RenderUtils.tracePolygon(batcher, circle2, color);
         }
-        batcher.end();
+        else
+        {
+            RenderUtils.fillPolygon(batcher, rectangle2, color);
+            RenderUtils.fillPolygon(batcher, circle2, color);
+        }
 
-        // Draw bounds of second rectangle
-        batcher.begin(Primitive.LINE_LOOP);
-        {
-            for (int i = 0; i < rectangle2.getBounds().vertexCount(); i++)
-            {
-                batcher.vertex(rectangle2.getBounds().getVertex(i).add(rectangle2.getBounds().getPosition()));
-                batcher.color(Color.GREEN);
-            }
-        }
-        batcher.end();
-
-        // Draw second circle
-        batcher.begin(primitive);
-        {
-            for (int i = 0; i < circle2.vertexCount(); i++)
-            {
-                batcher.vertex(circle2.getVertex(i).add(circle2.getPosition()));
-                batcher.color(color);
-            }
-        }
-        batcher.end();
-
-        // Draw bounds of second circle
-        batcher.begin(Primitive.LINE_LOOP);
-        {
-            for (int i = 0; i < circle2.getBounds().vertexCount(); i++)
-            {
-                batcher.vertex(circle2.getBounds().getVertex(i).add(circle2.getBounds().getPosition()));
-                batcher.color(Color.GREEN);
-            }
-        }
-        batcher.end();
+        RenderUtils.tracePolygon(batcher, rectangle2.getBounds(), Color.GREEN);
+        RenderUtils.tracePolygon(batcher, circle2.getBounds(), Color.GREEN);
     }
 
     public void resize()

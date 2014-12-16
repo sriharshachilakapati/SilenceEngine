@@ -10,8 +10,12 @@ import java.util.ArrayList;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class FileUtils
+public final class FileUtils
 {
+    private FileUtils()
+    {
+    }
+
     public static String[] readLinesToStringArray(InputStream stream)
     {
         ArrayList<String> lines = new ArrayList<String>();

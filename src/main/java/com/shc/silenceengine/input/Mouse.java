@@ -44,4 +44,18 @@ public class Mouse
     {
         return Display.mouseY;
     }
+
+    public static int getDX()
+    {
+        int dx = Display.mouseDX;
+        Display.mouseDX = 0;
+        return dx;
+    }
+
+    public static int getDY()
+    {
+        int dy = Display.mouseDY;
+        Display.mouseDY = 0;
+        return dy;
+    }
 }

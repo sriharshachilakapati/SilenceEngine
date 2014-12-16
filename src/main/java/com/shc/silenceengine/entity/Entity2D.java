@@ -28,8 +28,12 @@ public class Entity2D extends SceneNode
     {
         super.preUpdate(delta);
 
-        position.add(velocity);
+        position = position.add(velocity);
         polygon.setPosition(position);
+    }
+
+    public void collision(Entity2D other)
+    {
     }
 
     public Vector2 getPosition()

@@ -2,6 +2,7 @@ package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.GLError;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
@@ -66,6 +67,10 @@ public final class Display
     public static int mouseX;
     public static int mouseY;
 
+    // Mouse Delta move
+    public static int mouseDX;
+    public static int mouseDY;
+
     // Callbacks from GLFW
     private static GLFWWindowSizeCallback winSizeCallback;
     private static GLFWKeyCallback        winKeyCallback;
@@ -115,14 +120,11 @@ public final class Display
         GLContext.createFromCurrent();
 
         // Initialize OpenGL
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        GL3Context.enable(GL_BLEND);
+        GL3Context.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        glEnable(GL_DEPTH_TEST);
-        GLError.check();
-
-        glViewport(0, 0, width, height);
-        GLError.check();
+        GL3Context.enable(GL_DEPTH_TEST);
+        GL3Context.viewport(0, 0, width, height);
 
         if (Game.getBatcher() == null)
             Game.setBatcher(new Batcher());
@@ -164,6 +166,9 @@ public final class Display
 
         glfwSetCursorPosCallback(window, winCurPosCallback = GLFWCursorPosCallback((win, xPos, yPos) ->
         {
+            mouseDX = (int) xPos - mouseX;
+            mouseDY = (int) yPos - mouseY;
+
             mouseX = (int) xPos;
             mouseY = (int) yPos;
         }));
@@ -219,7 +224,7 @@ public final class Display
      */
     public static void setViewport(int x, int y, int width, int height)
     {
-        glViewport(x, y, width, height);
+        GL3Context.viewport(x, y, width, height);
     }
 
     /**
@@ -256,8 +261,7 @@ public final class Display
         glfwSwapBuffers(displayHandle);
         glfwPollEvents();
 
-        glClearColor(clearColor.getRed(), clearColor.getGreen(), clearColor.getBlue(), clearColor.getAlpha());
-        GLError.check();
+        GL3Context.clearColor(clearColor);
 
         // Force binding
         Program.CURRENT = null;

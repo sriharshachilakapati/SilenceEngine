@@ -1,5 +1,6 @@
 package com.shc.silenceengine.graphics;
 
+import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
@@ -10,9 +11,7 @@ import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL30.*;
 
-import com.shc.silenceengine.graphics.opengl.GLError;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.VertexArrayObject;
@@ -228,16 +227,15 @@ public class Batcher
         uploadData();
 
         // Do a rendering
-        glDrawArrays(beginMode.getGlPrimitive(), 0, vertexCount);
-        GLError.check();
+        GL3Context.drawArrays(vao, beginMode, 0, vertexCount);
 
         // Unbind the VAO
         vao.disableAttributeArray(vertexLocation);
         vao.disableAttributeArray(colorLocation);
         vao.disableAttributeArray(texCoordLocation);
         vao.disableAttributeArray(normalLocation);
-        glBindVertexArray(0);
-        GLError.check();
+
+        GL3Context.bindVertexArray(null);
 
         // Clear the buffers
         vBuffer.clear();
@@ -433,9 +431,9 @@ public class Batcher
 
     public void dispose()
     {
-        glBindVertexArray(0);
+        GL3Context.bindVertexArray(null);
         vao.dispose();
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        GL3Context.bindVertexBuffer(null);
         vboVert.dispose();
         vboCol.dispose();
         vboTex.dispose();

@@ -7,8 +7,12 @@ import com.shc.silenceengine.math.Vector3;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class TransformUtils
+public final class TransformUtils
 {
+    private TransformUtils()
+    {
+    }
+
     public static Matrix4 createTranslation(Vector3 translation)
     {
         Matrix4 result = new Matrix4().initIdentity();

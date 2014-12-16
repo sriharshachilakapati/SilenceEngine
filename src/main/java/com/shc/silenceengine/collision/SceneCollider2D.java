@@ -12,7 +12,7 @@ public interface SceneCollider2D
 
     public Scene getScene();
 
-    public void register(Class<Entity2D> type1, Class<Entity2D> type2);
+    public void register(Class<? extends Entity2D> type1, Class<? extends Entity2D> type2);
 
     public void checkCollisions();
 }

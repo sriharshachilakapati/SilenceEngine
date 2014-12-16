@@ -1,6 +1,7 @@
 package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.GLError;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
@@ -212,14 +213,12 @@ public class Game
 
             if (Display.wasResized())
             {
-                glViewport(0, 0, Display.getWidth(), Display.getHeight());
-                GLError.check();
+                GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
 
                 resize();
             }
 
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            GLError.check();
+            GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             Texture.setActiveUnit(0);
 
             render(elapsed, batcher);

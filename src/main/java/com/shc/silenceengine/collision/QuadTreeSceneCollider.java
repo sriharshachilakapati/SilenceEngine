@@ -1,5 +1,9 @@
 package com.shc.silenceengine.collision;
 
+/**
+ * @author Sri Harsha Chilakapati
+ */
+
 import com.shc.silenceengine.entity.Entity2D;
 import com.shc.silenceengine.scene.Scene;
 import com.shc.silenceengine.scene.SceneNode;
@@ -11,18 +15,17 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class GridSceneCollider implements SceneCollider2D
+public class QuadTreeSceneCollider implements SceneCollider2D
 {
-    private Scene scene;
-    private Grid  grid;
-
+    private Scene          scene;
+    private QuadTree       quadTree;
     private List<Entity2D> entities;
 
     private HashMap<Class<? extends Entity2D>, Class<? extends Entity2D>> collisionMap;
 
-    public GridSceneCollider(int mapWidth, int mapHeight, int cellWidth, int cellHeight)
+    public QuadTreeSceneCollider(int mapWidth, int mapHeight)
     {
-        grid = new Grid(mapWidth, mapHeight, cellWidth, cellHeight);
+        quadTree = new QuadTree(mapWidth, mapHeight);
         entities = new ArrayList<>();
         collisionMap = new HashMap<>();
     }
@@ -48,7 +51,7 @@ public class GridSceneCollider implements SceneCollider2D
     @Override
     public void checkCollisions()
     {
-        grid.clear();
+        quadTree.clear();
         entities.clear();
 
         for (SceneNode child : scene.getChildren())
@@ -56,7 +59,7 @@ public class GridSceneCollider implements SceneCollider2D
             {
                 Entity2D entity = (Entity2D) child;
 
-                grid.insert(entity);
+                quadTree.insert(entity);
                 entities.add(entity);
             }
 
@@ -64,7 +67,7 @@ public class GridSceneCollider implements SceneCollider2D
             for (Entity2D entity : entities)
                 if (class1.isInstance(entity))
                 {
-                    List<Entity2D> collidables = grid.retrieve(entity);
+                    List<Entity2D> collidables = quadTree.retrieve(entity);
 
                     for (Entity2D entity2 : collidables)
                         if (collisionMap.get(class1).isInstance(entity2))

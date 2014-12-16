@@ -5,8 +5,12 @@ import static org.lwjgl.glfw.GLFW.*;
 /**
  * A standard Time Utility class
  */
-public class TimeUtils
+public final class TimeUtils
 {
+    private TimeUtils()
+    {
+    }
+
     public static double currentNanos()
     {
         return currentMicros() * 1000.0;

@@ -5,16 +5,17 @@ import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Transform;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class SceneNode
 {
-    private ArrayList<SceneNode> children;
-    private SceneNode            parent;
-    private Transform            transform;
-    private boolean              destroyed;
+    private List<SceneNode> children;
+    private SceneNode       parent;
+    private Transform       transform;
+    private boolean         destroyed;
 
     public SceneNode()
     {
@@ -133,6 +134,11 @@ public class SceneNode
             removeChild(child);
             i--;
         }
+    }
+
+    public List<SceneNode> getChildren()
+    {
+        return children;
     }
 
     public SceneNode getParent()

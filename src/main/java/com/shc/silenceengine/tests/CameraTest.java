@@ -5,6 +5,7 @@ import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.*;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Vector3;
 
 /**
@@ -27,6 +28,8 @@ public class CameraTest extends Game
         perspCam = new PerspCam();
 
         texture = Texture.fromResource("resources/texture2.png");
+
+        Display.hideCursor();
     }
 
     public void update(double delta)
@@ -36,35 +39,44 @@ public class CameraTest extends Game
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
 
+        float speed = 2 * (float) delta;
+
         if (Keyboard.isPressed(Keyboard.KEY_W))
-            perspCam.moveForward((float) delta);
+            perspCam.moveForward(speed);
 
         if (Keyboard.isPressed(Keyboard.KEY_S))
-            perspCam.moveBackward((float) delta);
+            perspCam.moveBackward(speed);
 
         if (Keyboard.isPressed(Keyboard.KEY_A))
-            perspCam.moveLeft((float) delta);
+            perspCam.moveLeft(speed);
 
         if (Keyboard.isPressed(Keyboard.KEY_D))
-            perspCam.moveRight((float) delta);
+            perspCam.moveRight(speed);
 
         if (Keyboard.isPressed(Keyboard.KEY_Q))
-            perspCam.moveUp((float) delta);
+            perspCam.moveUp(speed);
 
         if (Keyboard.isPressed(Keyboard.KEY_E))
-            perspCam.moveDown((float) delta);
+            perspCam.moveDown(speed);
 
         if (Keyboard.isPressed(Keyboard.KEY_UP))
-            perspCam.rotateX(-1);
+            perspCam.rotateX(1);
 
         if (Keyboard.isPressed(Keyboard.KEY_DOWN))
-            perspCam.rotateX(1);
+            perspCam.rotateX(-1);
 
         if (Keyboard.isPressed(Keyboard.KEY_LEFT))
             perspCam.rotateY(1);
 
         if (Keyboard.isPressed(Keyboard.KEY_RIGHT))
             perspCam.rotateY(-1);
+
+        // Mouse look!
+        if (Keyboard.isPressed(Keyboard.KEY_SPACE))
+        {
+            perspCam.rotateX(-Mouse.getDY() * speed);
+            perspCam.rotateY(-Mouse.getDX() * speed);
+        }
     }
 
     public void render(double delta, Batcher batcher)
