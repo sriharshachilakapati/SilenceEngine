@@ -46,21 +46,21 @@ public final class GL3Context
         GLError.check();
     }
 
-    public static void drawArrays(VertexArrayObject vao, Primitive mode, int offset, int vertexCount)
+    public static void drawArrays(VertexArray vao, Primitive mode, int offset, int vertexCount)
     {
         vao.bind();
         glDrawArrays(mode.getGlPrimitive(), offset, vertexCount);
         GLError.check();
     }
 
-    public static void drawElements(VertexArrayObject vao, Primitive mode, int offset, int vertexCount, int type)
+    public static void drawElements(VertexArray vao, Primitive mode, int offset, int vertexCount, int type)
     {
         vao.bind();
         glDrawElements(mode.getGlPrimitive(), vertexCount, type, offset);
         GLError.check();
     }
 
-    public static void bindVertexArray(VertexArrayObject vao)
+    public static void bindVertexArray(VertexArray vao)
     {
         if (vao == null)
         {
@@ -72,7 +72,7 @@ public final class GL3Context
         vao.bind();
     }
 
-    public static void bindVertexBuffer(VertexBufferObject vbo)
+    public static void bindVertexBuffer(BufferObject vbo)
     {
         if (vbo == null)
         {

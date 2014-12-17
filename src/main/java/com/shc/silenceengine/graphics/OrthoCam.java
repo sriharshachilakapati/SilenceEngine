@@ -49,11 +49,12 @@ public class OrthoCam extends BaseCamera
 
     public OrthoCam center(float x, float y)
     {
-        return lookAt(new Vector2(x, y));
+        return center(new Vector2(x, y));
     }
 
-    public OrthoCam lookAt(Vector2 v)
+    public OrthoCam center(Vector2 v)
     {
+        mView.initIdentity();
         float x = (width/2) - v.getX();
         float y = (height/2) - v.getY();
 

@@ -27,7 +27,7 @@ import static org.lwjgl.opengl.GL15.*;
  *
  * @author Sri Harsha Chilakapati
  */
-public class VertexBufferObject
+public class BufferObject
 {
     private int id;
     private int capacity;
@@ -35,7 +35,7 @@ public class VertexBufferObject
 
     private boolean disposed;
 
-    private static Map<Integer, VertexBufferObject> current = new HashMap<>();
+    private static Map<Integer, BufferObject> current = new HashMap<>();
 
     /**
      * Creates a VertexBufferObject that binds to a target. Valid targets
@@ -47,7 +47,7 @@ public class VertexBufferObject
      *
      * @param target The target to bind this VertexBufferObject
      */
-    public VertexBufferObject(int target)
+    public BufferObject(int target)
     {
         id = glGenBuffers();
         this.target = target;

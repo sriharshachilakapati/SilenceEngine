@@ -14,8 +14,8 @@ import static org.lwjgl.opengl.GL15.*;
 
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.graphics.opengl.Primitive;
-import com.shc.silenceengine.graphics.opengl.VertexArrayObject;
-import com.shc.silenceengine.graphics.opengl.VertexBufferObject;
+import com.shc.silenceengine.graphics.opengl.VertexArray;
+import com.shc.silenceengine.graphics.opengl.BufferObject;
 
 /**
  * A simple class which eases the rendering of Graphics by batching
@@ -43,9 +43,9 @@ public class Batcher
     private boolean active = false;
 
     // The sizes (no. of components) in vertex, color, texcoord
-    public static final int SIZE_OF_VERTEX = 4;
-    public static final int SIZE_OF_NORMAL = 4;
-    public static final int SIZE_OF_COLOR  = 4;
+    public static final int SIZE_OF_VERTEX   = 4;
+    public static final int SIZE_OF_NORMAL   = 4;
+    public static final int SIZE_OF_COLOR    = 4;
     public static final int SIZE_OF_TEXCOORD = 2;
 
     // The maximum number of vertices in a batch
@@ -58,11 +58,11 @@ public class Batcher
     private FloatBuffer nBuffer;
 
     // VAO and VBOs
-    private VertexArrayObject  vao;
-    private VertexBufferObject vboVert;
-    private VertexBufferObject vboCol;
-    private VertexBufferObject vboTex;
-    private VertexBufferObject vboNorm;
+    private VertexArray  vao;
+    private BufferObject vboVert;
+    private BufferObject vboCol;
+    private BufferObject vboTex;
+    private BufferObject vboNorm;
 
     // VBO index locations in shader
     private int vertexLocation;
@@ -88,10 +88,10 @@ public class Batcher
     public Batcher()
     {
         // Create the buffers
-        vBuffer = BufferUtils.createFloatBuffer(SIZE_OF_VERTEX   * MAX_VERTICES_IN_BATCH);
-        cBuffer = BufferUtils.createFloatBuffer(SIZE_OF_COLOR    * MAX_VERTICES_IN_BATCH);
+        vBuffer = BufferUtils.createFloatBuffer(SIZE_OF_VERTEX * MAX_VERTICES_IN_BATCH);
+        cBuffer = BufferUtils.createFloatBuffer(SIZE_OF_COLOR * MAX_VERTICES_IN_BATCH);
         tBuffer = BufferUtils.createFloatBuffer(SIZE_OF_TEXCOORD * MAX_VERTICES_IN_BATCH);
-        nBuffer = BufferUtils.createFloatBuffer(SIZE_OF_NORMAL   * MAX_VERTICES_IN_BATCH);
+        nBuffer = BufferUtils.createFloatBuffer(SIZE_OF_NORMAL * MAX_VERTICES_IN_BATCH);
 
         // Create the transformations
         transform = new Transform();
@@ -107,14 +107,14 @@ public class Batcher
     private void initGLHandles()
     {
         // Create a VAO
-        vao = new VertexArrayObject();
+        vao = new VertexArray();
         vao.bind();
 
         // Create VBOs
-        vboVert = new VertexBufferObject(GL_ARRAY_BUFFER);
-        vboCol  = new VertexBufferObject(GL_ARRAY_BUFFER);
-        vboTex  = new VertexBufferObject(GL_ARRAY_BUFFER);
-        vboNorm = new VertexBufferObject(GL_ARRAY_BUFFER);
+        vboVert = new BufferObject(GL_ARRAY_BUFFER);
+        vboCol = new BufferObject(GL_ARRAY_BUFFER);
+        vboTex = new BufferObject(GL_ARRAY_BUFFER);
+        vboNorm = new BufferObject(GL_ARRAY_BUFFER);
 
         // Initialize vertex-buffer
         vboVert.bind();

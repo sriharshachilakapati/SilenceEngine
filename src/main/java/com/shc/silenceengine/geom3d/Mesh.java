@@ -45,16 +45,16 @@ public class Mesh
     {
         vertices.clear();
 
-        minX = minY = minZ = Float.MAX_VALUE;
-        maxX = maxY = maxZ = Float.MIN_VALUE;
+        minX = minY = minZ = Float.POSITIVE_INFINITY;
+        maxX = maxY = maxZ = Float.NEGATIVE_INFINITY;
     }
 
     public void rotate(Vector3 axis, float angle)
     {
         Quaternion rotation = new Quaternion(axis, angle);
 
-        minX = minY = minZ = Float.MAX_VALUE;
-        maxX = maxY = maxZ = Float.MIN_VALUE;
+        minX = minY = minZ = Float.POSITIVE_INFINITY;
+        maxX = maxY = maxZ = Float.NEGATIVE_INFINITY;
 
         for (Vector3 vertex : vertices)
         {

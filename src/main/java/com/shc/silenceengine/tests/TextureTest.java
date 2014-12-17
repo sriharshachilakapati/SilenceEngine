@@ -21,7 +21,7 @@ public class TextureTest extends Game
         texture = Texture.fromResource("resources/logo.png");
     }
 
-    public void update(double delta)
+    public void update(float delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
@@ -30,7 +30,7 @@ public class TextureTest extends Game
             Display.setFullScreen(!Display.isFullScreen());
     }
 
-    public void render(double delta, Batcher batcher)
+    public void render(float delta, Batcher batcher)
     {
         texture.bind();
 

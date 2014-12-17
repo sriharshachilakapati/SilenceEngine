@@ -30,6 +30,12 @@ public class QuadTree
     // Branches of this tree a.k.a the quadrants
     private QuadTree[] nodes;
 
+    /**
+     * Constructs a QuadTree that covers a rectangle [0, 0, mapWidth, mapHeight]
+     *
+     * @param mapWidth  The width of the map (in pixels)
+     * @param mapHeight The height of the map (in pixels)
+     */
     public QuadTree(int mapWidth, int mapHeight)
     {
         this(0, new Rectangle(0, 0, mapWidth, mapHeight));
@@ -43,10 +49,12 @@ public class QuadTree
      */
     public QuadTree(int l, Rectangle b)
     {
-        level = l;
+        level  = l;
         bounds = b;
-        objects = new ArrayList<>();
+
+        objects      = new ArrayList<>();
         retrieveList = new ArrayList<>();
+
         nodes = new QuadTree[4];
     }
 
@@ -202,5 +210,4 @@ public class QuadTree
         retrieveList.addAll(objects);
         return retrieveList;
     }
-
 }

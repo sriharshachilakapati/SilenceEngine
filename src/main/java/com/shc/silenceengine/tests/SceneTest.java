@@ -42,7 +42,7 @@ public class SceneTest extends Game
         scene.init();
     }
 
-    public void update(double delta)
+    public void update(float delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
@@ -86,14 +86,14 @@ public class SceneTest extends Game
         fontCam.initProjection(Display.getWidth(), Display.getHeight());
     }
 
-    public void render(double delta, Batcher batcher)
+    public void render(float delta, Batcher batcher)
     {
         cam.apply();
         scene.render(delta, batcher);
 
         fontCam.apply();
-        font.drawString(batcher, "FPS: " + getFps(), 10, 10);
-        font.drawString(batcher, "\nUPS: " + getUps(), 10, 10);
+        font.drawString(batcher, "FPS: " + getFPS(), 10, 10);
+        font.drawString(batcher, "\nUPS: " + getUPS(), 10, 10);
         font.drawString(batcher, "\n\nDelta: " + delta, 10, 10);
     }
 
@@ -120,7 +120,7 @@ public class SceneTest extends Game
             this.position = position;
         }
 
-        public void update(double delta)
+        public void update(float delta)
         {
             rotation += (float) (4.0 * delta);
 
@@ -130,7 +130,7 @@ public class SceneTest extends Game
                                        .translate(new Vector3(position.getX(), position.getY(), z));
         }
 
-        public void render(double delta, Batcher batcher)
+        public void render(float delta, Batcher batcher)
         {
             batcher.applyTransform(getTransform());
             batcher.begin();

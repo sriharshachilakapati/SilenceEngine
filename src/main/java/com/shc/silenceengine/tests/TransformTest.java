@@ -23,7 +23,7 @@ public class TransformTest extends Game
         texture   = Texture.fromResource("resources/texture2.png");
     }
 
-    public void update(double delta)
+    public void update(float delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
@@ -41,7 +41,7 @@ public class TransformTest extends Game
             transform.translate(new Vector2(0, -0.01f));
     }
 
-    public void render(double delta, Batcher batcher)
+    public void render(float delta, Batcher batcher)
     {
         texture.bind();
 

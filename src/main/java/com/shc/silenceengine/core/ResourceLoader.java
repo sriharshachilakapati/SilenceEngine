@@ -1,0 +1,205 @@
+package com.shc.silenceengine.core;
+
+import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.TrueTypeFont;
+import com.shc.silenceengine.graphics.opengl.GL3Context;
+import com.shc.silenceengine.graphics.opengl.Primitive;
+import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.utils.*;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.lwjgl.opengl.GL11.*;
+
+/**
+ * @author Sri Harsha Chilakapati
+ */
+public final class ResourceLoader
+{
+    private Map<Integer, Texture>      textures;
+    private Map<Integer, TrueTypeFont> fonts;
+
+    private Map<String, Integer> texturesToLoad;
+    private Map<String, Integer> fontsToLoad;
+
+    private int numLoaded;
+    private Texture logo;
+
+    private static ResourceLoader instance;
+
+    public static ResourceLoader getInstance()
+    {
+        if (instance == null)
+            instance = new ResourceLoader();
+
+        return instance;
+    }
+
+    private ResourceLoader()
+    {
+        textures = new HashMap<>();
+        fonts = new HashMap<>();
+
+        texturesToLoad = new HashMap<>();
+        fontsToLoad = new HashMap<>();
+
+        numLoaded = 0;
+
+        logo = Texture.fromResource("resources/logo.png");
+    }
+
+    public void setLogo(String logoName)
+    {
+        logo.dispose();
+        logo = Texture.fromResource(logoName);
+    }
+
+    public int defineTexture(String name)
+    {
+        int id = texturesToLoad.size();
+        texturesToLoad.put(name, id);
+        return id;
+    }
+
+    public int defineFont(String name, int style, int size)
+    {
+        int id = fontsToLoad.size();
+        fontsToLoad.put(fontToString(name, style, size), id);
+        return id;
+    }
+
+    public void startLoading()
+    {
+        Display.setResizable(false);
+
+        for (String texName : texturesToLoad.keySet())
+        {
+            textures.put(texturesToLoad.get(texName), Texture.fromResource(texName));
+            numLoaded++;
+
+            renderProgress();
+        }
+
+        for (String fontName : fontsToLoad.keySet())
+        {
+            String[] parts = fontName.split(",");
+            TrueTypeFont font;
+            int style = Integer.parseInt(parts[1]);
+            int size = Integer.parseInt(parts[2]);
+
+            if (parts[0].endsWith(".ttf"))
+            {
+                InputStream ttfStream = FileUtils.getResource(parts[0]);
+
+                font = new TrueTypeFont(ttfStream, style, size, true);
+            }
+            else
+            {
+                font = new TrueTypeFont(parts[0], style, size);
+            }
+            fonts.put(fontsToLoad.get(fontName), font);
+
+            numLoaded++;
+
+            renderProgress();
+        }
+
+        Display.setResizable(true);
+    }
+
+    public Texture getTexture(int id)
+    {
+        return textures.get(id);
+    }
+
+    public TrueTypeFont getFont(int id)
+    {
+        return fonts.get(id);
+    }
+
+    public void dispose()
+    {
+        for (int id : textures.keySet())
+            textures.get(id).dispose();
+
+        for (int id : fonts.keySet())
+            fonts.get(id).dispose();
+    }
+
+    private String fontToString(String name, int style, int size)
+    {
+        return name + "," + style + "," + size;
+    }
+
+    public void renderProgress()
+    {
+        logo.bind();
+
+        GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
+
+        Batcher batcher = Game.getBatcher();
+
+        // Draw the logo
+        batcher.begin(Primitive.TRIANGLE_STRIP);
+        {
+            batcher.vertex(-0.5f, +0.5f);
+            batcher.texCoord(0, 0);
+
+            batcher.vertex(+0.5f, +0.5f);
+            batcher.texCoord(1, 0);
+
+            batcher.vertex(-0.5f, -0.5f);
+            batcher.texCoord(0, 1);
+
+            batcher.vertex(+0.5f, -0.5f);
+            batcher.texCoord(1, 1);
+        }
+        batcher.end();
+
+        Texture.EMPTY.bind();
+
+        // Draw the progressbar
+        batcher.begin(Primitive.LINE_LOOP);
+        {
+            batcher.vertex(-0.8f, -0.7f);
+            batcher.color(Color.GREEN);
+
+            batcher.vertex(+0.8f, -0.7f);
+            batcher.color(Color.GREEN);
+
+            batcher.vertex(+0.8f, -0.7f);
+            batcher.color(Color.GREEN);
+
+            batcher.vertex(-0.8f, -0.7f);
+            batcher.color(Color.GREEN);
+        }
+        batcher.end();
+
+        float percentage = 100 * numLoaded / (fontsToLoad.size() + texturesToLoad.size());
+
+        // Bring percentage to a scale (-0.8f to +0.8f)
+        percentage = ((percentage * 1.6f) / 100) - 0.8f;
+
+        batcher.begin(Primitive.TRIANGLE_STRIP);
+        {
+            batcher.vertex(-0.8f, -0.6f);
+            batcher.color(Color.BLUE);
+
+            batcher.vertex(percentage, -0.6f);
+            batcher.color(Color.GRAY);
+
+            batcher.vertex(-0.8f, -0.7f);
+            batcher.color(Color.BLUE);
+
+            batcher.vertex(percentage, -0.7f);
+            batcher.color(Color.GRAY);
+        }
+        batcher.end();
+
+        Display.update();
+    }
+}

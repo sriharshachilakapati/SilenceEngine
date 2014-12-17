@@ -50,17 +50,17 @@ public class SceneNode
         child.init();
     }
 
-    public void preUpdate(double delta)
+    public void preUpdate(float delta)
     {
         update(delta);
         updateChildren(delta);
     }
 
-    public void update(double delta)
+    public void update(float delta)
     {
     }
 
-    public void updateChildren(double delta)
+    public void updateChildren(float delta)
     {
         for (int i = 0; i < children.size(); i++)
         {
@@ -75,17 +75,17 @@ public class SceneNode
         }
     }
 
-    public void preRender(double delta, Batcher batcher)
+    public void preRender(float delta, Batcher batcher)
     {
         render(delta, batcher);
         renderChildren(delta, batcher);
     }
 
-    public void render(double delta, Batcher batcher)
+    public void render(float delta, Batcher batcher)
     {
     }
 
-    public void renderChildren(double delta, Batcher batcher)
+    public void renderChildren(float delta, Batcher batcher)
     {
         for (int i = 0; i < children.size(); i++)
         {

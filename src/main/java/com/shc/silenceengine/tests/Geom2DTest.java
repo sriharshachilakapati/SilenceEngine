@@ -7,7 +7,6 @@ import com.shc.silenceengine.geom2d.Rectangle;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.OrthoCam;
-import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.utils.*;
 
@@ -35,7 +34,7 @@ public class Geom2DTest extends Game
         circle2 = new Circle(500, 100, 50);
     }
 
-    public void update(double delta)
+    public void update(float delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
@@ -54,7 +53,7 @@ public class Geom2DTest extends Game
         rectangle2.rotate(-1);
     }
 
-    public void render(double delta, Batcher batcher)
+    public void render(float delta, Batcher batcher)
     {
         cam.apply();
 

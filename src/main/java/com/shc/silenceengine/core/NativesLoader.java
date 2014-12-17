@@ -94,7 +94,6 @@ class NativesLoader
             throw new IllegalArgumentException("The path has to be absolute! (Start with a '/' character)");
 
         // Get the InputStream from path
-        InputStream is = NativesLoader.class.getResourceAsStream(path);
 
         // Get the filename from path
         String[] parts    = path.replaceAll("\\\\", "/").split("/");
@@ -110,26 +109,20 @@ class NativesLoader
             tmp.deleteOnExit();
 
             // Create the OutputStream
-            FileOutputStream os = new FileOutputStream(tmp);
 
             // Extract the native library
             byte[] buffer = new byte[1024];
             int readBytes;
 
-            try
+            try (FileOutputStream os = new FileOutputStream(tmp); InputStream is = NativesLoader.class.getResourceAsStream(path))
             {
                 while ((readBytes = is.read(buffer)) != -1)
                     os.write(buffer, 0, readBytes);
             }
-            finally
-            {
-                os.close();
-                is.close();
-            }
         }
         catch (Exception e)
         {
-            // Error again, arrgh.. Throw an exception
+            // Error again, :( Throw an exception
             throw new SilenceException(e.getMessage());
         }
     }

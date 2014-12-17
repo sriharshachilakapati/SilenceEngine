@@ -25,27 +25,33 @@ public class GridSceneColliderTest extends Game
     public void init()
     {
         Display.setTitle("GridSceneCollider Test");
+        Display.setFullScreen(true);
+        Display.hideCursor();
+
         cam = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
 
         // Create and initialize the scene
         scene = new Scene();
-        for (int x = 48; x < 480; x += 48)
+        for (int i = 0; i < 20; i++)
         {
-            scene.addChild(new Box(new Vector2(x, 48)));
-            scene.addChild(new Box(new Vector2(x, 380)));
+            scene.addChild(new Box(new Vector2(48 * i, 0)));
+            scene.addChild(new Box(new Vector2(0, 48 * i)));
+
+            scene.addChild(new Box(new Vector2(48 * i, 48 * 19)));
+            scene.addChild(new Box(new Vector2(48 * 19, 48 * i)));
         }
-        scene.addChild(new Player(new Vector2(400, 300)));
+        scene.addChild(new Player(new Vector2(Display.getWidth()/2 - 24, Display.getHeight()/2 - 24)));
         scene.init();
 
         // Create the SceneCollider and set the scene
-        collider = new GridSceneCollider(640, 480, 48, 48);
+        collider = new GridSceneCollider(Display.getWidth(), Display.getHeight(), 48, 48);
         collider.setScene(scene);
 
         // Register entities for collisions
         collider.register(Player.class, Box.class);
     }
 
-    public void update(double delta)
+    public void update(float delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
@@ -55,7 +61,7 @@ public class GridSceneColliderTest extends Game
         collider.checkCollisions();
     }
 
-    public void render(double delta, Batcher batcher)
+    public void render(float delta, Batcher batcher)
     {
         cam.apply();
         scene.render(delta, batcher);
@@ -76,7 +82,7 @@ public class GridSceneColliderTest extends Game
         new GridSceneColliderTest().start();
     }
 
-    public static class Box extends Entity2D
+    public class Box extends Entity2D
     {
         public Box(Vector2 position)
         {
@@ -84,14 +90,14 @@ public class GridSceneColliderTest extends Game
             setPosition(position);
         }
 
-        public void render(double delta, Batcher batcher)
+        public void render(float delta, Batcher batcher)
         {
             RenderUtils.fillPolygon(batcher, getPolygon(), Color.CORN_FLOWER_BLUE);
             RenderUtils.tracePolygon(batcher, getPolygon(), Color.RED);
         }
     }
 
-    public static class Player extends Entity2D
+    public class Player extends Entity2D
     {
         private Color color;
 
@@ -103,29 +109,33 @@ public class GridSceneColliderTest extends Game
             color = Color.random();
         }
 
-        public void update(double delta)
+        public void update(float delta)
         {
+
             float speed = 4;
 
             if (Keyboard.isPressed(Keyboard.KEY_UP))
-                getVelocity().y -= speed;
+                getVelocity().y = -speed;
 
             if (Keyboard.isPressed(Keyboard.KEY_DOWN))
-                getVelocity().y += speed;
+                getVelocity().y = +speed;
 
             if (Keyboard.isPressed(Keyboard.KEY_LEFT))
-                getVelocity().x -= speed;
+                getVelocity().x = -speed;
 
             if (Keyboard.isPressed(Keyboard.KEY_RIGHT))
-                getVelocity().x += speed;
+                getVelocity().x = +speed;
+
+            cam.center(getPolygon().getCenter());
         }
 
         public void collision(Entity2D other)
         {
             color = Color.random();
+            bounce(other);
         }
 
-        public void render(double delta, Batcher batcher)
+        public void render(float delta, Batcher batcher)
         {
             RenderUtils.fillPolygon(batcher, getPolygon(), color);
             RenderUtils.tracePolygon(batcher, getPolygon(), Color.GREEN);

@@ -43,10 +43,17 @@ public class TrueTypeFont
 
     public TrueTypeFont(InputStream is, boolean antiAlias)
     {
+        this (is, STYLE_NORMAL, 18, antiAlias);
+    }
+
+    public TrueTypeFont(InputStream is, int style, int size, boolean antiAlias)
+    {
         try
         {
             this.awtFont = Font.createFont(Font.TRUETYPE_FONT, is);
             this.antiAlias = antiAlias;
+
+            awtFont = awtFont.deriveFont(style, (float) size);
 
             createSet();
         }

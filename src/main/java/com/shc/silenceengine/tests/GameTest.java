@@ -19,7 +19,7 @@ public class GameTest extends Game
     }
 
     @Override
-    public void update(double delta)
+    public void update(float delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
@@ -36,7 +36,7 @@ public class GameTest extends Game
     }
 
     @Override
-    public void render(double delta, Batcher batcher)
+    public void render(float delta, Batcher batcher)
     {
         batcher.begin();
         {

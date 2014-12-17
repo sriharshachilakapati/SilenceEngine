@@ -12,7 +12,7 @@ import static org.lwjgl.opengl.GL30.*;
  *
  * @author Sri Harsha Chilakapati
  */
-public class VertexArrayObject
+public class VertexArray
 {
     private int     id;
     private boolean disposed;
@@ -20,7 +20,7 @@ public class VertexArrayObject
     /**
      * Constructs a VertexArrayObject.
      */
-    public VertexArrayObject()
+    public VertexArray()
     {
         id = glGenVertexArrays();
         GLError.check();
@@ -70,7 +70,7 @@ public class VertexArrayObject
      *               GL_FIXED, or GL_FLOAT
      * @param buffer The VertexBufferObject to point towards the location
      */
-    public void pointAttribute(int index, int count, int type, VertexBufferObject buffer)
+    public void pointAttribute(int index, int count, int type, BufferObject buffer)
     {
         pointAttribute(index, count, type, false, 0, 0, buffer);
     }
@@ -86,7 +86,7 @@ public class VertexArrayObject
      * @param normalized Specifies whether the values in the buffer data should be normalized
      * @param buffer     The VertexBufferObject to point towards the location
      */
-    public void pointAttribute(int index, int count, int type, boolean normalized, VertexBufferObject buffer)
+    public void pointAttribute(int index, int count, int type, boolean normalized, BufferObject buffer)
     {
         pointAttribute(index, count, type, normalized, 0, 0, buffer);
     }
@@ -106,7 +106,7 @@ public class VertexArrayObject
      * @param offset     Specifies the index of the first component in the array.
      * @param buffer     The VertexBufferObject to point towards the location
      */
-    public void pointAttribute(int index, int count, int type, boolean normalized, int stride, long offset, VertexBufferObject buffer)
+    public void pointAttribute(int index, int count, int type, boolean normalized, int stride, long offset, BufferObject buffer)
     {
         bind();
         buffer.bind();

@@ -24,17 +24,16 @@ public class TrueTypeFontTest extends Game
         cam = new OrthoCam();
 
         logo = Texture.fromResource("resources/logo.png");
-
         font = new TrueTypeFont("Comic Sans MS", TrueTypeFont.STYLE_ITALIC | TrueTypeFont.STYLE_BOLD, 36);
     }
 
-    public void update(double delta)
+    public void update(float delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
     }
 
-    public void render(double delta, Batcher batcher)
+    public void render(float delta, Batcher batcher)
     {
         // Draw some text: Warning, requires OrthoCam
         cam.apply();
@@ -44,7 +43,7 @@ public class TrueTypeFontTest extends Game
         font.drawString(batcher, "Colored Text!!", 10, 10 + font.getHeight(), Color.RED);
         font.drawString(batcher, "Multi line\nText!!", 10, 10 + 2 * font.getHeight(), Color.GOLD);
 
-        String fpsString = "FPS: " + getFps();
+        String fpsString = "FPS: " + getFPS();
         font.drawString(batcher, fpsString, Display.getWidth() - font.getWidth(fpsString) - 10, 10, Color.CORN_FLOWER_BLUE);
 
         batcher.begin();

@@ -32,7 +32,7 @@ public class CameraTest extends Game
         Display.hideCursor();
     }
 
-    public void update(double delta)
+    public void update(float delta)
     {
         transform.rotate(Vector3.AXIS_Y, (float) (4 * delta));
 
@@ -79,7 +79,7 @@ public class CameraTest extends Game
         }
     }
 
-    public void render(double delta, Batcher batcher)
+    public void render(float delta, Batcher batcher)
     {
         texture.bind();
 

@@ -3,17 +3,29 @@ package com.shc.silenceengine.geom2d;
 import com.shc.silenceengine.math.Vector2;
 
 /**
+ * Represents a Circle Polygon.
+ *
  * @author Sri Harsha Chilakapati
  */
 public class Circle extends Polygon
 {
     private float radius;
 
+    /**
+     * Constructs a point-circle, with center as origin and radius as 1
+     */
     public Circle()
     {
-        this(0, 0, 1); // Point-circle
+        this(0, 0, 1);
     }
 
+    /**
+     * Constructs a circle with a center position and a radius.
+     *
+     * @param x      The center x-coordinate
+     * @param y      The center y-coordinate
+     * @param radius The radius of the circle
+     */
     public Circle(float x, float y, float radius)
     {
         this.radius = radius;
@@ -22,6 +34,9 @@ public class Circle extends Polygon
         setCenter(new Vector2(x, y));
     }
 
+    /**
+     * Updates the vertices of the circle. Regenerates them.
+     */
     private void updateVertices()
     {
         float numSegments = 10 * radius;
@@ -45,6 +60,12 @@ public class Circle extends Polygon
         }
     }
 
+    /**
+     * Checks for intersection between this circle and another polygon.
+     *
+     * @param p The other Polygon to test for intersection.
+     * @return True if intersects, else False.
+     */
     public boolean intersects(Polygon p)
     {
         if (p instanceof Circle)
@@ -63,6 +84,11 @@ public class Circle extends Polygon
             return super.intersects(p);
     }
 
+    /**
+     * Checks if a point exists inside this circle.
+     * @param p The point to check
+     * @return True if inside, else False.
+     */
     public boolean contains(Vector2 p)
     {
         return (((getX() - p.getX()) * (getX() - p.getX())) + ((getY() - p.getY()) * (getY() - p.getY()))) < radius * radius;

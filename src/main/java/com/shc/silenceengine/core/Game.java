@@ -24,10 +24,10 @@ import static org.lwjgl.opengl.GL11.*;
  *         public void init() {}
  *
  *         // Update game logic
- *         public void update(double delta) {}
+ *         public void update(float delta) {}
  *
  *         // Render to screen
- *         public void render(double delta, Batcher batcher) {}
+ *         public void render(float delta, Batcher batcher) {}
  *
  *         // Handle window resize event
  *         public void resize() {}
@@ -90,7 +90,7 @@ public class Game
 
     // Game logic rate
     private static int ups       = 60;
-    private static int targetUps = 60;
+    private static int targetUPS = 60;
 
     // Game frame rate
     private static int fps = 60;
@@ -112,7 +112,7 @@ public class Game
      *
      * @param delta It is the time taken by the last update (in ms)
      */
-    public void update(double delta)
+    public void update(float delta)
     {
     }
 
@@ -122,7 +122,7 @@ public class Game
      * @param delta   It is the time taken by the last render (in ms)
      * @param batcher The Batcher to batch OpenGL calls
      */
-    public void render(double delta, Batcher batcher)
+    public void render(float delta, Batcher batcher)
     {
     }
 
@@ -149,26 +149,33 @@ public class Game
     {
         running = true;
 
+        // Create and show the display
         Display.create();
         Display.show();
 
+        // Initialize the Game
         init();
 
-        final double secondsPerFrame = 1.0 / targetUps;
+        // GameLoop constants
+        final double secondsPerFrame = 1.0 / targetUPS;
         final double maxFrameSkips = 5;
 
+        // Timing mechanism
         double previous;
         double current;
         double elapsed;
         double lag;
 
+        // FPS and UPS calculation timing
         double lastUPSUpdate;
         double lastFPSUpdate;
 
+        // Counters for updates and frames
         int updatesProcessed;
         int framesProcessed;
         int skippedFrames;
 
+        // Initial values
         lag = 0;
         previous = TimeUtils.currentSeconds();
 
@@ -187,16 +194,18 @@ public class Game
 
             lag += elapsed;
 
+            // Do updates in small steps playing catchup
             while (lag >= secondsPerFrame && skippedFrames < maxFrameSkips)
             {
                 Keyboard.startEventFrame();
 
-                update(elapsed);
+                update((float) elapsed);
 
                 Keyboard.clearEventFrame();
 
                 updatesProcessed++;
 
+                // If a second has passed, update the UPS counter
                 if (current - lastUPSUpdate >= 1000)
                 {
                     ups = updatesProcessed;
@@ -208,24 +217,28 @@ public class Game
                 skippedFrames++;
             }
 
+            // Check if the Game should end
             if (Display.isCloseRequested() || !running)
                 break;
 
+            // The Display was resized
             if (Display.wasResized())
             {
                 GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
-
                 resize();
             }
 
+            // Clear the screen
             GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             Texture.setActiveUnit(0);
 
-            render(elapsed, batcher);
+            // Render the Game
+            render((float) elapsed, batcher);
             GLError.check();
 
             framesProcessed++;
 
+            // If a second is passed, update FPS value
             if (current - lastFPSUpdate >= 1000)
             {
                 fps = framesProcessed;
@@ -235,10 +248,14 @@ public class Game
 
             previous = current;
 
+            // Update the display and swap the buffers
             Display.update();
         }
 
+        // Dispose the Batcher
         batcher.dispose();
+
+        // Call dispose() and destroy the Display
         dispose();
         Display.destroy();
     }
@@ -252,18 +269,24 @@ public class Game
     }
 
     /**
-     * @return number of frames rendered in last second
+     * @return number of updates done in last second
      */
-    public static int getUps()
+    public static int getUPS()
     {
         return ups;
     }
 
-    public static int getFps() { return fps; }
+    /**
+     * @return number of frames rendered in last second
+     */
+    public static int getFPS() { return fps; }
 
-    public static int getTargetUps()
+    /**
+     * @return The target updates per second
+     */
+    public static int getTargetUPS()
     {
-        return targetUps;
+        return targetUPS;
     }
 
     /**
@@ -274,16 +297,29 @@ public class Game
         return running;
     }
 
-    public static void setTargetUps(int targetUps)
+    /**
+     * Sets the target logic speed of the Game.
+     *
+     * @param targetUPS The number of steps the game should try to make in a second
+     */
+    public static void setTargetUPS(int targetUPS)
     {
-        Game.targetUps = targetUps;
+        Game.targetUPS = targetUPS;
     }
 
+    /**
+     * @return The Global Batcher of the Game
+     */
     public static Batcher getBatcher()
     {
         return batcher;
     }
 
+    /**
+     * Sets the batcher to be passed to the render() method
+     *
+     * @param batcher The Batcher instance to use
+     */
     public static void setBatcher(Batcher batcher)
     {
         Game.batcher = batcher;

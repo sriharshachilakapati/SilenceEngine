@@ -3,7 +3,6 @@ package com.shc.silenceengine.core;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
-import com.shc.silenceengine.graphics.opengl.GLError;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
@@ -59,6 +58,7 @@ public final class Display
     // Private flags to maintain the Display
     private static boolean resized    = false;
     private static boolean fullScreen = false;
+    private static boolean resizable  = true;
 
     // Clear color
     private static Color clearColor = Color.BLACK;
@@ -88,16 +88,17 @@ public final class Display
      * the window with windowing hints, a size, a title, fullscreen or not, parent window
      * to share the context, and whether initially visible or not.
      *
-     * @param width    The width of the window
-     * @param height   The height of the window
-     * @param title    The title of the window
-     * @param monitor  The monitor to create the window on
-     * @param parent   The parent window, if the context needs to be shared
-     * @param visible  Is the window visible upon creation?
+     * @param width     The width of the window
+     * @param height    The height of the window
+     * @param title     The title of the window
+     * @param monitor   The monitor to create the window on
+     * @param parent    The parent window, if the context needs to be shared
+     * @param visible   Is the window visible upon creation?
+     * @param resizable Is the window resizable?
      *
      * @return A window handle. (GLFWWindow* as in C++, but this is Java, so a long)
      */
-    private static long createWindow(int width, int height, String title, long monitor, long parent, boolean visible)
+    private static long createWindow(int width, int height, String title, long monitor, long parent, boolean visible, boolean resizable)
     {
         // Window Hints for OpenGL context
         glfwWindowHint(GLFW_SAMPLES, 4);
@@ -106,6 +107,7 @@ public final class Display
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_VISIBLE, visible ? GL_TRUE : GL_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, resizable ? GL_TRUE : GL_FALSE);
 
         // Create the window
         long window = glfwCreateWindow(width, height, title, monitor, parent);
@@ -192,7 +194,7 @@ public final class Display
             throw new SilenceException("Error creating Display. Your system is unsupported.");
 
         // Create the window
-        displayHandle = createWindow(width, height, title, NULL, NULL, false);
+        displayHandle = createWindow(width, height, title, NULL, NULL, false, resizable);
         centerOnScreen();
     }
 
@@ -316,6 +318,12 @@ public final class Display
         glfwSetWindowSize(displayHandle, width, height);
     }
 
+    /**
+     * Sets the size of the Display window.
+     *
+     * @param width  The width of the Display window
+     * @param height The height of the Display window
+     */
     public static void setSize(int width, int height)
     {
         Display.width = width;
@@ -324,6 +332,9 @@ public final class Display
         glfwSetWindowSize(displayHandle, width, height);
     }
 
+    /**
+     * @return The size of the current window as a Vector2
+     */
     public static Vector2 getSize()
     {
         return new Vector2(width, height);
@@ -421,7 +432,7 @@ public final class Display
         }
 
         // Create new window
-        long fsDisplayHandle = createWindow(width, height, title, fullScreen ? glfwGetPrimaryMonitor() : NULL, displayHandle, true);
+        long fsDisplayHandle = createWindow(width, height, title, fullScreen ? glfwGetPrimaryMonitor() : NULL, displayHandle, true, resizable);
         glfwDestroyWindow(displayHandle);
         displayHandle = fsDisplayHandle;
 
@@ -430,6 +441,28 @@ public final class Display
 
         // Make an update
         update();
+    }
+
+    public static void setResizable(boolean resizable)
+    {
+        if (Display.resizable == resizable)
+            return;
+
+        Display.resizable = resizable;
+
+        long newDisplay = createWindow(width, height, title, fullScreen ? glfwGetPrimaryMonitor() : NULL, displayHandle, fullScreen, resizable);
+        glfwDestroyWindow(displayHandle);
+        displayHandle = newDisplay;
+
+        setPosition(posX, posY);
+        show();
+
+        update();
+    }
+
+    public static boolean isResizable()
+    {
+        return resizable;
     }
 
     /**

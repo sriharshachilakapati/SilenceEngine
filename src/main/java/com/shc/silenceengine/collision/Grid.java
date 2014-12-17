@@ -2,6 +2,7 @@ package com.shc.silenceengine.collision;
 
 import com.shc.silenceengine.entity.Entity2D;
 import com.shc.silenceengine.geom2d.Rectangle;
+import com.shc.silenceengine.utils.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,8 @@ import java.util.List;
 /**
  * A Grid based collision resolver. Reduces the number of collision
  * checks and increases performance. This class implements the broad
- * phase collision detection.
+ * phase collision detection. Though this class is public, you should
+ * be using the SceneCollider2D interface with the scene.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -40,25 +42,21 @@ public class Grid
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
 
-        // Calculate rows and columns
         rows = (mapHeight + cellHeight - 1) / cellHeight;
         cols = (mapWidth + cellWidth - 1) / cellWidth;
 
-        // Create the grid
         grid = new ArrayList<>();
 
-        // Create the cells
         for (int i = 0; i < cols; i++)
         {
-            grid.add(new ArrayList<List<Entity2D>>());
+            grid.add(new ArrayList<>());
 
             for (int j = 0; j < rows; j++)
             {
-                grid.get(i).add(new ArrayList<Entity2D>());
+                grid.get(i).add(new ArrayList<>());
             }
         }
 
-        // Create the retrieve list
         retrieveList = new ArrayList<>();
 
         clear();
@@ -95,10 +93,10 @@ public class Grid
     {
         Rectangle bounds = entity.getPolygon().getBounds();
 
-        int topLeftX = Math.max(0, (int) (bounds.getX()) / cellWidth);
-        int topLeftY = Math.max(0, (int) (bounds.getY()) / cellHeight);
-        int bottomRightX = Math.min(cols - 1, (int) (bounds.getX() + bounds.getWidth() - 1) / cellWidth);
-        int bottomRightY = Math.min(rows - 1, (int) (bounds.getY() + bounds.getHeight() - 1) / cellHeight);
+        int topLeftX = MathUtils.clamp((int) (bounds.getX()) / cellWidth, 0, cols-1);
+        int topLeftY = MathUtils.clamp((int) (bounds.getY()) / cellHeight, 0, rows-1);
+        int bottomRightX = MathUtils.clamp((int) (bounds.getX() + bounds.getWidth() - 1) / cellWidth, 0, cols-1);
+        int bottomRightY = MathUtils.clamp((int) (bounds.getY() + bounds.getHeight() - 1) / cellHeight, 0, rows-1);
 
         for (int x = topLeftX; x <= bottomRightX; x++)
         {
@@ -109,16 +107,23 @@ public class Grid
         }
     }
 
+    /**
+     * Retrieves a list of collidable entities in the grid that are
+     * likely to collide with the given entity.
+     *
+     * @param entity The entity to test collisions with.
+     * @return The list of collidable entities
+     */
     public List<Entity2D> retrieve(Entity2D entity)
     {
         retrieveList.clear();
 
         Rectangle bounds = entity.getPolygon().getBounds();
 
-        int topLeftX = Math.max(0, (int) (bounds.getX()) / cellWidth);
-        int topLeftY = Math.max(0, (int) (bounds.getY()) / cellHeight);
-        int bottomRightX = Math.min(cols - 1, (int) (bounds.getX() + bounds.getWidth() - 1) / cellWidth);
-        int bottomRightY = Math.min(rows - 1, (int) (bounds.getY() + bounds.getHeight() - 1) / cellHeight);
+        int topLeftX = MathUtils.clamp((int) (bounds.getX()) / cellWidth, 0, cols - 1);
+        int topLeftY = MathUtils.clamp((int) (bounds.getY()) / cellHeight, 0, rows - 1);
+        int bottomRightX = MathUtils.clamp((int) (bounds.getX() + bounds.getWidth() - 1) / cellWidth, 0, cols - 1);
+        int bottomRightY = MathUtils.clamp((int) (bounds.getY() + bounds.getHeight() - 1) / cellHeight, 0, rows - 1);
 
         for (int x = topLeftX; x <= bottomRightX; x++)
         {
@@ -137,14 +142,18 @@ public class Grid
         return retrieveList;
     }
 
+    /**
+     * Removes an entity from the Grid
+     * @param entity The entity to be removed
+     */
     public void remove(Entity2D entity)
     {
         Rectangle bounds = entity.getPolygon().getBounds();
 
-        int topLeftX = Math.max(0, (int) (bounds.getX()) / cellWidth);
-        int topLeftY = Math.max(0, (int) (bounds.getY()) / cellHeight);
-        int bottomRightX = Math.min(cols - 1, (int) (bounds.getX() + bounds.getWidth() - 1) / cellWidth);
-        int bottomRightY = Math.min(rows - 1, (int) (bounds.getY() + bounds.getHeight() - 1) / cellHeight);
+        int topLeftX = MathUtils.clamp((int) (bounds.getX()) / cellWidth, 0, cols - 1);
+        int topLeftY = MathUtils.clamp((int) (bounds.getY()) / cellHeight, 0, rows - 1);
+        int bottomRightX = MathUtils.clamp((int) (bounds.getX() + bounds.getWidth() - 1) / cellWidth, 0, cols - 1);
+        int bottomRightY = MathUtils.clamp((int) (bounds.getY() + bounds.getHeight() - 1) / cellHeight, 0, rows - 1);
 
         for (int x = topLeftX; x <= bottomRightX; x++)
         {

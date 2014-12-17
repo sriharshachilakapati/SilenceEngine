@@ -24,36 +24,46 @@ public class QuadTreeSceneColliderTest extends Game
 
     public void init()
     {
+        Display.setTitle("QuadTreeCollider Test");
+        Display.setFullScreen(true);
+        Display.hideCursor();
+
+        Display.setClearColor(Color.DARK_SLATE_GRAY);
+
         cam = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
 
         // Create and initialize the scene
         scene = new Scene();
-        for (int x = 48; x < 480; x += 48)
+        for (int i = 0; i < 20; i++)
         {
-            scene.addChild(new Box(new Vector2(x, 48)));
-            scene.addChild(new Box(new Vector2(x, 380)));
+            scene.addChild(new Box(new Vector2(48 * i, 0)));
+            scene.addChild(new Box(new Vector2(0, 48 * i)));
+
+            scene.addChild(new Box(new Vector2(48 * i, 48 * 19)));
+            scene.addChild(new Box(new Vector2(48 * 19, 48 * i)));
         }
-        scene.addChild(new Player(new Vector2(400, 300)));
+        scene.addChild(new Player(new Vector2(Display.getWidth() / 2 - 24, Display.getHeight() / 2 - 24)));
         scene.init();
 
-        // Create the collider
-        collider = new QuadTreeSceneCollider(640, 480);
+        // Create the SceneCollider and set the scene
+        collider = new QuadTreeSceneCollider(Display.getWidth(), Display.getHeight());
         collider.setScene(scene);
 
-        // Register for collisions between entities
+        // Register entities for collisions
         collider.register(Player.class, Box.class);
     }
 
-    public void update(double delta)
+    public void update(float delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
 
+        // Update the scene and check for collisions
         scene.update(delta);
         collider.checkCollisions();
     }
 
-    public void render(double delta, Batcher batcher)
+    public void render(float delta, Batcher batcher)
     {
         cam.apply();
         scene.render(delta, batcher);
@@ -74,7 +84,7 @@ public class QuadTreeSceneColliderTest extends Game
         new QuadTreeSceneColliderTest().start();
     }
 
-    public static class Box extends Entity2D
+    public class Box extends Entity2D
     {
         public Box(Vector2 position)
         {
@@ -82,14 +92,14 @@ public class QuadTreeSceneColliderTest extends Game
             setPosition(position);
         }
 
-        public void render(double delta, Batcher batcher)
+        public void render(float delta, Batcher batcher)
         {
             RenderUtils.fillPolygon(batcher, getPolygon(), Color.CORN_FLOWER_BLUE);
             RenderUtils.tracePolygon(batcher, getPolygon(), Color.RED);
         }
     }
 
-    public static class Player extends Entity2D
+    public class Player extends Entity2D
     {
         private Color color;
 
@@ -101,37 +111,36 @@ public class QuadTreeSceneColliderTest extends Game
             color = Color.random();
         }
 
-        public void update(double delta)
+        public void update(float delta)
         {
-            Vector2 velocity = new Vector2();
 
             float speed = 4;
 
             if (Keyboard.isPressed(Keyboard.KEY_UP))
-                velocity.y -= speed;
+                getVelocity().y = -speed;
 
             if (Keyboard.isPressed(Keyboard.KEY_DOWN))
-                velocity.y += speed;
+                getVelocity().y = +speed;
 
             if (Keyboard.isPressed(Keyboard.KEY_LEFT))
-                velocity.x -= speed;
+                getVelocity().x = -speed;
 
             if (Keyboard.isPressed(Keyboard.KEY_RIGHT))
-                velocity.x += speed;
+                getVelocity().x = +speed;
 
-            setVelocity(velocity);
+            cam.center(getPolygon().getCenter());
         }
 
         public void collision(Entity2D other)
         {
             color = Color.random();
+            bounce(other);
         }
 
-        public void render(double delta, Batcher batcher)
+        public void render(float delta, Batcher batcher)
         {
             RenderUtils.fillPolygon(batcher, getPolygon(), color);
             RenderUtils.tracePolygon(batcher, getPolygon(), Color.GREEN);
         }
     }
 }
-
