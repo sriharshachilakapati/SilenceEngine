@@ -77,11 +77,10 @@ public class Entity2D extends SceneNode
 
         Entity2D entity2D = (Entity2D) o;
 
-        if (!polygon.equals(entity2D.polygon)) return false;
-        if (!position.equals(entity2D.position)) return false;
-        if (!velocity.equals(entity2D.velocity)) return false;
+        return polygon.equals(entity2D.polygon)   &&
+               position.equals(entity2D.position) &&
+               velocity.equals(entity2D.velocity);
 
-        return true;
     }
 
     @Override

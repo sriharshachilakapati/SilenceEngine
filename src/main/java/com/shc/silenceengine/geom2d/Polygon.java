@@ -13,7 +13,7 @@ public class Polygon
 {
     private Vector2            position;
     private Vector2            center;
-    private ArrayList<Vector2> vertices;
+    private List<Vector2>      vertices;
     private float              rotation;
 
     private float minX;
@@ -23,43 +23,32 @@ public class Polygon
 
     private Rectangle bounds;
 
-    public Polygon(Vector2 position, Vector2... vertices)
-    {
-        this(position, Arrays.asList(vertices));
-    }
-
-    public Polygon(Vector2 position, List<Vector2> vertices)
-    {
-        this.position = position;
-        this.center   = new Vector2();
-        this.vertices = new ArrayList<>();
-        this.vertices.addAll(vertices);
-    }
-
     public Polygon()
     {
         this.vertices = new ArrayList<>();
         this.position = new Vector2();
         this.center   = new Vector2();
+
+        clearVertices();
     }
 
     protected void clearVertices()
     {
         vertices.clear();
 
-        minX = minY = Float.MAX_VALUE;
-        maxX = maxY = Float.MIN_VALUE;
+        minX = minY = Float.POSITIVE_INFINITY;
+        maxX = maxY = Float.NEGATIVE_INFINITY;
     }
 
     protected void addVertex(Vector2 v)
     {
         vertices.add(v);
 
-        minX = Math.min(v.getX(), minX);
-        minY = Math.min(v.getY(), minY);
+        minX = Math.min(v.x, minX);
+        minY = Math.min(v.y, minY);
 
-        maxX = Math.max(v.getX(), maxX);
-        maxY = Math.max(v.getY(), maxX);
+        maxX = Math.max(v.x, maxX);
+        maxY = Math.max(v.y, maxY);
     }
 
     public void rotate(float angle)
@@ -80,8 +69,8 @@ public class Polygon
 
         float minX, maxX, minY, maxY;
 
-        minX = minY = Float.MAX_VALUE;
-        maxX = maxY = Float.MIN_VALUE;
+        minX = minY = Float.POSITIVE_INFINITY;
+        maxX = maxY = Float.NEGATIVE_INFINITY;
 
         for (Vector2 vertex : vertices)
         {
@@ -118,8 +107,8 @@ public class Polygon
 
                 Vector2 normal = new Vector2(p2.getY() - p1.getY(), p1.getX() - p2.getX());
 
-                double minA = Double.MAX_VALUE;
-                double maxA = Double.MIN_VALUE;
+                double minA = Double.POSITIVE_INFINITY;
+                double maxA = Double.NEGATIVE_INFINITY;
                 double minB = minA;
                 double maxB = maxA;
 
@@ -168,7 +157,11 @@ public class Polygon
 
     public Polygon copy()
     {
-        return new Polygon(position, vertices);
+        Polygon p = new Polygon();
+        p.setPosition(getPosition());
+        vertices.forEach(p::addVertex);
+
+        return p;
     }
 
     public int vertexCount()
@@ -176,7 +169,7 @@ public class Polygon
         return vertices.size();
     }
 
-    public ArrayList<Vector2> getVertices()
+    public List<Vector2> getVertices()
     {
         return vertices;
     }

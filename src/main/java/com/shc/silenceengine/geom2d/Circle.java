@@ -18,8 +18,8 @@ public class Circle extends Polygon
     {
         this.radius = radius;
 
-        setCenter(new Vector2(x, y));
         updateVertices();
+        setCenter(new Vector2(x, y));
     }
 
     private void updateVertices()

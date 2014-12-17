@@ -19,8 +19,8 @@ public class Rectangle extends Polygon
         this.width  = width;
         this.height = height;
 
-        setPosition(new Vector2(x, y));
         updateVertices();
+        setPosition(new Vector2(x, y));
     }
 
     private void updateVertices()

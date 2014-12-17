@@ -17,7 +17,7 @@ public final class RenderUtils
 
     public static void tracePolygon(Batcher b, Polygon polygon)
     {
-        tracePolygon(b, polygon, Color.TRANSPARENT);
+        tracePolygon(b, polygon, Color.WHITE);
     }
 
     public static void tracePolygon(Batcher b, Polygon polygon, Color color)
@@ -35,7 +35,7 @@ public final class RenderUtils
 
     public static void fillPolygon(Batcher b, Polygon polygon)
     {
-        fillPolygon(b, polygon, Color.TRANSPARENT);
+        fillPolygon(b, polygon, Color.WHITE);
     }
 
     public static void fillPolygon(Batcher b, Polygon polygon, Color color)

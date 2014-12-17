@@ -115,6 +115,12 @@ public class Vector2
         this.y = y;
     }
 
+    public void set(float x, float y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
     @Override
     public String toString()
     {
