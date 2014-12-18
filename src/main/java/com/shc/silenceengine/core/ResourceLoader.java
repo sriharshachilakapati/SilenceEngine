@@ -74,6 +74,7 @@ public final class ResourceLoader
     public void startLoading()
     {
         Display.setResizable(false);
+        renderProgress();
 
         for (String texName : texturesToLoad.keySet())
         {
@@ -134,72 +135,88 @@ public final class ResourceLoader
         return name + "," + style + "," + size;
     }
 
-    public void renderProgress()
+    // How much progress that is rendered, used to smooth the
+    // transition in the progressbar.
+    private float renderedProgress;
+
+    private void renderProgress()
     {
-        logo.bind();
-
-        GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
-
-        Batcher batcher = Game.getBatcher();
-
-        // Draw the logo
-        batcher.begin(Primitive.TRIANGLE_STRIP);
-        {
-            batcher.vertex(-0.5f, +0.5f);
-            batcher.texCoord(0, 0);
-
-            batcher.vertex(+0.5f, +0.5f);
-            batcher.texCoord(1, 0);
-
-            batcher.vertex(-0.5f, -0.5f);
-            batcher.texCoord(0, 1);
-
-            batcher.vertex(+0.5f, -0.5f);
-            batcher.texCoord(1, 1);
-        }
-        batcher.end();
-
-        Texture.EMPTY.bind();
-
-        // Draw the progressbar
-        batcher.begin(Primitive.LINE_LOOP);
-        {
-            batcher.vertex(-0.8f, -0.7f);
-            batcher.color(Color.GREEN);
-
-            batcher.vertex(+0.8f, -0.7f);
-            batcher.color(Color.GREEN);
-
-            batcher.vertex(+0.8f, -0.7f);
-            batcher.color(Color.GREEN);
-
-            batcher.vertex(-0.8f, -0.7f);
-            batcher.color(Color.GREEN);
-        }
-        batcher.end();
-
         float percentage = 100 * numLoaded / (fontsToLoad.size() + texturesToLoad.size());
 
-        // Bring percentage to a scale (-0.8f to +0.8f)
-        percentage = ((percentage * 1.6f) / 100) - 0.8f;
-
-        batcher.begin(Primitive.TRIANGLE_STRIP);
+        while (renderedProgress < percentage)
         {
-            batcher.vertex(-0.8f, -0.6f);
-            batcher.color(Color.BLUE);
+            logo.bind();
+            renderedProgress = MathUtils.clamp(++renderedProgress, 0, 100);
 
-            batcher.vertex(percentage, -0.6f);
-            batcher.color(Color.GRAY);
+            // Bring percentage to a scale (-0.8f to +0.8f)
+            float actualPercentage = ((renderedProgress * 1.6f) / 100) - 0.8f;
 
-            batcher.vertex(-0.8f, -0.7f);
-            batcher.color(Color.BLUE);
+            GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
 
-            batcher.vertex(percentage, -0.7f);
-            batcher.color(Color.GRAY);
+            Batcher batcher = Game.getBatcher();
+
+            // Draw the logo
+            batcher.begin(Primitive.TRIANGLE_STRIP);
+            {
+                batcher.vertex(-0.5f, +0.5f);
+                batcher.texCoord(0, 0);
+
+                batcher.vertex(+0.5f, +0.5f);
+                batcher.texCoord(1, 0);
+
+                batcher.vertex(-0.5f, -0.5f);
+                batcher.texCoord(0, 1);
+
+                batcher.vertex(+0.5f, -0.5f);
+                batcher.texCoord(1, 1);
+            }
+            batcher.end();
+
+            Texture.EMPTY.bind();
+
+            // Draw the progressbar
+            batcher.begin(Primitive.LINE_LOOP);
+            {
+                batcher.vertex(-0.8f, -0.7f);
+                batcher.color(Color.GREEN);
+
+                batcher.vertex(+0.8f, -0.7f);
+                batcher.color(Color.GREEN);
+
+                batcher.vertex(+0.8f, -0.7f);
+                batcher.color(Color.GREEN);
+
+                batcher.vertex(-0.8f, -0.7f);
+                batcher.color(Color.GREEN);
+            }
+            batcher.end();
+
+            batcher.begin(Primitive.TRIANGLE_STRIP);
+            {
+                batcher.vertex(-0.8f, -0.6f);
+                batcher.color(Color.BLUE);
+
+                batcher.vertex(actualPercentage, -0.6f);
+                batcher.color(Color.GRAY);
+
+                batcher.vertex(-0.8f, -0.7f);
+                batcher.color(Color.BLUE);
+
+                batcher.vertex(actualPercentage, -0.7f);
+                batcher.color(Color.GRAY);
+            }
+            batcher.end();
+
+            Display.update();
+            try
+            {
+                Thread.sleep(1 / Game.getTargetUPS());
+            }
+            catch (Exception e)
+            {
+                throw new SilenceException(e.getMessage());
+            }
         }
-        batcher.end();
-
-        Display.update();
     }
 }
