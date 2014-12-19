@@ -25,7 +25,6 @@ public class ResourceLoaderTest extends Game
 
     public void init()
     {
-        Display.setClearColor(Color.DODGER_BLUE);
         ResourceLoader loader = ResourceLoader.getInstance();
 
         int fontID1 = loader.defineFont("Times New Roman", TrueTypeFont.STYLE_NORMAL, 24);
@@ -53,7 +52,7 @@ public class ResourceLoaderTest extends Game
 
         batcher.begin();
         {
-            batcher.drawTexture2d(texture, new Vector2(10, 10));
+            batcher.drawTexture2d(texture, new Vector2(100, 100));
         }
         batcher.end();
 

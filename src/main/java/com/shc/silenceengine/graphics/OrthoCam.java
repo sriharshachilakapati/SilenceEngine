@@ -23,7 +23,7 @@ public class OrthoCam extends BaseCamera
     {
         width  = right - left;
         height = bottom - top;
-        mProj  = TransformUtils.createOrtho2d(left, right, bottom, top, 0, 100);
+        mProj  = TransformUtils.createOrtho2d(left, right, bottom, top, 0, 100).copy();
         mView  = new Matrix4().initIdentity();
     }
 
@@ -78,7 +78,7 @@ public class OrthoCam extends BaseCamera
     {
         width  = right - left;
         height = bottom - top;
-        mProj  = TransformUtils.createOrtho2d(left, right, bottom, top, 0, 100);
+        mProj  = TransformUtils.createOrtho2d(left, right, bottom, top, 0, 100).copy();
         return this;
     }
 

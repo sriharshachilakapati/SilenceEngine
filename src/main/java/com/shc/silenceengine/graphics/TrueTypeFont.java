@@ -9,8 +9,8 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
+import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.math.Vector2;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -102,7 +102,7 @@ public class TrueTypeFont
             chars[i] = new FontChar();
 
             // Max texture Width is 512px
-            if (positionX + fontMetrics.charWidth(ch) > 512)
+            if (positionX + fontMetrics.charWidth(ch) + 26 > 512)
             {
                 textureHeight += fontMetrics.getHeight() + 16;
                 positionX = 0;
@@ -111,18 +111,20 @@ public class TrueTypeFont
 
             textureWidth = Math.max(textureWidth, positionX);
 
+            chars[i].advance = fontMetrics.stringWidth("_" + ch) - fontMetrics.charWidth('_');
+
             chars[i].x = positionX;
             chars[i].y = positionY;
-            chars[i].w = fontMetrics.stringWidth("_" + ch) - fontMetrics.charWidth('_');
+            chars[i].w = chars[i].advance + 16;
             chars[i].h = fontMetrics.getHeight();
 
-            positionX += chars[i].w + 5;
+            positionX += chars[i].w + 10;
         }
 
         g2d.dispose();
 
         // Create a final Texture image
-        BufferedImage texImage = new BufferedImage(textureWidth, textureHeight, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage texImage = new BufferedImage(textureWidth + 26, textureHeight, BufferedImage.TYPE_INT_ARGB);
         g2d = texImage.createGraphics();
 
         g2d.setFont(awtFont);
@@ -150,7 +152,7 @@ public class TrueTypeFont
     {
         Texture current = Texture.CURRENT;
 
-        b.begin();
+        b.begin(Primitive.TRIANGLES);
         {
             fontTexture.bind();
 
@@ -173,10 +175,31 @@ public class TrueTypeFont
                 float minV = c.y / fontTexture.getHeight();
                 float maxV = (c.y + c.h) / fontTexture.getHeight();
 
-                // Draw the SubTexture!
-                b.drawTexture2d(fontTexture.getSubTexture(minU, minV, maxU, maxV), new Vector2(x, y), col);
+                b.vertex(x, y);
+                b.color(col);
+                b.texCoord(minU, minV);
 
-                x += c.w;
+                b.vertex(x + chars[ch].w, y);
+                b.color(col);
+                b.texCoord(maxU, minV);
+
+                b.vertex(x, y + chars[ch].h);
+                b.color(col);
+                b.texCoord(minU, maxV);
+
+                b.vertex(x + chars[ch].w, y);
+                b.color(col);
+                b.texCoord(maxU, minV);
+
+                b.vertex(x, y + chars[ch].h);
+                b.color(col);
+                b.texCoord(minU, maxV);
+
+                b.vertex(x + chars[ch].w, y + chars[ch].h);
+                b.color(col);
+                b.texCoord(maxU, maxV);
+
+                x += c.advance;
             }
         }
         b.end();
@@ -189,7 +212,7 @@ public class TrueTypeFont
         int width = 0;
 
         for (char ch : str.toCharArray())
-            width += chars[(int) ch].w;
+            width += chars[(int) ch].advance;
 
         return width;
     }
@@ -215,5 +238,6 @@ public class TrueTypeFont
         public int y;
         public int w;
         public int h;
+        public int advance;
     }
 }
