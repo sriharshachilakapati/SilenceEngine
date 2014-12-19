@@ -63,7 +63,7 @@ public final class TransformUtils
 
     public static Matrix4 createOrtho2d(float left, float right, float bottom, float top, float zNear, float zFar)
     {
-        Matrix4 result = new Matrix4();
+        Matrix4 result = new Matrix4().initZero();
 
         result.set(0, 0, 2 / (right - left))
               .set(1, 1, 2 / (top - bottom))

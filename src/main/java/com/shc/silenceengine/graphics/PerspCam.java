@@ -1,10 +1,12 @@
 package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.core.Display;
+import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Quaternion;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.utils.TransformUtils;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -140,6 +142,9 @@ public class PerspCam extends BaseCamera
 
         BaseCamera.projection = mProj;
         BaseCamera.view       = mView;
+
+        // Enable Depth Testing
+        GL3Context.enable(GL11.GL_DEPTH_TEST);
     }
 
     public Vector3 getPosition()

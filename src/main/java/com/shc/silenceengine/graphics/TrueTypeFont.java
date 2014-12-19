@@ -104,7 +104,7 @@ public class TrueTypeFont
             // Max texture Width is 512px
             if (positionX + fontMetrics.charWidth(ch) > 512)
             {
-                textureHeight += fontMetrics.getHeight();
+                textureHeight += fontMetrics.getHeight() + 16;
                 positionX = 0;
                 positionY = textureHeight;
             }

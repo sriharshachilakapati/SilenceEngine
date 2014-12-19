@@ -125,7 +125,6 @@ public final class Display
         GL3Context.enable(GL_BLEND);
         GL3Context.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        GL3Context.enable(GL_DEPTH_TEST);
         GL3Context.viewport(0, 0, width, height);
 
         if (Game.getBatcher() == null)

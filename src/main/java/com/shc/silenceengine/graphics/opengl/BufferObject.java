@@ -11,7 +11,11 @@ import java.nio.Buffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.*;
 import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 
 /**
  * This class encapsulates OpenGL Buffer Objects nicely and cleanly

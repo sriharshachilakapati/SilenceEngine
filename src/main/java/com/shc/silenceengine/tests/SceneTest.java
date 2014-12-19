@@ -50,22 +50,22 @@ public class SceneTest extends Game
         scene.update(delta);
 
         if (Keyboard.isPressed(Keyboard.KEY_W))
-            cam.moveForward((float) delta);
+            cam.moveForward(delta);
 
         if (Keyboard.isPressed(Keyboard.KEY_S))
-            cam.moveBackward((float) delta);
+            cam.moveBackward(delta);
 
         if (Keyboard.isPressed(Keyboard.KEY_A))
-            cam.moveLeft((float) delta);
+            cam.moveLeft(delta);
 
         if (Keyboard.isPressed(Keyboard.KEY_D))
-            cam.moveRight((float) delta);
+            cam.moveRight(delta);
 
         if (Keyboard.isPressed(Keyboard.KEY_Q))
-            cam.moveUp((float) delta);
+            cam.moveUp(delta);
 
         if (Keyboard.isPressed(Keyboard.KEY_E))
-            cam.moveDown((float) delta);
+            cam.moveDown(delta);
 
         if (Keyboard.isPressed(Keyboard.KEY_UP))
             cam.rotateX(1);
