@@ -78,22 +78,22 @@ public final class TransformUtils
         return result;
     }
 
-//    public static Matrix4 createFrustum(float left, float right, float bottom, float top, float zNear, float zFar)
-//    {
-//        assert zFar > zNear;
-//
-//        Matrix4 result = tempMat.initZero();
-//
-//        result.set(0, 0, (2 * zNear) / (right - left))
-//              .set(1, 1, (2 * zNear) / (top - bottom))
-//              .set(2, 0, (right + left) / (right - left))
-//              .set(2, 1, (top + bottom) / (top - bottom))
-//              .set(2, 2, (zFar + zNear) / (zNear - zFar))
-//              .set(2, 3, -1)
-//              .set(3, 2, (-2 * zFar * zNear) / (zFar - zNear));
-//
-//        return result;
-//    }
+    public static Matrix4 createFrustum(float left, float right, float bottom, float top, float zNear, float zFar)
+    {
+        assert zFar > zNear;
+
+        Matrix4 result = tempMat.initZero();
+
+        result.set(0, 0, (2 * zNear) / (right - left))
+              .set(1, 1, (2 * zNear) / (top - bottom))
+              .set(2, 0, (right + left) / (right - left))
+              .set(2, 1, (top + bottom) / (top - bottom))
+              .set(2, 2, (zFar + zNear) / (zNear - zFar))
+              .set(2, 3, -1)
+              .set(3, 2, (-2 * zFar * zNear) / (zFar - zNear));
+
+        return result;
+    }
 
     public static Matrix4 createPerspective(float fovy, float aspect, float zNear, float zFar)
     {

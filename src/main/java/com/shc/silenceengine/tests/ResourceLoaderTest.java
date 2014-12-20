@@ -28,7 +28,7 @@ public class ResourceLoaderTest extends Game
         ResourceLoader loader = ResourceLoader.getInstance();
 
         int fontID1 = loader.defineFont("Times New Roman", TrueTypeFont.STYLE_NORMAL, 24);
-        int fontID2 = loader.defineFont("resources/Cursif.ttf", TrueTypeFont.STYLE_ITALIC | TrueTypeFont.STYLE_BOLD, 24);
+        int fontID2 = loader.defineFont("resources/FREEBSC_.ttf", TrueTypeFont.STYLE_ITALIC | TrueTypeFont.STYLE_BOLD, 48);
         int textureID = loader.defineTexture("resources/texture2.png");
 
         loader.startLoading();
@@ -57,7 +57,7 @@ public class ResourceLoaderTest extends Game
         batcher.end();
 
         font1.drawString(batcher, "Times New Roman!!", 10, 10);
-        font2.drawString(batcher, "Cursifi -- A Custom Font!", 10, 40, Color.GREEN);
+        font2.drawString(batcher, "Free Booter Script", 10, 40, Color.GREEN);
     }
 
     public void resize()

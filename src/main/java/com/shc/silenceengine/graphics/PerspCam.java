@@ -135,6 +135,17 @@ public class PerspCam extends BaseCamera
         return this;
     }
 
+    public PerspCam initProjection(float width, float height)
+    {
+        return initProjection(0, width, height, 0, 0.01f, 100f);
+    }
+
+    public PerspCam initProjection(float left, float right, float bottom, float top, float zNear, float zFar)
+    {
+        mProj  = TransformUtils.createFrustum(left, right, bottom, top, zNear, zFar).copy();
+        return this;
+    }
+
     public void apply()
     {
         mView.multiply(TransformUtils.createTranslation(position.negate()))
