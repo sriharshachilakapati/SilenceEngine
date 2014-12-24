@@ -3,6 +3,7 @@ package com.shc.silenceengine.input;
 import com.shc.silenceengine.core.Display;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -139,9 +140,9 @@ public class Keyboard
     public static final int KEY_MENU          = GLFW_KEY_MENU;
     public static final int KEY_LAST          = GLFW_KEY_LAST;
 
-    private static ArrayList<Integer> events          = new ArrayList<>();
-    private static ArrayList<Integer> eventsThisFrame = new ArrayList<>();
-    private static ArrayList<Integer> eventsLastFrame = new ArrayList<>();
+    private static List<Integer> events          = new ArrayList<>();
+    private static List<Integer> eventsThisFrame = new ArrayList<>();
+    private static List<Integer> eventsLastFrame = new ArrayList<>();
 
     public static boolean isPressed(int key)
     {
@@ -187,5 +188,10 @@ public class Keyboard
     public static int getNumKeysPressed()
     {
         return events.size();
+    }
+
+    public static void glfwKeyCallback(long window, int key, int scanCode, int action, int mods)
+    {
+        Keyboard.setKey(key, action != GLFW_RELEASE);
     }
 }

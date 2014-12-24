@@ -6,21 +6,24 @@ import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Vector2;
+import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
 import org.lwjgl.glfw.GLFWWindowPosCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
-import org.lwjgl.opengl.GLContext;
 import org.lwjgl.glfw.GLFWvidmode;
-import org.lwjgl.system.MemoryUtil;
+import org.lwjgl.opengl.GLContext;
 
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
  * The Display class takes care of creating a display and managing it.
@@ -63,20 +66,14 @@ public final class Display
     // Clear color
     private static Color clearColor = Color.BLACK;
 
-    // Mouse Coordinates
-    public static int mouseX;
-    public static int mouseY;
-
-    // Mouse Delta move
-    public static int mouseDX;
-    public static int mouseDY;
-
     // Callbacks from GLFW
-    private static GLFWWindowSizeCallback winSizeCallback;
-    private static GLFWKeyCallback        winKeyCallback;
-    private static GLFWWindowPosCallback  winPosCallback;
-    private static GLFWCursorPosCallback  winCurPosCallback;
-    private static GLFWErrorCallback      errorCallback;
+    private static GLFWWindowSizeCallback  winSizeCallback;
+    private static GLFWKeyCallback         winKeyCallback;
+    private static GLFWWindowPosCallback   winPosCallback;
+    private static GLFWCursorPosCallback   winCurPosCallback;
+    private static GLFWMouseButtonCallback winMouseButtonCallback;
+    private static GLFWScrollCallback      winScrollCallback;
+    private static GLFWErrorCallback       errorCallback;
 
     /** Private constructor. Prevent instantiation */
     private Display()
@@ -95,7 +92,6 @@ public final class Display
      * @param parent    The parent window, if the context needs to be shared
      * @param visible   Is the window visible upon creation?
      * @param resizable Is the window resizable?
-     *
      * @return A window handle. (GLFWWindow* as in C++, but this is Java, so a long)
      */
     private static long createWindow(int width, int height, String title, long monitor, long parent, boolean visible, boolean resizable)
@@ -148,6 +144,12 @@ public final class Display
         if (winCurPosCallback != null)
             winCurPosCallback.release();
 
+        if (winScrollCallback != null)
+            winScrollCallback.release();
+
+        if (winMouseButtonCallback != null)
+            winMouseButtonCallback.release();
+
         glfwSetWindowSizeCallback(window, winSizeCallback = GLFWWindowSizeCallback((win, w, h) ->
         {
             Display.width = w;
@@ -156,8 +158,7 @@ public final class Display
             resized = true;
         }));
 
-        glfwSetKeyCallback(window, winKeyCallback = GLFWKeyCallback((win, key, scanCode, action, mods) ->
-            Keyboard.setKey(key, action != GLFW_RELEASE)));
+        glfwSetKeyCallback(window, winKeyCallback = GLFWKeyCallback(Keyboard::glfwKeyCallback));
 
         glfwSetWindowPosCallback(window, winPosCallback = GLFWWindowPosCallback((win, xPos, yPos) ->
         {
@@ -165,14 +166,9 @@ public final class Display
             Display.posY = yPos;
         }));
 
-        glfwSetCursorPosCallback(window, winCurPosCallback = GLFWCursorPosCallback((win, xPos, yPos) ->
-        {
-            mouseDX = (int) xPos - mouseX;
-            mouseDY = (int) yPos - mouseY;
-
-            mouseX = (int) xPos;
-            mouseY = (int) yPos;
-        }));
+        glfwSetCursorPosCallback(window, winCurPosCallback = GLFWCursorPosCallback(Mouse::glfwCursorCallback));
+        glfwSetScrollCallback(window, winScrollCallback = GLFWScrollCallback(Mouse::glfwScrollCallback));
+        glfwSetMouseButtonCallback(window, winMouseButtonCallback = GLFWMouseButtonCallback(Mouse::glfwMouseButtonCallback));
 
         return window;
     }
@@ -185,7 +181,7 @@ public final class Display
         // Set error callback
         glfwSetErrorCallback(errorCallback = GLFWErrorCallback((error, description) ->
         {
-            throw new SilenceException("" + error + ": " + MemoryUtil.memDecodeUTF8(description));
+            throw new SilenceException("" + error + ": " + Callbacks.errorCallbackDescriptionString(description));
         }));
 
         // Initialize GLFW
@@ -207,8 +203,8 @@ public final class Display
 
     /**
      * @return true if the user has clicked the close button, or pressed
-     *         platform specific close shortcut keys like Cmd-Q(Mac) or
-     *         Alt-F4 (linux &amp; windows)
+     * platform specific close shortcut keys like Cmd-Q(Mac) or
+     * Alt-F4 (linux &amp; windows)
      */
     public static boolean isCloseRequested()
     {
@@ -274,10 +270,13 @@ public final class Display
 
     /**
      * @return the handle of the current display. Please don't store
-     *         this handle, and always use this method to get one,
-     *         because a stored handle can get invalid at any time.
+     * this handle, and always use this method to get one,
+     * because a stored handle can get invalid at any time.
      */
-    public static long getDisplayHandle() { return displayHandle; }
+    public static long getDisplayHandle()
+    {
+        return displayHandle;
+    }
 
     /**
      * @return the height of the display
@@ -344,7 +343,7 @@ public final class Display
      */
     public static float getAspectRatio()
     {
-        return ((float)width)/((float)height);
+        return ((float) width) / ((float) height);
     }
 
     /**
@@ -356,12 +355,13 @@ public final class Display
             return;
 
         ByteBuffer vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowPos(displayHandle, (GLFWvidmode.width(vidMode) - width)/2,
-                                        (GLFWvidmode.height(vidMode) - height)/2);
+        glfwSetWindowPos(displayHandle, (GLFWvidmode.width(vidMode) - width) / 2,
+                (GLFWvidmode.height(vidMode) - height) / 2);
     }
 
     /**
      * Sets the window position on the screen
+     *
      * @param x The x-coordinate of the window (in screen coordinates)
      * @param y The y-coordinate of the window (in screen coordinates)
      */
@@ -378,6 +378,7 @@ public final class Display
 
     /**
      * Sets the clear color of the Display, i.e., the background color
+     *
      * @param c The background color to clear the window
      */
     public static void setClearColor(Color c)
@@ -395,6 +396,7 @@ public final class Display
 
     /**
      * Sets the state of fullscreen of the Display.
+     *
      * @param fullScreen If true, window will be made fullscreen
      */
     public static void setFullScreen(boolean fullScreen)
@@ -442,6 +444,11 @@ public final class Display
         update();
     }
 
+    /**
+     * Changes the Resizable property of the Display window.
+     *
+     * @param resizable The value of the Resizable window property.
+     */
     public static void setResizable(boolean resizable)
     {
         if (Display.resizable == resizable)
@@ -459,6 +466,9 @@ public final class Display
         update();
     }
 
+    /**
+     * @return Whether the window is resizable or not.
+     */
     public static boolean isResizable()
     {
         return resizable;
@@ -474,6 +484,7 @@ public final class Display
 
     /**
      * Sets the title of the Display
+     *
      * @param title The title of the window
      */
     public static void setTitle(String title)

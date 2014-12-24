@@ -5,6 +5,7 @@ import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.GLError;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.utils.TimeUtils;
 
 import java.io.PrintWriter;
@@ -198,10 +199,12 @@ public class Game
             while (lag >= secondsPerFrame && skippedFrames < maxFrameSkips)
             {
                 Keyboard.startEventFrame();
+                Mouse.startEventFrame();
 
                 update((float) elapsed);
 
                 Keyboard.clearEventFrame();
+                Mouse.clearEventFrame();
 
                 updatesProcessed++;
 
