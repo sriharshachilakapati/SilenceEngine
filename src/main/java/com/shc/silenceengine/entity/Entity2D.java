@@ -80,7 +80,10 @@ public class Entity2D extends SceneNode
      */
     public void preUpdate(float delta)
     {
-        super.preUpdate(delta);
+        update(delta);
+
+        if (velocity == Vector2.ZERO)
+            return;
 
         // Calculate the new position
         position = position.add(velocity);

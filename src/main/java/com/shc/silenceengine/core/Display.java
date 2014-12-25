@@ -132,23 +132,7 @@ public final class Display
             Texture.loadNullTexture();
 
         // Window callbacks
-        if (winSizeCallback != null)
-            winSizeCallback.release();
-
-        if (winKeyCallback != null)
-            winKeyCallback.release();
-
-        if (winPosCallback != null)
-            winPosCallback.release();
-
-        if (winCurPosCallback != null)
-            winCurPosCallback.release();
-
-        if (winScrollCallback != null)
-            winScrollCallback.release();
-
-        if (winMouseButtonCallback != null)
-            winMouseButtonCallback.release();
+        releaseCallbacks();
 
         glfwSetWindowSizeCallback(window, winSizeCallback = GLFWWindowSizeCallback((win, w, h) ->
         {
@@ -171,6 +155,27 @@ public final class Display
         glfwSetMouseButtonCallback(window, winMouseButtonCallback = GLFWMouseButtonCallback(Mouse::glfwMouseButtonCallback));
 
         return window;
+    }
+
+    private static void releaseCallbacks()
+    {
+        if (winSizeCallback != null)
+            winSizeCallback.release();
+
+        if (winKeyCallback != null)
+            winKeyCallback.release();
+
+        if (winPosCallback != null)
+            winPosCallback.release();
+
+        if (winCurPosCallback != null)
+            winCurPosCallback.release();
+
+        if (winScrollCallback != null)
+            winScrollCallback.release();
+
+        if (winMouseButtonCallback != null)
+            winMouseButtonCallback.release();
     }
 
     /**
@@ -243,9 +248,10 @@ public final class Display
         Program.DEFAULT.dispose();
         Texture.EMPTY.dispose();
 
-        glfwDestroyWindow(displayHandle);
-
+        releaseCallbacks();
         errorCallback.release();
+
+        glfwDestroyWindow(displayHandle);
 
         glfwTerminate();
     }

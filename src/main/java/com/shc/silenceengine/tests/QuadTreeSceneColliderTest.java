@@ -58,31 +58,15 @@ public class QuadTreeSceneColliderTest extends Game
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
 
-        double start, end;
-
         // Update the scene and check for collisions
-        start = TimeUtils.currentMillis();
         scene.update(delta);
-        end = TimeUtils.currentMillis();
-
-        System.out.println("Updating time: " + (end - start));
-
-        start = TimeUtils.currentMillis();
         collider.checkCollisions();
-        end = TimeUtils.currentMillis();
-
-        System.out.println("Collisions Resolving time: " + (end - start));
     }
 
     public void render(float delta, Batcher batcher)
     {
         cam.apply();
-
-        double start = TimeUtils.currentMillis();
         scene.render(delta, batcher);
-        double end = TimeUtils.currentMillis();
-
-        System.out.println("Rendering time: " + (end - start));
     }
 
     public void resize()
@@ -129,7 +113,6 @@ public class QuadTreeSceneColliderTest extends Game
 
         public void update(float delta)
         {
-
             float speed = 4;
 
             if (Keyboard.isPressed(Keyboard.KEY_UP))
@@ -155,8 +138,8 @@ public class QuadTreeSceneColliderTest extends Game
 
         public void render(float delta, Batcher batcher)
         {
-            RenderUtils.fillPolygon(batcher, getPolygon(), color);
-            RenderUtils.tracePolygon(batcher, getPolygon(), Color.GREEN);
+            RenderUtils.fillPolygon(batcher, getPolygon(), getVelocity().scale(delta), color);
+            RenderUtils.tracePolygon(batcher, getPolygon(), getVelocity().scale(delta), Color.GREEN);
         }
     }
 }

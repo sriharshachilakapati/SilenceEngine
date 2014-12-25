@@ -29,10 +29,8 @@ public class PerspCam extends BaseCamera
         mProj = TransformUtils.createPerspective(fovy, aspect, zNear, zFar).copy();
         mView = new Matrix4();
 
-        position = new Vector3();
+        position = new Vector3(0, 0, 1);
         rotation = new Quaternion();
-
-        moveBackward(1);
     }
 
     public PerspCam lookAt(Vector3 point)
@@ -148,10 +146,9 @@ public class PerspCam extends BaseCamera
 
     public void apply()
     {
-        mView.multiply(TransformUtils.createTranslation(position.negate()))
+        mView.initIdentity()
+             .multiply(TransformUtils.createTranslation(position.negate()))
              .multiply(TransformUtils.createRotation(rotation));
-//        mView = TransformUtils.createRotation(rotation);
-//        mView = TransformUtils.createTranslation(position.negate()).multiply(mView);
 
         BaseCamera.projection = mProj;
         BaseCamera.view       = mView;

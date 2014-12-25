@@ -18,15 +18,14 @@ import com.shc.silenceengine.utils.*;
  */
 public class GridSceneColliderTest extends Game
 {
-    private Scene scene;
-    private GridSceneCollider collider;
-    private OrthoCam cam;
+    private Scene                 scene;
+    private GridSceneCollider     collider;
+    private OrthoCam              cam;
 
     public void init()
     {
         Display.setTitle("GridSceneCollider Test");
         Display.setFullScreen(true);
-        //Display.hideCursor();
 
         cam = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
 
@@ -40,7 +39,7 @@ public class GridSceneColliderTest extends Game
             scene.addChild(new Box(new Vector2(48 * i, 48 * 19)));
             scene.addChild(new Box(new Vector2(48 * 19, 48 * i)));
         }
-        scene.addChild(new Player(new Vector2(Display.getWidth()/2 - 24, Display.getHeight()/2 - 24)));
+        scene.addChild(new Player(new Vector2(Display.getWidth() / 2 - 24, Display.getHeight() / 2 - 24)));
         scene.init();
 
         // Create the SceneCollider and set the scene
@@ -56,31 +55,15 @@ public class GridSceneColliderTest extends Game
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
 
-        double start, end;
-
         // Update the scene and check for collisions
-        start = TimeUtils.currentMillis();
         scene.update(delta);
-        end = TimeUtils.currentMillis();
-
-        System.out.println("Updating time: " + (end - start));
-
-        start = TimeUtils.currentMillis();
         collider.checkCollisions();
-        end = TimeUtils.currentMillis();
-
-        System.out.println("Collisions Resolving time: " + (end - start));
     }
 
     public void render(float delta, Batcher batcher)
     {
         cam.apply();
-
-        double start = TimeUtils.currentMillis();
         scene.render(delta, batcher);
-        double end = TimeUtils.currentMillis();
-
-        System.out.println("Rendering time: " + (end - start));
     }
 
     public void resize()
@@ -127,7 +110,6 @@ public class GridSceneColliderTest extends Game
 
         public void update(float delta)
         {
-
             float speed = 4;
 
             if (Keyboard.isPressed(Keyboard.KEY_UP))
@@ -153,8 +135,8 @@ public class GridSceneColliderTest extends Game
 
         public void render(float delta, Batcher batcher)
         {
-            RenderUtils.fillPolygon(batcher, getPolygon(), color);
-            RenderUtils.tracePolygon(batcher, getPolygon(), Color.GREEN);
+            RenderUtils.fillPolygon(batcher, getPolygon(), getVelocity().scale(delta), color);
+            RenderUtils.tracePolygon(batcher, getPolygon(), getVelocity().scale(delta), Color.GREEN);
         }
     }
 }

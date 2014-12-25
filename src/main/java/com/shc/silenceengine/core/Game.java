@@ -6,11 +6,12 @@ import com.shc.silenceengine.graphics.opengl.GLError;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
-import com.shc.silenceengine.utils.TimeUtils;
+import com.shc.silenceengine.utils.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.sql.Time;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -158,45 +159,39 @@ public class Game
         init();
 
         // GameLoop constants
-        final double secondsPerFrame = 1.0 / targetUPS;
-        final double maxFrameSkips = 5;
+        final double frameTime = 1.0/targetUPS;
 
-        // Timing mechanism
-        double previous;
-        double current;
+        double currentTime;
+        double previousTime;
         double elapsed;
-        double lag;
 
-        // FPS and UPS calculation timing
-        double lastUPSUpdate;
-        double lastFPSUpdate;
+        double lag = 0;
 
-        // Counters for updates and frames
-        int updatesProcessed;
-        int framesProcessed;
-        int skippedFrames;
+        double lastUPSUpdate = 0;
+        double lastFPSUpdate = 0;
 
-        // Initial values
-        lag = 0;
-        previous = TimeUtils.currentSeconds();
+        int updatesProcessed = 0;
+        int framesProcessed = 0;
 
-        updatesProcessed = 0;
-        framesProcessed = 0;
-
-        lastUPSUpdate = 0;
-        lastFPSUpdate = 0;
+        previousTime = 0;
 
         while (true)
         {
-            current = TimeUtils.currentSeconds();
-            elapsed = current - previous;
+            if (Display.isCloseRequested() || !isRunning())
+                break;
 
-            skippedFrames = 0;
+            if (Display.wasResized())
+            {
+                GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
+                resize();
+            }
+
+            currentTime = TimeUtils.currentSeconds();
+            elapsed = currentTime - previousTime;
 
             lag += elapsed;
 
-            // Do updates in small steps playing catchup
-            while (lag >= secondsPerFrame && skippedFrames < maxFrameSkips)
+            while (lag > frameTime)
             {
                 Keyboard.startEventFrame();
                 Mouse.startEventFrame();
@@ -207,53 +202,106 @@ public class Game
                 Mouse.clearEventFrame();
 
                 updatesProcessed++;
+                lag -= frameTime;
 
-                // If a second has passed, update the UPS counter
-                if (current - lastUPSUpdate >= 1000)
+                if (currentTime - lastUPSUpdate >= 1000)
                 {
                     ups = updatesProcessed;
                     updatesProcessed = 0;
-                    lastUPSUpdate = current;
+                    lastUPSUpdate = currentTime;
                 }
-
-                lag -= secondsPerFrame;
-                skippedFrames++;
             }
 
-            // Check if the Game should end
-            if (Display.isCloseRequested() || !running)
-                break;
-
-            // The Display was resized
-            if (Display.wasResized())
-            {
-                GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
-                resize();
-            }
-
-            // Clear the screen
             GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            Texture.setActiveUnit(0);
-
-            // Render the Game
             render((float) elapsed, batcher);
-            GLError.check();
 
             framesProcessed++;
 
-            // If a second is passed, update FPS value
-            if (current - lastFPSUpdate >= 1000)
+            if (currentTime - lastFPSUpdate >= 1000)
             {
                 fps = framesProcessed;
                 framesProcessed = 0;
-                lastFPSUpdate = current;
+                lastFPSUpdate = currentTime;
             }
 
-            previous = current;
-
-            // Update the display and swap the buffers
             Display.update();
+
+            previousTime = currentTime;
         }
+
+
+//        while (true)
+//        {
+//            current = TimeUtils.currentSeconds();
+//            elapsed = current - previous;
+//
+//            elapsed = MathUtils.clamp(elapsed, 0, 0.25);
+//
+//            skippedFrames = 0;
+//
+//            lag += elapsed;
+//
+//            // Do updates in small steps playing catchup
+//            while (lag >= secondsPerFrame && skippedFrames < maxFrameSkips)
+//            {
+//                Keyboard.startEventFrame();
+//                Mouse.startEventFrame();
+//
+//                delta = lag / secondsPerFrame;
+//
+//                update((float) delta);
+//
+//                Keyboard.clearEventFrame();
+//                Mouse.clearEventFrame();
+//
+//                updatesProcessed++;
+//
+//                // If a second has passed, update the UPS counter
+//                if (current - lastUPSUpdate >= 1000)
+//                {
+//                    ups = updatesProcessed;
+//                    updatesProcessed = 0;
+//                    lastUPSUpdate = current;
+//                }
+//
+//                lag -= secondsPerFrame;
+//                skippedFrames++;
+//            }
+//
+//            // Check if the Game should end
+//            if (Display.isCloseRequested() || !running)
+//                break;
+//
+//            // The Display was resized
+//            if (Display.wasResized())
+//            {
+//                GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
+//                resize();
+//            }
+//
+//            // Clear the screen
+//            GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//            Texture.setActiveUnit(0);
+//
+//            // Render the Game
+//            render((float) delta, batcher);
+//            GLError.check();
+//
+//            framesProcessed++;
+//
+//            // If a second is passed, update FPS value
+//            if (current - lastFPSUpdate >= 1000)
+//            {
+//                fps = framesProcessed;
+//                framesProcessed = 0;
+//                lastFPSUpdate = current;
+//            }
+//
+//            previous = current;
+//
+//            // Update the display and swap the buffers
+//            Display.update();
+//        }
 
         // Dispose the Batcher
         batcher.dispose();

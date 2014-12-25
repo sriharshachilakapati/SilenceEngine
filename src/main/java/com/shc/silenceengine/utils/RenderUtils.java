@@ -22,11 +22,16 @@ public final class RenderUtils
 
     public static void tracePolygon(Batcher b, Polygon polygon, Color color)
     {
+        tracePolygon(b, polygon, Vector2.ZERO, color);
+    }
+
+    public static void tracePolygon(Batcher b, Polygon polygon, Vector2 position, Color color)
+    {
         b.begin(Primitive.LINE_LOOP);
         {
             for (Vector2 vertex : polygon.getVertices())
             {
-                b.vertex(vertex.add(polygon.getPosition()));
+                b.vertex(vertex.add(polygon.getPosition().add(position)));
                 b.color(color);
             }
         }
@@ -40,11 +45,16 @@ public final class RenderUtils
 
     public static void fillPolygon(Batcher b, Polygon polygon, Color color)
     {
+        fillPolygon(b, polygon, Vector2.ZERO, color);
+    }
+
+    public static void fillPolygon(Batcher b, Polygon polygon, Vector2 position, Color color)
+    {
         b.begin(Primitive.TRIANGLE_FAN);
         {
             for (Vector2 vertex : polygon.getVertices())
             {
-                b.vertex(vertex.add(polygon.getPosition()));
+                b.vertex(vertex.add(polygon.getPosition().add(position)));
                 b.color(color);
             }
         }

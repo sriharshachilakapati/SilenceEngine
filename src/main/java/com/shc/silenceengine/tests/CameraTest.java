@@ -34,12 +34,12 @@ public class CameraTest extends Game
 
     public void update(float delta)
     {
-        transform.rotate(Vector3.AXIS_Y, (float) (4 * delta));
+        transform.rotate(Vector3.AXIS_Y, 4 * delta);
 
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
 
-        float speed = 2 * (float) delta;
+        float speed = 2 * delta;
 
         if (Keyboard.isPressed(Keyboard.KEY_W))
             perspCam.moveForward(speed);
