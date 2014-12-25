@@ -210,4 +210,19 @@ public class QuadTree
         retrieveList.addAll(objects);
         return retrieveList;
     }
+
+    public void remove(Entity2D e)
+    {
+        if (nodes[0] != null)
+        {
+            int index = getIndex(e);
+            if (index != -1)
+            {
+                nodes[index].remove(e);
+                return;
+            }
+        }
+
+        objects.remove(e);
+    }
 }

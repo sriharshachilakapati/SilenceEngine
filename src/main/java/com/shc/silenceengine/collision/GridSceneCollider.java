@@ -57,8 +57,6 @@ public class GridSceneCollider implements SceneCollider2D
     @Override
     public void checkCollisions()
     {
-//        grid.clear();
-
         if (scene.getChildren().size() != childrenInScene)
         {
             entities.clear();

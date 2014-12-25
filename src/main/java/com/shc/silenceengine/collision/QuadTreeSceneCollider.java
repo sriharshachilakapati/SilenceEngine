@@ -1,6 +1,7 @@
 package com.shc.silenceengine.collision;
 
 import com.shc.silenceengine.entity.Entity2D;
+import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.scene.Scene;
 import com.shc.silenceengine.scene.SceneNode;
 
@@ -20,6 +21,8 @@ public class QuadTreeSceneCollider implements SceneCollider2D
     private Scene          scene;
     private QuadTree       quadTree;
     private List<Entity2D> entities;
+
+    private int childrenInScene;
 
     /**
      * Constructs a QuadTreeSceneCollider with the size of the map
@@ -48,18 +51,36 @@ public class QuadTreeSceneCollider implements SceneCollider2D
     @Override
     public void checkCollisions()
     {
-        quadTree.clear();
-        entities.clear();
+        if (scene.getChildren().size() != childrenInScene)
+        {
+            entities.clear();
+            quadTree.clear();
 
-        for (SceneNode child : scene.getChildren())
-            if (child instanceof Entity2D)
+            for (SceneNode child : scene.getChildren())
             {
-                Entity2D entity = (Entity2D) child;
+                if (child instanceof Entity2D)
+                {
+                    Entity2D entity = (Entity2D) child;
 
-                quadTree.insert(entity);
-                entities.add(entity);
+                    quadTree.insert(entity);
+                    entities.add(entity);
+                }
+
+                childrenInScene++;
             }
+        }
 
+        // Update the grid for repositioned entities
+        for (Entity2D entity : entities)
+        {
+            if (entity.getVelocity() != Vector2.ZERO)
+            {
+                quadTree.remove(entity);
+                quadTree.insert(entity);
+            }
+        }
+
+        // Iterate and check collisions
         for (Class<? extends Entity2D> class1 : collisionMap.keySet())
             for (Entity2D entity : entities)
                 if (class1.isInstance(entity))
@@ -69,9 +90,8 @@ public class QuadTreeSceneCollider implements SceneCollider2D
                     for (Entity2D entity2 : collidables)
                         if (collisionMap.get(class1).isInstance(entity2))
                             // Check collision
-                            if (entity.getPolygon().getBounds().intersects(entity2.getPolygon().getBounds()))
-                                if (entity.getPolygon().intersects(entity2.getPolygon()))
-                                    entity.collision(entity2);
+                            if (entity.getPolygon().intersects(entity2.getPolygon()))
+                                entity.collision(entity2);
                 }
     }
 }

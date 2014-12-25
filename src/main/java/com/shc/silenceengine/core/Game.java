@@ -2,7 +2,6 @@ package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
-import com.shc.silenceengine.graphics.opengl.GLError;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
@@ -11,7 +10,6 @@ import com.shc.silenceengine.utils.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.sql.Time;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -78,6 +76,9 @@ public class Game
 
         // Load the natives
         NativesLoader.load();
+
+        // Set target UPS
+        setTargetUPS(60);
     }
 
     /**
@@ -213,6 +214,7 @@ public class Game
             }
 
             GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            Texture.setActiveUnit(0);
             render((float) elapsed, batcher);
 
             framesProcessed++;
@@ -228,80 +230,6 @@ public class Game
 
             previousTime = currentTime;
         }
-
-
-//        while (true)
-//        {
-//            current = TimeUtils.currentSeconds();
-//            elapsed = current - previous;
-//
-//            elapsed = MathUtils.clamp(elapsed, 0, 0.25);
-//
-//            skippedFrames = 0;
-//
-//            lag += elapsed;
-//
-//            // Do updates in small steps playing catchup
-//            while (lag >= secondsPerFrame && skippedFrames < maxFrameSkips)
-//            {
-//                Keyboard.startEventFrame();
-//                Mouse.startEventFrame();
-//
-//                delta = lag / secondsPerFrame;
-//
-//                update((float) delta);
-//
-//                Keyboard.clearEventFrame();
-//                Mouse.clearEventFrame();
-//
-//                updatesProcessed++;
-//
-//                // If a second has passed, update the UPS counter
-//                if (current - lastUPSUpdate >= 1000)
-//                {
-//                    ups = updatesProcessed;
-//                    updatesProcessed = 0;
-//                    lastUPSUpdate = current;
-//                }
-//
-//                lag -= secondsPerFrame;
-//                skippedFrames++;
-//            }
-//
-//            // Check if the Game should end
-//            if (Display.isCloseRequested() || !running)
-//                break;
-//
-//            // The Display was resized
-//            if (Display.wasResized())
-//            {
-//                GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
-//                resize();
-//            }
-//
-//            // Clear the screen
-//            GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//            Texture.setActiveUnit(0);
-//
-//            // Render the Game
-//            render((float) delta, batcher);
-//            GLError.check();
-//
-//            framesProcessed++;
-//
-//            // If a second is passed, update FPS value
-//            if (current - lastFPSUpdate >= 1000)
-//            {
-//                fps = framesProcessed;
-//                framesProcessed = 0;
-//                lastFPSUpdate = current;
-//            }
-//
-//            previous = current;
-//
-//            // Update the display and swap the buffers
-//            Display.update();
-//        }
 
         // Dispose the Batcher
         batcher.dispose();
