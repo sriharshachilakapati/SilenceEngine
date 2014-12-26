@@ -90,6 +90,12 @@ public class Vector2
         return new Vector2(x/l, y/l);
     }
 
+    public Vector2 rotate(float angle)
+    {
+
+        return null;
+    }
+
     public Vector2 negate()
     {
         return new Vector2(-x, -y);

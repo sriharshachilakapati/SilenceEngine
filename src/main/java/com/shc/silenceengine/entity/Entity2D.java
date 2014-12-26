@@ -69,6 +69,7 @@ public class Entity2D extends SceneNode
      */
     public Entity2D(Polygon polygon)
     {
+        this();
         this.polygon = polygon;
     }
 
@@ -90,8 +91,9 @@ public class Entity2D extends SceneNode
         polygon.setPosition(position);
 
         // Setup the local transform
-        getLocalTransform().reset().rotate(Vector3.AXIS_Z, polygon.getRotation())
-                                   .translate(position);
+        getLocalTransform().reset().translate(getPosition().subtract(getCenter()))
+                                   .rotate(Vector3.AXIS_Z, polygon.getRotation())
+                                   .translate(getCenter());
     }
 
     /**

@@ -380,10 +380,9 @@ public class Batcher
     public void drawTexture2d(Texture texture, Vector2 p, Color color)
     {
         Texture current = Texture.CURRENT;
-        flush();
 
         texture.bind();
-
+        begin();
         // First triangle
         {
             vertex(p.getX(), p.getY(), 0, 1);
@@ -414,7 +413,7 @@ public class Batcher
             texCoord(texture.getMaxU(), texture.getMaxV());
         }
 
-        flush();
+        end();
         current.bind();
     }
 
