@@ -70,7 +70,7 @@ public class QuadTreeSceneCollider implements SceneCollider2D
             }
         }
 
-        // Update the grid for repositioned entities
+        // Update the QuadTree for repositioned entities
         for (Entity2D entity : entities)
         {
             if (entity.getVelocity() != Vector2.ZERO)

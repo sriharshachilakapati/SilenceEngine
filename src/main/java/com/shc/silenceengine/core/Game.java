@@ -213,9 +213,11 @@ public class Game
                 }
             }
 
+            float lagOffset = (float) (lag / frameTime);
+
             GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             Texture.setActiveUnit(0);
-            render((float) elapsed, batcher);
+            render(lagOffset, batcher);
 
             framesProcessed++;
 

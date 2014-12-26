@@ -157,6 +157,10 @@ public final class Display
         return window;
     }
 
+    /**
+     * Used to release GLFW callbacks. This is necessary to prevent
+     * segmentation fault errors in native code.
+     */
     private static void releaseCallbacks()
     {
         if (winSizeCallback != null)

@@ -72,7 +72,7 @@ public class VertexArray
      */
     public void pointAttribute(int index, int count, int type, BufferObject buffer)
     {
-        pointAttribute(index, count, type, false, 0, 0, buffer);
+        pointAttribute(index, count, type, false, buffer);
     }
 
     /**
