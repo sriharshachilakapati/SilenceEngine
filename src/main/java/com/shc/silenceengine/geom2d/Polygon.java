@@ -89,7 +89,7 @@ public class Polygon
             maxY = Math.max(yNew + originY, maxY);
         }
 
-        rotation += angle;
+        rotation += Math.toDegrees(angle);
         bounds = new Rectangle(position.getX() + minX, position.getY() + minY, maxX - minX, maxY - minY);
     }
 

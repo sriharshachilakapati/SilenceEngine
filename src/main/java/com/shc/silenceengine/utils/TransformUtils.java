@@ -43,8 +43,8 @@ public final class TransformUtils
 
         Matrix4 result = tempMat.initIdentity();
 
-        float c = (float) Math.cos(angle);
-        float s = (float) Math.sin(angle);
+        float c = (float) Math.cos(Math.toRadians(angle));
+        float s = (float) Math.sin(Math.toRadians(angle));
 
         Vector3 v = axis.normalize();
 

@@ -92,8 +92,9 @@ public class Vector2
 
     public Vector2 rotate(float angle)
     {
-
-        return null;
+        angle = (float) Math.toRadians(angle);
+        return new Vector2(x * (float) Math.cos(angle) - y * (float) Math.sin(angle),
+                           x * (float) Math.sin(angle) + y * (float) Math.cos(angle));
     }
 
     public Vector2 negate()

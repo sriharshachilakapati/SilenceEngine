@@ -34,7 +34,7 @@ public class CameraTest extends Game
 
     public void update(float delta)
     {
-        transform.rotate(Vector3.AXIS_Y, 4 * delta);
+        transform.rotate(Vector3.AXIS_Y, 60 * delta);
 
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
