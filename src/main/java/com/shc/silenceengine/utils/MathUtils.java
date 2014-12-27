@@ -142,20 +142,9 @@ public final class MathUtils
                                 + ((y2 - y1) * (y2 - y1))));
     }
 
-    /**
-     * You specify the number of sides of a dice which is then thrown. Then if
-     * the dice lands on one, the result is true and the next action is
-     * performed. This can be used to put an element of randomness in your game.
-     * For example, in each step you can generate with a particular chance a
-     * bomb or a change of direction. The larger the number of sides of the
-     * dice, the smaller the chance.
-     *
-     * @param sides The number of sides of the dice
-     * @return True if the dice lands on one else false
-     */
-    public static boolean chance(int sides)
+    public static boolean chance(int percentage)
     {
-        return random(sides + 1) == 0;
+        return random(100) <= percentage;
     }
 
     /**

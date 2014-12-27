@@ -32,6 +32,26 @@ public class SubTexture extends Texture
         this.maxV = maxV;
     }
 
+    public SubTexture getSubTexture(float minU, float minV, float maxU, float maxV)
+    {
+        minU = (minU * getWidth()) / parent.getWidth();
+        minV = (minV * getHeight()) / parent.getHeight();
+        maxU = (maxU * getWidth()) / parent.getWidth();
+        maxV = (maxV * getHeight()) / parent.getHeight();
+
+        minU += this.minU;
+        minV += this.minV;
+        maxU += minU;
+        maxV += minV;
+
+        return new SubTexture(parent, minU, minV, maxU, maxV);
+    }
+
+    public SubTexture getSubTexture(Vector2 min, Vector2 max)
+    {
+        return getSubTexture(min.x, min.y, max.x, max.y);
+    }
+
     public float getMinU()
     {
         return minU;
@@ -54,12 +74,12 @@ public class SubTexture extends Texture
 
     public float getWidth()
     {
-        return maxU * parent.getWidth() - minU * parent.getWidth();
+        return (maxU - minU) * parent.getWidth();
     }
 
     public float getHeight()
     {
-        return maxV * parent.getHeight() - minV * parent.getHeight();
+        return (maxV - minV) * parent.getHeight();
     }
 
     public Texture getParent()
