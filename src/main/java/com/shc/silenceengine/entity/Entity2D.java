@@ -7,8 +7,6 @@ import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.scene.SceneNode;
 
-import java.util.List;
-
 /**
  * This class represents all the 2D Entities in a Scene. Any entity which
  * is 2D and wants to be in a Scene must extend this class. Here is an
@@ -81,6 +79,9 @@ public class Entity2D extends SceneNode
      */
     public void preUpdate(float delta)
     {
+        if (isDestroyed())
+            return;
+
         update(delta);
 
         if (velocity == Vector2.ZERO)
@@ -94,6 +95,21 @@ public class Entity2D extends SceneNode
         getLocalTransform().reset().translate(getPosition().subtract(getCenter()))
                                    .rotate(Vector3.AXIS_Z, polygon.getRotation())
                                    .translate(getCenter());
+    }
+
+    /**
+     * Prepares this Entity2D for a new frame. This method is not meant
+     * to be called by the user and is called by the SceneGraph.
+     *
+     * @param delta   The delta time.
+     * @param batcher The Batcher to batch rendering.
+     */
+    public void preRender(float delta, Batcher batcher)
+    {
+        if (isDestroyed())
+            return;
+
+        super.preRender(delta, batcher);
     }
 
     /**
@@ -253,6 +269,10 @@ public class Entity2D extends SceneNode
     public void rotate(float angle)
     {
         polygon.rotate(angle);
+
+        getLocalTransform().reset().translate(getPosition().subtract(getCenter()))
+                           .rotate(Vector3.AXIS_Z, polygon.getRotation())
+                           .translate(getCenter());
     }
 
     /**
@@ -272,6 +292,10 @@ public class Entity2D extends SceneNode
     public void setRotation(float rotation)
     {
         polygon.setRotation(rotation);
+
+        getLocalTransform().reset().translate(getPosition().subtract(getCenter()))
+                           .rotate(Vector3.AXIS_Z, polygon.getRotation())
+                           .translate(getCenter());
     }
 
     /**
@@ -284,6 +308,10 @@ public class Entity2D extends SceneNode
     {
         polygon.setCenter(center);
         position = polygon.getPosition();
+
+        getLocalTransform().reset().translate(getPosition().subtract(getCenter()))
+                           .rotate(Vector3.AXIS_Z, polygon.getRotation())
+                           .translate(getCenter());
     }
 
     /**
@@ -383,6 +411,10 @@ public class Entity2D extends SceneNode
     {
         this.position = position;
         polygon.setPosition(position);
+
+        getLocalTransform().reset().translate(getPosition().subtract(getCenter()))
+                           .rotate(Vector3.AXIS_Z, polygon.getRotation())
+                           .translate(getCenter());
     }
 
     /**

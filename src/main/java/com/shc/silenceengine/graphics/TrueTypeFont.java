@@ -252,9 +252,21 @@ public class TrueTypeFont
     public int getWidth(String str)
     {
         int width = 0;
+        int lineWidth = 0;
 
         for (char ch : str.toCharArray())
-            width += chars[(int) ch].advance;
+        {
+            if (ch == '\n')
+            {
+                width = Math.max(width, lineWidth);
+                lineWidth = 0;
+                continue;
+            }
+
+            lineWidth += chars[(int) ch].advance;
+        }
+
+        width = Math.max(width, lineWidth);
 
         return width;
     }
