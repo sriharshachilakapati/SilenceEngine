@@ -156,6 +156,8 @@ public class Game
         Display.create();
         Display.show();
 
+        System.out.println(glGetString(GL_VERSION));
+
         // Initialize the Game
         init();
 

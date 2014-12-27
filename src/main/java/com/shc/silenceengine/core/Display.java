@@ -96,14 +96,33 @@ public final class Display
      */
     private static long createWindow(int width, int height, String title, long monitor, long parent, boolean visible, boolean resizable)
     {
+        // Dispose existing Batcher because VAOs cannot be shared across context
+        if (Game.getBatcher() != null)
+            Game.getBatcher().dispose();
+
         // Window Hints for OpenGL context
         glfwWindowHint(GLFW_SAMPLES, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+
+        if (System.getProperty("os.name").toLowerCase().contains("mac"))
+        {
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        }
+        else
+        {
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        }
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_VISIBLE, visible ? GL_TRUE : GL_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, resizable ? GL_TRUE : GL_FALSE);
+
+        if (Game.development)
+        {
+            System.setProperty("org.lwjgl.util.Debug", "true");
+            glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+        }
 
         // Create the window
         long window = glfwCreateWindow(width, height, title, monitor, parent);
@@ -123,8 +142,7 @@ public final class Display
 
         GL3Context.viewport(0, 0, width, height);
 
-        if (Game.getBatcher() == null)
-            Game.setBatcher(new Batcher());
+        Game.setBatcher(new Batcher());
 
         if (Program.DEFAULT == null)
             Program.loadDefaultProgram();

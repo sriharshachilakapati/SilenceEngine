@@ -19,6 +19,11 @@ class NativesLoader
     private static final String OS   = System.getProperty("os.name").toLowerCase();
     private static final String ARCH = System.getProperty("os.arch").toLowerCase();
 
+    private static boolean isWindows = OS.contains("windows");
+    private static boolean isLinux   = OS.contains("linux");
+    private static boolean isMac     = OS.contains("mac");
+    private static boolean is64Bit   = ARCH.equals("amd64") || ARCH.equals("x86_64");
+
     /**
      * Loads the natives from the JAR resources
      */
@@ -36,9 +41,9 @@ class NativesLoader
             // Delete the temp dir on exit
             tmp.deleteOnExit();
 
-            if (OS.contains("win"))
+            if (isWindows)
             {
-                if (ARCH.contains("86"))
+                if (!is64Bit)
                 {
                     // Extract WIN32 natives
                     extractLibrary(tmp, "/windows/x86/lwjgl.dll");
@@ -48,18 +53,18 @@ class NativesLoader
                 {
                     // Extract WIN64 natives
                     extractLibrary(tmp, "/windows/x64/lwjgl.dll");
-                    extractLibrary(tmp, "/windows/x64/OpenAL64.dll");
+                    extractLibrary(tmp, "/windows/x64/OpenAL32.dll");
                 }
             }
-            else if (OS.contains("mac"))
+            else if (isMac)
             {
                 // Extract MacOS natives
                 extractLibrary(tmp, "/macosx/x64/liblwjgl.dylib");
                 extractLibrary(tmp, "/macosx/x64/libopenal.dylib");
             }
-            else if (OS.contains("nux"))
+            else if (isLinux)
             {
-                if (ARCH.contains("86"))
+                if (!is64Bit)
                 {
                     // Extract x86 Linux natives
                     extractLibrary(tmp, "/linux/x86/liblwjgl.so");
@@ -79,7 +84,7 @@ class NativesLoader
         catch (Exception e)
         {
             // Oops, something went wrong, print to stack trace
-            throw new SilenceException(e.getMessage());
+            SilenceException.reThrow(e);
         }
     }
 
