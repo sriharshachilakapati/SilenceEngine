@@ -218,6 +218,11 @@ public class Color extends Vector4
         setA(a);
     }
 
+    public Color copy()
+    {
+        return new Color(x, y, z, w);
+    }
+
     public static Color random()
     {
         return new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), (float) Math.random());

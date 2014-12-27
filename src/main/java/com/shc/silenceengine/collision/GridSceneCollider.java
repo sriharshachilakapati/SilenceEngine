@@ -61,6 +61,7 @@ public class GridSceneCollider implements SceneCollider2D
         {
             entities.clear();
             grid.clear();
+            childrenInScene = 0;
 
             for (SceneNode child : scene.getChildren())
             {

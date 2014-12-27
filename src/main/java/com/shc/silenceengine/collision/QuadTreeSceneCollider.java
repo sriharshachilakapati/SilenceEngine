@@ -55,6 +55,7 @@ public class QuadTreeSceneCollider implements SceneCollider2D
         {
             entities.clear();
             quadTree.clear();
+            childrenInScene = 0;
 
             for (SceneNode child : scene.getChildren())
             {

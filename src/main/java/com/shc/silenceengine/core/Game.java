@@ -174,7 +174,7 @@ public class Game
         int updatesProcessed = 0;
         int framesProcessed = 0;
 
-        previousTime = 0;
+        previousTime = TimeUtils.currentSeconds();
 
         while (true)
         {
@@ -198,6 +198,7 @@ public class Game
                 Mouse.startEventFrame();
 
                 update((float) elapsed);
+                GameTimer.updateTimers((float) elapsed);
 
                 Keyboard.clearEventFrame();
                 Mouse.clearEventFrame();
