@@ -141,6 +141,11 @@ public final class ResourceLoader
         return fonts.get(id);
     }
 
+    public Sound getSound(int id)
+    {
+        return sounds.get(id);
+    }
+
     public void dispose()
     {
         for (int id : textures.keySet())
