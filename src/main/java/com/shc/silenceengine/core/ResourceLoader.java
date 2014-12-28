@@ -153,6 +153,9 @@ public final class ResourceLoader
 
         for (int id : fonts.keySet())
             fonts.get(id).dispose();
+
+        for (int id : sounds.keySet())
+            sounds.get(id).dispose();
     }
 
     private String fontToString(String name, int style, int size)
