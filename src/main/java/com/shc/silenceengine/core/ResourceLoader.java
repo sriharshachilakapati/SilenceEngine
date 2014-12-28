@@ -1,5 +1,6 @@
 package com.shc.silenceengine.core;
 
+import com.shc.silenceengine.audio.Sound;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.TrueTypeFont;
@@ -21,11 +22,13 @@ public final class ResourceLoader
 {
     private Map<Integer, Texture>      textures;
     private Map<Integer, TrueTypeFont> fonts;
+    private Map<Integer, Sound>        sounds;
 
     private Map<String, Integer> texturesToLoad;
     private Map<String, Integer> fontsToLoad;
+    private Map<String, Integer> soundsToLoad;
 
-    private int numLoaded;
+    private int     numLoaded;
     private Texture logo;
 
     private static ResourceLoader instance;
@@ -42,9 +45,11 @@ public final class ResourceLoader
     {
         textures = new HashMap<>();
         fonts = new HashMap<>();
+        sounds = new HashMap<>();
 
         texturesToLoad = new HashMap<>();
         fontsToLoad = new HashMap<>();
+        soundsToLoad = new HashMap<>();
 
         numLoaded = 0;
 
@@ -61,6 +66,13 @@ public final class ResourceLoader
     {
         int id = texturesToLoad.size();
         texturesToLoad.put(name, id);
+        return id;
+    }
+
+    public int defineSound(String name)
+    {
+        int id = soundsToLoad.size();
+        soundsToLoad.put(name, id);
         return id;
     }
 
@@ -108,6 +120,14 @@ public final class ResourceLoader
             renderProgress();
         }
 
+        for (String soundName : soundsToLoad.keySet())
+        {
+            sounds.put(soundsToLoad.get(soundName), new Sound(soundName));
+            numLoaded++;
+
+            renderProgress();
+        }
+
         Display.setResizable(true);
     }
 
@@ -141,7 +161,7 @@ public final class ResourceLoader
 
     private void renderProgress()
     {
-        float percentage = 100 * numLoaded / (fontsToLoad.size() + texturesToLoad.size());
+        float percentage = 100 * numLoaded / (fontsToLoad.size() + texturesToLoad.size() + soundsToLoad.size());
 
         while (renderedProgress < percentage)
         {

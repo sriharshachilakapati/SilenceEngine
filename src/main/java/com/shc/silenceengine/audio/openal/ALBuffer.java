@@ -1,7 +1,5 @@
 package com.shc.silenceengine.audio.openal;
 
-import com.shc.silenceengine.core.SilenceException;
-
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -26,19 +24,19 @@ public class ALBuffer
     public void uploadData(Buffer data, int format, int frequency)
     {
         if (disposed)
-            throw new SilenceException("Unable to upload data to disposed OpenAL buffer");
+            throw new ALException("Unable to upload data to disposed OpenAL buffer");
 
         if (data instanceof ByteBuffer)
-            alBufferData(id, format, (ByteBuffer)data, frequency);
+            alBufferData(id, format, (ByteBuffer) data, frequency);
 
         else if (data instanceof IntBuffer)
-            alBufferData(id, format, (IntBuffer)data, frequency);
+            alBufferData(id, format, (IntBuffer) data, frequency);
 
         else if (data instanceof ShortBuffer)
             alBufferData(id, format, (ShortBuffer) data, frequency);
 
         else
-            throw new SilenceException("The data should only be one of ByteBuffer, IntBuffer or ShortBuffer");
+            throw new ALException("The data should only be one of ByteBuffer, IntBuffer or ShortBuffer");
 
         ALError.check();
     }
@@ -46,7 +44,7 @@ public class ALBuffer
     public void dispose()
     {
         if (disposed)
-            throw new SilenceException("Unable to dispose an already disposed OpenAL buffer");
+            throw new ALException("Unable to dispose an already disposed OpenAL buffer");
 
         alDeleteBuffers(id);
         ALError.check();

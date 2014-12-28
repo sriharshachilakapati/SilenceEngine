@@ -13,6 +13,16 @@ public final class ALCError
     {
     }
 
+    public static void check()
+    {
+        check(ALContext.getInstance().getDevice().getPointer(), false);
+    }
+
+    public static void check(boolean force)
+    {
+        check(ALContext.getInstance().getDevice().getPointer(), force);
+    }
+
     public static void check(long device)
     {
         check(device, false);

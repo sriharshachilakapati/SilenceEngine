@@ -1,5 +1,6 @@
 package com.shc.silenceengine.core;
 
+import com.shc.silenceengine.audio.openal.ALContext;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Texture;
@@ -156,6 +157,9 @@ public class Game
         Display.create();
         Display.show();
 
+        // Initialize OpenAL
+        ALContext.getInstance().init();
+
         System.out.println(glGetString(GL_VERSION));
 
         // Initialize the Game
@@ -239,8 +243,10 @@ public class Game
         // Dispose the Batcher
         batcher.dispose();
 
-        // Call dispose() and destroy the Display
         dispose();
+
+        // Dispose OpenAL and Display
+        ALContext.getInstance().dispose();
         Display.destroy();
     }
 

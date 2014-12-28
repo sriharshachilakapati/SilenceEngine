@@ -58,4 +58,9 @@ public final class FileUtils
 
         return is;
     }
+
+    public static String getExtension(String name)
+    {
+        return name.split("\\.(?=[^\\.]+$)")[1];
+    }
 }
