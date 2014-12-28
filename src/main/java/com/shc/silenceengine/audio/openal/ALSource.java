@@ -9,6 +9,11 @@ import static org.lwjgl.openal.AL10.*;
  */
 public class ALSource
 {
+    public static enum State
+    {
+        PLAYING, STOPPED, PAUSED, LOOPING
+    }
+
     private int id;
     private boolean disposed;
 
@@ -20,6 +25,14 @@ public class ALSource
     public void attachBuffer(ALBuffer buffer)
     {
         setParameter(AL_BUFFER, buffer.getID());
+    }
+
+    public int getParameter(int parameter)
+    {
+        int result = alGetSourcei(id, parameter);
+        ALError.check();
+
+        return result;
     }
 
     public void setParameter(int parameter, boolean value)
@@ -93,6 +106,24 @@ public class ALSource
 
         alSourceRewind(id);
         ALError.check();
+    }
+
+    public State getState()
+    {
+        int state = getParameter(AL_SOURCE_STATE);
+
+        switch (state)
+        {
+            case AL_PLAYING:
+                if (getParameter(AL_LOOPING) == AL_TRUE)
+                    return State.LOOPING;
+                else
+                    return State.PLAYING;
+
+            case AL_PAUSED : return State.PAUSED;
+        }
+
+        return State.STOPPED;
     }
 
     public void dispose()

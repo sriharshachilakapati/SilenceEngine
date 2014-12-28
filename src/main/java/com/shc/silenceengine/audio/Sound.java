@@ -1,5 +1,6 @@
 package com.shc.silenceengine.audio;
 
+import com.shc.silenceengine.audio.formats.OggReader;
 import com.shc.silenceengine.audio.formats.WaveReader;
 import com.shc.silenceengine.audio.openal.ALBuffer;
 import com.shc.silenceengine.audio.openal.ALSource;
@@ -15,15 +16,8 @@ import static org.lwjgl.openal.AL10.*;
  */
 public class Sound
 {
-    public static enum State
-    {
-        PLAYING, STOPPED, PAUSED, LOOPING
-    }
-
     private ALSource source;
     private ALBuffer buffer;
-
-    private State state;
 
     private boolean looping;
 
@@ -44,6 +38,12 @@ public class Sound
                 reader = new WaveReader(is);
                 break;
 
+            // OggReader supported formats
+            case "ogg":
+            case "oga":
+                reader = new OggReader(is);
+                break;
+
             default:
                 throw new SilenceException("Unknown Audio format. " + format);
         }
@@ -53,7 +53,6 @@ public class Sound
         source = new ALSource();
         source.attachBuffer(buffer);
 
-        state = State.STOPPED;
         looping = false;
     }
 
@@ -64,32 +63,34 @@ public class Sound
 
     public void play()
     {
-        if (state == State.PLAYING || state == State.LOOPING)
+        ALSource.State state = source.getState();
+
+        if (state == ALSource.State.PLAYING || state == ALSource.State.LOOPING)
             return;
 
         if (looping)
-            state = State.LOOPING;
+            state = ALSource.State.LOOPING;
         else
-            state = State.PLAYING;
+            state = ALSource.State.PLAYING;
 
         source.play();
     }
 
     public void pause()
     {
-        if (state == State.PAUSED)
+        ALSource.State state = source.getState();
+
+        if (state == ALSource.State.PAUSED)
             return;
 
-        state = State.PAUSED;
         source.pause();
     }
 
     public void stop()
     {
-        if (state == State.STOPPED)
+        if (getState() == ALSource.State.STOPPED)
             return;
 
-        state = State.STOPPED;
         source.stop();
     }
 
@@ -99,9 +100,9 @@ public class Sound
         source.setParameter(AL_LOOPING, looping);
     }
 
-    public State getState()
+    public ALSource.State getState()
     {
-        return state;
+        return source.getState();
     }
 
     public void dispose()
