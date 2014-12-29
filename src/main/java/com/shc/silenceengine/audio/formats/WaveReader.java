@@ -8,6 +8,7 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +34,8 @@ public class WaveReader implements ISoundReader
         // Simply use JavaSound reader here
         try
         {
-            AudioInputStream ais = AudioSystem.getAudioInputStream(is);
+            BufferedInputStream bis = new BufferedInputStream(is);
+            AudioInputStream ais = AudioSystem.getAudioInputStream(bis);
             AudioFormat fmt = ais.getFormat();
 
             sampleRate = (int) fmt.getSampleRate();
