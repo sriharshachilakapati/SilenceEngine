@@ -9,6 +9,31 @@ public final class MathUtils
     {
     }
 
+    public static int convertRange(int value, int oldMin, int oldMax, int newMin, int newMax)
+    {
+        return (((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
+    }
+
+    public static float convertRange(float value, float oldMin, float oldMax, float newMin, float newMax)
+    {
+        return (((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
+    }
+
+    public static short convertRange(short value, short oldMin, short oldMax, short newMin, short newMax)
+    {
+        return (short) ((((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin);
+    }
+
+    public static long convertRange(long value, long oldMin, long oldMax, long newMin, long newMax)
+    {
+        return (((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
+    }
+
+    public static double convertRange(double value, double oldMin, double oldMax, double newMin, double newMax)
+    {
+        return (((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
+    }
+
     public static int clamp(int val, int min, int max)
     {
         val = Math.min(val, max);

@@ -44,7 +44,7 @@ public class DefaultProgram extends Program
         GL3Context.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
         // Uniforms
-        setUniform("tex", Texture.getActiveUnit());
+        setUniform("textureID", Texture.getActiveUnit());
         setUniform("mTransform", batcher.getTransform().getMatrix());
         setUniform("camProj", BaseCamera.projection);
         setUniform("camView", BaseCamera.view);

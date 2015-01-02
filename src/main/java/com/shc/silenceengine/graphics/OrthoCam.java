@@ -49,6 +49,18 @@ public class OrthoCam extends BaseCamera
         return this;
     }
 
+    public OrthoCam translateTo(float x, float y)
+    {
+        mView.initIdentity().multiply(TransformUtils.createTranslation(new Vector3(x, y, 0)));
+        return this;
+    }
+
+    public OrthoCam translateTo(Vector2 v)
+    {
+        mView.initIdentity().multiply(TransformUtils.createTranslation(new Vector3(v, 0)));
+        return this;
+    }
+
     public OrthoCam center(float x, float y)
     {
         return center(new Vector2(x, y));

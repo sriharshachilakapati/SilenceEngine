@@ -8,6 +8,7 @@ import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.utils.*;
 
+import java.awt.Toolkit;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -52,6 +53,9 @@ public class Game
 {
     static
     {
+        // We need to start AWT in Headless mode, Needed for AWT to work on OS X
+        System.setProperty("java.awt.headless", "true");
+
         // Every exception occurs after SilenceException, even
         // the uncaught exceptions are thrown as runtime exceptions
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()
@@ -160,13 +164,14 @@ public class Game
         // Initialize OpenAL
         ALContext.getInstance().init();
 
-        System.out.println(glGetString(GL_VERSION));
+        System.out.println("Initialized OpenGL version " + glGetString(GL_VERSION));
 
         // Initialize the Game
         init();
 
         // GameLoop constants
         final double frameTime = 1.0/targetUPS;
+        final double maxFrameSkips = 10;
 
         double currentTime;
         double previousTime;
@@ -179,6 +184,7 @@ public class Game
 
         int updatesProcessed = 0;
         int framesProcessed = 0;
+        int skippedFrames = 0;
 
         previousTime = TimeUtils.currentSeconds();
 
@@ -198,19 +204,21 @@ public class Game
 
             lag += elapsed;
 
-            while (lag > frameTime)
+            while (lag > frameTime && skippedFrames < maxFrameSkips)
             {
                 Keyboard.startEventFrame();
                 Mouse.startEventFrame();
 
-                update((float) elapsed);
-                GameTimer.updateTimers((float) elapsed);
+                update((float) frameTime);
+                GameTimer.updateTimers((float) frameTime);
 
                 Keyboard.clearEventFrame();
                 Mouse.clearEventFrame();
 
                 updatesProcessed++;
                 lag -= frameTime;
+
+                skippedFrames++;
 
                 if (currentTime - lastUPSUpdate >= 1000)
                 {
@@ -236,6 +244,8 @@ public class Game
             }
 
             Display.update();
+
+            skippedFrames = 0;
 
             previousTime = currentTime;
         }

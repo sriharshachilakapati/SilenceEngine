@@ -46,12 +46,8 @@ public class TrueTypeFontTest extends Game
         String fpsString = "FPS: " + getFPS();
         font.drawString(batcher, fpsString, Display.getWidth() - font.getWidth(fpsString) - 10, 10, Color.CORN_FLOWER_BLUE);
 
-        batcher.begin();
-        {
-            batcher.drawTexture2d(logo, new Vector2(Display.getWidth() - logo.getWidth(),
-                    Display.getHeight() - logo.getHeight()));
-        }
-        batcher.end();
+        batcher.drawTexture2d(logo, new Vector2(Display.getWidth() - logo.getWidth(),
+                Display.getHeight() - logo.getHeight()));
     }
 
     public void resize()
