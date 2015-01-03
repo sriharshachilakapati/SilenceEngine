@@ -8,7 +8,6 @@ import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.utils.*;
 
-import java.awt.Toolkit;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;

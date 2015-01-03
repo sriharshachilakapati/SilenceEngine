@@ -68,11 +68,6 @@ public class Sound
         if (state == ALSource.State.PLAYING || state == ALSource.State.LOOPING)
             return;
 
-        if (looping)
-            state = ALSource.State.LOOPING;
-        else
-            state = ALSource.State.PLAYING;
-
         source.play();
     }
 
@@ -100,14 +95,29 @@ public class Sound
         source.setParameter(AL_LOOPING, looping);
     }
 
+    public void dispose()
+    {
+        source.dispose();
+        buffer.dispose();
+    }
+
     public ALSource.State getState()
     {
         return source.getState();
     }
 
-    public void dispose()
+    public ALSource getSource()
     {
-        source.dispose();
-        buffer.dispose();
+        return source;
+    }
+
+    public ALBuffer getBuffer()
+    {
+        return buffer;
+    }
+
+    public boolean isLooping()
+    {
+        return looping;
     }
 }

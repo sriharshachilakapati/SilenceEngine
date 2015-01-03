@@ -119,6 +119,11 @@ public class Texture
         return new SubTexture(this, min, max);
     }
 
+    public SubTexture getSubTexture(float minU, float minV, float maxU, float maxV, float width, float height)
+    {
+        return new SubTexture(this, minU, minV, maxU, maxV, width, height);
+    }
+
     public static int getActiveUnit()
     {
         return activeUnit;

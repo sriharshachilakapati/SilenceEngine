@@ -10,10 +10,14 @@ import com.shc.silenceengine.math.Vector2;
 public class SubTexture extends Texture
 {
     private Texture parent;
-    private float   minU;
-    private float   minV;
-    private float   maxU;
-    private float   maxV;
+
+    private float minU;
+    private float minV;
+    private float maxU;
+    private float maxV;
+
+    private float width;
+    private float height;
 
     public SubTexture(Texture parent, Vector2 min, Vector2 max)
     {
@@ -30,6 +34,17 @@ public class SubTexture extends Texture
 
         this.maxU = maxU;
         this.maxV = maxV;
+
+        this.width = (maxU - minU) * parent.getWidth();
+        this.height = (maxV - minV) * parent.getHeight();
+    }
+
+    public SubTexture(Texture parent, float minU, float minV, float maxU, float maxV, float width, float height)
+    {
+        this(parent, minU, minV, maxU, maxV);
+
+        this.width = width;
+        this.height = height;
     }
 
     public SubTexture getSubTexture(float minU, float minV, float maxU, float maxV)
@@ -74,12 +89,12 @@ public class SubTexture extends Texture
 
     public float getWidth()
     {
-        return (maxU - minU) * parent.getWidth();
+        return width;
     }
 
     public float getHeight()
     {
-        return (maxV - minV) * parent.getHeight();
+        return height;
     }
 
     public Texture getParent()
