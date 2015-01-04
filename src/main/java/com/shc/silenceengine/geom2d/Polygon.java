@@ -3,7 +3,6 @@ package com.shc.silenceengine.geom2d;
 import com.shc.silenceengine.math.Vector2;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -128,6 +127,7 @@ public class Polygon
                     if (projected > maxB) maxB = projected;
                 }
 
+                // Separating axis
                 if (maxA < minB || maxB < minA)
                     return false;
             }
@@ -135,6 +135,107 @@ public class Polygon
 
         return true;
     }
+
+//    public Vector2 getNearestVertex(Vector2 vertex)
+//    {
+//        Vector2 nearest = vertex;
+//        Vector2 direction = vertex.subtract(center);
+//
+//        float angle = (float) Math.atan2(direction.y, direction.x);
+//
+//        float cosAngle = (float) Math.cos(angle);
+//        float sinAngle = (float) Math.sin(angle);
+//
+//        while (!contains(nearest))
+//        {
+//            nearest = nearest.subtract(new Vector2(cosAngle, sinAngle));
+//            System.out.println(nearest);
+//        }
+//
+//        return nearest;
+//    }
+
+//    public double getOverlapDistance(Polygon other)
+//    {
+//        double overlap = 0;
+//
+//        for (int x = 0; x < 2; x++)
+//        {
+//            Polygon polygon = (x == 0) ? this : other;
+//
+//            for (int i1 = 0; i1 < polygon.vertexCount(); i1++)
+//            {
+//                int i2 = (i1 + 1) % polygon.vertexCount();
+//                Vector2 p1 = polygon.getVertex(i1).add(polygon.getPosition());
+//                Vector2 p2 = polygon.getVertex(i2).add(polygon.getPosition());
+//
+//                Vector2 normal = new Vector2(p2.getY() - p1.getY(), p1.getX() - p2.getX()).normalize();
+//
+//                double minA = Double.POSITIVE_INFINITY;
+//                double maxA = Double.NEGATIVE_INFINITY;
+//                double minB = minA;
+//                double maxB = maxA;
+//
+//                for (Vector2 p : this.getVertices())
+//                {
+//                    double projected = normal.dot(p.add(position));
+//
+//                    if (projected < minA) minA = projected;
+//                    if (projected > maxA) maxA = projected;
+//                }
+//
+//                for (Vector2 p : other.getVertices())
+//                {
+//                    double projected = normal.dot(p.add(other.getPosition()));
+//
+//                    if (projected < minB) minB = projected;
+//                    if (projected > maxB) maxB = projected;
+//                }
+//
+//                if (!(maxA < minB || maxB < minA))
+//                {
+//                    // Not a separating axis, calculate penetration
+//                    if (minA < minB)
+//                    {
+//                        // A ends before B does. We have to pull A out of B
+//                        if (maxA < maxB)
+//                        {
+//                            overlap = maxA - minB;
+//                            // B is fully inside A.  Pick the shortest way out.
+//                        }
+//                        else
+//                        {
+//                            double option1 = maxA - minB;
+//                            double option2 = maxB - minA;
+//                            overlap = option1 < option2 ? option1 : -option2;
+//                        }
+//                        // B starts further left than A
+//                    }
+//                    else
+//                    {
+//                        // B ends before A ends. We have to push A out of B
+//                        if (maxA > maxB)
+//                        {
+//                            overlap = minA - maxB;
+//                            // A is fully inside B.  Pick the shortest way out.
+//                        }
+//                        else
+//                        {
+//                            double option1 = maxA - minB;
+//                            double option2 = maxB - minA;
+//                            overlap = option1 < option2 ? option1 : -option2;
+//                        }
+//                    }
+//
+//                    overlap = Math.abs(overlap);
+//                }
+//                else
+//                    return 0;
+//            }
+//        }
+//
+//        return overlap;
+//    }
 
     public boolean contains(Vector2 p)
     {

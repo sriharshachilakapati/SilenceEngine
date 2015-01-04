@@ -225,10 +225,25 @@ public class Entity2D extends SceneNode
         if (yd < 0)
             yd = -yd;
 
+//        float penetrationDistance = (float) polygon.getOverlapDistance(other.getPolygon());
+//
+//        System.out.println(penetrationDistance);
+//
+//        if (xd > yd)
+//            position = position.subtract(penetrationDistance, 0);
+//        else
+//            position = position.subtract(0, penetrationDistance);
+
         if (xd > yd)
             alignHorizontallyTo(other);
         else
             alignVerticallyTo(other);
+
+//            Vector2 nearest = other.polygon.getNearestVertex(getCenter());
+//            Vector2 nearest2 = polygon.getNearestVertex(other.getCenter());
+//
+//            Vector2 overlap = nearest.subtract(nearest2);
+//            setPosition(position.add(overlap));
     }
 
     /**
