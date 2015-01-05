@@ -61,8 +61,6 @@ public class QuadTreeSceneColliderTest extends Game
         // Update the scene and check for collisions
         scene.update(delta);
         collider.checkCollisions();
-
-        System.out.println("Update!!");
     }
 
     public void render(float delta, Batcher batcher)
@@ -109,8 +107,6 @@ public class QuadTreeSceneColliderTest extends Game
         {
             setPolygon(new Rectangle(0, 0, 48, 48));
             setPosition(position);
-
-            rotate(45);
 
             color = Color.random();
         }

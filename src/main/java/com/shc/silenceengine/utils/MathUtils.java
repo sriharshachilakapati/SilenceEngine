@@ -1,5 +1,9 @@
 package com.shc.silenceengine.utils;
 
+import com.shc.silenceengine.math.Vector2;
+import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.math.Vector4;
+
 /**
  * @author Sri Harsha Chilakapati
  */
@@ -7,6 +11,81 @@ public final class MathUtils
 {
     private MathUtils()
     {
+    }
+
+    public static float sin(float angle)
+    {
+        return (float) Math.sin(Math.toRadians(angle));
+    }
+
+    public static float cos(float angle)
+    {
+        return (float) Math.cos(Math.toRadians(angle));
+    }
+
+    public static float tan(float angle)
+    {
+        return sin(angle) / cos(angle);
+    }
+
+    public static float cot(float angle)
+    {
+        return 1f / tan(angle);
+    }
+
+    public static float sec(float angle)
+    {
+        return 1f / cos(angle);
+    }
+
+    public static float csc(float angle)
+    {
+        return 1f / sin(angle);
+    }
+
+    public static float acos(float value)
+    {
+        return (float) Math.toDegrees(Math.acos(value));
+    }
+
+    public static float asin(float value)
+    {
+        return (float) Math.toDegrees(Math.asin(value));
+    }
+
+    public static float atan(float value)
+    {
+        return (float) Math.toDegrees(Math.atan(value));
+    }
+
+    public static float atan2(float y, float x)
+    {
+        return (float) Math.toDegrees(Math.atan2(y, x));
+    }
+
+    public static int sqrt(int value)
+    {
+        return (int) Math.sqrt(value);
+    }
+
+    public static float sqrt(float value)
+    {
+        return (float) Math.sqrt(value);
+    }
+
+    public static short sqrt(short value)
+    {
+        return (short) Math.sqrt(value);
+    }
+
+    public static long sqrt(long value)
+    {
+        return (long) Math.sqrt(value);
+    }
+
+    public static double sqrt(double value)
+    {
+        return Math.sqrt(value);
     }
 
     public static int convertRange(int value, int oldMin, int oldMax, int newMin, int newMax)
@@ -72,6 +151,39 @@ public final class MathUtils
         val = (short) Math.max(val, min);
 
         return val;
+    }
+
+    public static Vector2 clamp(Vector2 vector, Vector2 min, Vector2 max)
+    {
+        Vector2 result = new Vector2();
+
+        result.x = clamp(vector.x, min.x, max.x);
+        result.y = clamp(vector.y, min.y, max.y);
+
+        return result;
+    }
+
+    public static Vector3 clamp(Vector3 vector, Vector3 min, Vector3 max)
+    {
+        Vector3 result = new Vector3();
+
+        result.x = clamp(vector.x, min.x, max.x);
+        result.y = clamp(vector.y, min.y, max.y);
+        result.z = clamp(vector.z, min.z, max.z);
+
+        return result;
+    }
+
+    public static Vector4 clamp(Vector4 vector, Vector4 min, Vector4 max)
+    {
+        Vector4 result = new Vector4();
+
+        result.x = clamp(vector.x, min.x, max.x);
+        result.y = clamp(vector.y, min.y, max.y);
+        result.z = clamp(vector.z, min.z, max.z);
+        result.w = clamp(vector.w, min.w, max.w);
+
+        return result;
     }
 
     /**
@@ -182,8 +294,8 @@ public final class MathUtils
      * @param y2 The ordinate of second point
      * @return The direction in degrees
      */
-    public static int getDirection(float x1, float y1, float x2, float y2)
+    public static float getDirection(float x1, float y1, float x2, float y2)
     {
-        return (int) Math.toDegrees(Math.atan((y2 - y1) / (x2 - x1)));
+        return atan((y2 - y1) / (x2 - x1));
     }
 }

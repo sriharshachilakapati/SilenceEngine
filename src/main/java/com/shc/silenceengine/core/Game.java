@@ -50,6 +50,8 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Game
 {
+    public static final String VERSION = "0.0.1";
+
     static
     {
         // We need to start AWT in Headless mode, Needed for AWT to work on OS X
@@ -77,9 +79,6 @@ public class Game
                 }
             }
         });
-
-        // Load the natives
-        NativesLoader.load();
 
         // Set target UPS
         setTargetUPS(60);
@@ -154,19 +153,35 @@ public class Game
      */
     public void start()
     {
+        Logger.log("Initializing SilenceEngine version " + VERSION);
+
+        Logger.log("Starting to load natives");
+
+        // Load the natives
+        NativesLoader.load();
+
+        Logger.log("Natives loaded successfully");
+
         running = true;
+
+        Logger.log("Initializing Display");
 
         // Create and show the display
         Display.create();
         Display.show();
 
+        Logger.log("Initializing OpenAL context");
+
         // Initialize OpenAL
         ALContext.getInstance().init();
 
-        System.out.println("Initialized OpenGL version " + glGetString(GL_VERSION));
+        Logger.log("Initialized OpenGL version " + glGetString(GL_VERSION));
+        Logger.log("Initializing Game");
 
         // Initialize the Game
         init();
+
+        Logger.log("Game initialized successfully, proceeding to the main loop");
 
         // GameLoop constants
         final double frameTime = 1.0/targetUPS;
@@ -249,6 +264,8 @@ public class Game
             previousTime = currentTime;
         }
 
+        Logger.log("Disposing the loaded resources");
+
         // Dispose the Batcher
         batcher.dispose();
 
@@ -257,6 +274,8 @@ public class Game
         // Dispose OpenAL and Display
         ALContext.getInstance().dispose();
         Display.destroy();
+
+        Logger.log("This game has been terminated successfully.");
     }
 
     /**
