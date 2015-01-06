@@ -1,5 +1,7 @@
 package com.shc.silenceengine.math;
 
+import com.shc.silenceengine.utils.MathUtils;
+
 /**
  * @author Sri Harsha Chilakapati
  */
@@ -23,6 +25,18 @@ public class Vector2
     }
 
     public Vector2(Vector2 v)
+    {
+        x = v.x;
+        y = v.y;
+    }
+    
+    public Vector2(Vector3 v)
+    {
+        x = v.x;
+        y = v.y;
+    }
+    
+    public Vector2(Vector4 v)
     {
         x = v.x;
         y = v.y;
@@ -100,6 +114,36 @@ public class Vector2
     public Vector2 negate()
     {
         return new Vector2(-x, -y);
+    }
+    
+    public float angle()
+    {
+        return MathUtils.atan2(y, x);
+    }
+    
+    public float angle(Vector2 v)
+    {
+        return MathUtils.acos(this.dot(v) / (length() * v.length()));
+    }
+    
+    public float distanceSquared(Vector2 v)
+    {
+        return (v.x - x) * (v.x - x) + (v.y - y) * (v.y - y);
+    }
+    
+    public float distance(Vector2 v)
+    {
+        return MathUtils.sqrt(distanceSquared(v));
+    }
+    
+    public Vector2 lerp(Vector2 target, float alpha)
+    {
+        final float oneMinusAlpha = 1f - alpha;
+        
+        float x = (x * oneMinusAlpha) + (target.x * alpha);
+		float y = (y * oneMinusAlpha) + (target.y * alpha);
+		
+		return new Vector2(x, y);
     }
 
     public float getX()
