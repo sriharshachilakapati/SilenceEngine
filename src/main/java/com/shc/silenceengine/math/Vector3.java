@@ -1,5 +1,7 @@
 package com.shc.silenceengine.math;
 
+import com.shc.silenceengine.utils.MathUtils;
+
 /**
  * @author Sri Harsha Chilakapati
  */
@@ -37,6 +39,13 @@ public class Vector3
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+    
+    public Vector3(Vector4 v)
+    {
+        this.x = v.x;
+        this.y = v.y;
+        this.z = v.z;
     }
 
     public Vector3 add(float x, float y, float z)
@@ -86,6 +95,9 @@ public class Vector3
     public Vector3 normalize()
     {
         float l = length();
+        
+        if (l == 0 || l == 1)
+            return copy();
 
         return new Vector3(x/l, y/l, z/l);
     }
@@ -103,6 +115,50 @@ public class Vector3
     public float lengthSquared() { return x*x + y*y + z*z; }
 
     public float length() { return (float) Math.sqrt(lengthSquared()); }
+    
+    public float distanceSquared(float x, float y, float z)
+    {
+        final float x2 = (x - this.x) * (x - this.x);
+        final float y2 = (y - this.y) * (y - this.y);
+        final float z2 = (z - this.z) * (z - this.z);
+        
+        return x2 + y2 + z2;
+    }
+    
+    public float distanceSquared(Vector3 v)
+    {
+        return distanceSquared(v.x, v.y, v.z);
+    }
+    
+    public float distanceSquared(Vector2 v)
+    {
+        return distanceSquared(v.x, v.y, 0);
+    }
+    
+    public float distance(float x, float y, float z)
+    {
+        return MathUtils.sqrt(distanceSquared(x, y, z));
+    }
+    
+    public float distance(Vector3 v)
+    {
+        return MathUtils.sqrt(distanceSquared(v));
+    }
+    
+    public float distance(Vector2 v)
+    {
+        return MathUtils.sqrt(distanceSquared(v));
+    }
+    
+    public Vector3 rotate(Vector3 axis, float angle)
+    {
+        return new Quaternion(axis, angle).multiply(this);
+    }
+    
+    public Vector3 lerp(Vector3 target, float alpha)
+    {
+        return scale(1f - alpha).add(target.scale(alpha));
+    }
 
     public Vector3 copy()
     {
