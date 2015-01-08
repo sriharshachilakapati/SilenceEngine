@@ -149,6 +149,9 @@ public class Vector4
     {
         float l = length();
 
+        if (l == 0 || l == 1)
+            return copy();
+
         return new Vector4(x/l, y/l, z/l, w/l);
     }
 
