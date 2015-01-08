@@ -1,7 +1,10 @@
 package com.shc.silenceengine.input;
 
 import com.shc.silenceengine.core.Display;
+import com.shc.silenceengine.core.SilenceException;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,7 +70,7 @@ public class Keyboard
     public static final int KEY_WORLD_1       = GLFW_KEY_WORLD_1;
     public static final int KEY_WORLD_2       = GLFW_KEY_WORLD_2;
 
-    /** Function keys. */
+    /* Function keys. */
     public static final int KEY_ESCAPE        = GLFW_KEY_ESCAPE;
     public static final int KEY_ENTER         = GLFW_KEY_ENTER;
     public static final int KEY_TAB           = GLFW_KEY_TAB;
@@ -193,5 +196,21 @@ public class Keyboard
     public static void glfwKeyCallback(long window, int key, int scanCode, int action, int mods)
     {
         Keyboard.setKey(key, action != GLFW_RELEASE);
+    }
+
+    public static String getKeyName(int key)
+    {
+        for (Field field : Keyboard.class.getDeclaredFields())
+            try
+            {
+                if (Modifier.isStatic(field.getModifiers()) && field.getInt(null) == key)
+                    return field.getName();
+            }
+            catch (Exception e)
+            {
+                SilenceException.reThrow(e);
+            }
+
+        return  "Unknown key code";
     }
 }

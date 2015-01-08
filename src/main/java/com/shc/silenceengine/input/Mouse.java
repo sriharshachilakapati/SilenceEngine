@@ -1,7 +1,10 @@
 package com.shc.silenceengine.input;
 
 import com.shc.silenceengine.core.Display;
+import com.shc.silenceengine.core.SilenceException;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,5 +130,21 @@ public class Mouse
     {
         Mouse.scrollX = (float) scrollX;
         Mouse.scrollY = (float) scrollY;
+    }
+
+    public static String getButtonName(int button)
+    {
+        for (Field field : Mouse.class.getDeclaredFields())
+            try
+            {
+                if (Modifier.isStatic(field.getModifiers()) && field.getInt(null) == button)
+                    return field.getName();
+            }
+            catch (Exception e)
+            {
+                SilenceException.reThrow(e);
+            }
+
+        return "Unknown mouse button code";
     }
 }
