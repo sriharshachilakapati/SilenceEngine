@@ -140,10 +140,10 @@ public class Vector2
     {
         final float oneMinusAlpha = 1f - alpha;
         
-        float x = (x * oneMinusAlpha) + (target.x * alpha);
-		float y = (y * oneMinusAlpha) + (target.y * alpha);
-		
-		return new Vector2(x, y);
+        float x = (this.x * oneMinusAlpha) + (target.x * alpha);
+        float y = (this.y * oneMinusAlpha) + (target.y * alpha);
+
+        return new Vector2(x, y);
     }
 
     public float getX()

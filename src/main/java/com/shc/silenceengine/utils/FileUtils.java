@@ -18,7 +18,7 @@ public final class FileUtils
 
     public static String[] readLinesToStringArray(InputStream stream)
     {
-        ArrayList<String> lines = new ArrayList<String>();
+        ArrayList<String> lines = new ArrayList<>();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 

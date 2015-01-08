@@ -57,6 +57,16 @@ public class Vector3
     {
         return add(v.x, v.y, v.z);
     }
+    
+    public Vector3 add(Vector2 v, float z)
+    {
+        return add(v.x, v.y, z);
+    }
+    
+    public Vector3 add(float x, Vector2 v)
+    {
+        return add(x, v.x, v.y);
+    }
 
     public Vector3 subtract(float x, float y, float z)
     {
@@ -66,6 +76,16 @@ public class Vector3
     public Vector3 subtract(Vector3 v)
     {
         return add(-v.x, -v.y, -v.z);
+    }
+
+    public Vector3 subtract(Vector2 v, float z)
+    {
+        return subtract(v.x, v.y, z);
+    }
+
+    public Vector3 subtract(float x, Vector2 v)
+    {
+        return subtract(x, v.x, v.y);
     }
 
     public Vector3 scale(float sx, float sy, float sz)
@@ -160,6 +180,28 @@ public class Vector3
         return scale(1f - alpha).add(target.scale(alpha));
     }
 
+    public Vector3 multiply(Matrix3 m)
+    {
+        Vector3 result = new Vector3();
+
+        result.x = x * m.get(0, 0) + y * m.get(0, 1) + z * m.get(0, 2);
+        result.y = x * m.get(1, 0) + y * m.get(1, 1) + z * m.get(1, 2);
+        result.z = x * m.get(2, 0) + y * m.get(2, 1) + z * m.get(2, 2);
+
+        return result;
+    }
+
+    public Vector3 multiply(Matrix4 m)
+    {
+        Vector3 result = new Vector3();
+
+        result.x = x * m.get(0, 0) + y * m.get(0, 1) + z * m.get(0, 2) + 1 * m.get(0, 3);
+        result.y = x * m.get(1, 0) + y * m.get(1, 1) + z * m.get(1, 2) + 1 * m.get(1, 3);
+        result.z = x * m.get(2, 0) + y * m.get(2, 1) + z * m.get(2, 2) + 1 * m.get(2, 3);
+
+        return result;
+    }
+
     public Vector3 copy()
     {
         return new Vector3(this);
@@ -241,9 +283,29 @@ public class Vector3
         return this;
     }
 
+    public Vector2 getXX()
+    {
+        return new Vector2(x, x);
+    }
+
     public Vector2 getXY()
     {
         return new Vector2(x, y);
+    }
+
+    public Vector2 getXZ()
+    {
+        return new Vector2(x, z);
+    }
+
+    public Vector2 getYX()
+    {
+        return new Vector2(y, x);
+    }
+
+    public Vector2 getYY()
+    {
+        return new Vector2(y, y);
     }
 
     public Vector2 getYZ()
@@ -251,9 +313,19 @@ public class Vector3
         return new Vector2(y, z);
     }
 
-    public Vector2 getXZ()
+    public Vector2 getZX()
     {
-        return new Vector2(x, z);
+        return new Vector2(z, x);
+    }
+
+    public Vector2 getZY()
+    {
+        return new Vector2(z, y);
+    }
+
+    public Vector2 getZZ()
+    {
+        return new Vector2(z, z);
     }
 
     @Override

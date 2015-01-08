@@ -80,6 +80,9 @@ public class Quaternion
     {
         float length = length();
 
+        if (length == 0 || length == 1)
+            return copy();
+
         return new Quaternion(x/length, y/length, z/length, w/length);
     }
 

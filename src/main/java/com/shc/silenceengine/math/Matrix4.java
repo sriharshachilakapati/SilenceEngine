@@ -114,6 +114,13 @@ public class Matrix4
         return this;
     }
 
+    public Vector3 multiply(Vector3 v)
+    {
+        return new Vector3().setX(m[0][0] * v.getX())
+                            .setY(m[0][1] * v.getY())
+                            .setZ(m[0][2] * v.getZ());
+    }
+
     public Vector4 multiply(Vector4 v)
     {
         return new Vector4().setX(m[0][0] * v.getX())
