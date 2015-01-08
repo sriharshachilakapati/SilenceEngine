@@ -187,9 +187,6 @@ public class Entity2D extends SceneNode
      */
     public void bounce(Entity2D other)
     {
-        // We need to align to properly bounce
-        alignNextTo(other);
-
         int xd = (int) ((other.position.x + other.getWidth() / 2) - (position.x + getWidth() / 2));
         int yd = (int) ((other.position.y + other.getHeight() / 2) - (position.y + getHeight() / 2));
 
@@ -209,71 +206,6 @@ public class Entity2D extends SceneNode
 
         velocity.x = dx;
         velocity.y = dy;
-    }
-
-    /**
-     * This object is aligned next to an object.
-     */
-    public void alignNextTo(Entity2D other)
-    {
-        int xd = (int) ((other.position.x + other.getWidth() / 2) - (position.x + getWidth() / 2));
-        int yd = (int) ((other.position.y + other.getHeight() / 2) - (position.y + getHeight() / 2));
-
-        if (xd < 0)
-            xd = -xd;
-
-        if (yd < 0)
-            yd = -yd;
-
-//        float penetrationDistance = (float) polygon.getOverlapDistance(other.getPolygon());
-//
-//        System.out.println(penetrationDistance);
-//
-//        if (xd > yd)
-//            position = position.subtract(penetrationDistance, 0);
-//        else
-//            position = position.subtract(0, penetrationDistance);
-
-        if (xd > yd)
-            alignHorizontallyTo(other);
-        else
-            alignVerticallyTo(other);
-
-//            Vector2 nearest = other.polygon.getNearestVertex(getCenter());
-//            Vector2 nearest2 = polygon.getNearestVertex(other.getCenter());
-//
-//            Vector2 overlap = nearest.subtract(nearest2);
-//            setPosition(position.add(overlap));
-    }
-
-    /**
-     * Align this object horizontally with other
-     */
-    public void alignHorizontallyTo(Entity2D other)
-    {
-        if (getX() > other.getX())
-        {
-            setX(other.getX() + other.getWidth());
-        }
-        else if (getX() < other.getX())
-        {
-            setX(other.getX() - getWidth());
-        }
-    }
-
-    /**
-     * Align this object vertically with other
-     */
-    public void alignVerticallyTo(Entity2D other)
-    {
-        if (getY() > other.getY())
-        {
-            setY(other.getY() + other.getHeight());
-        }
-        else if (getY() < other.getY())
-        {
-            setY(other.getY() - getHeight());
-        }
     }
 
     /**

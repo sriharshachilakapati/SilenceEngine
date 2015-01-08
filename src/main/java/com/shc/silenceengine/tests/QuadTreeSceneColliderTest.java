@@ -1,6 +1,7 @@
 package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.collision.QuadTreeSceneCollider;
+import com.shc.silenceengine.collision.sat2d.SAT2D;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.entity.Entity2D;
@@ -128,11 +129,16 @@ public class QuadTreeSceneColliderTest extends Game
                 getVelocity().x = +speed;
 
             cam.center(getPolygon().getCenter());
+
+            rotate(90 * delta);
         }
 
         public void collision(Entity2D other)
         {
             color = Color.random();
+
+            setPosition(getPosition().subtract(SAT2D.getResponse().overlapV));
+
             bounce(other);
         }
 

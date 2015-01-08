@@ -1,6 +1,7 @@
 package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.collision.GridSceneCollider;
+import com.shc.silenceengine.collision.sat2d.SAT2D;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.entity.Entity2D;
@@ -106,6 +107,8 @@ public class GridSceneColliderTest extends Game
             setPosition(position);
 
             color = Color.random();
+
+            rotate(45);
         }
 
         public void update(float delta)
@@ -130,6 +133,11 @@ public class GridSceneColliderTest extends Game
         public void collision(Entity2D other)
         {
             color = Color.random();
+
+            // Move back from overlapping
+            setPosition(getPosition().subtract(SAT2D.getResponse().overlapV));
+
+            // Bounce upon other
             bounce(other);
         }
 

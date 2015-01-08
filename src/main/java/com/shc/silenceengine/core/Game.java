@@ -50,7 +50,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Game
 {
-    public static final String VERSION = "0.0.1";
+    public static final String VERSION = "0.0.2";
 
     static
     {

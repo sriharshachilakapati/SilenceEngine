@@ -146,6 +146,21 @@ public class Vector2
         return new Vector2(x, y);
     }
 
+    public Vector2 perpendicular()
+    {
+        return new Vector2(y, -x);
+    }
+
+    public Vector2 project(Vector2 v)
+    {
+        return scale(dot(v) / v.lengthSquared());
+    }
+
+    public Vector2 reflect(Vector2 axis)
+    {
+        return project(axis).scale(2).subtract(this);
+    }
+
     public float getX()
     {
         return x;
@@ -170,6 +185,12 @@ public class Vector2
     {
         this.x = x;
         this.y = y;
+    }
+
+    public void set(Vector2 v)
+    {
+        this.x = v.x;
+        this.y = v.y;
     }
 
     @Override
