@@ -1,6 +1,6 @@
 package com.shc.silenceengine.geom2d;
 
-import com.shc.silenceengine.collision.sat2d.SAT2D;
+import com.shc.silenceengine.collision.Collision2D;
 import com.shc.silenceengine.math.Vector2;
 
 import java.util.ArrayList;
@@ -95,7 +95,7 @@ public class Polygon
 
     public boolean intersects(Polygon other)
     {
-        return SAT2D.testPolygonCollision(this, other, null);
+        return Collision2D.testPolygonCollision(this, other, null);
     }
 
     public boolean contains(Vector2 p)

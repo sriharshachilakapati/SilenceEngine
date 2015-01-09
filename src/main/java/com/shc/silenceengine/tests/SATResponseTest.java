@@ -1,7 +1,6 @@
 package com.shc.silenceengine.tests;
 
-import com.shc.silenceengine.collision.sat2d.Response2D;
-import com.shc.silenceengine.collision.sat2d.SAT2D;
+import com.shc.silenceengine.collision.Collision2D;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.geom2d.Circle;
@@ -43,11 +42,11 @@ public class SATResponseTest extends Game
 
         if (circle.intersects(rectangle))
         {
-            Response2D response = SAT2D.getResponse();
+            Collision2D.Response response = Collision2D.getResponse();
 
-            System.out.println(response.overlap);
-            System.out.println(response.overlapN);
-            System.out.println(response.overlapV);
+            System.out.println(response.getOverlapDistance());
+            System.out.println(response.getOverlapAxis());
+            System.out.println(response.getMinimumTranslationVector());
         }
     }
 
@@ -57,6 +56,11 @@ public class SATResponseTest extends Game
 
         RenderUtils.tracePolygon(batcher, circle, Color.GREEN);
         RenderUtils.tracePolygon(batcher, rectangle, Color.RED);
+    }
+
+    public void resize()
+    {
+        cam.initProjection(Display.getWidth(), Display.getHeight());
     }
 
     public static void main(String[] args)

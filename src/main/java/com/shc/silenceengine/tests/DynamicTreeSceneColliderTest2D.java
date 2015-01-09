@@ -1,7 +1,7 @@
 package com.shc.silenceengine.tests;
 
+import com.shc.silenceengine.collision.colliders.DynamicSceneCollider2D;
 import com.shc.silenceengine.collision.colliders.QuadTreeSceneCollider;
-import com.shc.silenceengine.collision.Collision2D;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.entity.Entity2D;
@@ -12,20 +12,20 @@ import com.shc.silenceengine.graphics.OrthoCam;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.scene.Scene;
-import com.shc.silenceengine.utils.*;
+import com.shc.silenceengine.utils.RenderUtils;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class QuadTreeSceneColliderTest extends Game
+public class DynamicTreeSceneColliderTest2D extends Game
 {
-    private Scene                 scene;
-    private QuadTreeSceneCollider collider;
-    private OrthoCam              cam;
+    private Scene                  scene;
+    private DynamicSceneCollider2D collider;
+    private OrthoCam               cam;
 
     public void init()
     {
-        Display.setTitle("QuadTreeCollider Test");
+        Display.setTitle("DynamicTree Collider Test 2D");
 //        Display.setFullScreen(true);
 //        Display.hideCursor();
 
@@ -47,7 +47,7 @@ public class QuadTreeSceneColliderTest extends Game
         scene.init();
 
         // Create the SceneCollider and set the scene
-        collider = new QuadTreeSceneCollider(Display.getWidth(), Display.getHeight());
+        collider = new DynamicSceneCollider2D();
         collider.setScene(scene);
 
         // Register entities for collisions
@@ -82,7 +82,7 @@ public class QuadTreeSceneColliderTest extends Game
 
     public static void main(String[] args)
     {
-        new QuadTreeSceneColliderTest().start();
+        new DynamicTreeSceneColliderTest2D().start();
     }
 
     public class Box extends Entity2D

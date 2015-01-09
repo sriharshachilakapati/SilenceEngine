@@ -1,4 +1,4 @@
-package com.shc.silenceengine.collision;
+package com.shc.silenceengine.collision.broadphase;
 
 import com.shc.silenceengine.entity.Entity2D;
 import com.shc.silenceengine.geom2d.Rectangle;

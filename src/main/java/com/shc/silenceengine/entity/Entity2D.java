@@ -1,5 +1,6 @@
 package com.shc.silenceengine.entity;
 
+import com.shc.silenceengine.collision.Collision2D;
 import com.shc.silenceengine.geom2d.Polygon;
 import com.shc.silenceengine.geom2d.Rectangle;
 import com.shc.silenceengine.graphics.Batcher;
@@ -206,6 +207,22 @@ public class Entity2D extends SceneNode
 
         velocity.x = dx;
         velocity.y = dy;
+    }
+
+    public void alignNextTo(Entity2D other)
+    {
+        Vector2 tCenter = getCenter();
+        Vector2 oCenter = other.getCenter();
+
+        Vector2 direction = tCenter.subtract(oCenter).normalize();
+        direction = direction.scale(other.getWidth()/4, other.getHeight()/4);
+
+        setCenter(getCenter().add(direction));
+
+        Collision2D.Response response = new Collision2D.Response();
+        Collision2D.testPolygonCollision(polygon, other.getPolygon(), response);
+
+        setPosition(position.subtract(response.getMinimumTranslationVector()));
     }
 
     /**
