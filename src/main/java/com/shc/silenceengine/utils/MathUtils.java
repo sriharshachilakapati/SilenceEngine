@@ -88,6 +88,16 @@ public final class MathUtils
         return Math.sqrt(value);
     }
 
+    public static Vector2 min(Vector2 v1, Vector2 v2)
+    {
+        return new Vector2(v1.x < v2.x ? v1.x : v2.x, v1.y < v2.y ? v1.y : v2.y);
+    }
+
+    public static Vector2 max(Vector2 v1, Vector2 v2)
+    {
+        return new Vector2(v1.x > v2.x ? v1.x : v2.x, v1.y > v2.y ? v1.y : v2.y);
+    }
+
     public static int convertRange(int value, int oldMin, int oldMax, int newMin, int newMax)
     {
         return (((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;

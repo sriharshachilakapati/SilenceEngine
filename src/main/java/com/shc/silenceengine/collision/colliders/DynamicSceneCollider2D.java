@@ -1,7 +1,6 @@
 package com.shc.silenceengine.collision.colliders;
 
 import com.shc.silenceengine.collision.broadphase.DynamicTree2D;
-import com.shc.silenceengine.collision.broadphase.Grid;
 import com.shc.silenceengine.entity.Entity2D;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.scene.Scene;
@@ -89,7 +88,7 @@ public class DynamicSceneCollider2D implements SceneCollider2D
                 if (class1.isInstance(entity))
                 {
                     List<Entity2D> collidables = tree.retrieve(entity);
-                    System.out.println(collidables.size());
+//                    System.out.println(collidables.size());
 
                     for (Entity2D entity2 : collidables)
                         if (collisionMap.get(class1).isInstance(entity2))
