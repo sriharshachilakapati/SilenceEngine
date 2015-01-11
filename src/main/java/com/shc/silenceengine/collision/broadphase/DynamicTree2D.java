@@ -17,7 +17,7 @@ public class DynamicTree2D
 {
     private Node root;
     private List<Entity2D> retrieveList;
-    private Map<Entity2D, Node> nodeMap;
+    private Map<Integer, Node> nodeMap;
 
     public DynamicTree2D()
     {
@@ -27,9 +27,11 @@ public class DynamicTree2D
 
     public void clear()
     {
+        // Clear the retrieveList and the nodeMap
         retrieveList.clear();
         nodeMap.clear();
 
+        // Clear the root node
         root = null;
     }
 
@@ -37,36 +39,41 @@ public class DynamicTree2D
     {
         if (root == null)
         {
+            // Create the root first
             root = new Node();
             root.setLeaf(e);
             root.updateAABB();
 
-            nodeMap.put(e, root);
+            // Map the node ID
+            nodeMap.put(e.getID(), root);
         }
         else
         {
+            // Create the leaf node and insert it
             Node node = new Node();
             node.setLeaf(e);
+            node.updateAABB();
             insertNode(node, root);
 
-            nodeMap.put(e, node);
+            // Map the node ID
+            nodeMap.put(e.getID(), node);
         }
-
-        System.out.println(getHeight(root) + "    |    " + nodeMap.size());
     }
 
     private void insertNode(Node node, Node parent)
     {
         if (parent.isLeaf())
         {
+            // If it's a leaf, split it into half
             Node newParent = new Node();
             newParent.parent = parent.parent;
-            newParent.setBranch(node, parent);
+            parent.setBranch(node, newParent);
 
             parent = newParent;
         }
         else
         {
+            // It's not a leaf, insert into the nearest leaf
             final AABB aabb0 = parent.left.aabb;
             final AABB aabb1 = parent.right.aabb;
 
@@ -79,24 +86,28 @@ public class DynamicTree2D
                 insertNode(node, parent.right);
         }
 
+        // Update the parent AABB
         parent.updateAABB();
     }
 
     public void remove(Entity2D e)
     {
-        if (!nodeMap.containsKey(e))
+        // Simply return if there is no entity in this tree
+        if (!nodeMap.containsKey(e.getID()))
             return;
 
-        Node node = nodeMap.get(e);
+        // Get the node, clear the data and remove it
+        Node node = nodeMap.get(e.getID());
 
         node.data = null;
-        nodeMap.remove(e);
+        nodeMap.remove(e.getID());
 
         removeNode(node);
     }
 
     private void removeNode(Node node)
     {
+        // Get the parent node
         Node parent = node.parent;
 
         if (parent != null)
@@ -117,6 +128,8 @@ public class DynamicTree2D
                 root = sibling;
                 sibling.parent = null;
             }
+
+            parent.updateAABB();
         }
         else
             root = null;
@@ -149,14 +162,6 @@ public class DynamicTree2D
                 queryNode(node.right, aabb);
             }
         }
-    }
-
-    private int getHeight(Node node)
-    {
-        if (node == null)
-            return 0;
-
-        return 1 + Math.max(getHeight(node.left), getHeight(node.right));
     }
 
     // THE AABB class is here!
@@ -238,7 +243,10 @@ public class DynamicTree2D
         public void updateAABB()
         {
             if (isLeaf())
-                aabb.wrap(data.getBounds());
+            {
+                if (data != null)
+                    aabb.wrap(data.getBounds());
+            }
             else
             {
                 aabb.min = left.aabb.min.copy();

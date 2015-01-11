@@ -17,11 +17,16 @@ public class SceneNode
     private Transform       transform;
     private boolean         destroyed;
 
+    private static int idGenerator = 0;
+    private int id;
+
     public SceneNode()
     {
         children = new ArrayList<>();
         transform = new Transform();
         parent = null;
+
+        id = ++idGenerator;
     }
 
     public void preInit()
@@ -167,5 +172,10 @@ public class SceneNode
     public boolean isDestroyed()
     {
         return destroyed;
+    }
+
+    public int getID()
+    {
+        return id;
     }
 }
