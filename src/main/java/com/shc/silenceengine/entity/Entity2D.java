@@ -51,6 +51,10 @@ public class Entity2D extends SceneNode
     private Vector2 velocity;
     private Polygon polygon;
 
+    // Depth here indicates the ordering of entity rendering.
+    // The higher the depth, the first the object is rendered.
+    private int depth;
+
     /**
      * The default constructor.
      */
@@ -58,6 +62,7 @@ public class Entity2D extends SceneNode
     {
         position = new Vector2();
         velocity = new Vector2();
+        depth = 0;
     }
 
     /**
@@ -215,8 +220,6 @@ public class Entity2D extends SceneNode
         Vector2 oCenter = other.getCenter();
 
         Vector2 direction = tCenter.subtract(oCenter).normalize();
-        direction = direction.scale(other.getWidth()/4, other.getHeight()/4);
-
         setCenter(getCenter().add(direction));
 
         Collision2D.Response response = new Collision2D.Response();
@@ -237,6 +240,16 @@ public class Entity2D extends SceneNode
         getLocalTransform().reset().translate(getPosition().subtract(getCenter()))
                            .rotate(Vector3.AXIS_Z, polygon.getRotation())
                            .translate(getCenter());
+    }
+
+    public int getDepth()
+    {
+        return depth;
+    }
+
+    public void setDepth(int depth)
+    {
+        this.depth = depth;
     }
 
     /**

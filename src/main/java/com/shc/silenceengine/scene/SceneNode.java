@@ -1,10 +1,12 @@
 package com.shc.silenceengine.scene;
 
 import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.entity.Entity2D;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Transform;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -53,6 +55,20 @@ public class SceneNode
         children.add(child);
         child.setParent(this);
         child.init();
+
+        if (child instanceof Entity2D)
+        {
+            // Sort the Entity2D's in children based on their depth
+            Collections.sort(children, (SceneNode c1, SceneNode c2) ->
+            {
+                if (c1 instanceof Entity2D && c2 instanceof Entity2D)
+                {
+                    return ((Integer) ((Entity2D) c1).getDepth()).compareTo(((Entity2D) c2).getDepth());
+                }
+
+                return 0;
+            });
+        }
     }
 
     public void preUpdate(float delta)
