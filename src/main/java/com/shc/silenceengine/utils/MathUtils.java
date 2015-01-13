@@ -98,6 +98,26 @@ public final class MathUtils
         return new Vector2(v1.x > v2.x ? v1.x : v2.x, v1.y > v2.y ? v1.y : v2.y);
     }
 
+    public static Vector3 min(Vector3 v1, Vector3 v2)
+    {
+        return new Vector3(v1.x < v2.x ? v1.x : v2.x, v1.y < v2.y ? v1.y : v2.y, v1.z < v2.z ? v1.z : v2.z);
+    }
+
+    public static Vector3 max(Vector3 v1, Vector3 v2)
+    {
+        return new Vector3(v1.x > v2.x ? v1.x : v2.x, v1.y > v2.y ? v1.y : v2.y, v1.z > v2.z ? v1.z : v2.z);
+    }
+
+    public static Vector4 min(Vector4 v1, Vector4 v2)
+    {
+        return new Vector4(v1.x < v2.x ? v1.x : v2.x, v1.y < v2.y ? v1.y : v2.y, v1.z < v2.z ? v1.z : v2.z, v1.w < v2.w ? v1.w : v2.w);
+    }
+
+    public static Vector4 max(Vector4 v1, Vector4 v2)
+    {
+        return new Vector4(v1.x > v2.x ? v1.x : v2.x, v1.y > v2.y ? v1.y : v2.y, v1.z > v2.z ? v1.z : v2.z, v1.w > v2.w ? v1.w : v2.w);
+    }
+
     public static int convertRange(int value, int oldMin, int oldMax, int newMin, int newMax)
     {
         return (((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;

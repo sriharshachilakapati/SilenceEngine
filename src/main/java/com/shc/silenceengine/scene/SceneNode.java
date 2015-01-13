@@ -62,9 +62,7 @@ public class SceneNode
             Collections.sort(children, (SceneNode c1, SceneNode c2) ->
             {
                 if (c1 instanceof Entity2D && c2 instanceof Entity2D)
-                {
-                    return ((Integer) ((Entity2D) c1).getDepth()).compareTo(((Entity2D) c2).getDepth());
-                }
+                    return ((Integer) ((Entity2D) c2).getDepth()).compareTo(((Entity2D) c1).getDepth());
 
                 return 0;
             });
