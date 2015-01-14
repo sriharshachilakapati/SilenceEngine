@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class DynamicTree2D
+public class DynamicTree2D implements IBroadphaseResolver2D
 {
     private Node root;
     private List<Entity2D> retrieveList;
@@ -21,246 +21,265 @@ public class DynamicTree2D
 
     public DynamicTree2D()
     {
-        retrieveList = new ArrayList<>();
         nodeMap = new HashMap<>();
+        retrieveList = new ArrayList<>();
     }
 
+    @Override
     public void clear()
     {
-        // Clear the retrieveList and the nodeMap
-        retrieveList.clear();
         nodeMap.clear();
-
-        // Clear the root node
         root = null;
     }
 
+    @Override
     public void insert(Entity2D e)
+    {
+        Node node = new Node();
+        node.entity = e;
+        node.aabb = AABB.create(e);
+
+        nodeMap.put(e.getID(), node);
+
+        insert(node);
+    }
+
+    private void insert(Node item)
     {
         if (root == null)
         {
-            // Create the root first
-            root = new Node();
-            root.setLeaf(e);
-            root.updateAABB();
-
-            // Map the node ID
-            nodeMap.put(e.getID(), root);
-        }
-        else
-        {
-            // Create the leaf node and insert it
-            Node node = new Node();
-            node.setLeaf(e);
-            node.updateAABB();
-            insertNode(node, root);
-
-            // Map the node ID
-            nodeMap.put(e.getID(), node);
-        }
-    }
-
-    private void insertNode(Node node, Node parent)
-    {
-        if (parent.isLeaf())
-        {
-            // If it's a leaf, split it into half
-            Node newParent = new Node();
-            newParent.parent = parent.parent;
-            parent.setBranch(node, newParent);
-
-            parent = newParent;
-        }
-        else
-        {
-            // It's not a leaf, insert into the nearest leaf
-            final AABB aabb0 = parent.left.aabb;
-            final AABB aabb1 = parent.right.aabb;
-
-            final float dist0 = aabb0.min.distanceSquared(node.aabb.min);
-            final float dist1 = aabb1.min.distanceSquared(node.aabb.min);
-
-            if (dist0 < dist1)
-                insertNode(node, parent.left);
-            else
-                insertNode(node, parent.right);
-        }
-
-        // Update the parent AABB
-        parent.updateAABB();
-    }
-
-    public void remove(Entity2D e)
-    {
-        // Simply return if there is no entity in this tree
-        if (!nodeMap.containsKey(e.getID()))
+            root = item;
             return;
+        }
 
-        // Get the node, clear the data and remove it
-        Node node = nodeMap.get(e.getID());
+        AABB itemAABB = item.aabb;
 
-        node.data = null;
-        nodeMap.remove(e.getID());
+        Node node = root;
 
-        removeNode(node);
-    }
+        while (!node.isLeaf())
+        {
+            AABB aabb = node.aabb;
 
-    private void removeNode(Node node)
-    {
-        // Get the parent node
+            float perimeter = aabb.getPerimeter();
+
+            AABB union = AABB.union(aabb, itemAABB);
+            float unionPerimeter = union.getPerimeter();
+
+            float cost = 2 * unionPerimeter;
+            float descendCost = 2 * (unionPerimeter - perimeter);
+
+            Node left = node.left;
+            Node right = node.right;
+
+            float costLeft;
+            if (left.isLeaf())
+            {
+                AABB u = AABB.union(left.aabb, itemAABB);
+                costLeft = u.getPerimeter() + descendCost;
+            }
+            else
+            {
+                AABB u = AABB.union(left.aabb, itemAABB);
+                costLeft = u.getPerimeter() - left.aabb.getPerimeter() + descendCost;
+            }
+
+            float costRight;
+            if (right.isLeaf())
+            {
+                AABB u = AABB.union(right.aabb, itemAABB);
+                costRight = u.getPerimeter() + descendCost;
+            }
+            else
+            {
+                AABB u = AABB.union(right.aabb, itemAABB);
+                costRight = u.getPerimeter() - right.aabb.getPerimeter() + descendCost;
+            }
+
+            if (cost < costLeft && cost < costRight)
+                break;
+
+            node = (costLeft < costRight) ? left : right;
+        }
+
         Node parent = node.parent;
+        Node newParent = new Node();
+        newParent.parent = node.parent;
+        newParent.aabb = AABB.union(node.aabb, itemAABB);
 
         if (parent != null)
         {
-            Node sibling = node.getSibling();
-
-            if (parent.parent != null)
-            {
-                sibling.parent = parent.parent;
-
-                if (parent == parent.parent.left)
-                    parent.parent.left = sibling;
-                else
-                    parent.parent.right = sibling;
-            }
+            if (parent.left == node)
+                parent.left = newParent;
             else
-            {
-                root = sibling;
-                sibling.parent = null;
-            }
+                parent.right = newParent;
 
-            parent.updateAABB();
+            newParent.left = node;
+            newParent.right = item;
+
+            node.parent = newParent;
+            item.parent = newParent;
         }
         else
-            root = null;
+        {
+            newParent.left = node;
+            newParent.right = item;
+
+            node.parent = newParent;
+            item.parent = newParent;
+
+            root = newParent;
+        }
+
+        node = item.parent;
+
+        while (node != null)
+        {
+            Node left = node.left;
+            Node right = node.right;
+
+            node.aabb = AABB.union(left.aabb, right.aabb);
+
+            node = node.parent;
+        }
     }
 
-    public List<Entity2D> retrieve(Entity2D e)
+    @Override
+    public void remove(Entity2D e)
+    {
+        Node node = nodeMap.get(e.getID());
+
+        if (node != null)
+        {
+            remove(node);
+            nodeMap.remove(e.getID());
+        }
+    }
+
+    private void remove(Node node)
+    {
+        if (root == null) return;
+
+        if (node == root)
+        {
+            root = null;
+            return;
+        }
+
+        Node parent = node.parent;
+        Node grandParent = parent.parent;
+
+        Node other = (parent.left == node) ? parent.right : parent.left;
+
+        if (grandParent != null)
+        {
+            if (grandParent.left == parent)
+                grandParent.left = other;
+            else
+                grandParent.right = other;
+
+            other.parent = grandParent;
+
+            Node n = grandParent;
+            while (n != null)
+            {
+                Node left = n.left;
+                Node right = n.right;
+
+                n.aabb = AABB.union(left.aabb, right.aabb);
+
+                n = n.parent;
+            }
+        }
+        else
+        {
+            root = other;
+            other.parent = null;
+        }
+    }
+
+    @Override
+    public List<Entity2D> retrieve(Rectangle rect)
     {
         retrieveList.clear();
 
-        if (root != null)
-        {
-            AABB entityAABB = new AABB();
-            entityAABB.wrap(e.getBounds());
-
-            queryNode(root, entityAABB);
-        }
+        queryNode(new AABB(rect.getPosition(), rect.getWidth(), rect.getHeight()), root);
 
         return retrieveList;
     }
 
-    private void queryNode(Node node, AABB aabb)
+    private void queryNode(AABB aabb, Node node)
     {
+        if (node == null)
+            return;
+
         if (node.aabb.intersects(aabb))
         {
             if (node.isLeaf())
-                retrieveList.add(node.data);
+                retrieveList.add(node.entity);
             else
             {
-                queryNode(node.left, aabb);
-                queryNode(node.right, aabb);
+                queryNode(aabb, node.left);
+                queryNode(aabb, node.right);
             }
         }
     }
 
-    // THE AABB class is here!
     private static class AABB
     {
         public Vector2 min;
         public Vector2 max;
 
-        public AABB()
+        public AABB(Vector2 min, float width, float height)
         {
-            min = new Vector2();
-            max = new Vector2();
+            this.min = min.copy();
+            this.max = min.add(width, height);
         }
 
-        public void wrap(Rectangle r)
+        public AABB(AABB aabb)
         {
-            min = r.getPosition().copy();
-            max = min.add(r.getWidth(), r.getHeight());
+            this.min = aabb.min.copy();
+            this.max = aabb.max.copy();
         }
 
-        public void combine(AABB o)
+        public void union(AABB aabb)
         {
-            min = MathUtils.min(min, o.min);
-            max = MathUtils.max(max, o.max);
+            min = MathUtils.min(min, aabb.min);
+            max = MathUtils.max(max, aabb.max);
         }
 
-        public boolean intersects(AABB o)
+        public boolean intersects(AABB aabb)
         {
-            return !(o.min.x > max.x
-                    || o.max.x < min.x
-                    || o.min.y > max.y
-                    || o.max.y < min.y);
+            return !(min.x > aabb.max.x || max.x < aabb.min.x) &&
+                    !(min.y > aabb.max.y || max.y < aabb.min.y);
+        }
+
+        public float getPerimeter()
+        {
+            return 2 * (this.max.x - this.min.x + this.max.y - this.min.y);
+        }
+
+        public static AABB create(Entity2D entity)
+        {
+            return new AABB(entity.getPosition(), entity.getWidth(), entity.getHeight());
+        }
+
+        public static AABB union(AABB aabb1, AABB aabb2)
+        {
+            AABB aabb = new AABB(aabb1);
+            aabb.union(aabb2);
+
+            return aabb;
         }
     }
 
-    // TREE NODE class is here!
     private static class Node
     {
         public Node parent;
         public Node left;
         public Node right;
 
+        public Entity2D entity;
         public AABB aabb;
-        public Entity2D data;
-
-        public Node()
-        {
-            this(null, null);
-        }
-
-        public Node(Node parent, Entity2D data)
-        {
-            this.parent = parent;
-            this.data = data;
-
-            this.aabb = new AABB();
-            this.left = null;
-            this.right = null;
-        }
-
-        public void setBranch(Node left, Node right)
-        {
-            left.parent = this;
-            right.parent = this;
-
-            this.left = left;
-            this.right = right;
-        }
-
-        public void setLeaf(Entity2D data)
-        {
-            this.data = data;
-            this.left = null;
-            this.right = null;
-
-            aabb.wrap(data.getBounds());
-        }
-
-        public void updateAABB()
-        {
-            if (isLeaf())
-            {
-                if (data != null)
-                    aabb.wrap(data.getBounds());
-            }
-            else
-            {
-                aabb.min = left.aabb.min.copy();
-                aabb.max = left.aabb.max.copy();
-
-                if (right != null)
-                    aabb.combine(right.aabb);
-            }
-        }
-
-        public Node getSibling()
-        {
-            return this == parent.left ? parent.right : this;
-        }
 
         public boolean isLeaf()
         {

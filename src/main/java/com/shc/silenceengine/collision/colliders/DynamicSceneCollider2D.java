@@ -88,10 +88,9 @@ public class DynamicSceneCollider2D implements SceneCollider2D
                 if (class1.isInstance(entity))
                 {
                     List<Entity2D> collidables = tree.retrieve(entity);
-                    System.out.println(collidables.size());
 
                     for (Entity2D entity2 : collidables)
-                        if (collisionMap.get(class1).isInstance(entity2))
+                        if (collisionMap.get(class1).isInstance(entity2) && entity != entity2)
                             // Check collision
                             if (entity.getPolygon().intersects(entity2.getPolygon()))
                                 entity.collision(entity2);

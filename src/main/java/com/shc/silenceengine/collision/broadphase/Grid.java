@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Sri Harsha Chilakapati
  */
-public class Grid
+public class Grid implements IBroadphaseResolver2D
 {
     // A spatial partitioned structure to hold elements
     private List<List<List<Entity2D>>> grid;
@@ -93,7 +93,7 @@ public class Grid
     {
         Rectangle bounds = entity.getPolygon().getBounds();
 
-        int topLeftX = MathUtils.clamp((int) (bounds.getX()) / cellWidth, 0, cols-1);
+        int topLeftX = MathUtils.clamp((int) (bounds.getX()) / cellWidth, 0, cols - 1);
         int topLeftY = MathUtils.clamp((int) (bounds.getY()) / cellHeight, 0, rows-1);
         int bottomRightX = MathUtils.clamp((int) (bounds.getX() + bounds.getWidth() - 1) / cellWidth, 0, cols-1);
         int bottomRightY = MathUtils.clamp((int) (bounds.getY() + bounds.getHeight() - 1) / cellHeight, 0, rows-1);
@@ -105,41 +105,6 @@ public class Grid
                 grid.get(x).get(y).add(entity);
             }
         }
-    }
-
-    /**
-     * Retrieves a list of collidable entities in the grid that are
-     * likely to collide with the given entity.
-     *
-     * @param entity The entity to test collisions with.
-     * @return The list of collidable entities
-     */
-    public List<Entity2D> retrieve(Entity2D entity)
-    {
-        retrieveList.clear();
-
-        Rectangle bounds = entity.getPolygon().getBounds();
-
-        int topLeftX = MathUtils.clamp((int) (bounds.getX()) / cellWidth, 0, cols - 1);
-        int topLeftY = MathUtils.clamp((int) (bounds.getY()) / cellHeight, 0, rows - 1);
-        int bottomRightX = MathUtils.clamp((int) (bounds.getX() + bounds.getWidth() - 1) / cellWidth, 0, cols - 1);
-        int bottomRightY = MathUtils.clamp((int) (bounds.getY() + bounds.getHeight() - 1) / cellHeight, 0, rows - 1);
-
-        for (int x = topLeftX; x <= bottomRightX; x++)
-        {
-            for (int y = topLeftY; y <= bottomRightY; y++)
-            {
-                List<Entity2D> cell = grid.get(x).get(y);
-
-                for (Entity2D retrieved : cell)
-                {
-                    if (retrieved != entity && !retrieveList.contains(retrieved))
-                        retrieveList.add(retrieved);
-                }
-            }
-        }
-
-        return retrieveList;
     }
 
     /**
@@ -163,5 +128,29 @@ public class Grid
                     grid.get(x).get(y).remove(entity);
             }
         }
+    }
+
+    @Override
+    public List<Entity2D> retrieve(Rectangle bounds)
+    {
+        retrieveList.clear();
+
+        int topLeftX = MathUtils.clamp((int) (bounds.getX()) / cellWidth, 0, cols - 1);
+        int topLeftY = MathUtils.clamp((int) (bounds.getY()) / cellHeight, 0, rows - 1);
+        int bottomRightX = MathUtils.clamp((int) (bounds.getX() + bounds.getWidth() - 1) / cellWidth, 0, cols - 1);
+        int bottomRightY = MathUtils.clamp((int) (bounds.getY() + bounds.getHeight() - 1) / cellHeight, 0, rows - 1);
+
+        for (int x = topLeftX; x <= bottomRightX; x++)
+        {
+            for (int y = topLeftY; y <= bottomRightY; y++)
+            {
+                List<Entity2D> cell = grid.get(x).get(y);
+
+                for (Entity2D retrieved : cell)
+                    retrieveList.add(retrieved);
+            }
+        }
+
+        return retrieveList;
     }
 }

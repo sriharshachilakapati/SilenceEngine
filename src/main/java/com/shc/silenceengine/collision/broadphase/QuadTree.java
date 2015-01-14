@@ -12,9 +12,8 @@ import java.util.List;
  *
  * @author Sri Harsha Chilakapati
  */
-public class QuadTree
+public class QuadTree implements IBroadphaseResolver2D
 {
-
     // The MAX_OBJECTS and LEVEL constants
     private static final int MAX_OBJECTS = 10;
     private int level;
@@ -184,14 +183,6 @@ public class QuadTree
     public void insertAll(ArrayList<Entity2D> o)
     {
         o.forEach(this::insert);
-    }
-
-    /**
-     * Returns the collidable objects with the given object
-     */
-    public List<Entity2D> retrieve(Entity2D r)
-    {
-        return retrieve(r.getPolygon().getBounds());
     }
 
     /**
