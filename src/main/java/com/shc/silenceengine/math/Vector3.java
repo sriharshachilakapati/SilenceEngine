@@ -249,6 +249,11 @@ public class Vector3
         return this;
     }
 
+    public Vector3 set(Vector3 v)
+    {
+        return set(v.x, v.y, v.z);
+    }
+
     /* Swizzling */
     public float getR()
     {

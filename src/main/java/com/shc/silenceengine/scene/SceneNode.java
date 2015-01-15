@@ -3,7 +3,7 @@ package com.shc.silenceengine.scene;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.entity.Entity2D;
 import com.shc.silenceengine.graphics.Batcher;
-import com.shc.silenceengine.graphics.Transform;
+import com.shc.silenceengine.math.Transform;
 
 import java.util.ArrayList;
 import java.util.Collections;

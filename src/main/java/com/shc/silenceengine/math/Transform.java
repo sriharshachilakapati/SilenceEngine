@@ -1,8 +1,5 @@
-package com.shc.silenceengine.graphics;
+package com.shc.silenceengine.math;
 
-import com.shc.silenceengine.math.Matrix4;
-import com.shc.silenceengine.math.Vector2;
-import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.utils.TransformUtils;
 
 /**
