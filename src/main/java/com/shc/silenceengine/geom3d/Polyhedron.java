@@ -24,6 +24,10 @@ public class Polyhedron
     private float maxY;
     private float maxZ;
 
+    private float rotationX;
+    private float rotationY;
+    private float rotationZ;
+
     private Cuboid bounds;
 
     public Polyhedron()
@@ -63,7 +67,18 @@ public class Polyhedron
         maxZ = Math.max(maxZ, v.z);
     }
 
-    protected void rotate(Vector3 axis, float angle)
+    public void rotate(float rx, float ry, float rz)
+    {
+        rotate(Vector3.AXIS_X, rx);
+        rotate(Vector3.AXIS_Y, ry);
+        rotate(Vector3.AXIS_Z, rz);
+
+        rotationX += rx;
+        rotationY += ry;
+        rotationZ += rz;
+    }
+
+    private void rotate(Vector3 axis, float angle)
     {
         minX = minY = minZ = Float.POSITIVE_INFINITY;
         maxX = maxY = maxZ = Float.NEGATIVE_INFINITY;
@@ -134,4 +149,19 @@ public class Polyhedron
     public float getHeight() {return getBounds().getHeight();}
 
     public float getThickness() {return getBounds().getThickness();}
+
+    public float getRotationX()
+    {
+        return rotationX;
+    }
+
+    public float getRotationY()
+    {
+        return rotationY;
+    }
+
+    public float getRotationZ()
+    {
+        return rotationZ;
+    }
 }

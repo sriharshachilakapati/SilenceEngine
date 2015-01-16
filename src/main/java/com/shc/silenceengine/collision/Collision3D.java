@@ -133,6 +133,11 @@ public class Collision3D
         return testPolyhedronCollision(a, b, null);
     }
 
+    public static Response getResponse()
+    {
+        return tmpResponse;
+    }
+
     public static class Response
     {
         private Polyhedron a;
