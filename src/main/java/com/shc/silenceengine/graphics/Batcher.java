@@ -141,19 +141,19 @@ public class Batcher
     {
         // Upload vertices
         vboVert.bind();
-        vboVert.uploadSubData(vBuffer, 0);
+        vboVert.uploadData(vBuffer, GL_STREAM_DRAW);
         vao.pointAttribute(vertexLocation, 4, GL_FLOAT, vboVert);
 
         vboCol.bind();
-        vboCol.uploadSubData(cBuffer, 0);
+        vboCol.uploadData(cBuffer, GL_STREAM_DRAW);
         vao.pointAttribute(colorLocation, 4, GL_FLOAT, vboCol);
 
         vboTex.bind();
-        vboTex.uploadSubData(tBuffer, 0);
+        vboTex.uploadData(tBuffer, GL_STREAM_DRAW);
         vao.pointAttribute(texCoordLocation, 2, GL_FLOAT, vboTex);
 
         vboNorm.bind();
-        vboNorm.uploadSubData(nBuffer, 0);
+        vboNorm.uploadData(nBuffer, GL_STREAM_DRAW);
         vao.pointAttribute(normalLocation, 4, GL_FLOAT, vboNorm);
     }
 

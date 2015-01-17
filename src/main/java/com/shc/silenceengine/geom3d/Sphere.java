@@ -25,7 +25,7 @@ public class Sphere extends Polyhedron
         // Algorithm copied from the article written by Polaris of hugi.scene.org available online at the url
         // http://hugi.scene.org/online/hugi27/hugi%2027%20-%20coding%20corner%20polaris%20sphere%20tessellation%20101.htm
 
-        final int bandPower = 5;
+        final int bandPower = 6;
         final int bandPoints = (int) Math.pow(2, bandPower); // 2^bandPower
         final int bandMask = bandPoints - 2;
         final int sectionsInBand = (bandPoints / 2) - 1;

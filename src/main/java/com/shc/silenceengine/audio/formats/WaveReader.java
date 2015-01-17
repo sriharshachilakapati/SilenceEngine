@@ -20,6 +20,10 @@ import java.nio.ShortBuffer;
 import static org.lwjgl.openal.AL10.*;
 
 /**
+ * A WaveReader to read the sound samples from Waveform Audio. Supports all
+ * the file formats that are supported by JavaSound API. Currently the files
+ * that are read using this, are .wav, .wave, .au, .aif, .aiff, .mid, .midi.
+ *
  * @author Sri Harsha Chilakapati
  */
 public class WaveReader implements ISoundReader
@@ -29,6 +33,11 @@ public class WaveReader implements ISoundReader
     private int sampleRate;
     private int format;
 
+    /**
+     * Constructs a WaveReader that reads the sound samples from an InputStream.
+     *
+     * @param is The InputStream of the WaveForm Audio resource.
+     */
     public WaveReader(InputStream is)
     {
         // Simply use JavaSound reader here
@@ -115,6 +124,10 @@ public class WaveReader implements ISoundReader
         return dest;
     }
 
+    /**
+     * Constructs a WaveReader that reads samples from a wave file.
+     * @param filename The filename of the wav file resource.
+     */
     public WaveReader(String filename)
     {
         this(FileUtils.getResource(filename));

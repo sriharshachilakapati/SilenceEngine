@@ -77,9 +77,41 @@ public final class RenderUtils
     {
         b.begin(Primitive.LINE_STRIP);
         {
-            for (Vector3 vertex : polyhedron.getVertices())
+            Vector3 v1;
+            Vector3 v2;
+            Vector3 v3;
+
+            // Convert Triangle Strip vertices to Triangles
+            for (int v = 0; v < polyhedron.vertexCount() - 2; v++)
             {
-                b.vertex(vertex.add(polyhedron.getPosition().add(position)));
+                if ((v & 1) != 0)
+                {
+                    // The Clock-Wise order
+                    v1 = polyhedron.getVertex(v);
+                    v2 = polyhedron.getVertex(v + 1);
+                    v3 = polyhedron.getVertex(v + 2);
+                }
+                else
+                {
+                    // The Counter-Clock-Wise order
+                    v1 = polyhedron.getVertex(v);
+                    v2 = polyhedron.getVertex(v + 2);
+                    v3 = polyhedron.getVertex(v + 1);
+                }
+
+                // Set the position of the vertices
+                v1 = v1.add(polyhedron.getPosition()).add(position);
+                v2 = v2.add(polyhedron.getPosition()).add(position);
+                v3 = v3.add(polyhedron.getPosition()).add(position);
+
+                // Draw the triangle as a line strip
+                b.vertex(v1);
+                b.color(color);
+
+                b.vertex(v2);
+                b.color(color);
+
+                b.vertex(v3);
                 b.color(color);
             }
         }

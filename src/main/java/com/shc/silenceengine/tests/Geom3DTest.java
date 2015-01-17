@@ -36,12 +36,18 @@ public class Geom3DTest extends Game
         if (Keyboard.isClicked(Keyboard.KEY_ESCAPE))
             end();
 
-        cube.getPosition().x = (float) Math.sin(TimeUtils.currentSeconds()) * 2;
-        cube.getPosition().y = cube.getPosition().x;
-        cube.getPosition().z = cube.getPosition().x;
-        sphere.getPosition().x = -cube.getPosition().x;
-        sphere.getPosition().y = -cube.getPosition().y;
-        sphere.getPosition().z = -cube.getPosition().z;
+        if (!Keyboard.isPressed(Keyboard.KEY_SPACE))
+        {
+            float movement = (float) Math.sin(TimeUtils.currentSeconds()) * 2;
+
+            cube.getPosition().x = movement;
+            cube.getPosition().y = movement;
+            cube.getPosition().z = movement;
+
+            sphere.getPosition().x = -movement;
+            sphere.getPosition().y = -movement;
+            sphere.getPosition().z = -movement;
+        }
 
         if (Keyboard.isPressed(Keyboard.KEY_W))
             camera.moveForward(delta);
@@ -80,8 +86,8 @@ public class Geom3DTest extends Game
 
         if (!sphere.intersects(cube))
         {
-            RenderUtils.fillPolyhedron(batcher, cube, Color.CORN_FLOWER_BLUE);
-            RenderUtils.fillPolyhedron(batcher, sphere, Color.INDIAN_RED);
+            RenderUtils.fillPolyhedron(batcher, cube, Color.BLUE);
+            RenderUtils.fillPolyhedron(batcher, sphere, Color.DARK_RED);
         }
 
         RenderUtils.tracePolyhedron(batcher, cube, Color.GREEN);

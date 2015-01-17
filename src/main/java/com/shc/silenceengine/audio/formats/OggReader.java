@@ -22,6 +22,9 @@ import java.nio.ShortBuffer;
 import static org.lwjgl.openal.AL10.*;
 
 /**
+ * An OGG File Reader that is used to load the data of a sound from an
+ * OGG Vorbis Audio file. Supports .ogg and .oga file extensions.
+ *
  * @author Sri Harsha Chilakapati
  */
 public class OggReader implements ISoundReader
@@ -31,11 +34,20 @@ public class OggReader implements ISoundReader
     private int sampleRate;
     private int format;
 
+    /**
+     * Constructs an OGG reader to read from a resource filename.
+     *
+     * @param name The filename of the resource to load.
+     */
     public OggReader(String name)
     {
         this(FileUtils.getResource(name));
     }
 
+    /**
+     * Constructs an OGG reader to read from an InputStream.
+     * @param is The InputStream to load the sound samples from.
+     */
     public OggReader(InputStream is)
     {
         decodeToPCM(is);
@@ -154,7 +166,6 @@ public class OggReader implements ISoundReader
             {
                 while (i < 2)
                 {
-
                     int result = oy.pageout(og);
                     if (result == 0)
                         break;
