@@ -1,9 +1,7 @@
 package com.shc.silenceengine.geom3d;
 
 import com.shc.silenceengine.collision.Collision3D;
-import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.utils.TransformUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,8 +83,7 @@ public class Polyhedron
 
         for (Vector3 v : vertices)
         {
-            Matrix4 tMatrix = TransformUtils.createRotation(axis, angle);
-            v.set(tMatrix.multiply(v));
+            v.set(v.rotate(axis, angle).scale(2));
 
             minX = Math.min(minX, v.x);
             minY = Math.min(minY, v.y);
@@ -96,8 +93,8 @@ public class Polyhedron
             maxZ = Math.max(maxZ, v.z);
         }
 
-        bounds = new Cuboid(new Vector3(minX, minY, minZ).add(position),
-                new Vector3(maxX, maxY, maxZ).add(position));
+        bounds = new Cuboid(new Vector3(minX / 2, minY / 2, minZ / 2).add(position),
+                new Vector3(maxX / 2, maxY / 2, maxZ / 2).add(position));
     }
 
     public boolean intersects(Polyhedron other)
@@ -118,6 +115,9 @@ public class Polyhedron
     public void setPosition(Vector3 position)
     {
         this.position = position;
+
+        if (bounds != null)
+            bounds.setPosition(position);
     }
 
     public int vertexCount()
@@ -138,8 +138,8 @@ public class Polyhedron
     public Cuboid getBounds()
     {
         if (bounds == null)
-            bounds = new Cuboid(new Vector3(minX, minY, minZ).add(position),
-                    new Vector3(maxX, maxY, maxZ).add(position));
+            bounds = new Cuboid(new Vector3(minX / 2, minY / 2, minZ / 2).add(position),
+                    new Vector3(maxX / 2, maxY / 2, maxZ / 2).add(position));
 
         return bounds;
     }

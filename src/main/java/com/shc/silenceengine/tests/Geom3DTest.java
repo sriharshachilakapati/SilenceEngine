@@ -40,13 +40,17 @@ public class Geom3DTest extends Game
         {
             float movement = (float) Math.sin(TimeUtils.currentSeconds()) * 2;
 
-            cube.getPosition().x = movement;
-            cube.getPosition().y = movement;
-            cube.getPosition().z = movement;
+            Vector3 position = cube.getPosition();
 
-            sphere.getPosition().x = -movement;
-            sphere.getPosition().y = -movement;
-            sphere.getPosition().z = -movement;
+            position.x = movement;
+            position.y = movement;
+            position.z = movement;
+
+            cube.setPosition(position);
+            sphere.setPosition(position.negate());
+
+            cube.rotate(1, 1, 1);
+            sphere.rotate(1, 1, 1);
         }
 
         if (Keyboard.isPressed(Keyboard.KEY_W))
@@ -92,6 +96,8 @@ public class Geom3DTest extends Game
 
         RenderUtils.tracePolyhedron(batcher, cube, Color.GREEN);
         RenderUtils.tracePolyhedron(batcher, sphere, Color.GREEN);
+        RenderUtils.tracePolyhedron(batcher, cube.getBounds(), Color.WHITE);
+        RenderUtils.tracePolyhedron(batcher, sphere.getBounds(), Color.WHITE);
     }
 
     public void resize()
