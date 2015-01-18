@@ -105,7 +105,7 @@ public class Geom3DTest extends Game
                 batcher.color(Color.RED);
 
                 batcher.vertex(cube.getPosition().add(response.getMinimumTranslationVector()));
-                batcher.vertex(Color.RED);
+                batcher.color(Color.RED);
             }
             batcher.end();
         }
