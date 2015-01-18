@@ -8,7 +8,7 @@ import java.nio.ShortBuffer;
 import static org.lwjgl.openal.AL10.*;
 
 /**
- *
+ * This class is an object oriented wrapper to the OpenAL buffers.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -17,12 +17,23 @@ public class ALBuffer
     private int     id;
     private boolean disposed;
 
+    /**
+     * Constructs a new OpenAL buffer.
+     */
     public ALBuffer()
     {
         id = alGenBuffers();
         ALError.check();
     }
 
+    /**
+     * Uploads the data present in a NIO Buffer of a specific format and frequency
+     * into this OpenAL Buffer.
+     *
+     * @param data      The NIO Buffer containing the data samples
+     * @param format    The OpenAL format of the data samples in the buffer
+     * @param frequency The frequency of the sound samples (in Hz)
+     */
     public void uploadData(Buffer data, int format, int frequency)
     {
         if (disposed)
@@ -43,6 +54,10 @@ public class ALBuffer
         ALError.check();
     }
 
+    /**
+     * Disposes this OpenAL Buffer. A disposed OpenAL buffer is no longer
+     * usable, to use again, you need to create another one.
+     */
     public void dispose()
     {
         if (disposed)
@@ -52,11 +67,17 @@ public class ALBuffer
         ALError.check();
     }
 
+    /**
+     * @return Returns the OpenAL Buffer Object ID
+     */
     public int getID()
     {
         return id;
     }
 
+    /**
+     * @return True if disposed, else false
+     */
     public boolean isDisposed()
     {
         return disposed;

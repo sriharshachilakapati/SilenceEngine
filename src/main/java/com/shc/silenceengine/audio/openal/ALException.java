@@ -3,6 +3,8 @@ package com.shc.silenceengine.audio.openal;
 import com.shc.silenceengine.core.SilenceException;
 
 /**
+ *
+ *
  * @author Sri Harsha Chilakapati
  */
 public class ALException extends SilenceException
