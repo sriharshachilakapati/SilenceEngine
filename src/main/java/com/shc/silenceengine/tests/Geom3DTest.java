@@ -1,5 +1,6 @@
 package com.shc.silenceengine.tests;
 
+import com.shc.silenceengine.collision.Collision3D;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.geom3d.Cuboid;
@@ -7,6 +8,7 @@ import com.shc.silenceengine.geom3d.Sphere;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.PerspCam;
+import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.utils.RenderUtils;
@@ -92,6 +94,20 @@ public class Geom3DTest extends Game
         {
             RenderUtils.fillPolyhedron(batcher, cube, Color.BLUE);
             RenderUtils.fillPolyhedron(batcher, sphere, Color.DARK_RED);
+        }
+        else
+        {
+            Collision3D.Response response = Collision3D.getResponse();
+
+            batcher.begin(Primitive.LINES);
+            {
+                batcher.vertex(cube.getPosition());
+                batcher.color(Color.RED);
+
+                batcher.vertex(cube.getPosition().add(response.getMinimumTranslationVector()));
+                batcher.vertex(Color.RED);
+            }
+            batcher.end();
         }
 
         RenderUtils.tracePolyhedron(batcher, cube, Color.GREEN);
