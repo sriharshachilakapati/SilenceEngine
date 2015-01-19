@@ -135,6 +135,7 @@ public final class Collision2D
         response.a = a;
         response.b = b;
         response.overlapV = response.overlapN.scale(response.overlap);
+        response.intersection = true;
 
         return true;
     }
@@ -160,6 +161,7 @@ public final class Collision2D
 
         private boolean aInB;
         private boolean bInA;
+        private boolean intersection;
 
         public Response()
         {
@@ -174,6 +176,7 @@ public final class Collision2D
         {
             aInB = true;
             bInA = true;
+            intersection = false;
 
             overlap = Float.MAX_VALUE;
             return this;
@@ -191,27 +194,27 @@ public final class Collision2D
 
         public Vector2 getMinimumTranslationVector()
         {
-            return overlapV;
+            return intersection ? overlapV : Vector2.ZERO;
         }
 
         public Vector2 getOverlapAxis()
         {
-            return overlapN;
+            return intersection ? overlapN : Vector2.ZERO;
         }
 
         public float getOverlapDistance()
         {
-            return overlap;
+            return intersection ? overlap : 0;
         }
 
         public boolean isAInsideB()
         {
-            return aInB;
+            return aInB && intersection;
         }
 
         public boolean isBInsideA()
         {
-            return bInA;
+            return bInA && intersection;
         }
 
         @Override

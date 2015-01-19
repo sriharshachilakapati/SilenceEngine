@@ -32,7 +32,7 @@ public class Sphere extends Polyhedron
         final int totalPoints = sectionsInBand * bandPoints;
 
         final float sectionArc = 6.28f / sectionsInBand;
-        final float radius = -this.radius;
+        final float diameter = -(2 * this.radius);
 
         float xAngle;
         float yAngle;
@@ -45,17 +45,12 @@ public class Sphere extends Polyhedron
             xAngle *= sectionArc / 2f;
             yAngle *= sectionArc * -1;
 
-            float x = (float) (radius * Math.sin(xAngle) * Math.sin(yAngle));
-            float y = (float) (radius * Math.cos(xAngle));
-            float z = (float) (radius * Math.sin(xAngle) * Math.cos(yAngle));
+            float x = (float) (diameter * Math.sin(xAngle) * Math.sin(yAngle));
+            float y = (float) (diameter * Math.cos(xAngle));
+            float z = (float) (diameter * Math.sin(xAngle) * Math.cos(yAngle));
 
             addVertex(new Vector3(x, y, z));
         }
-    }
-
-    public void rotate(Vector3 axis, float angle)
-    {
-        // No need to do anything here, Spheres don't rotate
     }
 
     public boolean intersects(Polyhedron other)

@@ -3,11 +3,14 @@ package com.shc.silenceengine.tests;
 import com.shc.silenceengine.collision.Collision3D;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
+import com.shc.silenceengine.core.ResourceLoader;
 import com.shc.silenceengine.geom3d.Cuboid;
 import com.shc.silenceengine.geom3d.Sphere;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.OrthoCam;
 import com.shc.silenceengine.graphics.PerspCam;
+import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector3;
@@ -20,15 +23,26 @@ import com.shc.silenceengine.utils.TimeUtils;
 public class Geom3DTest extends Game
 {
     private PerspCam camera;
+    private OrthoCam hudCam;
 
     private Cuboid cube;
     private Sphere sphere;
 
+    private TrueTypeFont hudFont;
+
     public void init()
     {
+        ResourceLoader loader = ResourceLoader.getInstance();
+        int fontID = loader.defineFont("Hobo Std", TrueTypeFont.STYLE_NORMAL, 16);
+        loader.startLoading();
+
+        hudFont = loader.getFont(fontID);
+
         camera = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.01f, 1000f);
         camera.setPosition(new Vector3(-2, -2, 5));
         camera.lookAt(Vector3.ZERO);
+
+        hudCam = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
 
         cube = new Cuboid(new Vector3(), 1, 1, 1);
         sphere = new Sphere(new Vector3(), 1);
@@ -91,21 +105,22 @@ public class Geom3DTest extends Game
     {
         camera.apply();
 
-        if (!sphere.intersects(cube))
+        boolean intersects = sphere.intersects(cube);
+        Collision3D.Response response = Collision3D.getResponse();
+
+        if (!intersects)
         {
             RenderUtils.fillPolyhedron(batcher, cube, Color.BLUE);
             RenderUtils.fillPolyhedron(batcher, sphere, Color.DARK_RED);
         }
         else
         {
-            Collision3D.Response response = Collision3D.getResponse();
-
             batcher.begin(Primitive.LINES);
             {
                 batcher.vertex(cube.getPosition());
                 batcher.color(Color.RED);
 
-                batcher.vertex(cube.getPosition().add(response.getMinimumTranslationVector()));
+                batcher.vertex(cube.getPosition().subtract(response.getMinimumTranslationVector()));
                 batcher.color(Color.RED);
             }
             batcher.end();
@@ -115,11 +130,24 @@ public class Geom3DTest extends Game
         RenderUtils.tracePolyhedron(batcher, sphere, Color.GREEN);
         RenderUtils.tracePolyhedron(batcher, cube.getBounds(), Color.WHITE);
         RenderUtils.tracePolyhedron(batcher, sphere.getBounds(), Color.WHITE);
+
+        hudCam.apply();
+        hudFont.drawString(batcher, "Intersection: " + intersects, 10, 10);
+        hudFont.drawString(batcher, "\nSphere Inside Cube: " + response.isAInsideB(), 10, 10);
+        hudFont.drawString(batcher, "\n\nCube Inside Sphere: " + response.isBInsideA(), 10, 14);
+        hudFont.drawString(batcher, "\n\n\nOverlap Distance: " + response.getOverlapDistance(), 10, 16);
+        hudFont.drawString(batcher, "\n\n\n\nOverlap Axis: " + response.getOverlapAxis(), 10, 18);
+        hudFont.drawString(batcher, "\n\n\n\n\nMinimum Translation Vector: " + response.getMinimumTranslationVector(), 10, 20);
     }
 
     public void resize()
     {
         camera.initProjection(70, Display.getAspectRatio(), 0.01f, 1000f);
+    }
+
+    public void dispose()
+    {
+        ResourceLoader.getInstance().dispose();
     }
 
     public static void main(String[] args)

@@ -83,7 +83,7 @@ public class Polyhedron
 
         for (Vector3 v : vertices)
         {
-            v.set(v.rotate(axis, angle).scale(2));
+            v.set(v.rotate(axis.normalize(), angle));
 
             minX = Math.min(minX, v.x);
             minY = Math.min(minY, v.y);

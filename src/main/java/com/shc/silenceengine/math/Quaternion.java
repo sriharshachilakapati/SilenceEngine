@@ -111,7 +111,7 @@ public class Quaternion
         qv = this.multiply(qv);
         qv = qv.multiply(q1);
 
-        return new Vector3(qv.x, qv.y, qv.z);
+        return new Vector3(qv.x, qv.y, qv.z).normalize().scale(v.length());
     }
 
     public Quaternion copy()

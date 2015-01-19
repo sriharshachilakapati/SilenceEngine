@@ -34,6 +34,11 @@ public class Collision3D
         if (response == null)
             response = tmpResponse.clear();
 
+        // FIXME: HACKISH WAY OF PREVENTING ZERO AXES
+        axis.x = (axis.x == -0f) ? -1 : axis.x;
+        axis.y = (axis.y == -0f) ? -1 : axis.y;
+        axis.z = (axis.z == -0f) ? -1 : axis.z;
+
         Vector3 offset = b.getPosition().subtract(a.getPosition());
         float projectedOffset = offset.dot(axis);
 
@@ -45,7 +50,7 @@ public class Collision3D
         if (rangeA.x > rangeB.y || rangeB.x > rangeA.y)
             return true;
 
-        float overlap = 0;
+        float overlap;
 
         if (rangeA.x < rangeB.x)
         {
@@ -123,6 +128,7 @@ public class Collision3D
 
         response.a = a;
         response.b = b;
+        response.intersection = true;
         response.overlapV = response.overlapN.scale(response.overlap);
 
         return true;
@@ -150,6 +156,7 @@ public class Collision3D
 
         private boolean aInB;
         private boolean bInA;
+        private boolean intersection;
 
         public Response()
         {
@@ -164,8 +171,9 @@ public class Collision3D
         {
             aInB = true;
             bInA = true;
+            intersection = false;
 
-            overlap = Float.MAX_VALUE;
+            overlap = Float.POSITIVE_INFINITY;
             return this;
         }
 
@@ -181,27 +189,27 @@ public class Collision3D
 
         public Vector3 getMinimumTranslationVector()
         {
-            return overlapV;
+            return intersection ? overlapV : Vector3.ZERO;
         }
 
         public Vector3 getOverlapAxis()
         {
-            return overlapN;
+            return intersection ? overlapN : Vector3.ZERO;
         }
 
         public float getOverlapDistance()
         {
-            return overlap;
+            return intersection ? overlap : 0;
         }
 
         public boolean isAInsideB()
         {
-            return aInB;
+            return aInB && intersection;
         }
 
         public boolean isBInsideA()
         {
-            return bInA;
+            return bInA && intersection;
         }
 
         @Override

@@ -116,17 +116,50 @@ public class Matrix4
 
     public Vector3 multiply(Vector3 v)
     {
-        return new Vector3().setX(m[0][0] * v.getX())
-                            .setY(m[0][1] * v.getY())
-                            .setZ(m[0][2] * v.getZ());
+        float X = v.x;
+        float Y = v.y;
+        float Z = v.z;
+        float W = 1;
+
+        float A = m[0][0], B = m[0][1], C = m[0][2], D = m[0][3];
+        float E = m[1][0], F = m[1][1], G = m[1][2], H = m[1][3];
+        float I = m[2][0], J = m[2][1], K = m[2][2], L = m[2][3];
+
+        // /        \  /   \     /                       \
+        // | a b c d | | x |     | a.x + b.y + c.z + d.w |
+        // | e f g h | | y |     | e.x + f.y + g.z + h.w |
+        // | i j k l | | z |  =  | i.x + j.y + k.z + l.w |
+        // | m n o p | | w |     | m.x + n.y + o.z + p.w |  // IGNORE FOR Vector3
+        // \        /  \   /     \                      /
+
+        return new Vector3(A * X + B * Y + C * Z + D * W,
+                E * X + F * Y + G * Z + H * W,
+                I * X + J * Y + K * Z + L * W);
     }
 
     public Vector4 multiply(Vector4 v)
     {
-        return new Vector4().setX(m[0][0] * v.getX())
-                            .setY(m[0][1] * v.getY())
-                            .setZ(m[0][2] * v.getZ())
-                            .setW(m[0][3] * v.getW());
+        float X = v.x;
+        float Y = v.y;
+        float Z = v.z;
+        float W = 1;
+
+        float A = m[0][0], B = m[0][1], C = m[0][2], D = m[0][3];
+        float E = m[1][0], F = m[1][1], G = m[1][2], H = m[1][3];
+        float I = m[2][0], J = m[2][1], K = m[2][2], L = m[2][3];
+        float M = m[3][0], N = m[3][1], O = m[3][2], P = m[3][3];
+
+        // /        \  /   \     /                       \
+        // | a b c d | | x |     | a.x + b.y + c.z + d.w |
+        // | e f g h | | y |     | e.x + f.y + g.z + h.w |
+        // | i j k l | | z |  =  | i.x + j.y + k.z + l.w |
+        // | m n o p | | w |     | m.x + n.y + o.z + p.w |
+        // \        /  \   /     \                      /
+
+        return new Vector4(A * X + B * Y + C * Z + D * W,
+                E * X + F * Y + G * Z + H * W,
+                I * X + J * Y + K * Z + L * W,
+                M * X + N * Y + O * Z + P * W);
     }
 
     public Matrix4 transpose()
