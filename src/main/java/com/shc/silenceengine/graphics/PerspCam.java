@@ -5,6 +5,7 @@ import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Quaternion;
 import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.utils.MathUtils;
 import com.shc.silenceengine.utils.TransformUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -35,7 +36,7 @@ public class PerspCam extends BaseCamera
 
     public PerspCam lookAt(Vector3 point)
     {
-        Vector3 forward = point.subtract(position);
+        Vector3 forward = point.subtract(position).normalize();
         Vector3 up = Vector3.AXIS_Y;
 
         float dot = Vector3.AXIS_Z.negate().dot(forward);
@@ -52,7 +53,7 @@ public class PerspCam extends BaseCamera
             return this;
         }
 
-        float rotAngle = (float) Math.acos(dot);
+        float rotAngle = MathUtils.acos(dot);
         Vector3 rotAxis = Vector3.AXIS_Z.negate().cross(forward).normalize();
 
         rotation = new Quaternion(rotAxis, rotAngle);

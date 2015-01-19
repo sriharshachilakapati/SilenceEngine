@@ -27,7 +27,8 @@ public class Geom3DTest extends Game
     public void init()
     {
         camera = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.01f, 1000f);
-        camera.setPosition(new Vector3(0, 0, 2));
+        camera.setPosition(new Vector3(-2, -2, 5));
+        camera.lookAt(Vector3.ZERO);
 
         cube = new Cuboid(new Vector3(), 1, 1, 1);
         sphere = new Sphere(new Vector3(), 1);
