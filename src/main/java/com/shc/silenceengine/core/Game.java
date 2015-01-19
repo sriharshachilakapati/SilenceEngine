@@ -102,6 +102,7 @@ public class Game
     private static int fps = 60;
 
     private static Batcher batcher;
+    private static GameState gameState;
 
     /**
      * Initialize the Game. Loads the resources, and
@@ -211,6 +212,9 @@ public class Game
             {
                 GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
                 resize();
+
+                if (gameState != null)
+                    gameState.resize();
             }
 
             currentTime = TimeUtils.currentSeconds();
@@ -224,6 +228,10 @@ public class Game
                 Mouse.startEventFrame();
 
                 update((float) frameTime);
+
+                if (gameState != null)
+                    gameState.update((float) frameTime);
+
                 GameTimer.updateTimers((float) frameTime);
 
                 Keyboard.clearEventFrame();
@@ -247,6 +255,9 @@ public class Game
             GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             Texture.setActiveUnit(0);
             render(lagOffset, batcher);
+
+            if (gameState != null)
+                gameState.render(lagOffset, batcher);
 
             framesProcessed++;
 
@@ -341,5 +352,21 @@ public class Game
     public static void setBatcher(Batcher batcher)
     {
         Game.batcher = batcher;
+    }
+
+    public static GameState getGameState()
+    {
+        return gameState;
+    }
+
+    public static void setGameState(GameState gameState)
+    {
+        if (Game.gameState != null)
+            Game.gameState.onLeave();
+
+        Game.gameState = gameState;
+
+        if (Game.gameState != null)
+            Game.gameState.onEnter();
     }
 }
