@@ -93,6 +93,29 @@ public class Polygon
         bounds = new Rectangle(position.getX() + minX, position.getY() + minY, maxX - minX, maxY - minY);
     }
 
+    public void scale(float s)
+    {
+        scale(s, s);
+    }
+
+    public void scale(float sx, float sy)
+    {
+        minX = minY = Float.POSITIVE_INFINITY;
+        maxX = maxY = Float.NEGATIVE_INFINITY;
+
+        for (Vector2 v : vertices)
+        {
+            v.set(v.scale(sx, sy));
+
+            minX = Math.min(minX, v.x);
+            minY = Math.min(minY, v.y);
+            maxX = Math.max(maxX, v.x);
+            maxY = Math.max(maxY, v.y);
+        }
+
+        bounds = new Rectangle(position.getX() + minX, position.getY() + minY, maxX - minX, maxY - minY);
+    }
+
     public boolean intersects(Polygon other)
     {
         return Collision2D.testPolygonCollision(this, other, null);

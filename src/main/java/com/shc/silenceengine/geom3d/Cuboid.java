@@ -40,44 +40,44 @@ public class Cuboid extends Polyhedron
         clearVertices();
 
         // Front face
-        addVertex(new Vector3(-width, -height, +thickness));
-        addVertex(new Vector3(+width, -height, +thickness));
-        addVertex(new Vector3(-width, +height, +thickness));
-        addVertex(new Vector3(+width, +height, +thickness));
+        addVertex(new Vector3(-width / 2, -height / 2, +thickness / 2));
+        addVertex(new Vector3(+width / 2, -height / 2, +thickness / 2));
+        addVertex(new Vector3(-width / 2, +height / 2, +thickness / 2));
+        addVertex(new Vector3(+width / 2, +height / 2, +thickness / 2));
 
         // Right face
-        addVertex(new Vector3(+width, +height, +thickness));
-        addVertex(new Vector3(+width, -height, +thickness));
-        addVertex(new Vector3(+width, +height, -thickness));
-        addVertex(new Vector3(+width, -height, -thickness));
+        addVertex(new Vector3(+width / 2, +height / 2, +thickness / 2));
+        addVertex(new Vector3(+width / 2, -height / 2, +thickness / 2));
+        addVertex(new Vector3(+width / 2, +height / 2, -thickness / 2));
+        addVertex(new Vector3(+width / 2, -height / 2, -thickness / 2));
 
         // Back face
-        addVertex(new Vector3(+width, -height, -thickness));
-        addVertex(new Vector3(-width, -height, -thickness));
-        addVertex(new Vector3(+width, +height, -thickness));
-        addVertex(new Vector3(-width, +height, -thickness));
+        addVertex(new Vector3(+width / 2, -height / 2, -thickness / 2));
+        addVertex(new Vector3(-width / 2, -height / 2, -thickness / 2));
+        addVertex(new Vector3(+width / 2, +height / 2, -thickness / 2));
+        addVertex(new Vector3(-width / 2, +height / 2, -thickness / 2));
 
         // Left face
-        addVertex(new Vector3(-width, +height, -thickness));
-        addVertex(new Vector3(-width, -height, -thickness));
-        addVertex(new Vector3(-width, +height, +thickness));
-        addVertex(new Vector3(-width, -height, +thickness));
+        addVertex(new Vector3(-width / 2, +height / 2, -thickness / 2));
+        addVertex(new Vector3(-width / 2, -height / 2, -thickness / 2));
+        addVertex(new Vector3(-width / 2, +height / 2, +thickness / 2));
+        addVertex(new Vector3(-width / 2, -height / 2, +thickness / 2));
 
         // Bottom face
-        addVertex(new Vector3(-width, -height, +thickness));
-        addVertex(new Vector3(-width, -height, -thickness));
-        addVertex(new Vector3(+width, -height, +thickness));
-        addVertex(new Vector3(+width, -height, -thickness));
+        addVertex(new Vector3(-width / 2, -height / 2, +thickness / 2));
+        addVertex(new Vector3(-width / 2, -height / 2, -thickness / 2));
+        addVertex(new Vector3(+width / 2, -height / 2, +thickness / 2));
+        addVertex(new Vector3(+width / 2, -height / 2, -thickness / 2));
 
         // Move to top
-        addVertex(new Vector3(+width, -height, -thickness));
-        addVertex(new Vector3(-width, +height, +thickness));
+        addVertex(new Vector3(+width / 2, -height / 2, -thickness / 2));
+        addVertex(new Vector3(-width / 2, +height / 2, +thickness / 2));
 
         // Top face
-        addVertex(new Vector3(-width, +height, +thickness));
-        addVertex(new Vector3(+width, +height, +thickness));
-        addVertex(new Vector3(-width, +height, -thickness));
-        addVertex(new Vector3(+width, +height, -thickness));
+        addVertex(new Vector3(-width / 2, +height / 2, +thickness / 2));
+        addVertex(new Vector3(+width / 2, +height / 2, +thickness / 2));
+        addVertex(new Vector3(-width / 2, +height / 2, -thickness / 2));
+        addVertex(new Vector3(+width / 2, +height / 2, -thickness / 2));
     }
 
     public float getWidth()

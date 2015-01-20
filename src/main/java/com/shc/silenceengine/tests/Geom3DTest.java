@@ -143,6 +143,7 @@ public class Geom3DTest extends Game
     public void resize()
     {
         camera.initProjection(70, Display.getAspectRatio(), 0.01f, 1000f);
+        hudCam.initProjection(Display.getWidth(), Display.getHeight());
     }
 
     public void dispose()
