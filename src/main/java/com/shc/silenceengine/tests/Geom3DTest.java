@@ -133,7 +133,7 @@ public class Geom3DTest extends Game
 
         hudCam.apply();
         hudFont.drawString(batcher, "Intersection: " + intersects, 10, 10);
-        hudFont.drawString(batcher, "\nSphere Inside Cube: " + response.isAInsideB(), 10, 10);
+        hudFont.drawString(batcher, "\nSphere Inside Cube: " + response.isAInsideB(), 10, 12);
         hudFont.drawString(batcher, "\n\nCube Inside Sphere: " + response.isBInsideA(), 10, 14);
         hudFont.drawString(batcher, "\n\n\nOverlap Distance: " + response.getOverlapDistance(), 10, 16);
         hudFont.drawString(batcher, "\n\n\n\nOverlap Axis: " + response.getOverlapAxis(), 10, 18);

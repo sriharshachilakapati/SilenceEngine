@@ -3,7 +3,7 @@ package com.shc.silenceengine.audio.openal;
 import com.shc.silenceengine.core.SilenceException;
 
 /**
- *
+ * Represents an OpenAL exception which is non contextual.
  *
  * @author Sri Harsha Chilakapati
  */

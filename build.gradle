@@ -1,18 +1,30 @@
 apply plugin: 'java'
 
-repositories {
-    jcenter()
+// Source sets in the project, specify source directories
+sourceSets {
+    main {
+        java.srcDir("${projectDir}/src/main/java/")
+        resources.srcDir("${projectDir}/src/main/java/")
+    }
 }
 
+// Dependencies for the project are stored in the libs directory
 dependencies {
-    compile fileTree(dir: 'libs', includes: ["*.jar"])
-    runtime fileTree(dir: 'libs', includes: ["*.jar"])
+    compile fileTree(dir: "libs", includes: ["*.jar"])
+    runtime fileTree(dir: "libs", includes: ["*.jar"])
+
+    // Using this because the resources are in source code
+    runtime fileTree(dir: "${projectDir}/src/main/java/", includes: ["*"])
 }
 
-// Fix the resources not found in classpath
-task copyResources(type: Copy) {
-    from("${projectDir}/src/main/resources")
-    into("${buildDir}/classes/main")
-}
+// Control what goes into the JAR
+jar {
+    // Include all the classes except the tests
+    include("com/shc/silenceengine/**")
+    exclude("com/shc/silenceengine/tests/**")
 
-processResources.dependsOn copyResources
+    // Only include the logo and the shader sources
+    include("resources/**.frag")
+    include("resources/**.vert")
+    include("resources/logo.png")
+}

@@ -5,10 +5,15 @@ import com.shc.silenceengine.math.Vector3;
 import static org.lwjgl.openal.AL10.*;
 
 /**
+ * Represents an OpenAL Sound source.
+ *
  * @author Sri Harsha Chilakapati
  */
 public class ALSource
 {
+    /**
+     * The State of this source.
+     */
     public static enum State
     {
         PLAYING, STOPPED, PAUSED, LOOPING
@@ -17,16 +22,37 @@ public class ALSource
     private int id;
     private boolean disposed;
 
+    /**
+     * Constructs a new OpenAL source.
+     */
     public ALSource()
     {
         id = alGenSources();
     }
 
+    /**
+     * Attaches an ALBuffer to this source. The buffer contains the audio
+     * samples that this source should play.
+     *
+     * @param buffer The ALBuffer containing the sound samples to be played.
+     */
     public void attachBuffer(ALBuffer buffer)
     {
         setParameter(AL_BUFFER, buffer.getID());
     }
 
+    /**
+     * Gets a property from this ALSource.
+     *
+     * @param parameter The parameter of the property to be returned.
+     *
+     * @return The value of the property with key parameter.
+     *
+     * @throws ALException AL_INVALID_ENUM if the value is invalid for the parameter.
+     * @throws ALException AL_INVALID_NAME if this source is already disposed.
+     * @throws ALException AL_INVALID_OPERATION if there is no context.
+     * @throws ALException AL_INVALID_VALUE if the value is not an integer.
+     */
     public int getParameter(int parameter)
     {
         int result = alGetSourcei(id, parameter);
@@ -35,6 +61,15 @@ public class ALSource
         return result;
     }
 
+    /**
+     * Sets the value of a property in this source object.
+     *
+     * @param parameter The name of the parameter to be set
+     * @param value     The value of the parameter to be set
+     *
+     * @throws ALException AL_INVALID_ENUM if the value is invalid for parameter.
+     * @throws ALException AL_INVALID_OPERATION if the context is invalid
+     */
     public void setParameter(int parameter, boolean value)
     {
         setParameter(parameter, value ? AL_TRUE : AL_FALSE);
