@@ -17,6 +17,11 @@ dependencies {
     runtime fileTree(dir: "${projectDir}/src/main/java/", includes: ["*"])
 }
 
+// Exclude the tests from JavaDoc
+javadoc {
+    exclude("com/shc/silenceengine/tests/**")
+}
+
 // Control what goes into the JAR
 jar {
     // Include all the classes except the tests
