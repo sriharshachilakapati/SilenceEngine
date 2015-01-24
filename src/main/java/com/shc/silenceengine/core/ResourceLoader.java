@@ -7,7 +7,9 @@ import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.utils.*;
+import com.shc.silenceengine.models.Model;
+import com.shc.silenceengine.utils.FileUtils;
+import com.shc.silenceengine.utils.MathUtils;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -23,10 +25,12 @@ public final class ResourceLoader
     private Map<Integer, Texture>      textures;
     private Map<Integer, TrueTypeFont> fonts;
     private Map<Integer, Sound>        sounds;
+    private Map<Integer, Model> models;
 
     private Map<String, Integer> texturesToLoad;
     private Map<String, Integer> fontsToLoad;
     private Map<String, Integer> soundsToLoad;
+    private Map<String, Integer> modelsToLoad;
 
     private int     numLoaded;
     private Texture logo;
@@ -46,10 +50,12 @@ public final class ResourceLoader
         textures = new HashMap<>();
         fonts = new HashMap<>();
         sounds = new HashMap<>();
+        models = new HashMap<>();
 
         texturesToLoad = new HashMap<>();
         fontsToLoad = new HashMap<>();
         soundsToLoad = new HashMap<>();
+        modelsToLoad = new HashMap<>();
 
         numLoaded = 0;
 
@@ -73,6 +79,13 @@ public final class ResourceLoader
     {
         int id = soundsToLoad.size();
         soundsToLoad.put(name, id);
+        return id;
+    }
+
+    public int defineModel(String name)
+    {
+        int id = modelsToLoad.size();
+        modelsToLoad.put(name, id);
         return id;
     }
 
@@ -128,6 +141,14 @@ public final class ResourceLoader
             renderProgress();
         }
 
+        for (String modelName : modelsToLoad.keySet())
+        {
+            models.put(modelsToLoad.get(modelName), Model.load(modelName));
+            numLoaded++;
+
+            renderProgress();
+        }
+
         Display.setResizable(true);
     }
 
@@ -146,6 +167,11 @@ public final class ResourceLoader
         return sounds.get(id);
     }
 
+    public Model getModel(int id)
+    {
+        return models.get(id);
+    }
+
     public void dispose()
     {
         for (int id : textures.keySet())
@@ -156,6 +182,9 @@ public final class ResourceLoader
 
         for (int id : sounds.keySet())
             sounds.get(id).dispose();
+
+        for (int id : models.keySet())
+            models.get(id).dispose();
     }
 
     private String fontToString(String name, int style, int size)
@@ -169,7 +198,7 @@ public final class ResourceLoader
 
     private void renderProgress()
     {
-        float percentage = 100 * numLoaded / (fontsToLoad.size() + texturesToLoad.size() + soundsToLoad.size());
+        float percentage = 100 * numLoaded / (fontsToLoad.size() + texturesToLoad.size() + soundsToLoad.size() + modelsToLoad.size());
 
         while (renderedProgress < percentage)
         {

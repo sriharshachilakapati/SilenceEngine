@@ -178,6 +178,11 @@ public class Color extends Vector4
         super(r, g, b, a);
     }
 
+    public Color(float r, float g, float b)
+    {
+        this(r, g, b, 1);
+    }
+
     public float getRed()
     {
         return getR();

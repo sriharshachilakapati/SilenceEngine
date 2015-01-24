@@ -32,6 +32,10 @@ public class Material
         specularPower = 100;
         illumination = 2;
 
+        this.diffuseMap = Texture.EMPTY;
+        this.normalMap = Texture.EMPTY;
+        this.specularMap = Texture.EMPTY;
+
         this.name = "Default";
     }
 
@@ -48,10 +52,6 @@ public class Material
         this.dissolve = m.dissolve;
         this.specularPower = m.specularPower;
         this.illumination = m.illumination;
-
-        this.diffuseMap = Texture.EMPTY;
-        this.normalMap = Texture.EMPTY;
-        this.specularMap = Texture.EMPTY;
     }
 
     public Color getAmbient()

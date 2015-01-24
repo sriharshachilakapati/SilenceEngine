@@ -1,9 +1,12 @@
 package com.shc.silenceengine.models.obj;
 
 import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.opengl.Primitive;
+import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.math.Vector4;
 import com.shc.silenceengine.models.Material;
 import com.shc.silenceengine.models.Model;
 import com.shc.silenceengine.utils.FileUtils;
@@ -42,6 +45,9 @@ public class OBJModel extends Model
 
         String[] lines = FileUtils.readLinesToStringArray(FileUtils.getResource(name));
 
+        // Empty texture coords, just for safety
+        texCoords.add(Vector2.ZERO);
+
         for (String line : lines)
         {
             if (line.startsWith("v "))
@@ -62,6 +68,8 @@ public class OBJModel extends Model
             else if (line.startsWith("mtllib "))
                 parseMaterialLib(name, line);
         }
+
+        sortFaces();
     }
 
     private void parseVertex(String line)
@@ -109,9 +117,18 @@ public class OBJModel extends Model
         Vector3 vertex = new Vector3(v1, v2, v3);
 
         // Parse the texture coord indices
-        float vt1 = Float.parseFloat(values[1].split("/")[1]);
-        float vt2 = Float.parseFloat(values[2].split("/")[1]);
-        float vt3 = Float.parseFloat(values[3].split("/")[1]);
+        float vt1, vt2, vt3;
+
+        if (material.getDiffuseMap() != Texture.EMPTY)
+        {
+            vt1 = Float.parseFloat(values[1].split("/")[1]);
+            vt2 = Float.parseFloat(values[2].split("/")[1]);
+            vt3 = Float.parseFloat(values[3].split("/")[1]);
+        }
+        else
+        {
+            vt1 = vt2 = vt3 = 0;
+        }
 
         // Create the texture coord
         Vector3 texCoords = new Vector3(vt1, vt2, vt3);
@@ -131,28 +148,89 @@ public class OBJModel extends Model
     private void parseMaterialLib(String objFile, String mtlLine)
     {
         String objDir = objFile.substring(0, objFile.lastIndexOf('/'));
-        String mtllib = objDir + mtlLine.split(" ")[1].trim();
-        mtllib = mtllib.trim();
+        String mtlLib = objDir + "/" + mtlLine.split(" ")[1].trim();
+        mtlLib = mtlLib.trim();
 
-        String[] lines = FileUtils.readLinesToStringArray(FileUtils.getResource(mtllib));
+        String[] lines = FileUtils.readLinesToStringArray(FileUtils.getResource(mtlLib));
 
-        Material material = null;
+        Material material = new Material();
 
         for (String line : lines)
         {
             if (line.startsWith("newmtl "))
             {
-                if (material != null)
-                    materials.put(material.getName(), material);
+                materials.put(material.getName(), material);
 
                 material = new Material();
                 material.setName(line.split(" ", 2)[1]);
             }
-            else if (line.startsWith("Kd "))
-            {
+            else if (line.startsWith("Ka "))
+                parseMaterialAmbientColor(line, material);
 
-            }
+            else if (line.startsWith("Kd "))
+                parseMaterialDiffuseColor(line, material);
+
+            else if (line.startsWith("Ks "))
+                parseMaterialSpecularColor(line, material);
+
+            else if (line.startsWith("d "))
+                material.setDissolve(Float.parseFloat(line.split(" ")[1]));
+
+            else if (line.startsWith("Ns "))
+                material.setSpecularPower(Float.parseFloat(line.split(" ")[1]));
+
+            else if (line.startsWith("map_Kd"))
+                material.setDiffuseMap(Texture.fromResource(line.split(" ")[1]));
         }
+
+        materials.put(material.getName(), material);
+    }
+
+    private void parseMaterialAmbientColor(String line, Material material)
+    {
+        String[] values = line.split(" ");
+
+        float r = Float.parseFloat(values[1]);
+        float g = Float.parseFloat(values[2]);
+        float b = Float.parseFloat(values[3]);
+
+        material.setAmbient(new Color(r, g, b));
+    }
+
+    private void parseMaterialDiffuseColor(String line, Material material)
+    {
+        String[] values = line.split(" ");
+
+        float r = Float.parseFloat(values[1]);
+        float g = Float.parseFloat(values[2]);
+        float b = Float.parseFloat(values[3]);
+
+        material.setDiffuse(new Color(r, g, b));
+    }
+
+    private void parseMaterialSpecularColor(String line, Material material)
+    {
+        String[] values = line.split(" ");
+
+        float r = Float.parseFloat(values[1]);
+        float g = Float.parseFloat(values[2]);
+        float b = Float.parseFloat(values[3]);
+
+        material.setSpecular(new Color(r, g, b));
+    }
+
+    private void sortFaces()
+    {
+        // We need to sort the faces so that all the faces with
+        // the same material will be together, reducing the load
+        // on the batcher.
+        faces.sort((f1, f2) ->
+        {
+            if (f1.getMaterial() == f2.getMaterial())
+                return 0;
+            else
+                return 1;
+        });
     }
 
     @Override
@@ -164,28 +242,77 @@ public class OBJModel extends Model
     @Override
     public void render(float delta, Batcher batcher)
     {
-        OBJFace face = faces.get(0);
-        face.getMaterial().getDiffuseMap().bind();
+        OBJFace triangle = faces.get(0);
+        triangle.getMaterial().getDiffuseMap().bind();
 
         batcher.applyTransform(getTransform());
         batcher.begin(Primitive.TRIANGLES);
         {
-            for (OBJFace triangle : faces)
+            for (OBJFace face : faces)
             {
                 if (face.getMaterial() != triangle.getMaterial())
                 {
                     batcher.end();
 
-                    triangle.getMaterial().getDiffuseMap().bind();
-                    face = triangle;
+                    face.getMaterial().getDiffuseMap().bind();
+                    triangle = face;
 
                     batcher.applyTransform(getTransform());
                     batcher.begin(Primitive.TRIANGLES);
                 }
 
-                // TODO: FIX MODEL CLASSES
+                batcher.flushOnOverflow(3);
+
+                Vector3 v1 = vertices.get((int) face.getVertex().x - 1);
+                Vector3 v2 = vertices.get((int) face.getVertex().y - 1);
+                Vector3 v3 = vertices.get((int) face.getVertex().z - 1);
+
+                Color diffuse = face.getMaterial().getDiffuse();
+                Color ambient = face.getMaterial().getAmbient();
+
+                Vector4 c = diffuse.add(ambient);
+
+                Vector3 n1 = normals.get((int) face.getNormal().x - 1);
+                Vector3 n2 = normals.get((int) face.getNormal().y - 1);
+                Vector3 n3 = normals.get((int) face.getNormal().z - 1);
+
+                Vector2 t1 = texCoords.get((int) face.getTexCoord().x);
+                Vector2 t2 = texCoords.get((int) face.getTexCoord().y);
+                Vector2 t3 = texCoords.get((int) face.getTexCoord().z);
+
+                batcher.vertex(v1);
+                batcher.normal(n1);
+                batcher.texCoord(t1);
+                batcher.color(c.getR(), c.getG(), c.getB(), face.getMaterial().getDissolve());
+
+                batcher.vertex(v2);
+                batcher.normal(n2);
+                batcher.texCoord(t2);
+                batcher.color(c.getR(), c.getG(), c.getB(), face.getMaterial().getDissolve());
+
+                batcher.vertex(v3);
+                batcher.normal(n3);
+                batcher.texCoord(t3);
+                batcher.color(c.getR(), c.getG(), c.getB(), face.getMaterial().getDissolve());
             }
         }
         batcher.end();
+    }
+
+    @Override
+    public void dispose()
+    {
+        // Dispose the textures loaded!
+        materials.values().forEach((material) ->
+        {
+            if (material.getDiffuseMap() != Texture.EMPTY)
+                material.getDiffuseMap().dispose();
+
+            if (material.getNormalMap() != Texture.EMPTY)
+                material.getNormalMap().dispose();
+
+            if (material.getSpecularMap() != Texture.EMPTY)
+                material.getSpecularMap().dispose();
+        });
     }
 }
