@@ -94,4 +94,16 @@ public final class GL3Context
         glViewport((int) x, (int) y, (int) width, (int) height);
         GLError.check();
     }
+
+    public static void depthMask(boolean value)
+    {
+        glDepthMask(value);
+        GLError.check();
+    }
+
+    public static void depthFunc(int func)
+    {
+        glDepthFunc(func);
+        GLError.check();
+    }
 }

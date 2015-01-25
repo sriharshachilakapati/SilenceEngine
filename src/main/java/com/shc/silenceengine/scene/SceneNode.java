@@ -3,7 +3,9 @@ package com.shc.silenceengine.scene;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.entity.Entity2D;
 import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.math.Transform;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +17,7 @@ import java.util.List;
 public class SceneNode
 {
     private List<SceneNode> children;
+    private List<SceneComponent> components;
     private SceneNode       parent;
     private Transform       transform;
     private boolean         destroyed;
@@ -25,6 +28,7 @@ public class SceneNode
     public SceneNode()
     {
         children = new ArrayList<>();
+        components = new ArrayList<>();
         transform = new Transform();
         parent = null;
 
@@ -72,11 +76,18 @@ public class SceneNode
     public void preUpdate(float delta)
     {
         update(delta);
+        updateComponents(delta);
         updateChildren(delta);
     }
 
     public void update(float delta)
     {
+    }
+
+    public void updateComponents(float delta)
+    {
+        for (SceneComponent component : components)
+            component.update(delta);
     }
 
     public void updateChildren(float delta)
@@ -97,7 +108,11 @@ public class SceneNode
     public void preRender(float delta, Batcher batcher)
     {
         render(delta, batcher);
-        renderChildren(delta, batcher);
+
+        if (components.size() == 0)
+            renderChildren(delta, batcher);
+        else
+            renderChildrenWithComponents(delta, batcher);
     }
 
     public void render(float delta, Batcher batcher)
@@ -117,6 +132,26 @@ public class SceneNode
                 i--;
             }
         }
+    }
+
+    private void renderChildrenWithComponents(float delta, Batcher batcher)
+    {
+        // Enable forward rendering
+        GL3Context.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
+        GL3Context.depthMask(false);
+        GL3Context.depthFunc(GL11.GL_EQUAL);
+
+        for (SceneComponent component : components)
+        {
+            component.use();
+            renderChildren(delta, batcher);
+            component.release();
+        }
+
+        // Disable forward rendering
+        GL3Context.depthFunc(GL11.GL_LESS);
+        GL3Context.depthMask(true);
+        GL3Context.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public void removeChild(SceneNode child)
