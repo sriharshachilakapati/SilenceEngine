@@ -5,6 +5,8 @@ package com.shc.silenceengine.math;
  */
 public class Vector4
 {
+    public static final Vector4 ZERO = new Vector4(0, 0, 0, 0);
+
     public float x, y, z, w;
 
     public Vector4()

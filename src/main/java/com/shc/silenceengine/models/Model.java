@@ -2,17 +2,17 @@ package com.shc.silenceengine.models;
 
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.models.obj.OBJModel;
-import com.shc.silenceengine.scene.SceneNode;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public abstract class Model extends SceneNode
+public abstract class Model
 {
     public abstract void update(float delta);
 
-    public abstract void render(float delta, Batcher batcher);
+    public abstract void render(float delta, Batcher batcher, Transform transform);
 
     public abstract void dispose();
 

@@ -1,6 +1,7 @@
 package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.math.Vector4;
+import com.shc.silenceengine.utils.MathUtils;
 
 /**
  * A Color class with RGBA colors. Has 140 predefined colors
@@ -175,12 +176,60 @@ public class Color extends Vector4
 
     public Color(float r, float g, float b, float a)
     {
-        super(r, g, b, a);
+        x = MathUtils.clamp(r, 0, 1);
+        y = MathUtils.clamp(g, 0, 1);
+        z = MathUtils.clamp(b, 0, 1);
+        w = MathUtils.clamp(a, 0, 1);
     }
 
     public Color(float r, float g, float b)
     {
         this(r, g, b, 1);
+    }
+
+    public Color add(Color c)
+    {
+        return new Color(x + c.x, y + c.y, z + c.z, w + c.w);
+    }
+
+    public Color add(float r, float g, float b, float a)
+    {
+        return new Color(x + r, y + g, z + b, w + a);
+    }
+
+    public Color add(float r, float g, float b)
+    {
+        return add(r, g, b, 1);
+    }
+
+    public Color subtract(Color c)
+    {
+        return add(-c.x, -c.y, -c.z, -c.w);
+    }
+
+    public Color subtract(float r, float g, float b)
+    {
+        return subtract(r, g, b, 1);
+    }
+
+    public Color subtract(float r, float g, float b, float a)
+    {
+        return add(-r, -g, -b, -a);
+    }
+
+    public Color multiply(Color c)
+    {
+        return new Color(x * c.x, y * c.y, z * c.z, w * c.w);
+    }
+
+    public Color multiply(float r, float g, float b, float a)
+    {
+        return new Color(x * r, y * g, z * b, w * a);
+    }
+
+    public Color multiply(float r, float g, float b)
+    {
+        return multiply(r, g, b, 1);
     }
 
     public float getRed()

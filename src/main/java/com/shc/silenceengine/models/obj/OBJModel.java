@@ -4,9 +4,9 @@ import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.math.Vector4;
 import com.shc.silenceengine.models.Material;
 import com.shc.silenceengine.models.Model;
 import com.shc.silenceengine.utils.FileUtils;
@@ -180,7 +180,7 @@ public class OBJModel extends Model
                 material.setSpecularPower(Float.parseFloat(line.split(" ")[1]));
 
             else if (line.startsWith("map_Kd"))
-                material.setDiffuseMap(Texture.fromResource(line.split(" ")[1]));
+                parseMaterialDiffuseMap(mtlLib, line, material);
         }
 
         materials.put(material.getName(), material);
@@ -219,6 +219,15 @@ public class OBJModel extends Model
         material.setSpecular(new Color(r, g, b));
     }
 
+    private void parseMaterialDiffuseMap(String mtlLib, String line, Material material)
+    {
+        String mtlDir = mtlLib.substring(0, mtlLib.lastIndexOf('/'));
+        String texture = mtlDir + "/" + line.split(" ")[1].trim();
+        texture = texture.trim();
+
+        material.setDiffuseMap(Texture.fromResource(texture));
+    }
+
     private void sortFaces()
     {
         // We need to sort the faces so that all the faces with
@@ -240,12 +249,14 @@ public class OBJModel extends Model
     }
 
     @Override
-    public void render(float delta, Batcher batcher)
+    public void render(float delta, Batcher batcher, Transform transform)
     {
         OBJFace triangle = faces.get(0);
         triangle.getMaterial().getDiffuseMap().bind();
 
-        batcher.applyTransform(getTransform());
+        if (transform != null)
+            batcher.applyTransform(transform);
+
         batcher.begin(Primitive.TRIANGLES);
         {
             for (OBJFace face : faces)
@@ -257,7 +268,9 @@ public class OBJModel extends Model
                     face.getMaterial().getDiffuseMap().bind();
                     triangle = face;
 
-                    batcher.applyTransform(getTransform());
+                    if (transform != null)
+                        batcher.applyTransform(transform);
+
                     batcher.begin(Primitive.TRIANGLES);
                 }
 
@@ -270,7 +283,8 @@ public class OBJModel extends Model
                 Color diffuse = face.getMaterial().getDiffuse();
                 Color ambient = face.getMaterial().getAmbient();
 
-                Vector4 c = diffuse.add(ambient);
+                Color c = face.getMaterial().getDiffuseMap() == Texture.EMPTY ? diffuse.add(ambient)
+                                                                              : Color.TRANSPARENT;
 
                 Vector3 n1 = normals.get((int) face.getNormal().x - 1);
                 Vector3 n2 = normals.get((int) face.getNormal().y - 1);

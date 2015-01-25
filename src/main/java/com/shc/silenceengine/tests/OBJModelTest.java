@@ -5,6 +5,7 @@ import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.PerspCam;
 import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.models.Model;
 
@@ -15,11 +16,15 @@ public class OBJModelTest extends Game
 {
     private PerspCam cam;
     private Model model;
+    private Transform modelTransform;
 
     public void init()
     {
         cam = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
         cam.setPosition(new Vector3(0, 0, 2.5f));
+
+        modelTransform = new Transform();
+
         model = Model.load("resources/monkey.obj");
     }
 
@@ -58,14 +63,14 @@ public class OBJModelTest extends Game
         if (Keyboard.isPressed(Keyboard.KEY_RIGHT))
             cam.rotateY(-1);
 
-        model.getLocalTransform().rotate(Vector3.AXIS_Y, 90 * delta);
+        modelTransform.rotate(Vector3.AXIS_Y, 90 * delta);
     }
 
     public void render(float delta, Batcher batcher)
     {
         cam.apply();
 
-        model.render(delta, batcher);
+        model.render(delta, batcher, modelTransform);
     }
 
     public void resize()
