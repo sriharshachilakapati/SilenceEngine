@@ -283,8 +283,7 @@ public class OBJModel extends Model
                 Color diffuse = face.getMaterial().getDiffuse();
                 Color ambient = face.getMaterial().getAmbient();
 
-                Color c = face.getMaterial().getDiffuseMap() == Texture.EMPTY ? diffuse.add(ambient)
-                                                                              : Color.TRANSPARENT;
+                Color c = diffuse.multiply(ambient);
 
                 Vector3 n1 = normals.get((int) face.getNormal().x - 1);
                 Vector3 n2 = normals.get((int) face.getNormal().y - 1);

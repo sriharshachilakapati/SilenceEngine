@@ -201,7 +201,7 @@ public class Game
         int framesProcessed = 0;
         int skippedFrames = 0;
 
-        previousTime = TimeUtils.currentSeconds();
+        previousTime = TimeUtils.currentTime();
 
         while (true)
         {
@@ -217,7 +217,7 @@ public class Game
                     gameState.resize();
             }
 
-            currentTime = TimeUtils.currentSeconds();
+            currentTime = TimeUtils.currentTime();
             elapsed = currentTime - previousTime;
 
             lag += elapsed;
@@ -368,5 +368,20 @@ public class Game
 
         if (Game.gameState != null)
             Game.gameState.onEnter();
+    }
+
+    public static long getTotalMemory()
+    {
+        return Runtime.getRuntime().totalMemory();
+    }
+
+    public static long getFreeMemory()
+    {
+        return Runtime.getRuntime().freeMemory();
+    }
+
+    public static long getUsedMemory()
+    {
+        return getTotalMemory() - getFreeMemory();
     }
 }

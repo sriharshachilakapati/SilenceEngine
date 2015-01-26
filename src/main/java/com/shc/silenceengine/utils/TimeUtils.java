@@ -4,6 +4,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * A standard Time Utility class
+ *
+ * @author Sri Harsha Chilakapati
  */
 public final class TimeUtils
 {
@@ -46,6 +48,11 @@ public final class TimeUtils
         }
 
         return currentSeconds();
+    }
+
+    public static double currentTime()
+    {
+        return currentTime(getDefaultTimeUnit());
     }
 
     public static double convert(double time, Unit source, Unit target)
@@ -93,5 +100,10 @@ public final class TimeUtils
         }
 
         return time * factor;
+    }
+
+    public static Unit getDefaultTimeUnit()
+    {
+        return Unit.SECONDS;
     }
 }

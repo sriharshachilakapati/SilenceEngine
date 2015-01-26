@@ -24,7 +24,7 @@ public class GameTimer
 
     public GameTimer(double time, TimeUtils.Unit unit)
     {
-        this.time = TimeUtils.convert(time, unit, TimeUtils.Unit.SECONDS);
+        this.time = TimeUtils.convert(time, unit, TimeUtils.getDefaultTimeUnit());
     }
 
     public void start()
@@ -50,7 +50,7 @@ public class GameTimer
 
     public void setTime(float time, TimeUtils.Unit unit)
     {
-        this.time = TimeUtils.convert(time, unit, TimeUtils.Unit.SECONDS);
+        this.time = TimeUtils.convert(time, unit, TimeUtils.getDefaultTimeUnit());
         elapsed = 0;
     }
 

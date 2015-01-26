@@ -108,9 +108,13 @@ public class SceneNode
     public void preRender(float delta, Batcher batcher)
     {
         render(delta, batcher);
+        renderChildren(delta, batcher);
+    }
 
+    public void renderChildren(float delta, Batcher batcher)
+    {
         if (components.size() == 0)
-            renderChildren(delta, batcher);
+            doRenderChildren(delta, batcher);
         else
             renderChildrenWithComponents(delta, batcher);
     }
@@ -119,7 +123,7 @@ public class SceneNode
     {
     }
 
-    public void renderChildren(float delta, Batcher batcher)
+    private void doRenderChildren(float delta, Batcher batcher)
     {
         for (int i = 0; i < children.size(); i++)
         {
@@ -144,7 +148,7 @@ public class SceneNode
         for (SceneComponent component : components)
         {
             component.use();
-            renderChildren(delta, batcher);
+            doRenderChildren(delta, batcher);
             component.release();
         }
 

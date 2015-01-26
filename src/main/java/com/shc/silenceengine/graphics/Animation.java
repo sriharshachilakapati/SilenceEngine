@@ -24,6 +24,12 @@ public class Animation
 
     private boolean active;
 
+    public Animation()
+    {
+        // Construct with empty callbacks
+        this(() -> {}, () -> {}, () -> {}, () -> {});
+    }
+
     public Animation(IAnimationStartCallback startCallback,
                      IAnimationPauseCallback pauseCallback,
                      IAnimationResumeCallback resumeCallback,
@@ -104,6 +110,38 @@ public class Animation
     public float getCurrentFrameLength()
     {
         return frameLengths.get(currentFrame);
+    }
+
+    public void setStartCallback(IAnimationStartCallback startCallback)
+    {
+        if (startCallback == null)
+            startCallback = () -> {};
+
+        this.startCallback = startCallback;
+    }
+
+    public void setPauseCallback(IAnimationPauseCallback pauseCallback)
+    {
+        if (pauseCallback == null)
+            pauseCallback = () -> {};
+
+        this.pauseCallback = pauseCallback;
+    }
+
+    public void setResumeCallback(IAnimationResumeCallback resumeCallback)
+    {
+        if (resumeCallback == null)
+            resumeCallback = () -> {};
+
+        this.resumeCallback = resumeCallback;
+    }
+
+    public void setEndCallback(IAnimationEndCallback endCallback)
+    {
+        if (endCallback == null)
+            endCallback = () -> {};
+
+        this.endCallback = endCallback;
     }
 
     @FunctionalInterface
