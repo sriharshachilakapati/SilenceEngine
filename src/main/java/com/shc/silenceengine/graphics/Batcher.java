@@ -43,13 +43,13 @@ public class Batcher
     private boolean active = false;
 
     // The sizes (no. of components) in vertex, color, texcoord
-    public static final int SIZE_OF_VERTEX   = 4;
-    public static final int SIZE_OF_NORMAL   = 4;
-    public static final int SIZE_OF_COLOR    = 4;
-    public static final int SIZE_OF_TEXCOORD = 2;
+    private static final int SIZE_OF_VERTEX = 4;
+    private static final int SIZE_OF_NORMAL = 4;
+    private static final int SIZE_OF_COLOR = 4;
+    private static final int SIZE_OF_TEXCOORD = 2;
 
     // The maximum number of vertices in a batch
-    public static final int MAX_VERTICES_IN_BATCH = 4096;
+    private static int MAX_VERTICES_IN_BATCH = 8192;
 
     // The buffers to store the collected data
     private FloatBuffer vBuffer;
@@ -138,21 +138,43 @@ public class Batcher
      */
     private void uploadData()
     {
+        // Check if the value exceeds max vertex count
+        if (MAX_VERTICES_IN_BATCH * SIZE_OF_VERTEX <= vBuffer.capacity())
+        {
+            MAX_VERTICES_IN_BATCH *= 2;
+
+            // Resize the vertex-buffer
+            vboVert.bind();
+            vboVert.uploadData(SIZE_OF_VERTEX * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
+
+            // Resize the color-buffer
+            vboCol.bind();
+            vboCol.uploadData(SIZE_OF_COLOR * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
+
+            // Resize the texcoord-buffer
+            vboTex.bind();
+            vboTex.uploadData(SIZE_OF_TEXCOORD * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
+
+            // Resize the normal-buffer
+            vboNorm.bind();
+            vboNorm.uploadData(SIZE_OF_NORMAL * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
+        }
+
         // Upload vertices
         vboVert.bind();
-        vboVert.uploadData(vBuffer, GL_STREAM_DRAW);
+        vboVert.uploadSubData(vBuffer, 0);
         vao.pointAttribute(vertexLocation, 4, GL_FLOAT, vboVert);
 
         vboCol.bind();
-        vboCol.uploadData(cBuffer, GL_STREAM_DRAW);
+        vboCol.uploadSubData(cBuffer, 0);
         vao.pointAttribute(colorLocation, 4, GL_FLOAT, vboCol);
 
         vboTex.bind();
-        vboTex.uploadData(tBuffer, GL_STREAM_DRAW);
+        vboTex.uploadSubData(tBuffer, 0);
         vao.pointAttribute(texCoordLocation, 2, GL_FLOAT, vboTex);
 
         vboNorm.bind();
-        vboNorm.uploadData(nBuffer, GL_STREAM_DRAW);
+        vboNorm.uploadSubData(nBuffer, 0);
         vao.pointAttribute(normalLocation, 4, GL_FLOAT, vboNorm);
     }
 
