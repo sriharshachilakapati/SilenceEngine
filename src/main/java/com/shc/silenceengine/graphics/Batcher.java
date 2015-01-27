@@ -1,7 +1,11 @@
 package com.shc.silenceengine.graphics;
 
+import com.shc.silenceengine.graphics.opengl.BufferObject;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
+import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Program;
+import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.graphics.opengl.VertexArray;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
@@ -12,11 +16,6 @@ import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
-
-import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.graphics.opengl.Primitive;
-import com.shc.silenceengine.graphics.opengl.VertexArray;
-import com.shc.silenceengine.graphics.opengl.BufferObject;
 
 /**
  * A simple class which eases the rendering of Graphics by batching
@@ -261,7 +260,7 @@ public class Batcher
         flush();
 
         // Apply transform
-        transform.apply(t);
+        transform.reset().apply(t);
     }
 
     private void fillBuffers()

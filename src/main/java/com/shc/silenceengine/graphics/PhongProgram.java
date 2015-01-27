@@ -47,6 +47,7 @@ public class PhongProgram extends Program
         setUniform("mTransform", batcher.getTransform().getMatrix());
         setUniform("camProj", BaseCamera.projection);
         setUniform("camView", BaseCamera.view);
+        setUniform("ambient", RenderContext.CURRENT_MATERIAL.getAmbient());
 
         // Batcher locations
         batcher.setVertexLocation(0);

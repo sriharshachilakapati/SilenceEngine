@@ -2,6 +2,7 @@ package com.shc.silenceengine.models.obj;
 
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.RenderContext;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.math.Transform;
@@ -254,6 +255,8 @@ public class OBJModel extends Model
         OBJFace triangle = faces.get(0);
         triangle.getMaterial().getDiffuseMap().bind();
 
+        RenderContext.useMaterial(triangle.getMaterial());
+
         if (transform != null)
             batcher.applyTransform(transform);
 
@@ -272,6 +275,8 @@ public class OBJModel extends Model
                         batcher.applyTransform(transform);
 
                     batcher.begin(Primitive.TRIANGLES);
+
+                    RenderContext.useMaterial(face.getMaterial());
                 }
 
                 batcher.flushOnOverflow(3);
@@ -280,10 +285,7 @@ public class OBJModel extends Model
                 Vector3 v2 = vertices.get((int) face.getVertex().y - 1);
                 Vector3 v3 = vertices.get((int) face.getVertex().z - 1);
 
-                Color diffuse = face.getMaterial().getDiffuse();
-                Color ambient = face.getMaterial().getAmbient();
-
-                Color c = diffuse.multiply(ambient);
+                Color c = face.getMaterial().getDiffuse();
 
                 Vector3 n1 = normals.get((int) face.getNormal().x - 1);
                 Vector3 n2 = normals.get((int) face.getNormal().y - 1);
@@ -310,6 +312,8 @@ public class OBJModel extends Model
             }
         }
         batcher.end();
+
+        RenderContext.useMaterial(RenderContext.DEFAULT_MATERIAL);
     }
 
     @Override

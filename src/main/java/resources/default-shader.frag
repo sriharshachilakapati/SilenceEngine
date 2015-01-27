@@ -1,6 +1,7 @@
 #version 330 core
 
 uniform sampler2D textureID;
+uniform vec4 ambient;
 
 in vec4 vColor;
 in vec2 vTexCoords;
@@ -12,4 +13,6 @@ void main()
     vec4 texColor = texture(textureID, vTexCoords);
 
     fragColor = vec4(min(texColor.rgb + vColor.rgb, vec3(1.0)), texColor.a * vColor.a);
+
+    fragColor *= ambient;
 }

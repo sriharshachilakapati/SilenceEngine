@@ -16,4 +16,8 @@ public abstract class SceneComponent
     public void release()
     {
     }
+
+    public void dispose()
+    {
+    }
 }

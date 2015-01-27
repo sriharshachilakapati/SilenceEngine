@@ -45,7 +45,7 @@ public class SceneNode
     {
     }
 
-    public void initChildren()
+    private void initChildren()
     {
         for (int i = 0; i < children.size(); i++)
             children.get(i).preInit();
@@ -73,6 +73,20 @@ public class SceneNode
         }
     }
 
+    public void addComponent(SceneComponent component)
+    {
+        components.add(component);
+    }
+
+    public void removeComponent(SceneComponent component)
+    {
+        if (components.contains(component))
+        {
+            components.remove(component);
+            component.dispose();
+        }
+    }
+
     public void preUpdate(float delta)
     {
         update(delta);
@@ -84,13 +98,13 @@ public class SceneNode
     {
     }
 
-    public void updateComponents(float delta)
+    protected void updateComponents(float delta)
     {
         for (SceneComponent component : components)
             component.update(delta);
     }
 
-    public void updateChildren(float delta)
+    protected void updateChildren(float delta)
     {
         for (int i = 0; i < children.size(); i++)
         {
@@ -111,7 +125,7 @@ public class SceneNode
         renderChildren(delta, batcher);
     }
 
-    public void renderChildren(float delta, Batcher batcher)
+    protected void renderChildren(float delta, Batcher batcher)
     {
         if (components.size() == 0)
             doRenderChildren(delta, batcher);
@@ -181,22 +195,29 @@ public class SceneNode
     {
         destroyed = true;
         destroyChildren();
+        destroyComponents();
     }
 
     public void destroyChildren()
     {
-        for (int i = 0; i < children.size(); i++)
-        {
-            SceneNode child = children.get(i);
-            child.destroy();
-            removeChild(child);
-            i--;
-        }
+        children.forEach(SceneNode::destroy);
+        children.clear();
+    }
+
+    public void destroyComponents()
+    {
+        components.forEach(SceneComponent::dispose);
+        components.clear();
     }
 
     public List<SceneNode> getChildren()
     {
         return children;
+    }
+
+    public List<SceneComponent> getComponents()
+    {
+        return components;
     }
 
     public SceneNode getParent()

@@ -64,6 +64,8 @@ public class OBJModelTest extends Game
             cam.rotateY(-1);
 
         modelTransform.rotate(Vector3.AXIS_Y, 90 * delta);
+
+        Display.setTitle("Total Memory: " + (getTotalMemory() / 1048576) + "MB / Free Memory: " + (getFreeMemory() / 1048576) + "MB / Used Memory: " + (getUsedMemory() / 1048576) + "MB");
     }
 
     public void render(float delta, Batcher batcher)
