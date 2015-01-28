@@ -127,10 +127,8 @@ public class SceneNode
 
     protected void renderChildren(float delta, Batcher batcher)
     {
-        if (components.size() == 0)
-            doRenderChildren(delta, batcher);
-        else
-            renderChildrenWithComponents(delta, batcher);
+        doRenderChildren(delta, batcher);
+        renderChildrenWithComponents(delta, batcher);
     }
 
     public void render(float delta, Batcher batcher)
@@ -154,22 +152,22 @@ public class SceneNode
 
     private void renderChildrenWithComponents(float delta, Batcher batcher)
     {
-        // Enable forward rendering
-        GL3Context.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
-        GL3Context.depthMask(false);
-        GL3Context.depthFunc(GL11.GL_EQUAL);
-
         for (SceneComponent component : components)
         {
+            // Enable forward rendering
+            GL3Context.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
+            GL3Context.depthMask(false);
+            GL3Context.depthFunc(GL11.GL_EQUAL);
+
             component.use();
             doRenderChildren(delta, batcher);
             component.release();
-        }
 
-        // Disable forward rendering
-        GL3Context.depthFunc(GL11.GL_LESS);
-        GL3Context.depthMask(true);
-        GL3Context.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            // Disable forward rendering
+            GL3Context.depthFunc(GL11.GL_LESS);
+            GL3Context.depthMask(true);
+            GL3Context.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        }
     }
 
     public void removeChild(SceneNode child)

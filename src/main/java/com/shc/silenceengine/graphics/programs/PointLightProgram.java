@@ -1,6 +1,9 @@
-package com.shc.silenceengine.graphics;
+package com.shc.silenceengine.graphics.programs;
 
 import com.shc.silenceengine.core.Game;
+import com.shc.silenceengine.graphics.BaseCamera;
+import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.RenderContext;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Shader;
@@ -13,16 +16,26 @@ import static org.lwjgl.opengl.GL20.*;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class PhongProgram extends Program
+public class PointLightProgram extends Program
 {
-    public PhongProgram()
+    private static PointLightProgram instance;
+
+    public static PointLightProgram getInstance()
+    {
+        if (instance == null)
+            instance = new PointLightProgram();
+
+        return instance;
+    }
+
+    private PointLightProgram()
     {
         Shader vs = new Shader(GL_VERTEX_SHADER);
-        vs.source(FileUtils.readLinesToString(FileUtils.getResource("resources/phong-shader.vert")));
+        vs.source(FileUtils.readLinesToString(FileUtils.getResource("resources/point-light.vert")));
         vs.compile();
 
         Shader fs = new Shader(GL_FRAGMENT_SHADER);
-        fs.source(FileUtils.readLinesToString(FileUtils.getResource("resources/phong-shader.frag")));
+        fs.source(FileUtils.readLinesToString(FileUtils.getResource("resources/point-light.frag")));
         fs.compile();
 
         attach(vs);
@@ -31,8 +44,6 @@ public class PhongProgram extends Program
 
         vs.dispose();
         fs.dispose();
-
-        use();
     }
 
     public void prepareFrame()

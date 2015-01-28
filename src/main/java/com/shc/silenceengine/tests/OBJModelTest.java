@@ -2,12 +2,16 @@ package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
+import com.shc.silenceengine.entity.ModelEntity;
+import com.shc.silenceengine.geom3d.Cuboid;
 import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.PerspCam;
 import com.shc.silenceengine.input.Keyboard;
-import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.models.Model;
+import com.shc.silenceengine.scene.Scene;
+import com.shc.silenceengine.scene.lights.PointLight;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -16,16 +20,28 @@ public class OBJModelTest extends Game
 {
     private PerspCam cam;
     private Model model;
-    private Transform modelTransform;
+    private ModelEntity entity;
+
+    private Scene scene;
 
     public void init()
     {
         cam = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
         cam.setPosition(new Vector3(0, 0, 2.5f));
 
-        modelTransform = new Transform();
-
         model = Model.load("resources/monkey.obj");
+
+        scene = new Scene();
+        {
+            // Add the ModelEntity to the scene
+            scene.addChild(entity = new ModelEntity(model, new Cuboid(Vector3.ZERO, 1, 1, 1)));
+
+            // Add some lights, so that we can see the model
+            scene.addComponent(new PointLight(new Vector3(-1, -1, 1), Color.BLUE));
+            scene.addComponent(new PointLight(new Vector3(+1, -1, 1), Color.RED));
+            scene.addComponent(new PointLight(new Vector3(+1, +1, 1), Color.GREEN));
+        }
+        scene.init();
     }
 
     public void update(float delta)
@@ -63,16 +79,16 @@ public class OBJModelTest extends Game
         if (Keyboard.isPressed(Keyboard.KEY_RIGHT))
             cam.rotateY(-1);
 
-        modelTransform.rotate(Vector3.AXIS_Y, 90 * delta);
+        entity.rotate(0, 90 * delta, 0);
 
-        Display.setTitle("Total Memory: " + (getTotalMemory() / 1048576) + "MB / Free Memory: " + (getFreeMemory() / 1048576) + "MB / Used Memory: " + (getUsedMemory() / 1048576) + "MB");
+        scene.update(delta);
     }
 
     public void render(float delta, Batcher batcher)
     {
         cam.apply();
 
-        model.render(delta, batcher, modelTransform);
+        scene.render(delta, batcher);
     }
 
     public void resize()

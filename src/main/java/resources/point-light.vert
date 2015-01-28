@@ -11,10 +11,15 @@ layout(location = 3) in vec4 norm;
 
 out vec4 vColor;
 out vec2 vTexCoords;
+out vec4 vNormal;
+out vec4 vPosition;
 
 void main()
 {
     vColor      = col;
     vTexCoords  = tex;
+    vNormal     = norm;
+    vPosition   = pos;
+
     gl_Position = camProj * camView * mTransform * pos;
 }

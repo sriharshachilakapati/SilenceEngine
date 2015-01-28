@@ -1,7 +1,8 @@
 package com.shc.silenceengine.graphics.opengl;
 
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.DefaultProgram;
+import com.shc.silenceengine.graphics.programs.DefaultProgram;
+import com.shc.silenceengine.graphics.programs.PointLightProgram;
 import com.shc.silenceengine.math.Matrix3;
 import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Vector2;
@@ -24,6 +25,7 @@ public class Program
 
     public static Program CURRENT;
     public static Program DEFAULT;
+    public static Program POINT_LIGHT;
 
     public Program()
     {
@@ -265,9 +267,11 @@ public class Program
         return glGetProgramInfoLog(id);
     }
 
-    public static void loadDefaultProgram()
+    public static void loadDefaultPrograms()
     {
-        DEFAULT = new DefaultProgram();
+        DEFAULT = DefaultProgram.getInstance();
+        POINT_LIGHT = PointLightProgram.getInstance();
+
         DEFAULT.use();
     }
 

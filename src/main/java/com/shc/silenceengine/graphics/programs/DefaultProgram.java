@@ -1,6 +1,9 @@
-package com.shc.silenceengine.graphics;
+package com.shc.silenceengine.graphics.programs;
 
 import com.shc.silenceengine.core.Game;
+import com.shc.silenceengine.graphics.BaseCamera;
+import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.RenderContext;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Shader;
@@ -15,7 +18,17 @@ import static org.lwjgl.opengl.GL20.*;
  */
 public class DefaultProgram extends Program
 {
-    public DefaultProgram()
+    private static DefaultProgram instance;
+
+    public static Program getInstance()
+    {
+        if (instance == null)
+            instance = new DefaultProgram();
+
+        return instance;
+    }
+
+    private DefaultProgram()
     {
         Shader vs = new Shader(GL_VERTEX_SHADER);
         vs.source(FileUtils.readLinesToString(FileUtils.getResource("resources/default-shader.vert")));

@@ -140,12 +140,14 @@ public final class Display
         GL3Context.enable(GL_BLEND);
         GL3Context.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+        GL3Context.cullFace(GL_FRONT_AND_BACK);
+
         GL3Context.viewport(0, 0, width, height);
 
         Game.setBatcher(new Batcher());
 
         if (Program.DEFAULT == null)
-            Program.loadDefaultProgram();
+            Program.loadDefaultPrograms();
         if (Texture.EMPTY == null)
             Texture.loadNullTexture();
 
@@ -268,6 +270,8 @@ public final class Display
     public static void destroy()
     {
         Program.DEFAULT.dispose();
+        Program.POINT_LIGHT.dispose();
+
         Texture.EMPTY.dispose();
 
         releaseCallbacks();

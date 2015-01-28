@@ -106,4 +106,10 @@ public final class GL3Context
         glDepthFunc(func);
         GLError.check();
     }
+
+    public static void cullFace(int mode)
+    {
+        glCullFace(mode);
+        GLError.check();
+    }
 }
