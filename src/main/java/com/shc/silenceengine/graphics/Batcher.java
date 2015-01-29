@@ -48,8 +48,8 @@ public class Batcher
     private static final int SIZE_OF_COLOR = 4;
     private static final int SIZE_OF_TEXCOORD = 2;
 
-    // The maximum number of vertices in a batch
-    private static int MAX_VERTICES_IN_BATCH = 8192;
+    // The maximum number of vertices in a batch (number of vertices that fits in  4 MB)
+    private static final int MAX_VERTICES_IN_BATCH = 1024 * 1024;
 
     // The buffers to store the collected data
     private FloatBuffer vBuffer;
@@ -138,28 +138,6 @@ public class Batcher
      */
     private void uploadData()
     {
-        // Check if the value exceeds max vertex count
-        if (MAX_VERTICES_IN_BATCH * SIZE_OF_VERTEX <= vBuffer.capacity())
-        {
-            MAX_VERTICES_IN_BATCH *= 2;
-
-            // Resize the vertex-buffer
-            vboVert.bind();
-            vboVert.uploadData(SIZE_OF_VERTEX * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
-
-            // Resize the color-buffer
-            vboCol.bind();
-            vboCol.uploadData(SIZE_OF_COLOR * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
-
-            // Resize the texcoord-buffer
-            vboTex.bind();
-            vboTex.uploadData(SIZE_OF_TEXCOORD * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
-
-            // Resize the normal-buffer
-            vboNorm.bind();
-            vboNorm.uploadData(SIZE_OF_NORMAL * MAX_VERTICES_IN_BATCH, GL_STREAM_DRAW);
-        }
-
         // Upload vertices
         vboVert.bind();
         vboVert.uploadSubData(vBuffer, 0);
@@ -441,7 +419,7 @@ public class Batcher
 
     public void flushOnOverflow(int capacity)
     {
-        if (vertexCount + capacity > MAX_VERTICES_IN_BATCH)
+        if (vertexCount + capacity >= MAX_VERTICES_IN_BATCH)
             flush();
     }
 

@@ -22,6 +22,8 @@ public class OBJModelTest extends Game
     private Model model;
     private ModelEntity entity;
 
+    private PointLight cameraLight;
+
     private Scene scene;
 
     public void init()
@@ -40,6 +42,7 @@ public class OBJModelTest extends Game
             scene.addComponent(new PointLight(new Vector3(-1, -1, 1), Color.BLUE));
             scene.addComponent(new PointLight(new Vector3(+1, -1, 1), Color.RED));
             scene.addComponent(new PointLight(new Vector3(+1, +1, 1), Color.GREEN));
+            scene.addComponent(cameraLight = new PointLight(cam.getPosition(), Color.YELLOW));
         }
         scene.init();
     }
@@ -80,6 +83,7 @@ public class OBJModelTest extends Game
             cam.rotateY(-1);
 
         entity.rotate(0, 90 * delta, 0);
+        cameraLight.setPosition(cam.getPosition());
 
         scene.update(delta);
     }
@@ -87,7 +91,6 @@ public class OBJModelTest extends Game
     public void render(float delta, Batcher batcher)
     {
         cam.apply();
-
         scene.render(delta, batcher);
     }
 
