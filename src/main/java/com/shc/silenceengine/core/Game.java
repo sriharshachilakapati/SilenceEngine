@@ -2,6 +2,7 @@ package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.audio.openal.ALContext;
 import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.Graphics2D;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
@@ -211,6 +212,7 @@ public class Game
             if (Display.wasResized())
             {
                 GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
+                Graphics2D.getInstance().getCamera().initProjection(Display.getWidth(), Display.getHeight());
                 resize();
 
                 if (gameState != null)
@@ -368,6 +370,11 @@ public class Game
 
         if (Game.gameState != null)
             Game.gameState.onEnter();
+    }
+
+    public static Graphics2D getGraphics2D()
+    {
+        return Graphics2D.getInstance();
     }
 
     public static long getTotalMemory()

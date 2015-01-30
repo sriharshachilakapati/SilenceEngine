@@ -96,6 +96,8 @@ public class OrthoCam extends BaseCamera
 
     public void apply()
     {
+        BaseCamera.CURRENT = this;
+
         BaseCamera.projection = mProj;
         BaseCamera.view       = mView;
 

@@ -147,6 +147,8 @@ public class PerspCam extends BaseCamera
 
     public void apply()
     {
+        BaseCamera.CURRENT = this;
+
         mView.initIdentity()
              .multiply(TransformUtils.createTranslation(position.negate()))
              .multiply(TransformUtils.createRotation(rotation));

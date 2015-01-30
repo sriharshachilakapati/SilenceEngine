@@ -10,7 +10,10 @@ public class BaseCamera
     public static Matrix4 projection = new Matrix4();
     public static Matrix4 view = new Matrix4();
 
+    public static BaseCamera CURRENT;
+
     public void apply()
     {
+        CURRENT = this;
     }
 }
