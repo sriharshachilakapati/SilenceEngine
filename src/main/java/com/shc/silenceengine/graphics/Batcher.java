@@ -12,7 +12,7 @@ import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.Vector4;
 import org.lwjgl.BufferUtils;
 
-import java.nio.FloatBuffer;
+import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -36,6 +36,7 @@ import static org.lwjgl.opengl.GL15.*;
  * of the game.
  *
  * @author Sri Harsha Chilakapati
+ * @author Heiko Brumme
  */
 public class Batcher
 {
@@ -52,10 +53,10 @@ public class Batcher
     private static final int MAX_VERTICES_IN_BATCH = 1024 * 1024;
 
     // The buffers to store the collected data
-    private FloatBuffer vBuffer;
-    private FloatBuffer cBuffer;
-    private FloatBuffer tBuffer;
-    private FloatBuffer nBuffer;
+    private ByteBuffer vBuffer;
+    private ByteBuffer cBuffer;
+    private ByteBuffer tBuffer;
+    private ByteBuffer nBuffer;
 
     // VAO and VBOs
     private VertexArray  vao;
@@ -81,6 +82,9 @@ public class Batcher
 
     // The transform, and projection and view matrices
     private Transform transform;
+    
+    // Tells whether mapping is enabled or not
+    private boolean mappingEnabled;
 
     /**
      * Creates the Batcher, and initialises OpenGL
@@ -88,16 +92,26 @@ public class Batcher
     public Batcher()
     {
         // Create the buffers
-        vBuffer = BufferUtils.createFloatBuffer(SIZE_OF_VERTEX * MAX_VERTICES_IN_BATCH);
-        cBuffer = BufferUtils.createFloatBuffer(SIZE_OF_COLOR * MAX_VERTICES_IN_BATCH);
-        tBuffer = BufferUtils.createFloatBuffer(SIZE_OF_TEXCOORD * MAX_VERTICES_IN_BATCH);
-        nBuffer = BufferUtils.createFloatBuffer(SIZE_OF_NORMAL * MAX_VERTICES_IN_BATCH);
+        vBuffer = BufferUtils.createByteBuffer(SIZE_OF_VERTEX * MAX_VERTICES_IN_BATCH);
+        cBuffer = BufferUtils.createByteBuffer(SIZE_OF_COLOR * MAX_VERTICES_IN_BATCH);
+        tBuffer = BufferUtils.createByteBuffer(SIZE_OF_TEXCOORD * MAX_VERTICES_IN_BATCH);
+        nBuffer = BufferUtils.createByteBuffer(SIZE_OF_NORMAL * MAX_VERTICES_IN_BATCH);
 
         // Create the transformations
         transform = new Transform();
 
         // Initialise OpenGL handles
         initGLHandles();
+    }
+    
+    /**
+     * Creates the Batcher, and initialises OpenGL.
+     * 
+     * @param mappingEnabled Whether mapping should be enabled or not.
+     */
+    public Batcher(boolean mappingEnabled) {
+        super();
+        this.mappingEnabled = mappingEnabled;
     }
 
     /**
@@ -138,22 +152,55 @@ public class Batcher
      */
     private void uploadData()
     {
-        // Upload vertices
-        vboVert.bind();
-        vboVert.uploadSubData(vBuffer, 0);
-        vao.pointAttribute(vertexLocation, 4, GL_FLOAT, vboVert);
+        if(!mappingEnabled) {
+            // Upload vertices
+            vboVert.bind();
+            vboVert.uploadSubData(vBuffer, 0);
+            vao.pointAttribute(vertexLocation, 4, GL_FLOAT, vboVert);
 
-        vboCol.bind();
-        vboCol.uploadSubData(cBuffer, 0);
-        vao.pointAttribute(colorLocation, 4, GL_FLOAT, vboCol);
+            vboCol.bind();
+            vboCol.uploadSubData(cBuffer, 0);
+            vao.pointAttribute(colorLocation, 4, GL_FLOAT, vboCol);
 
-        vboTex.bind();
-        vboTex.uploadSubData(tBuffer, 0);
-        vao.pointAttribute(texCoordLocation, 2, GL_FLOAT, vboTex);
+            vboTex.bind();
+            vboTex.uploadSubData(tBuffer, 0);
+            vao.pointAttribute(texCoordLocation, 2, GL_FLOAT, vboTex);
 
-        vboNorm.bind();
-        vboNorm.uploadSubData(nBuffer, 0);
-        vao.pointAttribute(normalLocation, 4, GL_FLOAT, vboNorm);
+            vboNorm.bind();
+            vboNorm.uploadSubData(nBuffer, 0);
+            vao.pointAttribute(normalLocation, 4, GL_FLOAT, vboNorm);
+        }
+    }
+    
+    /**
+     * Maps the buffers to get their data storage pointers.
+     */
+    public void mapBuffers() {
+        if(mappingEnabled) {
+            vBuffer = vboVert.map(GL_WRITE_ONLY, vBuffer);
+            vao.pointAttribute(vertexLocation, 4, GL_FLOAT, vboVert);
+            
+            cBuffer = vboCol.map(GL_WRITE_ONLY, cBuffer);
+            vao.pointAttribute(colorLocation, 4, GL_FLOAT, vboCol);
+            
+            tBuffer = vboTex.map(GL_WRITE_ONLY, tBuffer);
+            vao.pointAttribute(texCoordLocation, 2, GL_FLOAT, vboTex);
+            
+            nBuffer = vboNorm.map(GL_WRITE_ONLY, nBuffer);
+            vao.pointAttribute(normalLocation, 4, GL_FLOAT, vboNorm);
+        }
+    }
+    
+    /**
+     * Unmaps the buffers and invalidates the pointer to their data store.
+     */
+    public void unmapBuffers() {
+        if(mappingEnabled) {
+            vboVert.unmap();
+            vboCol.unmap();
+            vboTex.unmap();
+            vboNorm.unmap();
+        }
     }
 
     /**
@@ -165,15 +212,18 @@ public class Batcher
     {
         if (active)
             throw new IllegalStateException("Batcher Already Active!");
-
+        
         active = true;
 
         vertexCount   = 0;
         colorCount    = 0;
         texCoordCount = 0;
         normalCount   = 0;
-
+        
         this.beginMode = beginMode;
+
+        // Buffer mapping
+        mapBuffers();
     }
 
     public void begin()
@@ -188,8 +238,9 @@ public class Batcher
     {
         if (!active)
             throw new IllegalStateException("Batcher not Active!");
-
+        
         active = false;
+        
         flush();
 
         // Reset Transform and camera matrices
@@ -207,6 +258,9 @@ public class Batcher
 
         // Fill the buffers
         fillBuffers();
+
+        // Buffer unmapping
+        unmapBuffers();
 
         Program.CURRENT.prepareFrame();
 
@@ -248,6 +302,11 @@ public class Batcher
         colorCount    = 0;
         texCoordCount = 0;
         normalCount   = 0;
+        
+        // Map buffers again if still active
+        if(active) {
+            mapBuffers();
+        }
     }
 
     /**
@@ -271,14 +330,14 @@ public class Batcher
         // Fill the color buffers
         while (colorCount < vertexCount)
         {
-            cBuffer.put(col.getR()).put(col.getG()).put(col.getB()).put(col.getA());
+            cBuffer.putFloat(col.getR()).putFloat(col.getG()).putFloat(col.getB()).putFloat(col.getA());
             colorCount++;
         }
 
         // Fill the texcoord buffers
         while (texCoordCount < vertexCount)
         {
-            tBuffer.put(0).put(0);
+            tBuffer.putFloat(0).putFloat(0);
             texCoordCount++;
         }
 
@@ -286,7 +345,7 @@ public class Batcher
         while (normalCount < vertexCount)
         {
             // Junk normal
-            nBuffer.put(0).put(0).put(0).put(0);
+            nBuffer.putFloat(0).putFloat(0).putFloat(0).putFloat(0);
             normalCount++;
         }
     }
@@ -306,7 +365,7 @@ public class Batcher
         flushOnOverflow(1);
         fillBuffers();
 
-        vBuffer.put(x).put(y).put(z).put(w);
+        vBuffer.putFloat(x).putFloat(y).putFloat(z).putFloat(w);
         vertexCount++;
     }
 
@@ -328,7 +387,7 @@ public class Batcher
     public void color(float r, float g, float b, float a)
     {
         // Add the specified color
-        cBuffer.put(r).put(g).put(b).put(a);
+        cBuffer.putFloat(r).putFloat(g).putFloat(b).putFloat(a);
         colorCount++;
     }
 
@@ -345,7 +404,7 @@ public class Batcher
     public void texCoord(float u, float v)
     {
         // Add the specified texcoord
-        tBuffer.put(u).put(v);
+        tBuffer.putFloat(u).putFloat(v);
         texCoordCount++;
     }
 
@@ -356,7 +415,7 @@ public class Batcher
 
     public void normal(float x, float y, float z, float w)
     {
-        nBuffer.put(x).put(y).put(z).put(w);
+        nBuffer.putFloat(x).putFloat(y).putFloat(z).putFloat(w);
         normalCount++;
     }
 
@@ -476,5 +535,19 @@ public class Batcher
     public void setNormalLocation(int normalLocation)
     {
         this.normalLocation = normalLocation;
+    }
+
+    /**
+     * @return the mappingEnabled
+     */
+    public boolean isMappingEnabled() {
+        return mappingEnabled;
+    }
+
+    /**
+     * @param mappingEnabled the mappingEnabled to set
+     */
+    public void setMappingEnabled(boolean mappingEnabled) {
+        this.mappingEnabled = mappingEnabled;
     }
 }

@@ -50,11 +50,7 @@ public class ResourceLoaderTest extends Game
     {
         cam.apply();
 
-        batcher.begin();
-        {
-            batcher.drawTexture2d(texture, new Vector2(100, 100));
-        }
-        batcher.end();
+        batcher.drawTexture2d(texture, new Vector2(100, 100));
 
         font1.drawString(batcher, "Times New Roman!!", 10, 10);
         font2.drawString(batcher, "Free Booter Script", 10, 40, Color.GREEN);
