@@ -3,17 +3,14 @@
 ### Java ###
 *.class
 
-build/
-
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
-
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
 
-### Intellij ###
+### IntelliJ ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 
 *.iml
@@ -94,6 +91,18 @@ local.properties
 # TeXlipse plugin
 .texlipse
 
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+.nb-gradle/
+
+
 ### OSX ###
 .DS_Store
 .AppleDouble
@@ -116,3 +125,34 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+
+### Linux ###
+*~
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+
+### Windows ###
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk

@@ -30,6 +30,7 @@ import static org.lwjgl.opengl.GL30.*;
  * exists to make the usage of OpenGL functions convenient.
  *
  * @author Sri Harsha Chilakapati
+ * @author Heiko Brumme
  */
 public class BufferObject
 {
@@ -216,6 +217,89 @@ public class BufferObject
     public ByteBuffer getData(ByteBuffer data)
     {
         return getSubData(0, capacity, data);
+    }
+    
+    /**
+     * Maps the buffer object's data store.
+     * 
+     * @param access  The access policy. Valid accesses are READ_ONLY, WRITE_ONLY
+     *                or READ_WRITE.
+     * @param pointer A NIO ByteBuffer used for the data store.
+     * 
+     * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
+     */
+    public ByteBuffer map(int access, ByteBuffer pointer) {
+        bind();
+        pointer = glMapBuffer(target, access, pointer.capacity(), pointer);
+        
+        GLError.check();
+        
+        return pointer;
+    }
+    
+    /**
+     * Maps the buffer object's data store.
+     * 
+     * @param access The access policy. Valid accesses are READ_ONLY, WRITE_ONLY
+     *               or READ_WRITE.
+     * 
+     * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
+     */
+    public ByteBuffer map(int access) {
+        return map(access, BufferUtils.createByteBuffer(capacity));
+    }
+    
+    /**
+     * Maps a section of a buffer object's data store.
+     * 
+     * @param offset  The starting offset within the buffer of the range to be
+     *                mapped.
+     * @param access  Combination of access flags indicating the desired access
+     *                to the range. One or more of: MAP_READ_BIT, MAP_WRITE_BIT,
+     *                MAP_INVALIDATE_RANGE_BIT, MAP_INVALIDATE_BUFFER_BIT,
+     *                MAP_FLUSH_EXPLICIT_BIT, MAP_UNSYNCHRONIZED_BIT.
+     * @param pointer A NIO ByteBuffer used for the data store.
+     * 
+     * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
+     */
+    public ByteBuffer mapRange(long offset, int access, ByteBuffer pointer) {
+        bind();
+        pointer = glMapBufferRange(target, offset, pointer.capacity(), access);
+        
+        GLError.check();
+        
+        return pointer;
+    }
+    
+    /**
+     * Maps a section of a buffer object's data store.
+     * 
+     * @param offset The starting offset within the buffer of the range to be
+     *               mapped.
+     * @param length The length of the range to be mapped.
+     * @param access Combination of access flags indicating the desired access
+     *               to the range. One or more of: MAP_READ_BIT, MAP_WRITE_BIT,
+     *               MAP_INVALIDATE_RANGE_BIT, MAP_INVALIDATE_BUFFER_BIT,
+     *               MAP_FLUSH_EXPLICIT_BIT, MAP_UNSYNCHRONIZED_BIT.
+     * 
+     * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
+     */
+    public ByteBuffer mapRange(long offset, int length, int access) {
+        return mapRange(offset, access, BufferUtils.createByteBuffer(length));
+    }
+    
+    /**
+     * Unmaps the buffer object and invalidates the pointer to its data store.
+     * 
+     * @return Returns true if the unmapping was successful.
+     */
+    public boolean unmap() {
+        bind();
+        boolean unmapped = glUnmapBuffer(target);
+        
+        GLError.check();
+        
+        return unmapped;
     }
 
     /**
