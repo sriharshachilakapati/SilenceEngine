@@ -1,6 +1,6 @@
 #SilenceEngine
 
-![logo](http://goharsha.com/images/silenceengine.png)
+![logo](http://silenceengine.goharsha.com/img/logo.png)
 
 A 2D/3D Game Engine written on top of LWJGL3
 
@@ -20,3 +20,7 @@ It is also easier to use in Development mode as we will check for OpenGL errors 
  - This game engine uses JOrbis library from JCraft which are licenced under [LGPL](http://choosealicense.com/licenses/lgpl-3.0/).
  - This game engine uses J-Ogg library from [j-ogg.de](http://www.j-ogg.de/) on a free permissive licence.
  - This game engine is written on top of [LWJGL 3](http://lwjgl.org). You can find it's licence [here](https://github.com/LWJGL/lwjgl3/blob/master/doc/LICENSE.txt).
+ 
+##Links
+
+ - SilenceEngine website ([http://silenceengine.goharsha.com/](http://silenceengine.goharsha.com))
