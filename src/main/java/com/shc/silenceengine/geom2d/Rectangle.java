@@ -102,6 +102,19 @@ public class Rectangle extends Polygon
         updateVertices();
     }
 
+    public void set(float x, float y, float width, float height)
+    {
+        setPosition(x, y);
+
+        this.width = width;
+        this.height = height;
+
+        float rotation = getRotation();
+        updateVertices();
+
+        setRotation(rotation);
+    }
+
     @Override
     public String toString()
     {

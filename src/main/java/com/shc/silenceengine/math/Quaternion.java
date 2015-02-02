@@ -3,20 +3,17 @@ package com.shc.silenceengine.math;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Quaternion
-{
+public class Quaternion {
     public float x;
     public float y;
     public float z;
     public float w;
 
-    public Quaternion()
-    {
+    public Quaternion() {
         this(0, 0, 0, 1);
     }
 
-    public Quaternion(Vector3 axis, float angle)
-    {
+    public Quaternion(Vector3 axis, float angle) {
         angle = (float) Math.toRadians(angle) * 0.5f;
         axis = axis.normalize();
 
@@ -29,11 +26,10 @@ public class Quaternion
         w = cosAngle;
     }
 
-    public Quaternion(float pitch, float yaw, float roll)
-    {
+    public Quaternion(float pitch, float yaw, float roll) {
         pitch = (float) Math.toRadians(pitch) * 0.5f;
-        yaw   = (float) Math.toRadians(yaw)   * 0.5f;
-        roll  = (float) Math.toRadians(roll)  * 0.5f;
+        yaw = (float) Math.toRadians(yaw) * 0.5f;
+        roll = (float) Math.toRadians(roll) * 0.5f;
 
         float sinP = (float) Math.sin(pitch);
         float sinY = (float) Math.sin(yaw);
@@ -48,32 +44,44 @@ public class Quaternion
         w = cosR * cosP * cosY + sinR * sinP * sinY;
     }
 
-    public Quaternion(float x, float y, float z, float w)
-    {
+    public Quaternion(float x, float y, float z, float w) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.w = w;
     }
 
-    public Quaternion add(float x, float y, float z, float w)
-    {
+    public Quaternion add(float x, float y, float z, float w) {
         return new Quaternion(this.x + x, this.y + y, this.z + z, this.w + w);
     }
 
-    public Quaternion add(Quaternion q)
-    {
+    public Quaternion addSelf(float x, float y, float z, float w) {
+        return set(this.x + x, this.y + y, this.z + z, this.w + w);
+    }
+
+    public Quaternion add(Quaternion q) {
         return add(q.x, q.y, q.z, q.w);
     }
 
-    public Quaternion subtract(float x, float y, float z, float w)
-    {
+    public Quaternion addSelf(Quaternion q) {
+        return addSelf(q.x, q.y, q.z, q.w);
+    }
+
+    public Quaternion subtract(float x, float y, float z, float w) {
         return add(-x, -y, -z, -w);
     }
 
-    public Quaternion subtract(Quaternion q)
-    {
+    public Quaternion subtractSelf(float x, float y, float z, float w) {
+        return addSelf(-x, -y, -z, -w);
+    }
+
+    public Quaternion subtract(Quaternion q) {
         return subtract(q.x, q.y, q.z, q.w);
+    }
+
+    public Quaternion subtractSelf(Quaternion q)
+    {
+        return subtractSelf(q.x, q.y, q.z, q.w);
     }
 
     public Quaternion normalize()
@@ -86,9 +94,24 @@ public class Quaternion
         return new Quaternion(x/length, y/length, z/length, w/length);
     }
 
+    public Quaternion normalizeSelf()
+    {
+        float length = length();
+
+        if (length == 0 || length == 1)
+            return this;
+
+        return set(x / length, y / length, z / length, w / length);
+    }
+
     public Quaternion conjugate()
     {
         return new Quaternion(-x, -y, -z, w);
+    }
+
+    public Quaternion conjugateSelf()
+    {
+        return set(-x, -y, -z, w);
     }
 
     public Quaternion multiply(Quaternion q)
@@ -98,7 +121,17 @@ public class Quaternion
         float nz = w * q.z + z * q.w + x * q.y - y * q.x;
         float nw = w * q.w - x * q.x - y * q.y - z * q.z;
 
-        return new Quaternion(nx, ny, nz, nw).normalize();
+        return new Quaternion(nx, ny, nz, nw).normalizeSelf();
+    }
+
+    public Quaternion multiplySelf(Quaternion q)
+    {
+        float nx = w * q.x + x * q.w + y * q.z - z * q.y;
+        float ny = w * q.y + y * q.w + z * q.x - x * q.z;
+        float nz = w * q.z + z * q.w + x * q.y - y * q.x;
+        float nw = w * q.w - x * q.x - y * q.y - z * q.z;
+
+        return set(nx, ny, nz, nw).normalizeSelf();
     }
 
     public Vector3 multiply(Vector3 v)
@@ -111,7 +144,7 @@ public class Quaternion
         qv = this.multiply(qv);
         qv = qv.multiply(q1);
 
-        return new Vector3(qv.x, qv.y, qv.z).normalize().scale(v.length());
+        return new Vector3(qv.x, qv.y, qv.z).normalizeSelf().scaleSelf(v.length());
     }
 
     public Quaternion copy()
@@ -167,5 +200,15 @@ public class Quaternion
     public void setW(float w)
     {
         this.w = w;
+    }
+
+    public Quaternion set(float x, float y, float z, float w)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.w = w;
+
+        return this;
     }
 }

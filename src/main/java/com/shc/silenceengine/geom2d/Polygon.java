@@ -38,6 +38,8 @@ public class Polygon
 
         minX = minY = Float.POSITIVE_INFINITY;
         maxX = maxY = Float.NEGATIVE_INFINITY;
+
+        rotation = 0;
     }
 
     protected void addVertex(Vector2 v)
@@ -53,13 +55,8 @@ public class Polygon
 
     public void rotate(float angle)
     {
-        angle = (float) Math.toRadians(angle);
-
         if (angle == 0 || this instanceof Circle)
             return;
-
-        float s = (float) Math.sin(angle);
-        float c = (float) Math.cos(angle);
 
         float width = maxX - minX;
         float height = maxY - minY;
@@ -74,23 +71,25 @@ public class Polygon
 
         for (Vector2 vertex : vertices)
         {
-            Vector2 v = vertex.subtract(originX, originY);
+            vertex.subtractSelf(originX, originY).rotateSelf(angle).addSelf(originX, originY);
 
-            float xNew = v.getX() * c - v.getY() * s;
-            float yNew = v.getX() * s + v.getY() * c;
+            minX = Math.min(vertex.x, minX);
+            minY = Math.min(vertex.y, minY);
 
-            vertex.setX(xNew + originX);
-            vertex.setY(yNew + originY);
-
-            minX = Math.min(xNew + originX, minX);
-            minY = Math.min(yNew + originY, minY);
-
-            maxX = Math.max(xNew + originX, maxX);
-            maxY = Math.max(yNew + originY, maxY);
+            maxX = Math.max(vertex.x, maxX);
+            maxY = Math.max(vertex.y, maxY);
         }
 
         rotation += Math.toDegrees(angle);
-        bounds = new Rectangle(position.getX() + minX, position.getY() + minY, maxX - minX, maxY - minY);
+        updateBounds();
+    }
+
+    private void updateBounds()
+    {
+        if (bounds == null)
+            bounds = new Rectangle();
+
+        bounds.set(position.getX() + minX, position.getY() + minY, maxX - minX, maxY - minY);
     }
 
     public void scale(float s)
@@ -105,7 +104,7 @@ public class Polygon
 
         for (Vector2 v : vertices)
         {
-            v.set(v.scale(sx, sy));
+            v.scaleSelf(sx, sy);
 
             minX = Math.min(minX, v.x);
             minY = Math.min(minY, v.y);
@@ -113,8 +112,8 @@ public class Polygon
             maxY = Math.max(maxY, v.y);
         }
 
-        bounds = new Rectangle(position.getX() + minX, position.getY() + minY, maxX - minX, maxY - minY);
-    }
+        updateBounds();
+}
 
     public boolean intersects(Polygon other)
     {
@@ -176,7 +175,14 @@ public class Polygon
 
     public void setCenter(Vector2 center)
     {
-        setPosition(center.subtract(new Vector2((maxX - minX)/2, (maxY - minY)/2)));
+        this.center.set(center);
+        position.set(center).subtractSelf((maxX - minX)/2, (maxY - minY)/2);
+    }
+
+    public void setPosition(float x, float y)
+    {
+        position.x = x;
+        position.y = y;
     }
 
     public Rectangle getBounds()
@@ -189,8 +195,8 @@ public class Polygon
 
     public void setPosition(Vector2 v)
     {
-        this.position = v;
-        this.center   = position.add(new Vector2((maxX - minX)/2, (maxY - minY)/2));
+        this.position.set(v);
+        center.set(position).addSelf((maxX - minX)/2, (maxY - minY)/2);
 
         if (bounds != null)
             bounds.setPosition(v);

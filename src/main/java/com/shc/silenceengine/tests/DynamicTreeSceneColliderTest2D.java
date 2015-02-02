@@ -25,8 +25,6 @@ public class DynamicTreeSceneColliderTest2D extends Game
     public void init()
     {
         Display.setTitle("DynamicTree Collider Test 2D");
-//        Display.setFullScreen(true);
-//        Display.hideCursor();
 
         Display.setClearColor(Color.DARK_SLATE_GRAY);
 
@@ -61,8 +59,6 @@ public class DynamicTreeSceneColliderTest2D extends Game
         // Update the scene and check for collisions
         scene.update(delta);
         collider.checkCollisions();
-
-        Display.setTitle("Total Memory: " + (getTotalMemory() / 1048576) + "MB / Free Memory: " + (getFreeMemory() / 1048576) + "MB / Used Memory: " + (getUsedMemory() / 1048576) + "MB");
     }
 
     public void render(float delta, Batcher batcher)
