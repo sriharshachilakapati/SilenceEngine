@@ -21,7 +21,20 @@ public final class Collision2D
 
     private static Response tmpResponse = new Response();
 
-    private static Vector2 flattenPoints(List<Vector2> vertices, Vector2 normal)
+    private static Vector2 tmpRangeA;
+    private static Vector2 tmpRangeB;
+    private static Vector2 tmpOffset;
+    private static Vector2 tmpNormal;
+
+    static
+    {
+        tmpRangeA = new Vector2();
+        tmpRangeB = new Vector2();
+        tmpOffset = new Vector2();
+        tmpNormal = new Vector2();
+    }
+
+    private static Vector2 flattenPoints(List<Vector2> vertices, Vector2 normal, Vector2 projection)
     {
         float min = Float.MAX_VALUE;
         float max = -min;
@@ -34,7 +47,7 @@ public final class Collision2D
             if (dot > max) max = dot;
         }
 
-        return new Vector2(min, max);
+        return projection.set(min, max);
     }
 
     public static boolean isSeparatingAxis(Polygon a, Polygon b, Vector2 axis, Response response)
@@ -42,19 +55,19 @@ public final class Collision2D
         if (response == null)
             response = tmpResponse.clear();
 
-        Vector2 offset = b.getPosition().subtract(a.getPosition());
+        Vector2 offset = tmpOffset.set(b.getPosition()).subtractSelf(a.getPosition());
 
         float projectedOffset = offset.dot(axis);
 
-        Vector2 rangeA = flattenPoints(a.getVertices(), axis);
-        Vector2 rangeB = flattenPoints(b.getVertices(), axis);
+        Vector2 rangeA = flattenPoints(a.getVertices(), axis, tmpRangeA);
+        Vector2 rangeB = flattenPoints(b.getVertices(), axis, tmpRangeB);
 
-        rangeB = rangeB.add(projectedOffset, projectedOffset);
+        rangeB.addSelf(projectedOffset, projectedOffset);
 
         if (rangeA.x > rangeB.y || rangeB.x > rangeA.y)
             return true;
 
-        float overlap = 0;
+        float overlap;
 
         if (rangeA.x < rangeB.x)
         {
@@ -94,10 +107,10 @@ public final class Collision2D
         if (overlap < response.overlap)
         {
             response.overlap = overlap;
-            response.overlapN.set(axis.normalize());
+            response.overlapN.set(axis.normalizeSelf());
 
             if (overlap < 0)
-                response.overlapN = response.overlapN.negate();
+                response.overlapN.negateSelf();
         }
 
         return false;
@@ -113,8 +126,8 @@ public final class Collision2D
             Vector2 e1 = a.getVertex(i);
             Vector2 e2 = a.getVertex((i + 1) % a.vertexCount());
 
-            Vector2 edge = e2.subtract(e1);
-            Vector2 normal = edge.perpendicular().normalize();
+            Vector2 edge = tmpNormal.set(e2).subtractSelf(e1);
+            Vector2 normal = edge.perpendicularSelf().normalizeSelf();
 
             if (isSeparatingAxis(a, b, normal, response))
                 return false;
@@ -125,8 +138,8 @@ public final class Collision2D
             Vector2 e1 = b.getVertex(i);
             Vector2 e2 = b.getVertex((i + 1) % b.vertexCount());
 
-            Vector2 edge = e2.subtract(e1);
-            Vector2 normal = edge.perpendicular().normalize();
+            Vector2 edge = tmpNormal.set(e2).subtractSelf(e1);
+            Vector2 normal = edge.perpendicularSelf().normalizeSelf();
 
             if (isSeparatingAxis(a, b, normal, response))
                 return false;
@@ -134,7 +147,7 @@ public final class Collision2D
 
         response.a = a;
         response.b = b;
-        response.overlapV = response.overlapN.scale(response.overlap);
+        response.overlapV.set(response.overlapN).scaleSelf(response.overlap);
         response.intersection = true;
 
         return true;

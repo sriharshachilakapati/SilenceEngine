@@ -9,6 +9,14 @@ public class Rectangle extends Polygon
 {
     private float width, height;
 
+    private Vector2 v1;
+    private Vector2 v2;
+    private Vector2 v3;
+    private Vector2 v4;
+
+    private Vector2 min;
+    private Vector2 max;
+
     public Rectangle()
     {
         this(0, 0, 0, 0);
@@ -19,18 +27,30 @@ public class Rectangle extends Polygon
         this.width  = width;
         this.height = height;
 
-        updateVertices();
+        v1 = new Vector2();
+        v2 = new Vector2();
+        v3 = new Vector2();
+        v4 = new Vector2();
+
+        min = new Vector2();
+        max = new Vector2();
+
         setPosition(new Vector2(x, y));
+
+        updateVertices();
     }
 
     private void updateVertices()
     {
         clearVertices();
 
-        addVertex(new Vector2(0, 0));
-        addVertex(new Vector2(width, 0));
-        addVertex(new Vector2(width, height));
-        addVertex(new Vector2(0, height));
+        addVertex(v1.set(0, 0));
+        addVertex(v2.set(width, 0));
+        addVertex(v3.set(width, height));
+        addVertex(v4.set(0, height));
+
+        min.set(getPosition()).addSelf(v1);
+        max.set(min).addSelf(v3);
     }
 
     public boolean intersects(Polygon p)
@@ -148,5 +168,15 @@ public class Rectangle extends Polygon
         result = 31 * result + (width != +0.0f ? Float.floatToIntBits(width) : 0);
         result = 31 * result + (height != +0.0f ? Float.floatToIntBits(height) : 0);
         return result;
+    }
+
+    public Vector2 getMin()
+    {
+        return min;
+    }
+
+    public Vector2 getMax()
+    {
+        return max;
     }
 }

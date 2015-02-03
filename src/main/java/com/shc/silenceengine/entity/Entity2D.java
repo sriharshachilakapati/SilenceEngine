@@ -219,8 +219,8 @@ public class Entity2D extends SceneNode
         Vector2 tCenter = getCenter();
         Vector2 oCenter = other.getCenter();
 
-        Vector2 direction = tCenter.subtract(oCenter).normalize();
-        setCenter(getCenter().add(direction));
+        Vector2 direction = tCenter.subtract(oCenter).normalizeSelf();
+        setCenter(direction.addSelf(getCenter()));
 
         Collision2D.Response response = new Collision2D.Response();
         Collision2D.testPolygonCollision(polygon, other.getPolygon(), response);

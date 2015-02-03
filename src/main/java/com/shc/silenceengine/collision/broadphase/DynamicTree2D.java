@@ -3,7 +3,6 @@ package com.shc.silenceengine.collision.broadphase;
 import com.shc.silenceengine.entity.Entity2D;
 import com.shc.silenceengine.geom2d.Rectangle;
 import com.shc.silenceengine.math.Vector2;
-import com.shc.silenceengine.utils.MathUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,10 +17,13 @@ public class DynamicTree2D implements IBroadphaseResolver2D
     private Node root;
     private List<Entity2D> retrieveList;
     private Map<Integer, Node> nodeMap;
+    private Map<Integer, AABB> aabbMap;
 
     public DynamicTree2D()
     {
         nodeMap = new HashMap<>();
+        aabbMap = new HashMap<>();
+
         retrieveList = new ArrayList<>();
     }
 
@@ -37,12 +39,15 @@ public class DynamicTree2D implements IBroadphaseResolver2D
     {
         Node node = new Node();
         node.entity = e;
-        node.aabb = AABB.create(e);
+        node.aabb = getAABB(e);
 
         nodeMap.put(e.getID(), node);
 
         insert(node);
     }
+
+    private AABB tmpUnion = new AABB();
+    private AABB tmpU = new AABB();
 
     private void insert(Node item)
     {
@@ -62,7 +67,7 @@ public class DynamicTree2D implements IBroadphaseResolver2D
 
             float perimeter = aabb.getPerimeter();
 
-            AABB union = AABB.union(aabb, itemAABB);
+            AABB union = AABB.union(aabb, itemAABB, tmpUnion);
             float unionPerimeter = union.getPerimeter();
 
             float cost = 2 * unionPerimeter;
@@ -74,24 +79,24 @@ public class DynamicTree2D implements IBroadphaseResolver2D
             float costLeft;
             if (left.isLeaf())
             {
-                AABB u = AABB.union(left.aabb, itemAABB);
+                AABB u = AABB.union(left.aabb, itemAABB, tmpU);
                 costLeft = u.getPerimeter() + descendCost;
             }
             else
             {
-                AABB u = AABB.union(left.aabb, itemAABB);
+                AABB u = AABB.union(left.aabb, itemAABB, tmpU);
                 costLeft = u.getPerimeter() - left.aabb.getPerimeter() + descendCost;
             }
 
             float costRight;
             if (right.isLeaf())
             {
-                AABB u = AABB.union(right.aabb, itemAABB);
+                AABB u = AABB.union(right.aabb, itemAABB, tmpU);
                 costRight = u.getPerimeter() + descendCost;
             }
             else
             {
-                AABB u = AABB.union(right.aabb, itemAABB);
+                AABB u = AABB.union(right.aabb, itemAABB, new AABB());
                 costRight = u.getPerimeter() - right.aabb.getPerimeter() + descendCost;
             }
 
@@ -104,7 +109,7 @@ public class DynamicTree2D implements IBroadphaseResolver2D
         Node parent = node.parent;
         Node newParent = new Node();
         newParent.parent = node.parent;
-        newParent.aabb = AABB.union(node.aabb, itemAABB);
+        newParent.aabb = AABB.union(node.aabb, itemAABB, newParent.aabb);
 
         if (parent != null)
         {
@@ -137,7 +142,7 @@ public class DynamicTree2D implements IBroadphaseResolver2D
             Node left = node.left;
             Node right = node.right;
 
-            node.aabb = AABB.union(left.aabb, right.aabb);
+            node.aabb = AABB.union(left.aabb, right.aabb, node.aabb);
 
             node = node.parent;
         }
@@ -152,6 +157,7 @@ public class DynamicTree2D implements IBroadphaseResolver2D
         {
             remove(node);
             nodeMap.remove(e.getID());
+            aabbMap.remove(e.getID());
         }
     }
 
@@ -185,7 +191,7 @@ public class DynamicTree2D implements IBroadphaseResolver2D
                 Node left = n.left;
                 Node right = n.right;
 
-                n.aabb = AABB.union(left.aabb, right.aabb);
+                n.aabb = AABB.union(left.aabb, right.aabb, n.aabb);
 
                 n = n.parent;
             }
@@ -198,12 +204,18 @@ public class DynamicTree2D implements IBroadphaseResolver2D
     }
 
     @Override
+    public List<Entity2D> retrieve(Entity2D e)
+    {
+        retrieveList.clear();
+        queryNode(getAABB(e), root);
+        return retrieveList;
+    }
+
+    @Override
     public List<Entity2D> retrieve(Rectangle rect)
     {
         retrieveList.clear();
-
         queryNode(new AABB(rect.getPosition(), rect.getWidth(), rect.getHeight()), root);
-
         return retrieveList;
     }
 
@@ -224,10 +236,40 @@ public class DynamicTree2D implements IBroadphaseResolver2D
         }
     }
 
+    private AABB getAABB(Entity2D e)
+    {
+        AABB aabb = null;
+
+        if (aabbMap.containsKey(e.getID()))
+            aabb = aabbMap.get(e.getID());
+        else
+        {
+            aabb = new AABB(new Vector2(), new Vector2());
+            aabbMap.put(e.getID(), aabb);
+        }
+
+        aabb.min.set(e.getBounds().getMin());
+        aabb.max.set(e.getBounds().getMax());
+
+        return aabb;
+    }
+
     private static class AABB
     {
         public Vector2 min;
         public Vector2 max;
+
+        public AABB()
+        {
+            min = new Vector2();
+            max = new Vector2();
+        }
+
+        public AABB(Vector2 min, Vector2 max)
+        {
+            this.min = min.copy();
+            this.max = max.copy();
+        }
 
         public AABB(Vector2 min, float width, float height)
         {
@@ -235,16 +277,13 @@ public class DynamicTree2D implements IBroadphaseResolver2D
             this.max = min.add(width, height);
         }
 
-        public AABB(AABB aabb)
-        {
-            this.min = aabb.min.copy();
-            this.max = aabb.max.copy();
-        }
-
         public void union(AABB aabb)
         {
-            min = MathUtils.min(min, aabb.min);
-            max = MathUtils.max(max, aabb.max);
+            min.x = Math.min(aabb.min.x, min.x);
+            min.y = Math.min(aabb.min.y, min.y);
+
+            max.x = Math.max(aabb.max.x, max.x);
+            max.y = Math.max(aabb.max.y, max.y);
         }
 
         public boolean intersects(AABB aabb)
@@ -260,15 +299,20 @@ public class DynamicTree2D implements IBroadphaseResolver2D
 
         public static AABB create(Entity2D entity)
         {
-            return new AABB(entity.getPosition(), entity.getWidth(), entity.getHeight());
+            return new AABB(entity.getBounds().getMin(), entity.getBounds().getMax());
         }
 
-        public static AABB union(AABB aabb1, AABB aabb2)
+        public static AABB union(AABB aabb1, AABB aabb2, AABB store)
         {
-            AABB aabb = new AABB(aabb1);
-            aabb.union(aabb2);
+            if (store == null)
+                store = new AABB();
 
-            return aabb;
+            store.min.set(aabb1.min);
+            store.max.set(aabb1.max);
+
+            store.union(aabb2);
+
+            return store;
         }
     }
 
