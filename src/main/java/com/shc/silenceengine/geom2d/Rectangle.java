@@ -48,9 +48,6 @@ public class Rectangle extends Polygon
         addVertex(v2.set(width, 0));
         addVertex(v3.set(width, height));
         addVertex(v4.set(0, height));
-
-        min.set(getPosition()).addSelf(v1);
-        max.set(min).addSelf(v3);
     }
 
     public boolean intersects(Polygon p)
@@ -172,11 +169,11 @@ public class Rectangle extends Polygon
 
     public Vector2 getMin()
     {
-        return min;
+        return min.set(getPosition()).addSelf(v1);
     }
 
     public Vector2 getMax()
     {
-        return max;
+        return max.set(min).addSelf(v3);
     }
 }

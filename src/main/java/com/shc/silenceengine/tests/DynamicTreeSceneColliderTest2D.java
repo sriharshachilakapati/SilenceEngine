@@ -129,7 +129,7 @@ public class DynamicTreeSceneColliderTest2D extends Game
 
             cam.center(getPolygon().getCenter());
 
-            rotate(90 * delta);
+//            rotate(90 * delta);
         }
 
         public void collision(Entity2D other)

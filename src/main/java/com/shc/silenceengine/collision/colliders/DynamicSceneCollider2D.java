@@ -75,7 +75,7 @@ public class DynamicSceneCollider2D implements SceneCollider2D
         // Update the grid for repositioned entities
         for (Entity2D entity : entities)
         {
-            if (entity.getVelocity() != Vector2.ZERO)
+            if (!entity.getVelocity().equals(Vector2.ZERO))
             {
                 tree.remove(entity);
                 tree.insert(entity);

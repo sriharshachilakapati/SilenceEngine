@@ -62,6 +62,8 @@ public class QuadTreeSceneColliderTest extends Game
         // Update the scene and check for collisions
         scene.update(delta);
         collider.checkCollisions();
+
+        Display.setTitle("Total Memory: " + (getTotalMemory() / 1048576) + "MB / Free Memory: " + (getFreeMemory() / 1048576) + "MB / Used Memory: " + (getUsedMemory() / 1048576) + "MB");
     }
 
     public void render(float delta, Batcher batcher)

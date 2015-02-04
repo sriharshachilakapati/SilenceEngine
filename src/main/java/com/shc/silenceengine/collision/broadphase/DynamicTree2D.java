@@ -96,7 +96,7 @@ public class DynamicTree2D implements IBroadphaseResolver2D
             }
             else
             {
-                AABB u = AABB.union(right.aabb, itemAABB, new AABB());
+                AABB u = AABB.union(right.aabb, itemAABB, tmpU);
                 costRight = u.getPerimeter() - right.aabb.getPerimeter() + descendCost;
             }
 
@@ -238,7 +238,7 @@ public class DynamicTree2D implements IBroadphaseResolver2D
 
     private AABB getAABB(Entity2D e)
     {
-        AABB aabb = null;
+        AABB aabb;
 
         if (aabbMap.containsKey(e.getID()))
             aabb = aabbMap.get(e.getID());

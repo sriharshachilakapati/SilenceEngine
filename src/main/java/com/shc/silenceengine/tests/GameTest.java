@@ -33,6 +33,8 @@ public class GameTest extends Game
             else
                 Display.showCursor();
         }
+
+        Display.setTitle("Total Memory: " + (getTotalMemory() / 1048576) + "MB / Free Memory: " + (getFreeMemory() / 1048576) + "MB / Used Memory: " + (getUsedMemory() / 1048576) + "MB");
     }
 
     @Override

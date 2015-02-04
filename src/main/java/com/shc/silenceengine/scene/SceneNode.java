@@ -27,8 +27,6 @@ public class SceneNode
 
     public SceneNode()
     {
-        children = new ArrayList<>();
-        components = new ArrayList<>();
         transform = new Transform();
         parent = null;
 
@@ -47,6 +45,9 @@ public class SceneNode
 
     private void initChildren()
     {
+        if (children == null)
+            return;
+
         for (int i = 0; i < children.size(); i++)
             children.get(i).preInit();
     }
@@ -55,6 +56,9 @@ public class SceneNode
     {
         if (child.getParent() != null)
             throw new SilenceException("A WorldComponent can be a child of a single parent!");
+
+        if (children == null)
+            children = new ArrayList<>();
 
         children.add(child);
         child.setParent(this);
@@ -75,11 +79,17 @@ public class SceneNode
 
     public void addComponent(SceneComponent component)
     {
+        if (components == null)
+            components = new ArrayList<>();
+
         components.add(component);
     }
 
     public void removeComponent(SceneComponent component)
     {
+        if (components == null)
+            return;
+
         if (components.contains(component))
         {
             components.remove(component);
@@ -100,12 +110,18 @@ public class SceneNode
 
     protected void updateComponents(float delta)
     {
+        if (components == null)
+            return;
+
         for (SceneComponent component : components)
             component.update(delta);
     }
 
     protected void updateChildren(float delta)
     {
+        if (children == null)
+            return;
+
         for (int i = 0; i < children.size(); i++)
         {
             SceneNode child = children.get(i);
@@ -127,6 +143,9 @@ public class SceneNode
 
     protected void renderChildren(float delta, Batcher batcher)
     {
+        if (children == null)
+            return;
+
         doRenderChildren(delta, batcher);
         renderChildrenWithComponents(delta, batcher);
     }
@@ -152,6 +171,9 @@ public class SceneNode
 
     private void renderChildrenWithComponents(float delta, Batcher batcher)
     {
+        if (components == null)
+            return;
+
         for (SceneComponent component : components)
         {
             // Enable forward rendering
@@ -175,6 +197,9 @@ public class SceneNode
         if (child.getParent() != this)
             throw new SilenceException("Cannot remove non-existing Child!");
 
+        if (children == null)
+            return;
+
         child.destroy();
         children.remove(child);
         child.setParent(null);
@@ -182,6 +207,9 @@ public class SceneNode
 
     public void removeChildren()
     {
+        if (children == null)
+            return;
+
         for (int i = 0; i < children.size(); i++)
         {
             removeChild(children.get(i));
@@ -198,12 +226,18 @@ public class SceneNode
 
     public void destroyChildren()
     {
+        if (children == null)
+            return;
+
         children.forEach(SceneNode::destroy);
         children.clear();
     }
 
     public void destroyComponents()
     {
+        if (components == null)
+            return;
+
         components.forEach(SceneComponent::dispose);
         components.clear();
     }

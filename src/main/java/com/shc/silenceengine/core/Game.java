@@ -183,6 +183,8 @@ public class Game
         // Initialize the Game
         init();
 
+        Runtime.getRuntime().gc();
+
         Logger.log("Game initialized successfully, proceeding to the main loop");
 
         // GameLoop constants
@@ -370,6 +372,8 @@ public class Game
 
         if (Game.gameState != null)
             Game.gameState.onEnter();
+
+        Runtime.getRuntime().gc();
     }
 
     public static Graphics2D getGraphics2D()
