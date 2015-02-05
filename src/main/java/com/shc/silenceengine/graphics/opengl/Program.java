@@ -79,7 +79,7 @@ public class Program
     {
         use();
         
-        if (attributeLocations.contains(name))
+        if (attributeLocations.containsKey(name))
             return attributeLocations.get(name);
             
         int location = glGetAttribLocation(id, name);
@@ -93,7 +93,7 @@ public class Program
     {
         use();
         
-        if (uniformLocations.contains(name))
+        if (uniformLocations.containsKey(name))
             return uniformLocations.get(name);
         
         int location = glGetUniformLocation(id, name);
