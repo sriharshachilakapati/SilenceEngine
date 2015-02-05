@@ -89,10 +89,10 @@ public class Batcher
     public Batcher()
     {
         // Create the buffers
-        vBuffer = BufferUtils.createByteBuffer(SIZE_OF_VERTEX * BATCH_SIZE);
-        cBuffer = BufferUtils.createByteBuffer(SIZE_OF_COLOR * BATCH_SIZE);
-        tBuffer = BufferUtils.createByteBuffer(SIZE_OF_TEXCOORD * BATCH_SIZE);
-        nBuffer = BufferUtils.createByteBuffer(SIZE_OF_NORMAL * BATCH_SIZE);
+        vBuffer = BufferUtils.createByteBuffer(BATCH_SIZE);
+        cBuffer = BufferUtils.createByteBuffer(BATCH_SIZE);
+        tBuffer = BufferUtils.createByteBuffer(BATCH_SIZE);
+        nBuffer = BufferUtils.createByteBuffer(BATCH_SIZE);
 
         // Create the transformations
         transform = new Transform();
@@ -119,19 +119,19 @@ public class Batcher
 
         // Initialize vertex-buffer
         vboVert.bind();
-        vboVert.uploadData(SIZE_OF_VERTEX * BATCH_SIZE, GL_STREAM_DRAW);
+        vboVert.uploadData(BATCH_SIZE, GL_STREAM_DRAW);
 
         // Initialize color-buffer
         vboCol.bind();
-        vboCol.uploadData(SIZE_OF_COLOR * BATCH_SIZE, GL_STREAM_DRAW);
+        vboCol.uploadData(BATCH_SIZE, GL_STREAM_DRAW);
 
         // Initialize texcoord-buffer
         vboTex.bind();
-        vboTex.uploadData(SIZE_OF_TEXCOORD * BATCH_SIZE, GL_STREAM_DRAW);
+        vboTex.uploadData(BATCH_SIZE, GL_STREAM_DRAW);
 
         // Initialize normal-buffer
         vboNorm.bind();
-        vboNorm.uploadData(SIZE_OF_NORMAL * BATCH_SIZE, GL_STREAM_DRAW);
+        vboNorm.uploadData(BATCH_SIZE, GL_STREAM_DRAW);
     }
     
     /**
@@ -140,16 +140,16 @@ public class Batcher
     private void mapBuffers()
     {
         vBuffer = vboVert.map(GL_WRITE_ONLY, vBuffer);
-        vao.pointAttribute(vertexLocation, 4, GL_FLOAT, vboVert);
+        vao.pointAttribute(vertexLocation, SIZE_OF_VERTEX, GL_FLOAT, vboVert);
 
         cBuffer = vboCol.map(GL_WRITE_ONLY, cBuffer);
-        vao.pointAttribute(colorLocation, 4, GL_FLOAT, vboCol);
+        vao.pointAttribute(colorLocation, SIZE_OF_COLOR, GL_FLOAT, vboCol);
 
         tBuffer = vboTex.map(GL_WRITE_ONLY, tBuffer);
-        vao.pointAttribute(texCoordLocation, 2, GL_FLOAT, vboTex);
+        vao.pointAttribute(texCoordLocation, SIZE_OF_TEXCOORD, GL_FLOAT, vboTex);
 
         nBuffer = vboNorm.map(GL_WRITE_ONLY, nBuffer);
-        vao.pointAttribute(normalLocation, 4, GL_FLOAT, vboNorm);
+        vao.pointAttribute(normalLocation, SIZE_OF_NORMAL, GL_FLOAT, vboNorm);
     }
     
     /**
