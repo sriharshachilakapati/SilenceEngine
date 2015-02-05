@@ -12,6 +12,9 @@ import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
@@ -26,11 +29,17 @@ public class Program
     public static Program CURRENT;
     public static Program DEFAULT;
     public static Program POINT_LIGHT;
+    
+    private Map<String, Integer> uniformLocations;
+    private Map<String, Integer> attributeLocations;
 
     public Program()
     {
         id = glCreateProgram();
         GLError.check();
+        
+        uniformLocations = new HashMap<>();
+        attributeLocations = new HashMap<>();
     }
 
     public void use()
@@ -69,7 +78,12 @@ public class Program
     public int getAttribute(String name)
     {
         use();
+        
+        if (attributeLocations.contains(name))
+            return attributeLocations.get(name);
+            
         int location = glGetAttribLocation(id, name);
+        attributeLocations.put(name, location);
 
         GLError.check();
         return location;
@@ -78,7 +92,12 @@ public class Program
     public int getUniform(String name)
     {
         use();
+        
+        if (uniformLocations.contains(name))
+            return uniformLocations.get(name);
+        
         int location = glGetUniformLocation(id, name);
+        uniformLocations.put(name, location);
 
         GLError.check();
         return location;
