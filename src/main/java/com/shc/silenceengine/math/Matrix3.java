@@ -15,9 +15,9 @@ public class Matrix3
 
     public Matrix3(Matrix3 m)
     {
-        for (int i=0; i<3; i++)
+        for (int i = 0; i < 3; i++)
         {
-            for (int j=0; j<3; j++)
+            for (int j = 0; j < 3; j++)
             {
                 this.m[i][j] = m.get(i, j);
             }
@@ -26,7 +26,7 @@ public class Matrix3
 
     public Matrix3 initIdentity()
     {
-        for (int i=0; i<3; i++)
+        for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 3; j++)
             {
@@ -42,7 +42,7 @@ public class Matrix3
 
     public Matrix3 initZero()
     {
-        for (int i=0; i<3; i++)
+        for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 3; j++)
             {
@@ -55,9 +55,9 @@ public class Matrix3
 
     public Matrix3 add(Matrix3 m)
     {
-        for (int i=0; i<3; i++)
+        for (int i = 0; i < 3; i++)
         {
-            for (int j=0; j<3; j++)
+            for (int j = 0; j < 3; j++)
             {
                 this.m[i][j] += m.get(i, j);
             }
@@ -68,9 +68,9 @@ public class Matrix3
 
     public Matrix3 subtract(Matrix3 m)
     {
-        for (int i=0; i<3; i++)
+        for (int i = 0; i < 3; i++)
         {
-            for (int j=0; j<3; j++)
+            for (int j = 0; j < 3; j++)
             {
                 this.m[i][j] -= m.get(i, j);
             }
@@ -83,11 +83,11 @@ public class Matrix3
     {
         float[][] temp = new float[3][3];
 
-        for (int i=0; i<3; i++)
+        for (int i = 0; i < 3; i++)
         {
-            for (int j=0; j<3; j++)
+            for (int j = 0; j < 3; j++)
             {
-                for (int k=0; k<3; k++)
+                for (int k = 0; k < 3; k++)
                 {
                     temp[i][j] += this.m[i][k] * m.get(k, j);
                 }
@@ -103,9 +103,9 @@ public class Matrix3
     {
         float[][] temp = new float[3][3];
 
-        for (int i=0; i<3; i++)
+        for (int i = 0; i < 3; i++)
         {
-            for (int j=0; j<3; j++)
+            for (int j = 0; j < 3; j++)
             {
                 temp[i][j] = m[j][i];
             }
@@ -119,8 +119,8 @@ public class Matrix3
     public Vector3 multiply(Vector3 v)
     {
         return new Vector3().setX(m[0][0] * v.getX())
-                            .setY(m[0][1] * v.getY())
-                            .setZ(m[0][2] * v.getZ());
+                .setY(m[0][1] * v.getY())
+                .setZ(m[0][2] * v.getZ());
     }
 
     public Matrix3 copy()
@@ -147,7 +147,7 @@ public class Matrix3
 
         for (int i = 0; i < 3; i++)
         {
-            for (int j=0; j<3; j++)
+            for (int j = 0; j < 3; j++)
             {
                 s.append(m[i][j]).append(' ');
             }

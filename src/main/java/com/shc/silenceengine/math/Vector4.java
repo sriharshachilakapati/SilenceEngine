@@ -71,7 +71,7 @@ public class Vector4
     {
         return addSelf(v.x, v.y, v.z, v.w);
     }
-    
+
     public Vector4 add(Vector3 v, float w)
     {
         return add(v.x, v.y, v.z, w);
@@ -81,7 +81,7 @@ public class Vector4
     {
         return addSelf(v.x, v.y, v.z, w);
     }
-    
+
     public Vector4 add(float x, Vector3 v)
     {
         return add(x, v.x, v.y, v.z);
@@ -91,7 +91,7 @@ public class Vector4
     {
         return addSelf(x, v.x, v.y, v.z);
     }
-    
+
     public Vector4 add(Vector2 v, float z, float w)
     {
         return add(v.x, v.y, z, w);
@@ -101,7 +101,7 @@ public class Vector4
     {
         return addSelf(v.x, v.y, z, w);
     }
-    
+
     public Vector4 add(Vector2 v1, Vector2 v2)
     {
         return add(v1.x, v1.y, v2.x, v2.y);
@@ -111,7 +111,7 @@ public class Vector4
     {
         return addSelf(v1.x, v1.y, v2.x, v2.y);
     }
-    
+
     public Vector4 add(float x, float y, Vector2 v)
     {
         return add(x, y, v.x, v.y);
@@ -214,12 +214,12 @@ public class Vector4
 
     public float dot(Vector4 v)
     {
-        return x*v.x + y*v.y + z*v.z + w*v.w;
+        return x * v.x + y * v.y + z * v.z + w * v.w;
     }
 
     public float lengthSquared()
     {
-        return x*x + y*y + z*z + w*w;
+        return x * x + y * y + z * z + w * w;
     }
 
     public float length()
@@ -234,7 +234,7 @@ public class Vector4
         if (l == 0 || l == 1)
             return copy();
 
-        return new Vector4(x/l, y/l, z/l, w/l);
+        return new Vector4(x / l, y / l, z / l, w / l);
     }
 
     public Vector4 normalizeSelf()
@@ -400,77 +400,77 @@ public class Vector4
     {
         return new Vector2(x, x);
     }
-    
+
     public Vector2 getXY()
     {
         return new Vector2(x, y);
     }
-    
+
     public Vector2 getXZ()
     {
         return new Vector2(x, z);
     }
-    
+
     public Vector2 getXW()
     {
         return new Vector2(x, w);
     }
-    
+
     public Vector2 getYX()
     {
         return new Vector2(y, x);
     }
-    
+
     public Vector2 getYY()
     {
         return new Vector2(y, y);
     }
-    
+
     public Vector2 getYZ()
     {
         return new Vector2(y, z);
     }
-    
+
     public Vector2 getYW()
     {
         return new Vector2(y, w);
     }
-    
+
     public Vector2 getZX()
     {
         return new Vector2(z, x);
     }
-    
+
     public Vector2 getZY()
     {
         return new Vector2(z, y);
     }
-    
+
     public Vector2 getZZ()
     {
         return new Vector2(z, z);
     }
-    
+
     public Vector2 getZW()
     {
         return new Vector2(z, w);
     }
-    
+
     public Vector2 getWX()
     {
         return new Vector2(w, x);
     }
-    
+
     public Vector2 getWY()
     {
         return new Vector2(w, y);
     }
-    
+
     public Vector2 getWZ()
     {
         return new Vector2(w, z);
     }
-    
+
     public Vector2 getWW()
     {
         return new Vector2(w, w);
@@ -555,7 +555,7 @@ public class Vector4
     {
         return new Vector3(x, w, w);
     }
-    
+
     public Vector3 getYXX()
     {
         return new Vector3(y, x, x);

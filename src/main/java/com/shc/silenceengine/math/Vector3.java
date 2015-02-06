@@ -7,7 +7,7 @@ import com.shc.silenceengine.utils.MathUtils;
  */
 public class Vector3
 {
-    public static final Vector3 ZERO   = new Vector3(0, 0, 0);
+    public static final Vector3 ZERO = new Vector3(0, 0, 0);
     public static final Vector3 AXIS_X = new Vector3(1, 0, 0);
     public static final Vector3 AXIS_Y = new Vector3(0, 1, 0);
     public static final Vector3 AXIS_Z = new Vector3(0, 0, 1);
@@ -40,7 +40,7 @@ public class Vector3
         this.y = y;
         this.z = z;
     }
-    
+
     public Vector3(Vector4 v)
     {
         this.x = v.x;
@@ -67,7 +67,7 @@ public class Vector3
     {
         return addSelf(v.x, v.y, v.z);
     }
-    
+
     public Vector3 add(Vector2 v, float z)
     {
         return add(v.x, v.y, z);
@@ -77,7 +77,7 @@ public class Vector3
     {
         return addSelf(v.x, v.y, z);
     }
-    
+
     public Vector3 add(float x, Vector2 v)
     {
         return add(x, v.x, v.y);
@@ -179,11 +179,11 @@ public class Vector3
     public Vector3 normalize()
     {
         float l = length();
-        
+
         if (l == 0 || l == 1)
             return copy();
 
-        return new Vector3(x/l, y/l, z/l);
+        return new Vector3(x / l, y / l, z / l);
     }
 
     public Vector3 normalizeSelf()
@@ -208,47 +208,53 @@ public class Vector3
 
     public float dot(Vector3 v)
     {
-        return x*v.x + y*v.y + z*v.z;
+        return x * v.x + y * v.y + z * v.z;
     }
 
-    public float lengthSquared() { return x*x + y*y + z*z; }
+    public float lengthSquared()
+    {
+        return x * x + y * y + z * z;
+    }
 
-    public float length() { return (float) Math.sqrt(lengthSquared()); }
-    
+    public float length()
+    {
+        return (float) Math.sqrt(lengthSquared());
+    }
+
     public float distanceSquared(float x, float y, float z)
     {
         final float x2 = (x - this.x) * (x - this.x);
         final float y2 = (y - this.y) * (y - this.y);
         final float z2 = (z - this.z) * (z - this.z);
-        
+
         return x2 + y2 + z2;
     }
-    
+
     public float distanceSquared(Vector3 v)
     {
         return distanceSquared(v.x, v.y, v.z);
     }
-    
+
     public float distanceSquared(Vector2 v)
     {
         return distanceSquared(v.x, v.y, 0);
     }
-    
+
     public float distance(float x, float y, float z)
     {
         return MathUtils.sqrt(distanceSquared(x, y, z));
     }
-    
+
     public float distance(Vector3 v)
     {
         return MathUtils.sqrt(distanceSquared(v));
     }
-    
+
     public float distance(Vector2 v)
     {
         return MathUtils.sqrt(distanceSquared(v));
     }
-    
+
     public Vector3 rotate(Vector3 axis, float angle)
     {
         return new Quaternion(axis, angle).multiply(this);
@@ -258,7 +264,7 @@ public class Vector3
     {
         return set(new Quaternion(axis, angle).multiply(this));
     }
-    
+
     public Vector3 lerp(Vector3 target, float alpha)
     {
         return scale(1f - alpha).add(target.scale(alpha));

@@ -17,9 +17,9 @@ public class Matrix4
     {
         this();
 
-        for (int i=0; i<3; i++)
+        for (int i = 0; i < 3; i++)
         {
-            for (int j=0; j<3; j++)
+            for (int j = 0; j < 3; j++)
             {
                 this.m[i][j] = m.get(i, j);
             }
@@ -30,9 +30,9 @@ public class Matrix4
     {
         this();
 
-        for (int i=0; i<4; i++)
+        for (int i = 0; i < 4; i++)
         {
-            for (int j=0; j<4; j++)
+            for (int j = 0; j < 4; j++)
             {
                 this.m[i][j] = m.get(i, j);
             }
@@ -41,7 +41,7 @@ public class Matrix4
 
     public Matrix4 initIdentity()
     {
-        for (int i=0; i<4; i++)
+        for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
@@ -57,7 +57,7 @@ public class Matrix4
 
     public Matrix4 initZero()
     {
-        for (int i=0; i<4; i++)
+        for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
@@ -70,9 +70,9 @@ public class Matrix4
 
     public Matrix4 add(Matrix4 m)
     {
-        for (int i=0; i<4; i++)
+        for (int i = 0; i < 4; i++)
         {
-            for (int j=0; j<4; j++)
+            for (int j = 0; j < 4; j++)
             {
                 this.m[i][j] += m.get(i, j);
             }
@@ -83,9 +83,9 @@ public class Matrix4
 
     public Matrix4 subtract(Matrix4 m)
     {
-        for (int i=0; i<4; i++)
+        for (int i = 0; i < 4; i++)
         {
-            for (int j=0; j<4; j++)
+            for (int j = 0; j < 4; j++)
             {
                 this.m[i][j] -= m.get(i, j);
             }
@@ -98,11 +98,11 @@ public class Matrix4
     {
         float[][] temp = new float[4][4];
 
-        for (int i=0; i<4; i++)
+        for (int i = 0; i < 4; i++)
         {
-            for (int j=0; j<4; j++)
+            for (int j = 0; j < 4; j++)
             {
-                for (int k=0; k<4; k++)
+                for (int k = 0; k < 4; k++)
                 {
                     temp[i][j] += this.m[i][k] * m.get(k, j);
                 }
@@ -166,9 +166,9 @@ public class Matrix4
     {
         float[][] temp = new float[4][4];
 
-        for (int i=0; i<4; i++)
+        for (int i = 0; i < 4; i++)
         {
-            for (int j=0; j<4; j++)
+            for (int j = 0; j < 4; j++)
             {
                 temp[i][j] = m[j][i];
             }
@@ -203,7 +203,7 @@ public class Matrix4
 
         for (int i = 0; i < 4; i++)
         {
-            for (int j=0; j<4; j++)
+            for (int j = 0; j < 4; j++)
             {
                 s.append(m[i][j]).append(' ');
             }

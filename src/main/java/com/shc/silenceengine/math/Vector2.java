@@ -7,7 +7,7 @@ import com.shc.silenceengine.utils.MathUtils;
  */
 public class Vector2
 {
-    public static final Vector2 ZERO   = new Vector2(0, 0);
+    public static final Vector2 ZERO = new Vector2(0, 0);
     public static final Vector2 AXIS_X = new Vector2(1, 0);
     public static final Vector2 AXIS_Y = new Vector2(0, 1);
 
@@ -29,13 +29,13 @@ public class Vector2
         x = v.x;
         y = v.y;
     }
-    
+
     public Vector2(Vector3 v)
     {
         x = v.x;
         y = v.y;
     }
-    
+
     public Vector2(Vector4 v)
     {
         x = v.x;
@@ -44,12 +44,12 @@ public class Vector2
 
     public float lengthSquared()
     {
-        return x*x + y*y;
+        return x * x + y * y;
     }
 
     public float length()
     {
-        return (float)Math.sqrt(lengthSquared());
+        return (float) Math.sqrt(lengthSquared());
     }
 
     public Vector2 copy()
@@ -124,14 +124,14 @@ public class Vector2
 
     public float dot(float x, float y)
     {
-        return this.x*x + this.y*y;
+        return this.x * x + this.y * y;
     }
 
     public Vector2 normalize()
     {
         float l = length();
 
-        return new Vector2(x/l, y/l);
+        return new Vector2(x / l, y / l);
     }
 
     public Vector2 normalizeSelf()
@@ -145,7 +145,7 @@ public class Vector2
     {
         angle = (float) Math.toRadians(angle);
         return new Vector2(x * (float) Math.cos(angle) - y * (float) Math.sin(angle),
-                           x * (float) Math.sin(angle) + y * (float) Math.cos(angle));
+                x * (float) Math.sin(angle) + y * (float) Math.cos(angle));
     }
 
     public Vector2 rotateSelf(float angle)
@@ -164,27 +164,27 @@ public class Vector2
     {
         return set(-x, -y);
     }
-    
+
     public float angle()
     {
         return MathUtils.atan2(y, x);
     }
-    
+
     public float angle(Vector2 v)
     {
         return MathUtils.acos(this.dot(v) / (length() * v.length()));
     }
-    
+
     public float distanceSquared(Vector2 v)
     {
         return (v.x - x) * (v.x - x) + (v.y - y) * (v.y - y);
     }
-    
+
     public float distance(Vector2 v)
     {
         return MathUtils.sqrt(distanceSquared(v));
     }
-    
+
     public Vector2 lerp(Vector2 target, float alpha)
     {
         final float oneMinusAlpha = 1f - alpha;

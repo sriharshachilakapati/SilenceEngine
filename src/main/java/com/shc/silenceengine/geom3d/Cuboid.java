@@ -94,4 +94,15 @@ public class Cuboid extends Polyhedron
     {
         return thickness;
     }
+
+    public void set(float width, float height, float thickness, Vector3 position)
+    {
+        setPosition(position);
+
+        this.width = width;
+        this.height = height;
+        this.thickness = thickness;
+
+        updateVertices();
+    }
 }

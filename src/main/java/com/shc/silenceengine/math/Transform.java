@@ -54,6 +54,11 @@ public class Transform
         return apply(transform.getMatrix());
     }
 
+    public Transform apply(Quaternion q)
+    {
+        return apply(TransformUtils.createRotation(q));
+    }
+
     public Transform copy()
     {
         return new Transform().apply(tMatrix);

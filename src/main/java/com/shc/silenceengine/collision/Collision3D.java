@@ -13,7 +13,20 @@ public class Collision3D
 {
     private static Response tmpResponse = new Response();
 
-    private static Vector2 flattenPoints(List<Vector3> vertices, Vector3 axis)
+    private static Vector2 tmpRangeA;
+    private static Vector2 tmpRangeB;
+    private static Vector3 tmpOffset;
+    private static Vector3 tmpAxis;
+
+    static
+    {
+        tmpRangeA = new Vector2();
+        tmpRangeB = new Vector2();
+        tmpOffset = new Vector3();
+        tmpAxis = new Vector3();
+    }
+
+    private static Vector2 flattenPoints(List<Vector3> vertices, Vector3 axis, Vector2 projection)
     {
         float min = axis.dot(vertices.get(0));
         float max = min;
@@ -26,7 +39,7 @@ public class Collision3D
             if (dot > max) max = dot;
         }
 
-        return new Vector2(min, max);
+        return projection.set(min, max);
     }
 
     public static boolean isSeparatingAxis(Polyhedron a, Polyhedron b, Vector3 axis, Response response)
@@ -39,13 +52,13 @@ public class Collision3D
         axis.y = (axis.y == -0f) ? -1 : axis.y;
         axis.z = (axis.z == -0f) ? -1 : axis.z;
 
-        Vector3 offset = b.getPosition().subtract(a.getPosition());
+        Vector3 offset = tmpOffset.set(b.getPosition()).subtractSelf(a.getPosition());
         float projectedOffset = offset.dot(axis);
 
-        Vector2 rangeA = flattenPoints(a.getVertices(), axis);
-        Vector2 rangeB = flattenPoints(b.getVertices(), axis);
+        Vector2 rangeA = flattenPoints(a.getVertices(), axis, tmpRangeA);
+        Vector2 rangeB = flattenPoints(b.getVertices(), axis, tmpRangeB);
 
-        rangeB = rangeB.add(projectedOffset, projectedOffset);
+        rangeB.addSelf(projectedOffset, projectedOffset);
 
         if (rangeA.x > rangeB.y || rangeB.x > rangeA.y)
             return true;
@@ -90,10 +103,10 @@ public class Collision3D
         if (overlap < response.overlap)
         {
             response.overlap = overlap;
-            response.overlapN.set(axis.normalize());
+            response.overlapN.set(axis.normalizeSelf());
 
             if (overlap < 0)
-                response.overlapN = response.overlapN.negate();
+                response.overlapN.negateSelf();
         }
 
         return false;
@@ -109,7 +122,7 @@ public class Collision3D
             Vector3 e1 = a.getVertex(i);
             Vector3 e2 = a.getVertex((i + 1) % a.vertexCount());
 
-            Vector3 axis = e1.cross(e2).normalize();
+            Vector3 axis = tmpAxis.set(e1).crossSelf(e2).normalizeSelf();
 
             if (isSeparatingAxis(a, b, axis, response))
                 return false;
@@ -120,7 +133,7 @@ public class Collision3D
             Vector3 e1 = b.getVertex(i);
             Vector3 e2 = b.getVertex((i + 1) % b.vertexCount());
 
-            Vector3 axis = e1.cross(e2).normalize();
+            Vector3 axis = tmpAxis.set(e1).crossSelf(e2).normalizeSelf();
 
             if (isSeparatingAxis(a, b, axis, response))
                 return false;
@@ -129,7 +142,7 @@ public class Collision3D
         response.a = a;
         response.b = b;
         response.intersection = true;
-        response.overlapV = response.overlapN.scale(response.overlap);
+        response.overlapV.set(response.overlapN).scaleSelf(response.overlap);
 
         return true;
     }

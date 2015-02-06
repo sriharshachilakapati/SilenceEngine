@@ -1,9 +1,9 @@
 package com.shc.silenceengine.collision.broadphase;
 
 import com.shc.silenceengine.entity.Entity3D;
+import com.shc.silenceengine.geom3d.Cuboid;
 import com.shc.silenceengine.geom3d.Polyhedron;
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.utils.MathUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,10 +18,13 @@ public class DynamicTree3D implements IBroadphaseResolver3D
     private Node root;
     private List<Entity3D> retrieveList;
     private Map<Integer, Node> nodeMap;
+    private Map<Integer, AABB> aabbMap;
 
     public DynamicTree3D()
     {
         nodeMap = new HashMap<>();
+        aabbMap = new HashMap<>();
+
         retrieveList = new ArrayList<>();
     }
 
@@ -37,12 +40,15 @@ public class DynamicTree3D implements IBroadphaseResolver3D
     {
         Node node = new Node();
         node.entity = e;
-        node.aabb = AABB.create(e);
+        node.aabb = getAABB(e);
 
         nodeMap.put(e.getID(), node);
 
         insert(node);
     }
+
+    private AABB tmpUnion = new AABB();
+    private AABB tmpU = new AABB();
 
     private void insert(Node item)
     {
@@ -62,7 +68,7 @@ public class DynamicTree3D implements IBroadphaseResolver3D
 
             float perimeter = aabb.getPerimeter();
 
-            AABB union = AABB.union(aabb, itemAABB);
+            AABB union = AABB.union(aabb, itemAABB, tmpUnion);
             float unionPerimeter = union.getPerimeter();
 
             float cost = 2 * unionPerimeter;
@@ -74,24 +80,24 @@ public class DynamicTree3D implements IBroadphaseResolver3D
             float costLeft;
             if (left.isLeaf())
             {
-                AABB u = AABB.union(left.aabb, itemAABB);
+                AABB u = AABB.union(left.aabb, itemAABB, tmpU);
                 costLeft = u.getPerimeter() + descendCost;
             }
             else
             {
-                AABB u = AABB.union(left.aabb, itemAABB);
+                AABB u = AABB.union(left.aabb, itemAABB, tmpU);
                 costLeft = u.getPerimeter() - left.aabb.getPerimeter() + descendCost;
             }
 
             float costRight;
             if (right.isLeaf())
             {
-                AABB u = AABB.union(right.aabb, itemAABB);
+                AABB u = AABB.union(right.aabb, itemAABB, tmpU);
                 costRight = u.getPerimeter() + descendCost;
             }
             else
             {
-                AABB u = AABB.union(right.aabb, itemAABB);
+                AABB u = AABB.union(right.aabb, itemAABB, tmpU);
                 costRight = u.getPerimeter() - right.aabb.getPerimeter() + descendCost;
             }
 
@@ -104,7 +110,7 @@ public class DynamicTree3D implements IBroadphaseResolver3D
         Node parent = node.parent;
         Node newParent = new Node();
         newParent.parent = node.parent;
-        newParent.aabb = AABB.union(node.aabb, itemAABB);
+        newParent.aabb = AABB.union(node.aabb, itemAABB, newParent.aabb);
 
         if (parent != null)
         {
@@ -137,7 +143,7 @@ public class DynamicTree3D implements IBroadphaseResolver3D
             Node left = node.left;
             Node right = node.right;
 
-            node.aabb = AABB.union(left.aabb, right.aabb);
+            node.aabb = AABB.union(left.aabb, right.aabb, node.aabb);
 
             node = node.parent;
         }
@@ -152,6 +158,7 @@ public class DynamicTree3D implements IBroadphaseResolver3D
         {
             remove(node);
             nodeMap.remove(e.getID());
+            aabbMap.remove(e.getID());
         }
     }
 
@@ -185,7 +192,7 @@ public class DynamicTree3D implements IBroadphaseResolver3D
                 Node left = n.left;
                 Node right = n.right;
 
-                n.aabb = AABB.union(left.aabb, right.aabb);
+                n.aabb = AABB.union(left.aabb, right.aabb, n.aabb);
 
                 n = n.parent;
             }
@@ -198,12 +205,23 @@ public class DynamicTree3D implements IBroadphaseResolver3D
     }
 
     @Override
-    public List<Entity3D> retrieve(Polyhedron cube)
+    public List<Entity3D> retrieve(Entity3D e)
+    {
+        retrieveList.clear();
+        queryNode(getAABB(e), root);
+        return retrieveList;
+    }
+
+    @Override
+    public List<Entity3D> retrieve(Polyhedron bounds)
     {
         retrieveList.clear();
 
-        queryNode(new AABB(cube.getPosition(), cube.getWidth(), cube.getHeight(), cube.getThickness()), root);
+        AABB aabb = new AABB();
+        aabb.min.set(bounds.getPosition()).subtractSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
+        aabb.max.set(aabb.min).addSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
 
+        queryNode(aabb, root);
         return retrieveList;
     }
 
@@ -224,6 +242,26 @@ public class DynamicTree3D implements IBroadphaseResolver3D
         }
     }
 
+    private AABB getAABB(Entity3D e)
+    {
+        AABB aabb;
+
+        if (aabbMap.containsKey(e.getID()))
+            aabb = aabbMap.get(e.getID());
+        else
+        {
+            aabb = AABB.create(e);
+            aabbMap.put(e.getID(), aabb);
+        }
+
+        Cuboid bounds = e.getBounds();
+
+        aabb.min.set(e.getPosition()).subtractSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
+        aabb.max.set(aabb.min).addSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
+
+        return aabb;
+    }
+
     private static class AABB
     {
         public Vector3 min;
@@ -241,16 +279,15 @@ public class DynamicTree3D implements IBroadphaseResolver3D
             this.max = min.add(width, height, thickness);
         }
 
-        public AABB(AABB aabb)
-        {
-            this.min = aabb.min.copy();
-            this.max = aabb.max.copy();
-        }
-
         public void union(AABB aabb)
         {
-            min = MathUtils.min(min, aabb.min);
-            max = MathUtils.max(max, aabb.max);
+            min.x = Math.min(aabb.min.x, min.x);
+            min.y = Math.min(aabb.min.y, min.y);
+            min.z = Math.min(aabb.min.z, min.z);
+
+            max.x = Math.max(aabb.max.x, max.x);
+            max.y = Math.max(aabb.max.y, max.y);
+            max.z = Math.max(aabb.max.z, max.z);
         }
 
         public boolean intersects(AABB aabb)
@@ -262,29 +299,28 @@ public class DynamicTree3D implements IBroadphaseResolver3D
 
         public float getPerimeter()
         {
-            return 2 * (this.max.x - this.min.x + this.max.y - this.min.y + this.max.z - this.min.z);
+            return 2 * (max.x - min.x + max.y - min.y + max.z - min.z);
         }
 
         public static AABB create(Entity3D entity)
         {
-            AABB aabb = new AABB();
+            Cuboid bounds = entity.getBounds();
 
-            float x = entity.getWidth() / 2;
-            float y = entity.getHeight() / 2;
-            float z = entity.getThickness() / 2;
-
-            aabb.min = entity.getPosition().subtract(x, y, z);
-            aabb.max = entity.getPosition().add(x, y, z);
-
-            return aabb;
+            return new AABB(entity.getPosition().subtract(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2),
+                    bounds.getWidth(), bounds.getHeight(), bounds.getThickness());
         }
 
-        public static AABB union(AABB aabb1, AABB aabb2)
+        public static AABB union(AABB aabb1, AABB aabb2, AABB store)
         {
-            AABB aabb = new AABB(aabb1);
-            aabb.union(aabb2);
+            if (store == null)
+                store = new AABB();
 
-            return aabb;
+            store.min.set(aabb1.min);
+            store.max.set(aabb1.max);
+
+            store.union(aabb2);
+
+            return store;
         }
     }
 

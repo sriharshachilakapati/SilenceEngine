@@ -1,6 +1,7 @@
 package com.shc.silenceengine.geom3d;
 
 import com.shc.silenceengine.collision.Collision3D;
+import com.shc.silenceengine.math.Quaternion;
 import com.shc.silenceengine.math.Vector3;
 
 import java.util.ArrayList;
@@ -28,10 +29,14 @@ public class Polyhedron
 
     private Cuboid bounds;
 
+    private Quaternion tempQuat;
+
     public Polyhedron()
     {
         vertices = new ArrayList<>();
         position = new Vector3();
+
+        tempQuat = new Quaternion();
 
         clearVertices();
     }
@@ -83,7 +88,7 @@ public class Polyhedron
 
         for (Vector3 v : vertices)
         {
-            v.set(v.rotate(axis.normalize(), angle));
+            tempQuat.set(axis, angle).multiply(v, v);
 
             minX = Math.min(minX, v.x);
             minY = Math.min(minY, v.y);
@@ -93,8 +98,11 @@ public class Polyhedron
             maxZ = Math.max(maxZ, v.z);
         }
 
-        bounds = new Cuboid(new Vector3(minX, minY, minZ).add(position),
-                new Vector3(maxX, maxY, maxZ).add(position));
+        if (bounds == null)
+            bounds = new Cuboid(new Vector3(minX, minY, minZ).add(position),
+                    new Vector3(maxX, maxY, maxZ).add(position));
+        else
+            bounds.set(maxX - minX, maxY - minY, maxZ - minZ, position);
     }
 
     public void scale(float s)
@@ -109,7 +117,7 @@ public class Polyhedron
 
         for (Vector3 v : vertices)
         {
-            v.set(v.scale(sx, sy, sz));
+            v.scaleSelf(sx, sy, sz);
 
             minX = Math.min(minX, v.x);
             minY = Math.min(minY, v.y);
@@ -119,8 +127,35 @@ public class Polyhedron
             maxZ = Math.max(maxZ, v.z);
         }
 
-        bounds = new Cuboid(new Vector3(minX, minY, minZ).add(position),
-                new Vector3(maxX, maxY, maxZ).add(position));
+        if (bounds == null)
+            bounds = new Cuboid(new Vector3(minX, minY, minZ).add(position),
+                    new Vector3(maxX, maxY, maxZ).add(position));
+        else
+            bounds.set(maxX - minX, maxY - minY, maxZ - minZ, position);
+    }
+
+    public void translate(float x, float y, float z)
+    {
+        minX = minY = minZ = Float.POSITIVE_INFINITY;
+        maxX = maxY = maxZ = Float.NEGATIVE_INFINITY;
+
+        for (Vector3 v : vertices)
+        {
+            v.addSelf(x, y, z);
+
+            minX = Math.min(minX, v.x);
+            minY = Math.min(minY, v.y);
+            minZ = Math.min(minZ, v.z);
+            maxX = Math.max(maxX, v.x);
+            maxY = Math.max(maxY, v.y);
+            maxZ = Math.max(maxZ, v.z);
+        }
+
+        if (bounds == null)
+            bounds = new Cuboid(new Vector3(minX, minY, minZ).add(position),
+                    new Vector3(maxX, maxY, maxZ).add(position));
+        else
+            bounds.set(maxX - minX, maxY - minY, maxZ - minZ, position);
     }
 
     public boolean intersects(Polyhedron other)

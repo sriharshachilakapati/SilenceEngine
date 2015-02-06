@@ -3,53 +3,76 @@ package com.shc.silenceengine.math;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Quaternion {
+public class Quaternion
+{
+    private static Quaternion temp1;
+    private static Quaternion temp2;
+    private static Quaternion temp3;
+
+    static
+    {
+        temp1 = new Quaternion();
+        temp2 = new Quaternion();
+        temp3 = new Quaternion();
+    }
+
     public float x;
     public float y;
     public float z;
     public float w;
 
-    public Quaternion() {
+    public Quaternion()
+    {
         this(0, 0, 0, 1);
     }
 
-    public Quaternion(Vector3 axis, float angle) {
+    public Quaternion(Vector3 axis, float angle)
+    {
         set(axis, angle);
     }
 
-    public Quaternion(float pitch, float yaw, float roll) {
+    public Quaternion(float pitch, float yaw, float roll)
+    {
         set(pitch, yaw, roll);
     }
 
-    public Quaternion(float x, float y, float z, float w) {
+    public Quaternion(float x, float y, float z, float w)
+    {
         set(x, y, z, w);
     }
 
-    public Quaternion add(float x, float y, float z, float w) {
+    public Quaternion add(float x, float y, float z, float w)
+    {
         return new Quaternion(this.x + x, this.y + y, this.z + z, this.w + w);
     }
 
-    public Quaternion addSelf(float x, float y, float z, float w) {
+    public Quaternion addSelf(float x, float y, float z, float w)
+    {
         return set(this.x + x, this.y + y, this.z + z, this.w + w);
     }
 
-    public Quaternion add(Quaternion q) {
+    public Quaternion add(Quaternion q)
+    {
         return add(q.x, q.y, q.z, q.w);
     }
 
-    public Quaternion addSelf(Quaternion q) {
+    public Quaternion addSelf(Quaternion q)
+    {
         return addSelf(q.x, q.y, q.z, q.w);
     }
 
-    public Quaternion subtract(float x, float y, float z, float w) {
+    public Quaternion subtract(float x, float y, float z, float w)
+    {
         return add(-x, -y, -z, -w);
     }
 
-    public Quaternion subtractSelf(float x, float y, float z, float w) {
+    public Quaternion subtractSelf(float x, float y, float z, float w)
+    {
         return addSelf(-x, -y, -z, -w);
     }
 
-    public Quaternion subtract(Quaternion q) {
+    public Quaternion subtract(Quaternion q)
+    {
         return subtract(q.x, q.y, q.z, q.w);
     }
 
@@ -65,7 +88,7 @@ public class Quaternion {
         if (length == 0 || length == 1)
             return copy();
 
-        return new Quaternion(x/length, y/length, z/length, w/length);
+        return new Quaternion(x / length, y / length, z / length, w / length);
     }
 
     public Quaternion normalizeSelf()
@@ -112,11 +135,11 @@ public class Quaternion {
     {
         Vector3 vn = v.normalize();
 
-        Quaternion q1 = conjugate();
-        Quaternion qv = new Quaternion(vn.x, vn.y, vn.z, 1);
+        Quaternion q1 = temp1.set(this).conjugateSelf();
+        Quaternion qv = temp2.set(vn.x, vn.y, vn.z, 1);
 
-        qv = this.multiply(qv);
-        qv = qv.multiply(q1);
+        qv = temp3.set(this).multiplySelf(qv);
+        qv.multiplySelf(q1);
 
         return new Vector3(qv.x, qv.y, qv.z).normalizeSelf().scaleSelf(v.length());
     }
@@ -125,11 +148,11 @@ public class Quaternion {
     {
         Vector3 vn = v.normalize();
 
-        Quaternion q1 = conjugate();
-        Quaternion qv = new Quaternion(vn.x, vn.y, vn.z, 1);
+        Quaternion q1 = temp1.set(this).conjugateSelf();
+        Quaternion qv = temp2.set(vn.x, vn.y, vn.z, 1);
 
-        qv = this.multiply(qv);
-        qv = qv.multiply(q1);
+        qv = temp3.set(this).multiplySelf(qv);
+        qv.multiplySelf(q1);
 
         return dest.set(qv.x, qv.y, qv.z).normalizeSelf().scaleSelf(v.length());
     }
@@ -215,7 +238,8 @@ public class Quaternion {
         return this;
     }
 
-    public Quaternion set(float pitch, float yaw, float roll) {
+    public Quaternion set(float pitch, float yaw, float roll)
+    {
         pitch = (float) Math.toRadians(pitch) * 0.5f;
         yaw = (float) Math.toRadians(yaw) * 0.5f;
         roll = (float) Math.toRadians(roll) * 0.5f;
