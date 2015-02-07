@@ -17,7 +17,15 @@ public final class TransformUtils
 
     public static Matrix4 createTranslation(Vector3 translation)
     {
-        Matrix4 result = tempMat.initIdentity();
+        return createTranslation(translation, tempMat);
+    }
+
+    public static Matrix4 createTranslation(Vector3 translation, Matrix4 dest)
+    {
+        if (dest == null)
+            dest = new Matrix4();
+
+        Matrix4 result = dest.initIdentity();
 
         result.set(3, 0, translation.getX())
               .set(3, 1, translation.getY())
@@ -28,7 +36,15 @@ public final class TransformUtils
 
     public static Matrix4 createScaling(Vector3 scale)
     {
-        Matrix4 result = tempMat.initIdentity();
+        return createScaling(scale, tempMat);
+    }
+
+    public static Matrix4 createScaling(Vector3 scale, Matrix4 dest)
+    {
+        if (dest == null)
+            dest = new Matrix4();
+
+        Matrix4 result = dest.initIdentity();
 
         result.set(0, 0, scale.getX())
               .set(1, 1, scale.getY())
@@ -39,9 +55,17 @@ public final class TransformUtils
 
     public static Matrix4 createRotation(Vector3 axis, float angle)
     {
+        return createRotation(axis, angle, tempMat);
+    }
+
+    public static Matrix4 createRotation(Vector3 axis, float angle, Matrix4 dest)
+    {
         assert axis != Vector3.ZERO;
 
-        Matrix4 result = tempMat.initIdentity();
+        if (dest == null)
+            dest = new Matrix4();
+
+        Matrix4 result = dest.initIdentity();
 
         float c = (float) Math.cos(Math.toRadians(angle));
         float s = (float) Math.sin(Math.toRadians(angle));
@@ -65,7 +89,15 @@ public final class TransformUtils
 
     public static Matrix4 createOrtho2d(float left, float right, float bottom, float top, float zNear, float zFar)
     {
-        Matrix4 result = tempMat.initZero();
+        return createOrtho2d(left, right, bottom, top, zNear, zFar, tempMat);
+    }
+
+    public static Matrix4 createOrtho2d(float left, float right, float bottom, float top, float zNear, float zFar, Matrix4 dest)
+    {
+        if (dest == null)
+            dest = new Matrix4();
+
+        Matrix4 result = dest.initZero();
 
         result.set(0, 0, 2 / (right - left))
               .set(1, 1, 2 / (top - bottom))
@@ -80,9 +112,17 @@ public final class TransformUtils
 
     public static Matrix4 createFrustum(float left, float right, float bottom, float top, float zNear, float zFar)
     {
+        return createFrustum(left, right, bottom, top, zNear, zFar, tempMat);
+    }
+
+    public static Matrix4 createFrustum(float left, float right, float bottom, float top, float zNear, float zFar, Matrix4 dest)
+    {
         assert zFar > zNear;
 
-        Matrix4 result = tempMat.initZero();
+        if (dest == null)
+            dest = new Matrix4();
+
+        Matrix4 result = dest.initZero();
 
         result.set(0, 0, (2 * zNear) / (right - left))
               .set(1, 1, (2 * zNear) / (top - bottom))
@@ -97,9 +137,17 @@ public final class TransformUtils
 
     public static Matrix4 createPerspective(float fovy, float aspect, float zNear, float zFar)
     {
+        return createPerspective(fovy, aspect, zNear, zFar, tempMat);
+    }
+
+    public static Matrix4 createPerspective(float fovy, float aspect, float zNear, float zFar, Matrix4 dest)
+    {
         assert zFar > zNear;
 
-        Matrix4 result = tempMat.initZero();
+        if (dest == null)
+            dest = new Matrix4();
+
+        Matrix4 result = dest.initZero();
 
         float tanHalfFovy = (float) Math.tan(Math.toRadians(fovy) / 2);
 
@@ -114,10 +162,18 @@ public final class TransformUtils
 
 //    public static Matrix4 createLookAt(Vector3 eye, Vector3 center, Vector3 up)
 //    {
-//        Matrix4 result = tempMat.initIdentity();
+//        return createLookAt(eye, center, up, tempMat);
+//    }
 //
-//        final Vector3 f = center.subtract(eye).normalize();
-//        final Vector3 s = f.cross(up).normalize();
+//    public static Matrix4 createLookAt(Vector3 eye, Vector3 center, Vector3 up, Matrix4 dest)
+//    {
+//        if (dest == null)
+//            dest = new Matrix4();
+//
+//        Matrix4 result = dest.initIdentity();
+//
+//        final Vector3 f = center.subtract(eye).normalizeSelf();
+//        final Vector3 s = f.cross(up).normalizeSelf();
 //        final Vector3 u = s.cross(f);
 //
 //        result.set(0, 0, s.x)
@@ -141,9 +197,17 @@ public final class TransformUtils
 
     public static Matrix4 createRotation(Quaternion q)
     {
-        q = q.normalize();
+        return createRotation(q, tempMat);
+    }
 
-        Matrix4 result = tempMat.initIdentity();
+    public static Matrix4 createRotation(Quaternion q, Matrix4 dest)
+    {
+        if (dest == null)
+            dest = new Matrix4();
+
+        q.normalizeSelf();
+
+        Matrix4 result = dest.initIdentity();
 
         float x2 = q.x * q.x;
         float y2 = q.y * q.y;

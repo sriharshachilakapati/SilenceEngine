@@ -72,23 +72,12 @@ public class Polyhedron
 
     public void rotate(float rx, float ry, float rz)
     {
-        rotate(Vector3.AXIS_X, rx);
-        rotate(Vector3.AXIS_Y, ry);
-        rotate(Vector3.AXIS_Z, rz);
-
-        rotationX += rx;
-        rotationY += ry;
-        rotationZ += rz;
-    }
-
-    private void rotate(Vector3 axis, float angle)
-    {
         minX = minY = minZ = Float.POSITIVE_INFINITY;
         maxX = maxY = maxZ = Float.NEGATIVE_INFINITY;
 
         for (Vector3 v : vertices)
         {
-            tempQuat.set(axis, angle).multiply(v, v);
+            tempQuat.set(rx, ry, rz).multiply(v, v);
 
             minX = Math.min(minX, v.x);
             minY = Math.min(minY, v.y);
@@ -103,6 +92,10 @@ public class Polyhedron
                     new Vector3(maxX, maxY, maxZ).add(position));
         else
             bounds.set(maxX - minX, maxY - minY, maxZ - minZ, position);
+
+        rotationX += rx;
+        rotationY += ry;
+        rotationZ += rz;
     }
 
     public void scale(float s)
