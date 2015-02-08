@@ -13,6 +13,20 @@ import com.shc.silenceengine.math.Vector3;
  */
 public final class RenderUtils
 {
+    private static Vector2 tempVec2;
+    private static Vector3 tempVec31;
+    private static Vector3 tempVec32;
+    private static Vector3 tempVec33;
+
+    static
+    {
+        tempVec2 = new Vector2();
+
+        tempVec31 = new Vector3();
+        tempVec32 = new Vector3();
+        tempVec33 = new Vector3();
+    }
+
     private RenderUtils()
     {
     }
@@ -33,7 +47,7 @@ public final class RenderUtils
         {
             for (Vector2 vertex : polygon.getVertices())
             {
-                b.vertex(vertex.add(polygon.getPosition().add(position)));
+                b.vertex(tempVec2.set(vertex).addSelf(polygon.getPosition().addSelf(position)));
                 b.color(color);
             }
         }
@@ -56,7 +70,7 @@ public final class RenderUtils
         {
             for (Vector2 vertex : polygon.getVertices())
             {
-                b.vertex(vertex.add(polygon.getPosition().add(position)));
+                b.vertex(tempVec2.set(vertex).addSelf(polygon.getPosition().addSelf(position)));
                 b.color(color);
             }
         }
@@ -100,9 +114,9 @@ public final class RenderUtils
                 }
 
                 // Set the position of the vertices
-                v1 = v1.add(polyhedron.getPosition()).add(position);
-                v2 = v2.add(polyhedron.getPosition()).add(position);
-                v3 = v3.add(polyhedron.getPosition()).add(position);
+                v1 = tempVec31.set(v1).addSelf(polyhedron.getPosition()).addSelf(position);
+                v2 = tempVec32.set(v2).addSelf(polyhedron.getPosition()).addSelf(position);
+                v3 = tempVec33.set(v3).addSelf(polyhedron.getPosition()).addSelf(position);
 
                 // Draw the triangle as a line strip
                 b.vertex(v1);
@@ -134,7 +148,7 @@ public final class RenderUtils
         {
             for (Vector3 vertex : polyhedron.getVertices())
             {
-                b.vertex(vertex.add(polyhedron.getPosition().add(position)));
+                b.vertex(tempVec31.set(vertex).addSelf(polyhedron.getPosition()).addSelf(position));
                 b.color(color);
             }
         }

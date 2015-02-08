@@ -166,25 +166,49 @@ public class Color extends Vector4
 
     public Color(int rgba)
     {
+        set(rgba);
+    }
+
+    public Color(float r, float g, float b, float a)
+    {
+        set(r, g, b, a);
+    }
+
+    public Color(float r, float g, float b)
+    {
+        this(r, g, b, 1);
+    }
+
+    public Color set(int rgba)
+    {
         float r = ((rgba & 0x00FF0000) >> 16) / 255f;
         float g = ((rgba & 0x0000FF00) >> 8) / 255f;
         float b = (rgba & 0x000000FF) / 255f;
         float a = 1-((rgba & 0xFF000000) >> 24) / 255f;
 
         setR(r); setG(g); setB(b); setA(a);
+
+        return this;
     }
 
-    public Color(float r, float g, float b, float a)
+    public Color set(float r, float g, float b, float a)
     {
         x = MathUtils.clamp(r, 0, 1);
         y = MathUtils.clamp(g, 0, 1);
         z = MathUtils.clamp(b, 0, 1);
         w = MathUtils.clamp(a, 0, 1);
+
+        return this;
     }
 
-    public Color(float r, float g, float b)
+    public Color set(float r, float g, float b)
     {
-        this(r, g, b, 1);
+        return set(r, g, b, 1);
+    }
+
+    public Color set(Color color)
+    {
+        return set(color.x, color.y, color.z, color.w);
     }
 
     public Color add(Color c)

@@ -46,7 +46,7 @@ public class PointLight extends SceneComponent
 
     public void setPosition(Vector3 position)
     {
-        this.position = position.copy();
+        this.position.set(position);
     }
 
     public Color getColor()
@@ -56,6 +56,6 @@ public class PointLight extends SceneComponent
 
     public void setColor(Color color)
     {
-        this.color = color.copy();
+        this.color.set(color);
     }
 }

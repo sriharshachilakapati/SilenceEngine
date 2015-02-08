@@ -153,12 +153,14 @@ public class PerspCam extends BaseCamera
         return this;
     }
 
+    private Vector3 tempVec3 = new Vector3();
+
     public void apply()
     {
         BaseCamera.CURRENT = this;
 
         mView.initIdentity()
-             .multiply(TransformUtils.createTranslation(position.negate()))
+             .multiply(TransformUtils.createTranslation(tempVec3.set(position).negateSelf()))
              .multiply(TransformUtils.createRotation(rotation));
 
         BaseCamera.projection = mProj;

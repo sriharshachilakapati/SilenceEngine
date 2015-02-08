@@ -9,11 +9,15 @@ public class Quaternion
     private static Quaternion temp2;
     private static Quaternion temp3;
 
+    private static Vector3 tempVec3;
+
     static
     {
         temp1 = new Quaternion();
         temp2 = new Quaternion();
         temp3 = new Quaternion();
+
+        tempVec3 = new Vector3();
     }
 
     public float x;
@@ -133,7 +137,7 @@ public class Quaternion
 
     public Vector3 multiply(Vector3 v)
     {
-        Vector3 vn = v.normalize();
+        Vector3 vn = tempVec3.set(v).normalizeSelf();
 
         Quaternion q1 = temp1.set(this).conjugateSelf();
         Quaternion qv = temp2.set(vn.x, vn.y, vn.z, 1);
@@ -146,7 +150,7 @@ public class Quaternion
 
     public Vector3 multiply(Vector3 v, Vector3 dest)
     {
-        Vector3 vn = v.normalize();
+        Vector3 vn = tempVec3.set(v).normalizeSelf();
 
         Quaternion q1 = temp1.set(this).conjugateSelf();
         Quaternion qv = temp2.set(vn.x, vn.y, vn.z, 1);

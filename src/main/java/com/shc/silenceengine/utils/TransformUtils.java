@@ -14,6 +14,7 @@ public final class TransformUtils
     }
 
     private static Matrix4 tempMat = new Matrix4();
+    private static Vector3 tempVec = new Vector3();
 
     public static Matrix4 createTranslation(Vector3 translation)
     {
@@ -70,7 +71,7 @@ public final class TransformUtils
         float c = (float) Math.cos(Math.toRadians(angle));
         float s = (float) Math.sin(Math.toRadians(angle));
 
-        Vector3 v = axis.normalize();
+        Vector3 v = tempVec.set(axis).normalizeSelf();
 
         result.set(0, 0, v.getX() * v.getX() * (1-c) + c)
               .set(1, 0, v.getX() * v.getY() * (1-c) - v.getZ() * s)

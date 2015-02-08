@@ -12,6 +12,7 @@ import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.models.Model;
 import com.shc.silenceengine.scene.Scene;
 import com.shc.silenceengine.scene.lights.PointLight;
+import com.shc.silenceengine.utils.RenderUtils;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -94,6 +95,8 @@ public class OBJModelTest extends Game
     {
         cam.apply();
         scene.render(delta, batcher);
+
+        RenderUtils.tracePolyhedron(batcher, entity.getPolyhedron());
     }
 
     public void resize()

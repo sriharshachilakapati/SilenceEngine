@@ -88,15 +88,15 @@ public class Entity3D extends SceneNode
             return;
 
         // Calculate the new position
-        position = position.add(velocity);
+        position.addSelf(velocity);
         polyhedron.setPosition(position);
 
         // Setup the local transform
 
         getLocalTransform().reset().translate(getPosition())
                 .rotate(Vector3.AXIS_X, polyhedron.getRotationX())
-                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY())
-                .rotate(Vector3.AXIS_Z, polyhedron.getRotationZ());
+                .rotate(Vector3.AXIS_Z, polyhedron.getRotationZ())
+                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY());
     }
 
     /**
@@ -200,13 +200,13 @@ public class Entity3D extends SceneNode
         Vector3 tCenter = getPosition();
         Vector3 oCenter = other.getPosition();
 
-        Vector3 direction = tCenter.subtract(oCenter).normalize();
-        setPosition(getPosition().add(direction));
+        Vector3 direction = tCenter.subtract(oCenter).normalizeSelf();
+        setPosition(position.addSelf(direction));
 
         Collision3D.Response response = new Collision3D.Response();
         Collision3D.testPolyhedronCollision(polyhedron, other.polyhedron, response);
 
-        setPosition(position.subtract(response.getMinimumTranslationVector()));
+        setPosition(position.subtractSelf(response.getMinimumTranslationVector()));
     }
 
     /**
@@ -222,8 +222,8 @@ public class Entity3D extends SceneNode
 
         getLocalTransform().reset().translate(getPosition())
                 .rotate(Vector3.AXIS_X, polyhedron.getRotationX())
-                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY())
                 .rotate(Vector3.AXIS_Z, polyhedron.getRotationZ())
+                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY())
                 .translate(getPosition());
     }
 
@@ -348,8 +348,8 @@ public class Entity3D extends SceneNode
 
         getLocalTransform().reset().translate(getPosition())
                 .rotate(Vector3.AXIS_X, polyhedron.getRotationX())
-                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY())
-                .rotate(Vector3.AXIS_Z, polyhedron.getRotationZ());
+                .rotate(Vector3.AXIS_Z, polyhedron.getRotationZ())
+                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY());
     }
 
     /**
