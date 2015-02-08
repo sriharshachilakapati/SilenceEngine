@@ -80,7 +80,7 @@ public class Polygon
             maxY = Math.max(vertex.y, maxY);
         }
 
-        rotation += Math.toDegrees(angle);
+        rotation += angle;
         updateBounds();
     }
 

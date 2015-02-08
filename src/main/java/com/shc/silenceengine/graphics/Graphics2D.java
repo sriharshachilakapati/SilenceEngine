@@ -5,6 +5,7 @@ import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.geom2d.Polygon;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
@@ -73,11 +74,12 @@ public class Graphics2D
 
     private void oval(float x, float y, float rx, float ry, Primitive primitive)
     {
+        Batcher batcher = Game.getBatcher();
+        batcher.applyTransform(transform);
+        batcher.applyTransform(BaseCamera.view);
+
         startPainting();
         {
-            Batcher batcher = Game.getBatcher();
-
-            batcher.applyTransform(transform);
             batcher.begin(primitive);
             {
                 for (int i = 0; i < 360; i++)
@@ -165,11 +167,12 @@ public class Graphics2D
 
     public void drawLine(float x1, float y1, float x2, float y2)
     {
+        Batcher batcher = Game.getBatcher();
+        batcher.applyTransform(transform);
+        batcher.applyTransform(BaseCamera.view);
+
         startPainting();
         {
-            Batcher batcher = Game.getBatcher();
-
-            batcher.applyTransform(transform);
             batcher.begin(Primitive.LINES);
             {
                 batcher.vertex(x1, y1);
@@ -185,10 +188,12 @@ public class Graphics2D
 
     public void drawPolygon(Polygon polygon)
     {
+        Batcher batcher = Game.getBatcher();
+        batcher.applyTransform(transform);
+        batcher.applyTransform(BaseCamera.view);
+
         startPainting();
         {
-            Batcher batcher = Game.getBatcher();
-            batcher.applyTransform(transform);
             RenderUtils.tracePolygon(batcher, polygon, color);
         }
         endPainting();
@@ -196,10 +201,12 @@ public class Graphics2D
 
     public void fillPolygon(Polygon polygon)
     {
+        Batcher batcher = Game.getBatcher();
+        batcher.applyTransform(transform);
+        batcher.applyTransform(BaseCamera.view);
+
         startPainting();
         {
-            Batcher batcher = Game.getBatcher();
-            batcher.applyTransform(transform);
             RenderUtils.fillPolygon(batcher, polygon, color);
         }
         endPainting();
@@ -209,9 +216,12 @@ public class Graphics2D
 
     public void drawTexture(Texture texture, float x, float y, float w, float h, boolean flipX, boolean flipY)
     {
+        Batcher batcher = Game.getBatcher();
+        batcher.applyTransform(transform);
+        batcher.applyTransform(BaseCamera.view);
+
         startPainting();
         {
-            Batcher batcher = Game.getBatcher();
             texture.bind();
 
             float minU = texture.getMinU();
@@ -219,7 +229,6 @@ public class Graphics2D
             float maxU = texture.getMaxU();
             float maxV = texture.getMaxV();
 
-            batcher.applyTransform(transform);
             batcher.begin(Primitive.TRIANGLE_FAN);
             {
                 batcher.vertex(x, y);
@@ -270,11 +279,12 @@ public class Graphics2D
      */
     public void drawString(String string, float x, float y)
     {
+        Batcher batcher = Game.getBatcher();
+        batcher.applyTransform(transform);
+        batcher.applyTransform(BaseCamera.view);
+
         startPainting();
         {
-            Batcher batcher = Game.getBatcher();
-            batcher.applyTransform(transform);
-
             font.drawString(batcher, string, x, y, color);
         }
         endPainting();
@@ -311,6 +321,16 @@ public class Graphics2D
     public void scale(Vector2 scale)
     {
         transform.scale(scale);
+    }
+
+    public void transform(Transform transform)
+    {
+        this.transform.apply(transform);
+    }
+
+    public void transform(Matrix4 transform)
+    {
+        this.transform.apply(transform);
     }
 
     public void resetTransform()

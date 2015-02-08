@@ -43,9 +43,7 @@ public class Vector3
 
     public Vector3(Vector4 v)
     {
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
+        this(v.x, v.y, v.z);
     }
 
     public Vector3 add(float x, float y, float z)

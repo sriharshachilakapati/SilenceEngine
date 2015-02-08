@@ -6,10 +6,7 @@ import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.graphics.opengl.VertexArray;
-import com.shc.silenceengine.math.Transform;
-import com.shc.silenceengine.math.Vector2;
-import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.math.Vector4;
+import com.shc.silenceengine.math.*;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
@@ -274,7 +271,14 @@ public class Batcher
         flush();
 
         // Apply transform
-        transform.reset().apply(t);
+        transform.apply(t);
+    }
+
+    public void applyTransform(Matrix4 m)
+    {
+        flush();
+
+        transform.apply(m);
     }
 
     private void fillBuffers()
