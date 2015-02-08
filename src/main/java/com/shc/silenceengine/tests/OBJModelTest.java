@@ -95,8 +95,6 @@ public class OBJModelTest extends Game
     {
         cam.apply();
         scene.render(delta, batcher);
-
-        RenderUtils.tracePolyhedron(batcher, entity.getPolyhedron());
     }
 
     public void resize()

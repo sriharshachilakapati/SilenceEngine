@@ -26,20 +26,17 @@ public class Vector2
 
     public Vector2(Vector2 v)
     {
-        x = v.x;
-        y = v.y;
+        this(v.x, v.y);
     }
 
     public Vector2(Vector3 v)
     {
-        x = v.x;
-        y = v.y;
+        this(v.x, v.y);
     }
 
     public Vector2(Vector4 v)
     {
-        x = v.x;
-        y = v.y;
+        this(v.x, v.y);
     }
 
     public float lengthSquared()

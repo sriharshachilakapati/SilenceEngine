@@ -10,6 +10,7 @@ import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.OrthoCam;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
+import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.scene.Scene;
 import com.shc.silenceengine.utils.RenderUtils;
 
@@ -140,10 +141,12 @@ public class DynamicTreeSceneColliderTest2D extends Game
             bounce(other);
         }
 
+        private Vector2 temp = new Vector2();
+
         public void render(float delta, Batcher batcher)
         {
-            RenderUtils.fillPolygon(batcher, getPolygon(), getVelocity().scale(delta), color);
-            RenderUtils.tracePolygon(batcher, getPolygon(), getVelocity().scale(delta), Color.GREEN);
+            RenderUtils.fillPolygon(batcher, getPolygon(), temp.set(getVelocity()), color);
+            RenderUtils.tracePolygon(batcher, getPolygon(), temp.set(getVelocity()), Color.GREEN);
         }
     }
 }

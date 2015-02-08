@@ -51,6 +51,8 @@ public class Entity2D extends SceneNode
     private Vector2 velocity;
     private Polygon polygon;
 
+    private Vector2 tempVec2;
+
     // Depth here indicates the ordering of entity rendering.
     // The higher the depth, the first the object is rendered.
     private int depth;
@@ -62,6 +64,9 @@ public class Entity2D extends SceneNode
     {
         position = new Vector2();
         velocity = new Vector2();
+
+        tempVec2 = new Vector2();
+
         depth = 0;
     }
 
@@ -94,11 +99,10 @@ public class Entity2D extends SceneNode
             return;
 
         // Calculate the new position
-        position = position.add(velocity);
-        polygon.setPosition(position);
+        setPosition(tempVec2.set(position).addSelf(velocity));
 
         // Setup the local transform
-        getLocalTransform().reset().translate(getPosition().subtract(getCenter()))
+        getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
                                    .rotate(Vector3.AXIS_Z, polygon.getRotation())
                                    .translate(getCenter());
     }
@@ -225,7 +229,7 @@ public class Entity2D extends SceneNode
         Collision2D.Response response = new Collision2D.Response();
         Collision2D.testPolygonCollision(polygon, other.getPolygon(), response);
 
-        setPosition(position.subtract(response.getMinimumTranslationVector()));
+        setPosition(tempVec2.set(position).subtractSelf(response.getMinimumTranslationVector()));
     }
 
     /**
@@ -237,7 +241,7 @@ public class Entity2D extends SceneNode
     {
         polygon.rotate(angle);
 
-        getLocalTransform().reset().translate(getPosition().subtract(getCenter()))
+        getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
                            .rotate(Vector3.AXIS_Z, polygon.getRotation())
                            .translate(getCenter());
     }
@@ -270,7 +274,7 @@ public class Entity2D extends SceneNode
     {
         polygon.setRotation(rotation);
 
-        getLocalTransform().reset().translate(getPosition().subtract(getCenter()))
+        getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
                            .rotate(Vector3.AXIS_Z, polygon.getRotation())
                            .translate(getCenter());
     }
@@ -284,9 +288,9 @@ public class Entity2D extends SceneNode
     public void setCenter(Vector2 center)
     {
         polygon.setCenter(center);
-        position = polygon.getPosition();
+        position.set(polygon.getPosition());
 
-        getLocalTransform().reset().translate(getPosition().subtract(getCenter()))
+        getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
                            .rotate(Vector3.AXIS_Z, polygon.getRotation())
                            .translate(getCenter());
     }
@@ -386,10 +390,10 @@ public class Entity2D extends SceneNode
      */
     public void setPosition(Vector2 position)
     {
-        this.position = position;
+        this.position.set(position);
         polygon.setPosition(position);
 
-        getLocalTransform().reset().translate(getPosition().subtract(getCenter()))
+        getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
                            .rotate(Vector3.AXIS_Z, polygon.getRotation())
                            .translate(getCenter());
     }
@@ -409,7 +413,7 @@ public class Entity2D extends SceneNode
      */
     public void setVelocity(Vector2 velocity)
     {
-        this.velocity = velocity;
+        this.velocity.set(velocity);
     }
 
     /**

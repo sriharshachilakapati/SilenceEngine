@@ -47,7 +47,7 @@ public final class RenderUtils
         {
             for (Vector2 vertex : polygon.getVertices())
             {
-                b.vertex(tempVec2.set(vertex).addSelf(polygon.getPosition().addSelf(position)));
+                b.vertex(tempVec2.set(vertex).addSelf(polygon.getPosition()).addSelf(position));
                 b.color(color);
             }
         }
@@ -70,7 +70,7 @@ public final class RenderUtils
         {
             for (Vector2 vertex : polygon.getVertices())
             {
-                b.vertex(tempVec2.set(vertex).addSelf(polygon.getPosition().addSelf(position)));
+                b.vertex(tempVec2.set(vertex).addSelf(polygon.getPosition()).addSelf(position));
                 b.color(color);
             }
         }

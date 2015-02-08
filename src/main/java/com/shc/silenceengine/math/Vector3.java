@@ -1,6 +1,5 @@
 package com.shc.silenceengine.math;
 
-import com.shc.silenceengine.utils.Logger;
 import com.shc.silenceengine.utils.MathUtils;
 
 /**
