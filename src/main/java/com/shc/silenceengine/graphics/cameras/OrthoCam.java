@@ -1,4 +1,4 @@
-package com.shc.silenceengine.graphics;
+package com.shc.silenceengine.graphics.cameras;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
@@ -96,12 +96,21 @@ public class OrthoCam extends BaseCamera
 
     public void apply()
     {
-        BaseCamera.CURRENT = this;
-
-        BaseCamera.projection = mProj;
-        BaseCamera.view       = mView;
+        super.apply();
 
         // Disable depth testing
         GL3Context.disable(GL11.GL_DEPTH_TEST);
+    }
+
+    @Override
+    public Matrix4 getProjection()
+    {
+        return mProj;
+    }
+
+    @Override
+    public Matrix4 getView()
+    {
+        return mView;
     }
 }

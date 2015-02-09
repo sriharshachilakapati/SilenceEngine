@@ -7,7 +7,7 @@ import com.shc.silenceengine.geom2d.Circle;
 import com.shc.silenceengine.geom2d.Rectangle;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.OrthoCam;
+import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Vector2;

@@ -1,4 +1,4 @@
-package com.shc.silenceengine.graphics;
+package com.shc.silenceengine.graphics.cameras;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
@@ -157,17 +157,26 @@ public class PerspCam extends BaseCamera
 
     public void apply()
     {
-        BaseCamera.CURRENT = this;
+        super.apply();
 
         mView.initIdentity()
              .multiply(TransformUtils.createTranslation(tempVec3.set(position).negateSelf()))
              .multiply(TransformUtils.createRotation(rotation));
 
-        BaseCamera.projection = mProj;
-        BaseCamera.view       = mView;
-
         // Enable Depth Testing
         GL3Context.enable(GL11.GL_DEPTH_TEST);
+    }
+
+    @Override
+    public Matrix4 getProjection()
+    {
+        return mProj;
+    }
+
+    @Override
+    public Matrix4 getView()
+    {
+        return mView;
     }
 
     public Vector3 getPosition()

@@ -3,6 +3,8 @@ package com.shc.silenceengine.tests;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.*;
+import com.shc.silenceengine.graphics.cameras.OrthoCam;
+import com.shc.silenceengine.graphics.cameras.PerspCam;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;

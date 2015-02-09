@@ -6,13 +6,12 @@ import com.shc.silenceengine.entity.ModelEntity;
 import com.shc.silenceengine.geom3d.Cuboid;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.PerspCam;
+import com.shc.silenceengine.graphics.cameras.PerspCam;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.models.Model;
 import com.shc.silenceengine.scene.Scene;
 import com.shc.silenceengine.scene.lights.PointLight;
-import com.shc.silenceengine.utils.RenderUtils;
 
 /**
  * @author Sri Harsha Chilakapati

@@ -1,7 +1,7 @@
 package com.shc.silenceengine.graphics.programs;
 
 import com.shc.silenceengine.core.Game;
-import com.shc.silenceengine.graphics.BaseCamera;
+import com.shc.silenceengine.graphics.cameras.BaseCamera;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.RenderContext;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
@@ -59,8 +59,8 @@ public class DefaultProgram extends Program
         // Uniforms
         setUniform("textureID", Texture.getActiveUnit());
         setUniform("mTransform", batcher.getTransform().getMatrix());
-        setUniform("camProj", BaseCamera.projection);
-        setUniform("camView", BaseCamera.view);
+        setUniform("camProj", BaseCamera.CURRENT.getProjection());
+        setUniform("camView", BaseCamera.CURRENT.getView());
         setUniform("ambient", RenderContext.CURRENT_MATERIAL.getAmbient());
 
         // Batcher locations

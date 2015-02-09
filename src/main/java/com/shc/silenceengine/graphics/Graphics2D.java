@@ -3,6 +3,8 @@ package com.shc.silenceengine.graphics;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.geom2d.Polygon;
+import com.shc.silenceengine.graphics.cameras.BaseCamera;
+import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.math.Matrix4;
@@ -40,19 +42,14 @@ public class Graphics2D
         transform = new Transform();
     }
 
-    public OrthoCam getCamera()
-    {
-        return camera;
-    }
-
     /* SHAPE DRAWING METHODS */
     private void rect(float x, float y, float w, float h, Primitive primitive)
     {
+        Batcher batcher = Game.getBatcher();
+        batcher.applyTransform(transform);
+
         startPainting();
         {
-            Batcher batcher = Game.getBatcher();
-
-            batcher.applyTransform(transform);
             batcher.begin(primitive);
             {
                 batcher.vertex(x, y);
@@ -76,7 +73,6 @@ public class Graphics2D
     {
         Batcher batcher = Game.getBatcher();
         batcher.applyTransform(transform);
-        batcher.applyTransform(BaseCamera.view);
 
         startPainting();
         {
@@ -169,7 +165,6 @@ public class Graphics2D
     {
         Batcher batcher = Game.getBatcher();
         batcher.applyTransform(transform);
-        batcher.applyTransform(BaseCamera.view);
 
         startPainting();
         {
@@ -190,7 +185,6 @@ public class Graphics2D
     {
         Batcher batcher = Game.getBatcher();
         batcher.applyTransform(transform);
-        batcher.applyTransform(BaseCamera.view);
 
         startPainting();
         {
@@ -203,7 +197,6 @@ public class Graphics2D
     {
         Batcher batcher = Game.getBatcher();
         batcher.applyTransform(transform);
-        batcher.applyTransform(BaseCamera.view);
 
         startPainting();
         {
@@ -214,11 +207,10 @@ public class Graphics2D
 
     /* TEXTURE DRAWING METHODS */
 
-    public void drawTexture(Texture texture, float x, float y, float w, float h, boolean flipX, boolean flipY)
+    public void drawTexture(Texture texture, float x, float y, float w, float h, boolean flipX, boolean flipY, Color tint)
     {
         Batcher batcher = Game.getBatcher();
         batcher.applyTransform(transform);
-        batcher.applyTransform(BaseCamera.view);
 
         startPainting();
         {
@@ -232,20 +224,29 @@ public class Graphics2D
             batcher.begin(Primitive.TRIANGLE_FAN);
             {
                 batcher.vertex(x, y);
+                batcher.color(tint);
                 batcher.texCoord(flipX ? maxU : minU, flipY ? maxV : minV);
 
                 batcher.vertex(x + w, y);
+                batcher.color(tint);
                 batcher.texCoord(flipX ? minU : maxU, flipY ? maxV : minV);
 
                 batcher.vertex(x + w, y + h);
+                batcher.color(tint);
                 batcher.texCoord(flipX ? minU : maxU, flipY ? minV : maxV);
 
                 batcher.vertex(x, y + h);
+                batcher.color(tint);
                 batcher.texCoord(flipX ? maxU : minU, flipY ? minV : maxV);
             }
             batcher.end();
         }
         endPainting();
+    }
+
+    public void drawTexture(Texture texture, float x, float y, float w, float h, boolean flipX, boolean flipY)
+    {
+        drawTexture(texture, x, y, w, h, flipX, flipY, Color.TRANSPARENT);
     }
 
     public void drawTexture(Texture texture, float x, float y)
@@ -281,7 +282,6 @@ public class Graphics2D
     {
         Batcher batcher = Game.getBatcher();
         batcher.applyTransform(transform);
-        batcher.applyTransform(BaseCamera.view);
 
         startPainting();
         {
@@ -390,5 +390,15 @@ public class Graphics2D
     public void setTransform(Transform transform)
     {
         this.transform = transform;
+    }
+
+    public OrthoCam getCamera()
+    {
+        return camera;
+    }
+
+    public void setCamera(OrthoCam cam)
+    {
+        this.camera = cam;
     }
 }
