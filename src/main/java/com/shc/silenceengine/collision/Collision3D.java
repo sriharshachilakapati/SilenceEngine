@@ -13,19 +13,6 @@ public class Collision3D
 {
     private static Response tmpResponse = new Response();
 
-    private static Vector2 tmpRangeA;
-    private static Vector2 tmpRangeB;
-    private static Vector3 tmpOffset;
-    private static Vector3 tmpAxis;
-
-    static
-    {
-        tmpRangeA = new Vector2();
-        tmpRangeB = new Vector2();
-        tmpOffset = new Vector3();
-        tmpAxis = new Vector3();
-    }
-
     private static Vector2 flattenPoints(List<Vector3> vertices, Vector3 axis, Vector2 projection)
     {
         float min = axis.dot(vertices.get(0));
@@ -52,6 +39,10 @@ public class Collision3D
         axis.y = (axis.y == -0f) ? -1 : axis.y;
         axis.z = (axis.z == -0f) ? -1 : axis.z;
 
+        Vector3 tmpOffset = Vector3.REUSABLE_STACK.pop();
+        Vector2 tmpRangeA = Vector2.REUSABLE_STACK.pop();
+        Vector2 tmpRangeB = Vector2.REUSABLE_STACK.pop();
+
         Vector3 offset = tmpOffset.set(b.getPosition()).subtractSelf(a.getPosition());
         float projectedOffset = offset.dot(axis);
 
@@ -61,7 +52,13 @@ public class Collision3D
         rangeB.addSelf(projectedOffset, projectedOffset);
 
         if (rangeA.x > rangeB.y || rangeB.x > rangeA.y)
+        {
+            Vector3.REUSABLE_STACK.push(tmpOffset);
+            Vector2.REUSABLE_STACK.push(tmpRangeA);
+            Vector2.REUSABLE_STACK.push(tmpRangeB);
+
             return true;
+        }
 
         float overlap;
 
@@ -109,6 +106,10 @@ public class Collision3D
                 response.overlapN.negateSelf();
         }
 
+        Vector3.REUSABLE_STACK.push(tmpOffset);
+        Vector2.REUSABLE_STACK.push(tmpRangeA);
+        Vector2.REUSABLE_STACK.push(tmpRangeB);
+
         return false;
     }
 
@@ -116,6 +117,8 @@ public class Collision3D
     {
         if (response == null)
             response = tmpResponse.clear();
+
+        Vector3 tmpAxis = Vector3.REUSABLE_STACK.pop();
 
         for (int i = 0; i < a.vertexCount(); i++)
         {
@@ -125,7 +128,10 @@ public class Collision3D
             Vector3 axis = tmpAxis.set(e1).crossSelf(e2).normalizeSelf();
 
             if (isSeparatingAxis(a, b, axis, response))
+            {
+                Vector3.REUSABLE_STACK.push(tmpAxis);
                 return false;
+            }
         }
 
         for (int i = 0; i < b.vertexCount(); i++)
@@ -136,13 +142,18 @@ public class Collision3D
             Vector3 axis = tmpAxis.set(e1).crossSelf(e2).normalizeSelf();
 
             if (isSeparatingAxis(a, b, axis, response))
+            {
+                Vector3.REUSABLE_STACK.push(tmpAxis);
                 return false;
+            }
         }
 
         response.a = a;
         response.b = b;
         response.intersection = true;
         response.overlapV.set(response.overlapN).scaleSelf(response.overlap);
+
+        Vector3.REUSABLE_STACK.push(tmpAxis);
 
         return true;
     }

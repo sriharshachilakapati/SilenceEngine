@@ -21,19 +21,6 @@ public final class Collision2D
 
     private static Response tmpResponse = new Response();
 
-    private static Vector2 tmpRangeA;
-    private static Vector2 tmpRangeB;
-    private static Vector2 tmpOffset;
-    private static Vector2 tmpNormal;
-
-    static
-    {
-        tmpRangeA = new Vector2();
-        tmpRangeB = new Vector2();
-        tmpOffset = new Vector2();
-        tmpNormal = new Vector2();
-    }
-
     private static Vector2 flattenPoints(List<Vector2> vertices, Vector2 normal, Vector2 projection)
     {
         float min = Float.MAX_VALUE;
@@ -55,6 +42,10 @@ public final class Collision2D
         if (response == null)
             response = tmpResponse.clear();
 
+        Vector2 tmpOffset = Vector2.REUSABLE_STACK.pop();
+        Vector2 tmpRangeA = Vector2.REUSABLE_STACK.pop();
+        Vector2 tmpRangeB = Vector2.REUSABLE_STACK.pop();
+
         Vector2 offset = tmpOffset.set(b.getPosition()).subtractSelf(a.getPosition());
 
         float projectedOffset = offset.dot(axis);
@@ -65,7 +56,13 @@ public final class Collision2D
         rangeB.addSelf(projectedOffset, projectedOffset);
 
         if (rangeA.x > rangeB.y || rangeB.x > rangeA.y)
+        {
+            Vector2.REUSABLE_STACK.push(tmpOffset);
+            Vector2.REUSABLE_STACK.push(tmpRangeA);
+            Vector2.REUSABLE_STACK.push(tmpRangeB);
+
             return true;
+        }
 
         float overlap;
 
@@ -113,6 +110,10 @@ public final class Collision2D
                 response.overlapN.negateSelf();
         }
 
+        Vector2.REUSABLE_STACK.push(tmpOffset);
+        Vector2.REUSABLE_STACK.push(tmpRangeA);
+        Vector2.REUSABLE_STACK.push(tmpRangeB);
+
         return false;
     }
 
@@ -120,6 +121,8 @@ public final class Collision2D
     {
         if (response == null)
             response = tmpResponse.clear();
+
+        Vector2 tmpNormal = Vector2.REUSABLE_STACK.pop();
 
         for (int i = 0; i < a.vertexCount(); i++)
         {
@@ -130,7 +133,10 @@ public final class Collision2D
             Vector2 normal = edge.perpendicularSelf().normalizeSelf();
 
             if (isSeparatingAxis(a, b, normal, response))
+            {
+                Vector2.REUSABLE_STACK.push(tmpNormal);
                 return false;
+            }
         }
 
         for (int i = 0; i < b.vertexCount(); i++)
@@ -142,13 +148,18 @@ public final class Collision2D
             Vector2 normal = edge.perpendicularSelf().normalizeSelf();
 
             if (isSeparatingAxis(a, b, normal, response))
+            {
+                Vector2.REUSABLE_STACK.push(tmpNormal);
                 return false;
+            }
         }
 
         response.a = a;
         response.b = b;
         response.overlapV.set(response.overlapN).scaleSelf(response.overlap);
         response.intersection = true;
+
+        Vector2.REUSABLE_STACK.push(tmpNormal);
 
         return true;
     }

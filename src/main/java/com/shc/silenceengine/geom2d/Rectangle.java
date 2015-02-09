@@ -22,6 +22,11 @@ public class Rectangle extends Polygon
         this(0, 0, 0, 0);
     }
 
+    public Rectangle(float width, float height)
+    {
+        this(0, 0, width, height);
+    }
+
     public Rectangle(float x, float y, float width, float height)
     {
         this.width  = width;

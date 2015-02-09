@@ -1,6 +1,7 @@
 package com.shc.silenceengine.math;
 
 import com.shc.silenceengine.utils.MathUtils;
+import com.shc.silenceengine.utils.ReusableStack;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -11,6 +12,8 @@ public class Vector3
     public static final Vector3 AXIS_X = new Vector3(1, 0, 0);
     public static final Vector3 AXIS_Y = new Vector3(0, 1, 0);
     public static final Vector3 AXIS_Z = new Vector3(0, 0, 1);
+
+    public static final ReusableStack<Vector3> REUSABLE_STACK = new ReusableStack<>(Vector3.class);
 
     public float x, y, z;
 

@@ -1,5 +1,6 @@
 package com.shc.silenceengine.math;
 
+import com.shc.silenceengine.utils.ReusableStack;
 import com.shc.silenceengine.utils.TransformUtils;
 
 /**
@@ -7,6 +8,8 @@ import com.shc.silenceengine.utils.TransformUtils;
  */
 public class Transform
 {
+    public static final ReusableStack<Transform> REUSABLE_STACK = new ReusableStack<>(Transform.class);
+
     // The transformation matrix
     private Matrix4 tMatrix;
 

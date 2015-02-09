@@ -125,16 +125,22 @@ public class Polygon
         int i, j = getVertices().size() - 1;
         boolean oddNodes = false;
 
+        Vector2 vi = Vector2.REUSABLE_STACK.pop();
+        Vector2 vj = Vector2.REUSABLE_STACK.pop();
+
         for (i = 0; i < getVertices().size(); j = i++)
         {
-            Vector2 vi = getVertex(i).add(position);
-            Vector2 vj = getVertex(j).add(position);
+            vi.set(getVertex(i)).addSelf(position);
+            vj.set(getVertex(j)).addSelf(position);
 
             if ((((vi.getY() <= p.getY()) && (p.getY() < vj.getY())) ||
                  ((vj.getY() <= p.getY()) && (p.getY() < vi.getY()))) &&
                 (p.getX() < (vj.getX() - vi.getX()) * (p.getY() - vi.getY()) / (vj.getY() - vi.getY()) + vi.getX()))
                 oddNodes = !oddNodes;
         }
+
+        Vector2.REUSABLE_STACK.push(vi);
+        Vector2.REUSABLE_STACK.push(vj);
 
         return oddNodes;
     }
@@ -183,6 +189,11 @@ public class Polygon
     {
         position.x = x;
         position.y = y;
+
+        center.set(position).addSelf((maxX - minX)/2, (maxY - minY)/2);
+
+        if (bounds != null)
+            bounds.setPosition(position);
     }
 
     public Rectangle getBounds()
@@ -199,7 +210,7 @@ public class Polygon
         center.set(position).addSelf((maxX - minX)/2, (maxY - minY)/2);
 
         if (bounds != null)
-            bounds.setPosition(v);
+            bounds.setPosition(position);
     }
 
     public float getRotation()

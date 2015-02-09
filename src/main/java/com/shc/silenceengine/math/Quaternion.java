@@ -1,24 +1,13 @@
 package com.shc.silenceengine.math;
 
+import com.shc.silenceengine.utils.ReusableStack;
+
 /**
  * @author Sri Harsha Chilakapati
  */
 public class Quaternion
 {
-    private static Quaternion temp1;
-    private static Quaternion temp2;
-    private static Quaternion temp3;
-
-    private static Vector3 tempVec3;
-
-    static
-    {
-        temp1 = new Quaternion();
-        temp2 = new Quaternion();
-        temp3 = new Quaternion();
-
-        tempVec3 = new Vector3();
-    }
+    public static final ReusableStack<Quaternion> REUSABLE_STACK = new ReusableStack<>(Quaternion.class);
 
     public float x;
     public float y;
@@ -137,6 +126,12 @@ public class Quaternion
 
     public Vector3 multiply(Vector3 v)
     {
+        Vector3 tempVec3 = Vector3.REUSABLE_STACK.pop();
+
+        Quaternion temp1 = Quaternion.REUSABLE_STACK.pop();
+        Quaternion temp2 = Quaternion.REUSABLE_STACK.pop();
+        Quaternion temp3 = Quaternion.REUSABLE_STACK.pop();
+
         Vector3 vn = tempVec3.set(v).normalizeSelf();
 
         Quaternion q1 = temp1.set(this).conjugateSelf();
@@ -145,11 +140,25 @@ public class Quaternion
         qv = temp3.set(this).multiplySelf(qv);
         qv.multiplySelf(q1);
 
-        return new Vector3(qv.x, qv.y, qv.z).normalizeSelf().scaleSelf(v.length());
+        Vector3 result = new Vector3(qv.x, qv.y, qv.z).normalizeSelf().scaleSelf(v.length());
+
+        Vector3.REUSABLE_STACK.push(tempVec3);
+
+        Quaternion.REUSABLE_STACK.push(temp1);
+        Quaternion.REUSABLE_STACK.push(temp2);
+        Quaternion.REUSABLE_STACK.push(temp3);
+
+        return result;
     }
 
     public Vector3 multiply(Vector3 v, Vector3 dest)
     {
+        Vector3 tempVec3 = Vector3.REUSABLE_STACK.pop();
+
+        Quaternion temp1 = Quaternion.REUSABLE_STACK.pop();
+        Quaternion temp2 = Quaternion.REUSABLE_STACK.pop();
+        Quaternion temp3 = Quaternion.REUSABLE_STACK.pop();
+
         Vector3 vn = tempVec3.set(v).normalizeSelf();
 
         Quaternion q1 = temp1.set(this).conjugateSelf();
@@ -158,7 +167,15 @@ public class Quaternion
         qv = temp3.set(this).multiplySelf(qv);
         qv.multiplySelf(q1);
 
-        return dest.set(qv.x, qv.y, qv.z).normalizeSelf().scaleSelf(v.length());
+        dest.set(qv.x, qv.y, qv.z).normalizeSelf().scaleSelf(v.length());
+
+        Vector3.REUSABLE_STACK.push(tempVec3);
+
+        Quaternion.REUSABLE_STACK.push(temp1);
+        Quaternion.REUSABLE_STACK.push(temp2);
+        Quaternion.REUSABLE_STACK.push(temp3);
+
+        return dest;
     }
 
     public Quaternion copy()

@@ -2,6 +2,7 @@ package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.math.Vector4;
 import com.shc.silenceengine.utils.MathUtils;
+import com.shc.silenceengine.utils.ReusableStack;
 
 /**
  * A Color class with RGBA colors. Has 140 predefined colors
@@ -11,6 +12,8 @@ import com.shc.silenceengine.utils.MathUtils;
  */
 public class Color extends Vector4
 {
+    public static final ReusableStack<Color> REUSABLE_STACK = new ReusableStack<>(Color.class);
+
     // Primitive colors
     public static final Color BLACK = new Color(0x000000);
     public static final Color RED   = new Color(0xFF0000);
@@ -216,9 +219,19 @@ public class Color extends Vector4
         return new Color(x + c.x, y + c.y, z + c.z, w + c.w);
     }
 
+    public Color addSelf(Color c)
+    {
+        return set(x + c.x, y + c.y, z + c.z, w + c.w);
+    }
+
     public Color add(float r, float g, float b, float a)
     {
         return new Color(x + r, y + g, z + b, w + a);
+    }
+
+    public Color addSelf(float r, float g, float b, float a)
+    {
+        return set(x + r, y + g, z + b, w + a);
     }
 
     public Color add(float r, float g, float b)
@@ -226,9 +239,19 @@ public class Color extends Vector4
         return add(r, g, b, 1);
     }
 
+    public Color addSelf(float r, float g, float b)
+    {
+        return addSelf(r, g, b, 1);
+    }
+
     public Color subtract(Color c)
     {
         return add(-c.x, -c.y, -c.z, -c.w);
+    }
+
+    public Color subtractSelf(Color c)
+    {
+        return addSelf(-c.x, -c.y, -c.z, -c.w);
     }
 
     public Color subtract(float r, float g, float b)
@@ -236,9 +259,19 @@ public class Color extends Vector4
         return subtract(r, g, b, 1);
     }
 
+    public Color subtractSelf(float r, float g, float b)
+    {
+        return subtractSelf(r, g, b, 1);
+    }
+
     public Color subtract(float r, float g, float b, float a)
     {
         return add(-r, -g, -b, -a);
+    }
+
+    public Color subtractSelf(float r, float g, float b, float a)
+    {
+        return addSelf(-r, -g, -b, -a);
     }
 
     public Color multiply(Color c)
@@ -246,14 +279,29 @@ public class Color extends Vector4
         return new Color(x * c.x, y * c.y, z * c.z, w * c.w);
     }
 
+    public Color multiplySelf(Color c)
+    {
+        return set(x * c.x, y * c.y, z * c.z, w * c.w);
+    }
+
     public Color multiply(float r, float g, float b, float a)
     {
         return new Color(x * r, y * g, z * b, w * a);
     }
 
+    public Color multiplySelf(float r, float g, float b, float a)
+    {
+        return set(x * r, y * g, z * b, w * a);
+    }
+
     public Color multiply(float r, float g, float b)
     {
         return multiply(r, g, b, 1);
+    }
+
+    public Color multiplySelf(float r, float g, float b)
+    {
+        return multiplySelf(r, g, b, 1);
     }
 
     public float getRed()
@@ -304,5 +352,10 @@ public class Color extends Vector4
     public static Color random()
     {
         return new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), (float) Math.random());
+    }
+
+    public Color randomSelf()
+    {
+        return set((float) Math.random(), (float) Math.random(), (float) Math.random(), (float) Math.random());
     }
 }

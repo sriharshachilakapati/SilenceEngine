@@ -1,11 +1,15 @@
 package com.shc.silenceengine.math;
 
+import com.shc.silenceengine.utils.ReusableStack;
+
 /**
  * @author Sri Harsha Chilakapati
  */
 public class Vector4
 {
     public static final Vector4 ZERO = new Vector4(0, 0, 0, 0);
+
+    public static final ReusableStack<Vector4> REUSABLE_STACK = new ReusableStack<>(Vector4.class);
 
     public float x, y, z, w;
 

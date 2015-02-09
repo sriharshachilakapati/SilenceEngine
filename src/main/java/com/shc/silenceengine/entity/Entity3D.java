@@ -200,13 +200,17 @@ public class Entity3D extends SceneNode
         Vector3 tCenter = getPosition();
         Vector3 oCenter = other.getPosition();
 
-        Vector3 direction = tCenter.subtract(oCenter).normalizeSelf();
+        Vector3 direction = Vector3.REUSABLE_STACK.pop();
+
+        direction.set(tCenter).subtractSelf(oCenter).normalizeSelf();
         setPosition(position.addSelf(direction));
 
         Collision3D.Response response = new Collision3D.Response();
         Collision3D.testPolyhedronCollision(polyhedron, other.polyhedron, response);
 
         setPosition(position.subtractSelf(response.getMinimumTranslationVector()));
+
+        Vector3.REUSABLE_STACK.push(direction);
     }
 
     /**

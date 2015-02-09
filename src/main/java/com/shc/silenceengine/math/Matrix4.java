@@ -1,10 +1,14 @@
 package com.shc.silenceengine.math;
 
+import com.shc.silenceengine.utils.ReusableStack;
+
 /**
  * @author Sri Harsha Chilakapati
  */
 public class Matrix4
 {
+    public static final ReusableStack<Matrix4> REUSABLE_STACK = new ReusableStack<>(Matrix4.class);
+
     private float[][] m;
 
     public Matrix4()

@@ -13,20 +13,6 @@ import com.shc.silenceengine.math.Vector3;
  */
 public final class RenderUtils
 {
-    private static Vector2 tempVec2;
-    private static Vector3 tempVec31;
-    private static Vector3 tempVec32;
-    private static Vector3 tempVec33;
-
-    static
-    {
-        tempVec2 = new Vector2();
-
-        tempVec31 = new Vector3();
-        tempVec32 = new Vector3();
-        tempVec33 = new Vector3();
-    }
-
     private RenderUtils()
     {
     }
@@ -43,6 +29,8 @@ public final class RenderUtils
 
     public static void tracePolygon(Batcher b, Polygon polygon, Vector2 position, Color color)
     {
+        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
+
         b.begin(Primitive.LINE_LOOP);
         {
             for (Vector2 vertex : polygon.getVertices())
@@ -52,6 +40,8 @@ public final class RenderUtils
             }
         }
         b.end();
+
+        Vector2.REUSABLE_STACK.push(tempVec2);
     }
 
     public static void fillPolygon(Batcher b, Polygon polygon)
@@ -66,6 +56,8 @@ public final class RenderUtils
 
     public static void fillPolygon(Batcher b, Polygon polygon, Vector2 position, Color color)
     {
+        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
+
         b.begin(Primitive.TRIANGLE_FAN);
         {
             for (Vector2 vertex : polygon.getVertices())
@@ -75,6 +67,8 @@ public final class RenderUtils
             }
         }
         b.end();
+
+        Vector2.REUSABLE_STACK.push(tempVec2);
     }
 
     public static void tracePolyhedron(Batcher b, Polyhedron Polyhedron)
@@ -89,6 +83,10 @@ public final class RenderUtils
 
     public static void tracePolyhedron(Batcher b, Polyhedron polyhedron, Vector3 position, Color color)
     {
+        Vector3 tempVec31 = Vector3.REUSABLE_STACK.pop();
+        Vector3 tempVec32 = Vector3.REUSABLE_STACK.pop();
+        Vector3 tempVec33 = Vector3.REUSABLE_STACK.pop();
+
         b.begin(Primitive.LINE_STRIP);
         {
             Vector3 v1;
@@ -130,6 +128,10 @@ public final class RenderUtils
             }
         }
         b.end();
+
+        Vector3.REUSABLE_STACK.push(tempVec31);
+        Vector3.REUSABLE_STACK.push(tempVec32);
+        Vector3.REUSABLE_STACK.push(tempVec33);
     }
 
     public static void fillPolyhedron(Batcher b, Polyhedron polyhedron)
@@ -144,6 +146,8 @@ public final class RenderUtils
 
     public static void fillPolyhedron(Batcher b, Polyhedron polyhedron, Vector3 position, Color color)
     {
+        Vector3 tempVec31 = Vector3.REUSABLE_STACK.pop();
+
         b.begin(Primitive.TRIANGLE_STRIP);
         {
             for (Vector3 vertex : polyhedron.getVertices())
@@ -153,5 +157,7 @@ public final class RenderUtils
             }
         }
         b.end();
+
+        Vector3.REUSABLE_STACK.push(tempVec31);
     }
 }
