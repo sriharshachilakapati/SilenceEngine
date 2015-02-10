@@ -18,4 +18,44 @@ public class ALException extends SilenceException
     {
         super(message);
     }
+
+    public static class InvalidName extends ALException
+    {
+        public InvalidName()
+        {
+            super("Invalid name parameter passed");
+        }
+    }
+
+    public static class InvalidEnum extends ALException
+    {
+        public InvalidEnum()
+        {
+            super("Invalid enum value");
+        }
+    }
+
+    public static class InvalidValue extends ALException
+    {
+        public InvalidValue()
+        {
+            super("Invalid parameter value");
+        }
+    }
+
+    public static class InvalidOperation extends ALException
+    {
+        public InvalidOperation()
+        {
+            super("Illegal call");
+        }
+    }
+
+    public static class OutOfMemory extends ALException
+    {
+        public OutOfMemory()
+        {
+            super("OpenAL ran out of memory");
+        }
+    }
 }

@@ -19,4 +19,44 @@ public class ALCException extends SilenceException
     {
         super(message);
     }
+
+    public static class InvalidDevice extends ALCException
+    {
+        public InvalidDevice()
+        {
+            super("Invalid or no device selected");
+        }
+    }
+
+    public static class InvalidContext extends ALCException
+    {
+        public InvalidContext()
+        {
+            super("Invalid or no context selected");
+        }
+    }
+
+    public static class InvalidEnum extends ALCException
+    {
+        public InvalidEnum()
+        {
+            super("Invalid enum value");
+        }
+    }
+
+    public static class InvalidValue extends ALCException
+    {
+        public InvalidValue()
+        {
+            super("Invalid parameter value");
+        }
+    }
+
+    public static class OutOfMemory extends ALCException
+    {
+        public OutOfMemory()
+        {
+            super("OpenAL ran out of memory");
+        }
+    }
 }

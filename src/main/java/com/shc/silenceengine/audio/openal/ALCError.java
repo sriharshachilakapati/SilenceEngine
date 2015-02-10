@@ -12,6 +12,11 @@ import static org.lwjgl.openal.ALC10.*;
  */
 public final class ALCError
 {
+    public static enum Value
+    {
+        NO_ERROR, INVALID_DEVICE, INVALID_CONTEXT, INVALID_ENUM, INVALID_VALUE, OUT_OF_MEMORY
+    }
+
     // Prevent instantiation
     private ALCError()
     {
@@ -69,23 +74,33 @@ public final class ALCError
             case ALC_NO_ERROR:
                 break;
 
-            case ALC_INVALID_DEVICE:
-                throw new ALCException("ALC_INVALID_DEVICE: Invalid or no device selected");
-
-            case ALC_INVALID_CONTEXT:
-                throw new ALCException("ALC_INVALID_CONTEXT: Invalid or no context selected");
-
-            case ALC_INVALID_ENUM:
-                throw new ALCException("ALC_INVALID_ENUM: Invalid enum value");
-
-            case ALC_INVALID_VALUE:
-                throw new ALCException("ALC_INVALID_VALUE: Invalid parameter value");
-
-            case ALC_OUT_OF_MEMORY:
-                throw new ALCException("ALC_OUT_OF_MEMORY: OpenAL ran out of memory");
+            case ALC_INVALID_DEVICE:  throw new ALCException.InvalidDevice();
+            case ALC_INVALID_CONTEXT: throw new ALCException.InvalidContext();
+            case ALC_INVALID_ENUM:    throw new ALCException.InvalidEnum();
+            case ALC_INVALID_VALUE:   throw new ALCException.InvalidValue();
+            case ALC_OUT_OF_MEMORY:   throw new ALCException.OutOfMemory();
 
             default:
                 throw new ALCException("Unknown OpenAL Context Error");
         }
+    }
+
+    public static Value get(long device)
+    {
+        switch (alcGetError(device))
+        {
+            case ALC_INVALID_DEVICE:  return Value.INVALID_DEVICE;
+            case ALC_INVALID_CONTEXT: return Value.INVALID_CONTEXT;
+            case ALC_INVALID_ENUM:    return Value.INVALID_ENUM;
+            case ALC_INVALID_VALUE:   return Value.INVALID_VALUE;
+            case ALC_OUT_OF_MEMORY:   return Value.OUT_OF_MEMORY;
+        }
+
+        return Value.NO_ERROR;
+    }
+
+    public static Value get()
+    {
+        return get(ALContext.getInstance().getDevice().getPointer());
     }
 }
