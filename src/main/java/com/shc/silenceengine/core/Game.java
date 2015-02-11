@@ -1,5 +1,7 @@
 package com.shc.silenceengine.core;
 
+import com.shc.silenceengine.audio.formats.OggReader;
+import com.shc.silenceengine.audio.formats.WaveReader;
 import com.shc.silenceengine.audio.openal.ALContext;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Graphics2D;
@@ -176,6 +178,8 @@ public class Game
 
         // Initialize OpenAL
         ALContext.getInstance().init();
+        WaveReader.register();
+        OggReader.register();
 
         Logger.log("Initialized OpenGL version " + glGetString(GL_VERSION));
         Logger.log("Initializing Game");

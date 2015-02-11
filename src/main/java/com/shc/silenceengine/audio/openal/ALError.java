@@ -12,6 +12,9 @@ import static org.lwjgl.openal.AL10.*;
  */
 public final class ALError
 {
+    /**
+     * The value enumeration of OpenAL error
+     */
     public static enum Value
     {
         NO_ERROR, INVALID_NAME, INVALID_ENUM, INVALID_VALUE, INVALID_OPERATION, OUT_OF_MEMORY
@@ -62,6 +65,12 @@ public final class ALError
         }
     }
 
+    /**
+     * Checks for the OpenAL error and return the error on the top of the
+     * OpenAL error stack, using the default device.
+     *
+     * @return The value of the error as an enum.
+     */
     public static Value get()
     {
         switch (alGetError())

@@ -10,14 +10,11 @@ import com.jcraft.jorbis.DspState;
 import com.jcraft.jorbis.Info;
 import com.shc.silenceengine.audio.ISoundReader;
 import com.shc.silenceengine.core.SilenceException;
-import com.shc.silenceengine.utils.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
 
 import static org.lwjgl.openal.AL10.*;
 
@@ -34,14 +31,10 @@ public class OggReader implements ISoundReader
     private int sampleRate;
     private int format;
 
-    /**
-     * Constructs an OGG reader to read from a resource filename.
-     *
-     * @param name The filename of the resource to load.
-     */
-    public OggReader(String name)
+    public static void register()
     {
-        this(FileUtils.getResource(name));
+        ISoundReader.register("ogg", OggReader.class);
+        ISoundReader.register("oga", OggReader.class);
     }
 
     /**
@@ -335,41 +328,7 @@ public class OggReader implements ISoundReader
 
         // Convert the decoded samples into mono / stereo bytes
         byte[] samples = output.toByteArray();
-        data = convertAudioBytes(samples, vi.channels == 2);
-    }
-
-    /**
-     * Method borrowed from LWJGL3 demos, this converts stereo and mono data samples.
-     *
-     * @param samples The Byte array of audio samples
-     * @param stereo  Whether to convert to stereo audio
-     *
-     * @return The ByteBuffer containing fixed samples.
-     */
-    private ByteBuffer convertAudioBytes(byte[] samples, boolean stereo)
-    {
-        ByteBuffer dest = ByteBuffer.allocateDirect(samples.length);
-        dest.order(ByteOrder.nativeOrder());
-
-        ByteBuffer src = ByteBuffer.wrap(samples);
-        src.order(ByteOrder.LITTLE_ENDIAN);
-
-        if (stereo)
-        {
-            ShortBuffer dest_short = dest.asShortBuffer();
-            ShortBuffer src_short = src.asShortBuffer();
-
-            while (src_short.hasRemaining())
-                dest_short.put(src_short.get());
-        }
-        else
-        {
-            while (src.hasRemaining())
-                dest.put(src.get());
-        }
-
-        dest.rewind();
-        return dest;
+        data = ISoundReader.convertAudioBytes(samples, vi.channels == 2);
     }
 
     @Override

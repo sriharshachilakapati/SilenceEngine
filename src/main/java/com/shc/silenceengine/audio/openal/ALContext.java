@@ -37,6 +37,10 @@ public final class ALContext
     /**
      * Initializes this context. This is not meant to be called by the user,
      * as this is called by the Engine internally.
+     *
+     * @throws ALCException.InvalidDevice  If there is no available OpenAL device.
+     * @throws ALCException.InvalidContext If the context created is invalid.
+     * @throws ALCException If the context doesn't support OpenAL 1.1
      */
     public void init()
     {
@@ -52,9 +56,9 @@ public final class ALContext
         ALCError.check();
         ALCCapabilities capabilities = device.getCapabilities();
 
-        // We use OpenAL 1.0 in this engine, if it is not present,
+        // We use OpenAL 1.1 in this engine, if it is not present,
         // The context creation is failed.
-        if (!capabilities.OpenALC10)
+        if (!capabilities.OpenALC11)
             throw new ALCException("OpenAL Context Creation failed");
     }
 

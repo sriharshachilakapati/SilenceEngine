@@ -19,6 +19,8 @@ public class ALBuffer
 
     /**
      * Constructs a new OpenAL buffer.
+     *
+     * @throws ALException.OutOfMemory If there is no enough memory
      */
     public ALBuffer()
     {
@@ -33,6 +35,9 @@ public class ALBuffer
      * @param data      The NIO Buffer containing the data samples
      * @param format    The OpenAL format of the data samples in the buffer
      * @param frequency The frequency of the sound samples (in Hz)
+     *
+     * @throws ALException.InvalidValue If the data does not match the format specified.
+     * @throws ALException.OutOfMemory  If there is no available memory to store the data.
      */
     public void uploadData(Buffer data, int format, int frequency)
     {
@@ -57,6 +62,8 @@ public class ALBuffer
     /**
      * Disposes this OpenAL Buffer. A disposed OpenAL buffer is no longer
      * usable, to use again, you need to create another one.
+     *
+     * @throws ALException if the buffer is already disposed.
      */
     public void dispose()
     {

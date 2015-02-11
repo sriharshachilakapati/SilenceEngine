@@ -2,7 +2,6 @@ package com.shc.silenceengine.audio.formats;
 
 import com.shc.silenceengine.audio.ISoundReader;
 import com.shc.silenceengine.core.SilenceException;
-import com.shc.silenceengine.utils.*;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -14,15 +13,31 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
 
 import static org.lwjgl.openal.AL10.*;
 
 /**
- * A WaveReader to read the sound samples from Waveform Audio. Supports all
- * the file formats that are supported by JavaSound API. Currently the files
- * that are read using this, are .wav, .wave, .au, .aif, .aiff, .mid, .midi.
+ * <p>
+ * A sound reader based on the JavaSound API. That means, this class is able to
+ * read sound samples from any format that JavaSound's <code>AudioInputStream</code>
+ * class is able to decode. Currently, it can read from .wav, .wave, .au, .aif,
+ * .aiff, .mid, .midi formats.
+ * </p>
+ *
+ * <p>
+ * Though you are allowed to create instances of this reader on your own, it is
+ * recommended that you use the {@link com.shc.silenceengine.audio.ISoundReader}
+ * interface to construct readers, as it is more flexible that way. And also, you
+ * do not need to call the <code>register()</code> method in this class, as it
+ * will be called automatically for you. Even if you do call it explicitly, there
+ * is no harm.
+ * </p>
+ *
+ * <p>
+ * If you are really in using this class though, feel free to use it. All it takes
+ * is an <code>InputStream</code> to construct the reader, and you can use it in
+ * anyway that makes sense for you.
+ * </p>
  *
  * @author Sri Harsha Chilakapati
  */
@@ -32,6 +47,18 @@ public class WaveReader implements ISoundReader
 
     private int sampleRate;
     private int format;
+
+    public static void register()
+    {
+        // Register extensions that we handle
+        ISoundReader.register("wav",  WaveReader.class);
+        ISoundReader.register("wave", WaveReader.class);
+        ISoundReader.register("au",   WaveReader.class);
+        ISoundReader.register("aif",  WaveReader.class);
+        ISoundReader.register("aiff", WaveReader.class);
+        ISoundReader.register("mid",  WaveReader.class);
+        ISoundReader.register("midi", WaveReader.class);
+    }
 
     /**
      * Constructs a WaveReader that reads the sound samples from an InputStream.
@@ -77,7 +104,7 @@ public class WaveReader implements ISoundReader
             DataInputStream dis = new DataInputStream(ais);
             dis.readFully(samples);
 
-            data = convertAudioBytes(samples, fmt.getSampleSizeInBits() == 16);
+            data = ISoundReader.convertAudioBytes(samples, fmt.getSampleSizeInBits() == 16);
 
             // Close the input streams
             ais.close();
@@ -88,49 +115,6 @@ public class WaveReader implements ISoundReader
         {
             SilenceException.reThrow(e);
         }
-    }
-
-    /**
-     * Method borrowed from LWJGL3 demos, this converts stereo and mono data samples.
-     *
-     * @param samples The Byte array of audio samples
-     * @param stereo  Whether to convert to stereo audio
-     *
-     * @return The ByteBuffer containing fixed samples.
-     */
-    private ByteBuffer convertAudioBytes(byte[] samples, boolean stereo)
-    {
-        ByteBuffer dest = ByteBuffer.allocateDirect(samples.length);
-        dest.order(ByteOrder.nativeOrder());
-
-        ByteBuffer src = ByteBuffer.wrap(samples);
-        src.order(ByteOrder.LITTLE_ENDIAN);
-
-        if (stereo)
-        {
-            ShortBuffer dest_short = dest.asShortBuffer();
-            ShortBuffer src_short = src.asShortBuffer();
-
-            while (src_short.hasRemaining())
-                dest_short.put(src_short.get());
-        }
-        else
-        {
-            while (src.hasRemaining())
-                dest.put(src.get());
-        }
-
-        dest.rewind();
-        return dest;
-    }
-
-    /**
-     * Constructs a WaveReader that reads samples from a wave file.
-     * @param filename The filename of the wav file resource.
-     */
-    public WaveReader(String filename)
-    {
-        this(FileUtils.getResource(filename));
     }
 
     public Buffer getData()

@@ -12,6 +12,9 @@ import static org.lwjgl.openal.ALC10.*;
  */
 public final class ALCError
 {
+    /**
+     * The value enumeration of the OpenAL Context Error
+     */
     public static enum Value
     {
         NO_ERROR, INVALID_DEVICE, INVALID_CONTEXT, INVALID_ENUM, INVALID_VALUE, OUT_OF_MEMORY
@@ -85,6 +88,15 @@ public final class ALCError
         }
     }
 
+    /**
+     * Checks for the OpenAL context error and return the error on the top of the
+     * OpenAL error stack.
+     *
+     * @param device The memory location aka the pointer of the device. You can use
+     *               ALDevice.getPointer() to obtain this.
+     *
+     * @return The value of the error as an enum.
+     */
     public static Value get(long device)
     {
         switch (alcGetError(device))
@@ -99,6 +111,12 @@ public final class ALCError
         return Value.NO_ERROR;
     }
 
+    /**
+     * Checks for the OpenAL context error and return the error on the top of the
+     * OpenAL error stack, using the default device.
+     *
+     * @return The value of the error as an enum.
+     */
     public static Value get()
     {
         return get(ALContext.getInstance().getDevice().getPointer());
