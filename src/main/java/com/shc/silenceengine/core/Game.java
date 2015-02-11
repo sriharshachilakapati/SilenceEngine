@@ -10,6 +10,8 @@ import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.utils.*;
+import org.lwjgl.LWJGLUtil;
+import org.lwjgl.Sys;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -165,6 +167,8 @@ public class Game
         NativesLoader.load();
 
         Logger.log("Natives loaded successfully");
+
+        Logger.log("Using LWJGL Version: " + Sys.getVersion());
 
         running = true;
 
