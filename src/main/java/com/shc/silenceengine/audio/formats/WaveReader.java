@@ -48,6 +48,9 @@ public class WaveReader implements ISoundReader
     private int sampleRate;
     private int format;
 
+    /**
+     * Registers this class to handle specific extensions.
+     */
     public static void register()
     {
         // Register extensions that we handle
