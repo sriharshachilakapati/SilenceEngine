@@ -9,6 +9,7 @@ import com.jcraft.jorbis.Comment;
 import com.jcraft.jorbis.DspState;
 import com.jcraft.jorbis.Info;
 import com.shc.silenceengine.audio.ISoundReader;
+import com.shc.silenceengine.audio.openal.ALFormat;
 import com.shc.silenceengine.core.SilenceException;
 
 import java.io.ByteArrayOutputStream;
@@ -48,7 +49,7 @@ public class OggReader implements ISoundReader
     private ByteBuffer data;
 
     private int sampleRate;
-    private int format;
+    private ALFormat format;
 
     /**
      * Registers the extensions that this class is able to handle.
@@ -155,12 +156,12 @@ public class OggReader implements ISoundReader
                 throw new SilenceException("This Ogg bitstream does not contain Vorbis audio data.");
 
             // Get OpenAL format and SampleRate from info
-            format = vi.channels;
+            int format = vi.channels;
 
             if (format == 1)
-                format = AL_FORMAT_MONO16;
+                this.format = ALFormat.MONO_16;
             else if (format == 2)
-                format = AL_FORMAT_STEREO16;
+                this.format = ALFormat.STEREO_16;
             else
                 throw new SilenceException("Incorrect OGG file format");
 
@@ -366,7 +367,7 @@ public class OggReader implements ISoundReader
     }
 
     @Override
-    public int getFormat()
+    public ALFormat getFormat()
     {
         return format;
     }

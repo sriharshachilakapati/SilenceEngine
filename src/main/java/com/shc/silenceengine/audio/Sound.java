@@ -56,6 +56,16 @@ public class Sound
     }
 
     /**
+     * Sets the volume of this sound, a.k.a the gain of the source.
+     *
+     * @param volume The volume of the sound.
+     */
+    public void setVolume(float volume)
+    {
+        source.setParameter(AL_GAIN, volume);
+    }
+
+    /**
      * Starts playing this sound. No action will be taken if
      * it was already playing or looping.
      */

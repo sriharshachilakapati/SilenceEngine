@@ -1,6 +1,7 @@
 package com.shc.silenceengine.audio.formats;
 
 import com.shc.silenceengine.audio.ISoundReader;
+import com.shc.silenceengine.audio.openal.ALFormat;
 import com.shc.silenceengine.core.SilenceException;
 
 import javax.sound.sampled.AudioFormat;
@@ -46,7 +47,7 @@ public class WaveReader implements ISoundReader
     private ByteBuffer data;
 
     private int sampleRate;
-    private int format;
+    private ALFormat format;
 
     /**
      * Registers this class to handle specific extensions.
@@ -78,21 +79,21 @@ public class WaveReader implements ISoundReader
             AudioFormat fmt = ais.getFormat();
 
             sampleRate = (int) fmt.getSampleRate();
-            format = fmt.getChannels();
+            int format = fmt.getChannels();
 
             if (format == 1)
             {
                 if (fmt.getSampleSizeInBits() == 8)
-                    format = AL_FORMAT_MONO8;
+                    this.format = ALFormat.MONO_8;
                 else if (fmt.getSampleSizeInBits() == 16)
-                    format = AL_FORMAT_MONO16;
+                    this.format = ALFormat.MONO_16;
             }
             else if (format == 2)
             {
                 if (fmt.getSampleSizeInBits() == 8)
-                    format = AL_FORMAT_STEREO8;
+                    this.format = ALFormat.STEREO_8;
                 else if (fmt.getSampleSizeInBits() == 16)
-                    format = AL_FORMAT_STEREO16;
+                    this.format = ALFormat.STEREO_16;
             }
             else
                 throw new SilenceException("Incorrect WAV file format");
@@ -130,7 +131,7 @@ public class WaveReader implements ISoundReader
         return sampleRate;
     }
 
-    public int getFormat()
+    public ALFormat getFormat()
     {
         return format;
     }

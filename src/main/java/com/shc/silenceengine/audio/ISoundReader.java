@@ -1,5 +1,7 @@
 package com.shc.silenceengine.audio;
 
+import com.shc.silenceengine.audio.openal.ALBuffer;
+import com.shc.silenceengine.audio.openal.ALFormat;
 import com.shc.silenceengine.core.SilenceException;
 
 import java.io.InputStream;
@@ -161,5 +163,5 @@ public interface ISoundReader
     /**
      * @return The OpenAL compatible format of the data samples.
      */
-    public int getFormat();
+    public ALFormat getFormat();
 }

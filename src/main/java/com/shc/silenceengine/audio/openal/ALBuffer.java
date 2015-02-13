@@ -8,7 +8,14 @@ import java.nio.ShortBuffer;
 import static org.lwjgl.openal.AL10.*;
 
 /**
+ * <p>
  * This class is an object oriented wrapper to the OpenAL buffers.
+ * A buffer encapsulates OpenAL state related to storing sample data.
+ * The internal format of the audio samples allowed in a buffer is
+ * PCM and is expected to be in native order.
+ * </p>
+ *
+ *
  *
  * @author Sri Harsha Chilakapati
  */
@@ -39,22 +46,18 @@ public class ALBuffer
      * @throws ALException.InvalidValue If the data does not match the format specified.
      * @throws ALException.OutOfMemory  If there is no available memory to store the data.
      */
-    public void uploadData(Buffer data, int format, int frequency)
+    public void uploadData(Buffer data, ALFormat format, int frequency)
     {
         if (disposed)
             throw new ALException("Unable to upload data to disposed OpenAL buffer");
 
         if (data instanceof ByteBuffer)
-            alBufferData(id, format, (ByteBuffer) data, frequency);
+            alBufferData(id, format.getAlFormat(), (ByteBuffer) data, frequency);
 
         else if (data instanceof IntBuffer)
-            alBufferData(id, format, (IntBuffer) data, frequency);
+            alBufferData(id, format.getAlFormat(), (IntBuffer) data, frequency);
 
         else if (data instanceof ShortBuffer)
-            alBufferData(id, format, (ShortBuffer) data, frequency);
-
-        else
-            throw new ALException("The data should only be one of ByteBuffer, IntBuffer or ShortBuffer");
 
         ALError.check();
     }
