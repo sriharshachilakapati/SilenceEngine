@@ -11,7 +11,7 @@ import java.util.List;
  * A Grid based collision resolver. Reduces the number of collision
  * checks and increases performance. This class implements the broad
  * phase collision detection. Though this class is public, you should
- * be using the SceneCollider2D interface with the scene.
+ * be using the ISceneCollider2D interface with the scene.
  *
  * @author Sri Harsha Chilakapati
  */

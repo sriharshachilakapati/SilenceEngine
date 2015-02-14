@@ -1,6 +1,5 @@
 package com.shc.silenceengine.entity;
 
-import com.shc.silenceengine.collision.Collision3D;
 import com.shc.silenceengine.geom3d.Cuboid;
 import com.shc.silenceengine.geom3d.Polyhedron;
 import com.shc.silenceengine.graphics.Batcher;
@@ -39,7 +38,7 @@ import com.shc.silenceengine.scene.SceneNode;
  * </pre>
  * <p>
  * Note that the collisions will only be notified if you are using a
- * SceneCollider3D and registered a collision check.
+ * ISceneCollider3D and registered a collision check.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -115,7 +114,7 @@ public class Entity3D extends SceneNode
     }
 
     /**
-     * Called by the SceneCollider3D instance to notify that a
+     * Called by the ISceneCollider3D instance to notify that a
      * collision event has occurred.
      *
      * @param other The other entity that collided with this entity.
@@ -193,25 +192,6 @@ public class Entity3D extends SceneNode
         polyhedron.setPosition(position);
 
         return (_x && _y && _z);
-    }
-
-    public void alignNextTo(Entity3D other)
-    {
-        Collision3D.Response response = new Collision3D.Response();
-
-        boolean intersection;
-
-        do
-        {
-            response.clear();
-            Collision3D.testPolyhedronCollision(polyhedron, other.polyhedron, response);
-
-            intersection = response.getOverlapDistance() != 0;
-
-            Vector3 mtv = response.getMinimumTranslationVector();
-            setPosition(position.subtractSelf(mtv));
-        }
-        while (intersection);
     }
 
     /**

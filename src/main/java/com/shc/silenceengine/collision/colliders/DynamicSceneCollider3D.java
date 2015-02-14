@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An implementation of the SceneCollider3D that resolves collisions
+ * An implementation of the ISceneCollider3D that resolves collisions
  * using a Dynamic tree. The GridSceneCollider is efficient for all
  * maps has entities less than 500. If more, use QuadTreeSceneCollider.
  *
  * @author Sri Harsha Chilakapati
  */
-public class DynamicSceneCollider3D implements SceneCollider3D
+public class DynamicSceneCollider3D implements ISceneCollider3D
 {
     // The Scene and the tree
     private Scene scene;
@@ -75,7 +75,9 @@ public class DynamicSceneCollider3D implements SceneCollider3D
         // Update the grid for repositioned entities
         for (Entity3D entity : entities)
         {
-            if (entity.getVelocity() != Vector3.ZERO)
+            Vector3 velocity = entity.getVelocity();
+
+            if (velocity.x != 0 || velocity.y != 0 || velocity.z != 0)
             {
                 tree.remove(entity);
                 tree.insert(entity);

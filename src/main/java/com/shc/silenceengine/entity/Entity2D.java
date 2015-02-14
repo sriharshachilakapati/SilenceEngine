@@ -40,7 +40,7 @@ import com.shc.silenceengine.scene.SceneNode;
  * </pre>
  * <p>
  * Note that the collisions will only be notified if you are using a
- * SceneCollider2D and registered a collision check.
+ * ISceneCollider2D and registered a collision check.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -123,7 +123,7 @@ public class Entity2D extends SceneNode
     }
 
     /**
-     * Called by the SceneCollider2D instance to notify that a
+     * Called by the ISceneCollider2D instance to notify that a
      * collision event has occurred.
      *
      * @param other The other entity that collided with this entity.

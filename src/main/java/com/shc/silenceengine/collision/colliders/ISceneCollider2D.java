@@ -1,6 +1,6 @@
 package com.shc.silenceengine.collision.colliders;
 
-import com.shc.silenceengine.entity.Entity3D;
+import com.shc.silenceengine.entity.Entity2D;
 import com.shc.silenceengine.scene.Scene;
 
 import java.util.HashMap;
@@ -11,8 +11,8 @@ import java.util.HashMap;
  * the collision detection of all the objects in a scene automatically
  * for you.
  * <p>
- * The SceneCollider2D defines a SceneCollider for 2D entities in the scene,
- * i.e., the objects which extend from the Entity3D class. By default,
+ * The ISceneCollider2D defines a SceneCollider for 2D entities in the scene,
+ * i.e., the objects which extend from the Entity2D class. By default,
  * collisions will not be checked for the entities that are present.
  * You are required to register the types of entities to test for collisions
  * using the register() method like in this example.
@@ -27,13 +27,13 @@ import java.util.HashMap;
  *
  * @author Sri Harsha Chilakapati
  */
-public interface SceneCollider3D
+public interface ISceneCollider2D
 {
     // The collision map, used to store registered classes
-    HashMap<Class<? extends Entity3D>, Class<? extends Entity3D>> collisionMap = new HashMap<>();
+    HashMap<Class<? extends Entity2D>, Class<? extends Entity2D>> collisionMap = new HashMap<>();
 
     /**
-     * Sets the scene that this SceneCollider2D should use to get
+     * Sets the scene that this ISceneCollider2D should use to get
      * the entities and check for collisions.
      *
      * @param scene The scene to be used.
@@ -41,8 +41,8 @@ public interface SceneCollider3D
     public void setScene(Scene scene);
 
     /**
-     * @return The scene that this SceneCollider2D is using to
-     * resolve collisions.
+     * @return The scene that this ISceneCollider2D is using to
+     *         resolve collisions.
      */
     public Scene getScene();
 
@@ -54,10 +54,10 @@ public interface SceneCollider3D
      * take care of Broad phase collision detection and reduce a lot
      * of unnecessary checks.
      *
-     * @param type1 The first type of the Entity3D
-     * @param type2 The second type of the Entity3D
+     * @param type1 The first type of the Entity2D
+     * @param type2 The second type of the Entity2D
      */
-    public default void register(Class<? extends Entity3D> type1, Class<? extends Entity3D> type2)
+    public default void register(Class<? extends Entity2D> type1, Class<? extends Entity2D> type2)
     {
         collisionMap.put(type1, type2);
     }

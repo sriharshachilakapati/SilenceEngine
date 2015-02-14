@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An implementation of SceneCollider2D that resolves collisions in a
+ * An implementation of ISceneCollider2D that resolves collisions in a
  * scene containing 2D entities using a QuadTree. The QuadTreeSceneCollider
  * is efficient for very large scenes containing
  *
  * @author Sri Harsha Chilakapati
  */
-public class QuadTreeSceneCollider implements SceneCollider2D
+public class QuadTreeSceneCollider implements ISceneCollider2D
 {
     private Scene          scene;
     private QuadTree quadTree;
@@ -74,7 +74,9 @@ public class QuadTreeSceneCollider implements SceneCollider2D
         // Update the QuadTree for repositioned entities
         for (Entity2D entity : entities)
         {
-            if (entity.getVelocity() != Vector2.ZERO)
+            Vector2 velocity = entity.getVelocity();
+
+            if (velocity.x != 0 || velocity.y != 0)
             {
                 quadTree.remove(entity);
                 quadTree.insert(entity);

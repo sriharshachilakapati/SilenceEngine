@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An implementation of the SceneCollider2D that resolves collisions
+ * An implementation of the ISceneCollider2D that resolves collisions
  * using a Grid. The GridSceneCollider is efficient for all maps that
  * has entities less than 500. If more, use QuadTreeSceneCollider.
  *
  * @author Sri Harsha Chilakapati
  */
-public class GridSceneCollider implements SceneCollider2D
+public class GridSceneCollider implements ISceneCollider2D
 {
     // The Scene and the grid
     private Scene scene;
@@ -81,7 +81,9 @@ public class GridSceneCollider implements SceneCollider2D
         // Update the grid for repositioned entities
         for (Entity2D entity : entities)
         {
-            if (entity.getVelocity() != Vector2.ZERO)
+            Vector2 velocity = entity.getVelocity();
+
+            if (velocity.x != 0 || velocity.y != 0)
             {
                 grid.remove(entity);
                 grid.insert(entity);
