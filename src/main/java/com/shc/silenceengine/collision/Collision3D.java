@@ -34,11 +34,6 @@ public class Collision3D
         if (response == null)
             response = tmpResponse.clear();
 
-        // FIXME: HACKISH WAY OF PREVENTING ZERO AXES
-        axis.x = (axis.x == -0f) ? -1 : axis.x;
-        axis.y = (axis.y == -0f) ? -1 : axis.y;
-        axis.z = (axis.z == -0f) ? -1 : axis.z;
-
         Vector3 tmpOffset = Vector3.REUSABLE_STACK.pop();
         Vector2 tmpRangeA = Vector2.REUSABLE_STACK.pop();
         Vector2 tmpRangeB = Vector2.REUSABLE_STACK.pop();
@@ -119,31 +114,79 @@ public class Collision3D
             response = tmpResponse.clear();
 
         Vector3 tmpAxis = Vector3.REUSABLE_STACK.pop();
+        Vector3 tmpEdge1 = Vector3.REUSABLE_STACK.pop();
+        Vector3 tmpEdge2 = Vector3.REUSABLE_STACK.pop();
 
-        for (int i = 0; i < a.vertexCount(); i++)
+        Vector3 v1, v2, v3;
+
+        for (int v = 0; v < a.vertexCount() - 2; v++)
         {
-            Vector3 e1 = a.getVertex(i);
-            Vector3 e2 = a.getVertex((i + 1) % a.vertexCount());
+            if ((v & 1) != 0)
+            {
+                // The Clock-Wise order
+                v1 = a.getVertex(v);
+                v2 = a.getVertex(v + 1);
+                v3 = a.getVertex(v + 2);
+            }
+            else
+            {
+                // The Counter-Clock-Wise order
+                v1 = a.getVertex(v);
+                v2 = a.getVertex(v + 2);
+                v3 = a.getVertex(v + 1);
+            }
 
-            Vector3 axis = tmpAxis.set(e1).crossSelf(e2).normalizeSelf();
+            tmpEdge1.set(v2).addSelf(a.getPosition()).subtractSelf(v1);
+            tmpEdge2.set(v3).addSelf(a.getPosition()).subtractSelf(v1);
 
-            if (isSeparatingAxis(a, b, axis, response))
+            tmpAxis.set(tmpEdge1).crossSelf(tmpEdge2).normalizeSelf();
+
+            // Do not test zero length axis
+            if (tmpAxis.lengthSquared() == 0)
+                continue;
+
+            if (isSeparatingAxis(a, b, tmpAxis, response))
             {
                 Vector3.REUSABLE_STACK.push(tmpAxis);
+                Vector3.REUSABLE_STACK.push(tmpEdge1);
+                Vector3.REUSABLE_STACK.push(tmpEdge2);
+
                 return false;
             }
         }
 
-        for (int i = 0; i < b.vertexCount(); i++)
+        for (int v = 0; v < b.vertexCount() - 2; v++)
         {
-            Vector3 e1 = b.getVertex(i);
-            Vector3 e2 = b.getVertex((i + 1) % b.vertexCount());
+            if ((v & 1) != 0)
+            {
+                // The Clock-Wise order
+                v1 = b.getVertex(v);
+                v2 = b.getVertex(v + 1);
+                v3 = b.getVertex(v + 2);
+            }
+            else
+            {
+                // The Counter-Clock-Wise order
+                v1 = b.getVertex(v);
+                v2 = b.getVertex(v + 2);
+                v3 = b.getVertex(v + 1);
+            }
 
-            Vector3 axis = tmpAxis.set(e1).crossSelf(e2).normalizeSelf();
+            tmpEdge1.set(v2).addSelf(b.getPosition()).subtractSelf(v1);
+            tmpEdge2.set(v3).addSelf(b.getPosition()).subtractSelf(v1);
 
-            if (isSeparatingAxis(a, b, axis, response))
+            tmpAxis.set(tmpEdge1).crossSelf(tmpEdge2).normalizeSelf();
+
+            // Do not test zero length axis
+            if (tmpAxis.lengthSquared() == 0)
+                continue;
+
+            if (isSeparatingAxis(a, b, tmpAxis, response))
             {
                 Vector3.REUSABLE_STACK.push(tmpAxis);
+                Vector3.REUSABLE_STACK.push(tmpEdge1);
+                Vector3.REUSABLE_STACK.push(tmpEdge2);
+
                 return false;
             }
         }
@@ -154,6 +197,8 @@ public class Collision3D
         response.overlapV.set(response.overlapN).scaleSelf(response.overlap);
 
         Vector3.REUSABLE_STACK.push(tmpAxis);
+        Vector3.REUSABLE_STACK.push(tmpEdge1);
+        Vector3.REUSABLE_STACK.push(tmpEdge2);
 
         return true;
     }

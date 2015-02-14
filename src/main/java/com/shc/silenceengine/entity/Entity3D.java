@@ -92,11 +92,11 @@ public class Entity3D extends SceneNode
         polyhedron.setPosition(position);
 
         // Setup the local transform
-
-        getLocalTransform().reset().translate(getPosition())
+        getLocalTransform().reset()
                 .rotate(Vector3.AXIS_X, polyhedron.getRotationX())
                 .rotate(Vector3.AXIS_Z, polyhedron.getRotationZ())
-                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY());
+                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY())
+                .translate(getPosition());
     }
 
     /**
@@ -224,7 +224,7 @@ public class Entity3D extends SceneNode
     {
         polyhedron.rotate(rx, ry, rz);
 
-        getLocalTransform().reset().translate(getPosition())
+        getLocalTransform().reset()
                 .rotate(Vector3.AXIS_X, polyhedron.getRotationX())
                 .rotate(Vector3.AXIS_Z, polyhedron.getRotationZ())
                 .rotate(Vector3.AXIS_Y, polyhedron.getRotationY())
@@ -350,10 +350,11 @@ public class Entity3D extends SceneNode
         this.position = position;
         polyhedron.setPosition(position);
 
-        getLocalTransform().reset().translate(getPosition())
+        getLocalTransform().reset()
                 .rotate(Vector3.AXIS_X, polyhedron.getRotationX())
                 .rotate(Vector3.AXIS_Z, polyhedron.getRotationZ())
-                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY());
+                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY())
+                .translate(getPosition());
     }
 
     /**

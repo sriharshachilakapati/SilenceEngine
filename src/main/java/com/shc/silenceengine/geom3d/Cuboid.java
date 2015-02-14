@@ -49,7 +49,7 @@ public class Cuboid extends Polyhedron
         height = size.y;
         thickness = size.z;
 
-        setPosition(min.add(max).scale(0.5f));
+        setPosition(min.add(max).scaleSelf(0.5f));
 
         updateVertices();
     }

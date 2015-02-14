@@ -53,17 +53,6 @@ public class Sphere extends Polyhedron
         }
     }
 
-    public boolean intersects(Polyhedron other)
-    {
-        if (other instanceof Sphere)
-        {
-            Sphere o = (Sphere) other;
-            return getPosition().distanceSquared(o.getPosition()) <= (radius + o.radius) * (radius + o.radius);
-        }
-
-        return super.intersects(other);
-    }
-
     public float getRadius()
     {
         return getWidth() / 2;

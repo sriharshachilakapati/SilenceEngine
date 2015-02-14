@@ -62,7 +62,7 @@ public class FPSCamera extends BaseCamera
 
     public FPSCamera move(Vector3 dir, float amount)
     {
-        Vector3 deltaMove = position.add(dir.normalize().scale(amount));
+        Vector3 deltaMove = position.add(dir.normalizeSelf().scaleSelf(amount));
 
         // Restrict y-component
         deltaMove.y = 0;
@@ -124,9 +124,13 @@ public class FPSCamera extends BaseCamera
     {
         super.apply();
 
+        Vector3 temp = Vector3.REUSABLE_STACK.pop();
+
         mView.initIdentity()
-             .multiply(TransformUtils.createTranslation(position.negate()))
+             .multiply(TransformUtils.createTranslation(temp.set(position).negateSelf()))
              .multiply(TransformUtils.createRotation(rotation));
+
+        Vector3.REUSABLE_STACK.push(temp);
 
         // Enable Depth Testing
         GL3Context.enable(GL11.GL_DEPTH_TEST);
@@ -151,6 +155,6 @@ public class FPSCamera extends BaseCamera
 
     public void setPosition(Vector3 position)
     {
-        this.position = position;
+        this.position.set(position);
     }
 }

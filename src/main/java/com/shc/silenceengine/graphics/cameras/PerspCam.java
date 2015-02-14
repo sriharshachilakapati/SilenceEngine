@@ -42,7 +42,9 @@ public class PerspCam extends BaseCamera
 
     public PerspCam lookAt(Vector3 point)
     {
-        Vector3 forward = point.subtract(position).normalizeSelf();
+        Vector3 temp = Vector3.REUSABLE_STACK.pop();
+
+        Vector3 forward = temp.set(point).subtractSelf(position).normalizeSelf();
         Vector3 up = Vector3.AXIS_Y;
 
         Vector3 negativeZ = tempVec.set(Vector3.AXIS_Z).negateSelf();
@@ -65,6 +67,8 @@ public class PerspCam extends BaseCamera
         Vector3 rotAxis = negativeZ.crossSelf(forward).normalizeSelf();
 
         rotation.set(rotAxis, rotAngle);
+
+        Vector3.REUSABLE_STACK.push(temp);
 
         return this;
     }
@@ -152,16 +156,17 @@ public class PerspCam extends BaseCamera
         mProj  = TransformUtils.createFrustum(left, right, bottom, top, zNear, zFar).copy();
         return this;
     }
-
-    private Vector3 tempVec3 = new Vector3();
-
     public void apply()
     {
         super.apply();
 
+        Vector3 tempVec3 = Vector3.REUSABLE_STACK.pop();
+
         mView.initIdentity()
              .multiply(TransformUtils.createTranslation(tempVec3.set(position).negateSelf()))
              .multiply(TransformUtils.createRotation(rotation));
+
+        Vector3.REUSABLE_STACK.push(tempVec3);
 
         // Enable Depth Testing
         GL3Context.enable(GL11.GL_DEPTH_TEST);
@@ -186,6 +191,6 @@ public class PerspCam extends BaseCamera
 
     public void setPosition(Vector3 position)
     {
-        this.position = position;
+        this.position.set(position);
     }
 }

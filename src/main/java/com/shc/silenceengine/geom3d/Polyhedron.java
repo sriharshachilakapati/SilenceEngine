@@ -198,11 +198,20 @@ public class Polyhedron
         return bounds;
     }
 
-    public float getWidth() {return getBounds().getWidth();}
+    public float getWidth()
+    {
+        return maxX - minX;
+    }
 
-    public float getHeight() {return getBounds().getHeight();}
+    public float getHeight()
+    {
+        return maxY - minY;
+    }
 
-    public float getThickness() {return getBounds().getThickness();}
+    public float getThickness()
+    {
+        return maxZ - minZ;
+    }
 
     public float getRotationX()
     {
