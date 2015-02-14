@@ -197,20 +197,21 @@ public class Entity3D extends SceneNode
 
     public void alignNextTo(Entity3D other)
     {
-        Vector3 tCenter = getPosition();
-        Vector3 oCenter = other.getPosition();
-
-        Vector3 direction = Vector3.REUSABLE_STACK.pop();
-
-        direction.set(tCenter).subtractSelf(oCenter).normalizeSelf();
-        setPosition(position.addSelf(direction));
-
         Collision3D.Response response = new Collision3D.Response();
-        Collision3D.testPolyhedronCollision(polyhedron, other.polyhedron, response);
 
-        setPosition(position.subtractSelf(response.getMinimumTranslationVector()));
+        boolean intersection;
 
-        Vector3.REUSABLE_STACK.push(direction);
+        do
+        {
+            response.clear();
+            Collision3D.testPolyhedronCollision(polyhedron, other.polyhedron, response);
+
+            intersection = response.getOverlapDistance() != 0;
+
+            Vector3 mtv = response.getMinimumTranslationVector();
+            setPosition(position.subtractSelf(mtv));
+        }
+        while (intersection);
     }
 
     /**

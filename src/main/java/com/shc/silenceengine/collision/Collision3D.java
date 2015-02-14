@@ -172,8 +172,8 @@ public class Collision3D
                 v3 = b.getVertex(v + 1);
             }
 
-            tmpEdge1.set(v2).addSelf(b.getPosition()).subtractSelf(v1);
-            tmpEdge2.set(v3).addSelf(b.getPosition()).subtractSelf(v1);
+            tmpEdge1.set(v2).subtractSelf(v1);
+            tmpEdge2.set(v3).subtractSelf(v1);
 
             tmpAxis.set(tmpEdge1).crossSelf(tmpEdge2).normalizeSelf();
 

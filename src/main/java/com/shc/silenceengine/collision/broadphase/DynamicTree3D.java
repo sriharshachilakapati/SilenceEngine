@@ -219,7 +219,7 @@ public class DynamicTree3D implements IBroadphaseResolver3D
 
         AABB aabb = new AABB();
         aabb.min.set(bounds.getPosition()).subtractSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
-        aabb.max.set(aabb.min).addSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
+        aabb.max.set(bounds.getPosition()).addSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
 
         queryNode(aabb, root);
         return retrieveList;
@@ -257,7 +257,7 @@ public class DynamicTree3D implements IBroadphaseResolver3D
         Cuboid bounds = e.getBounds();
 
         aabb.min.set(e.getPosition()).subtractSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
-        aabb.max.set(aabb.min).addSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
+        aabb.max.set(e.getPosition()).addSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
 
         return aabb;
     }
