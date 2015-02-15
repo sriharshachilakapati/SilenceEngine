@@ -54,15 +54,19 @@ public class Graphics2D
             {
                 batcher.vertex(x, y);
                 batcher.color(color);
+                batcher.normal(Vector3.AXIS_Z);
 
                 batcher.vertex(x + w, y);
                 batcher.color(color);
+                batcher.normal(Vector3.AXIS_Z);
 
                 batcher.vertex(x + w, y + h);
                 batcher.color(color);
+                batcher.normal(Vector3.AXIS_Z);
 
                 batcher.vertex(x, y + h);
                 batcher.color(color);
+                batcher.normal(Vector3.AXIS_Z);
             }
             batcher.end();
         }
@@ -82,6 +86,7 @@ public class Graphics2D
                 {
                     batcher.vertex(x + MathUtils.cos(i) * rx, y + MathUtils.sin(i) * ry);
                     batcher.color(color);
+                    batcher.normal(Vector3.AXIS_Z);
                 }
             }
             batcher.end();
@@ -172,9 +177,11 @@ public class Graphics2D
             {
                 batcher.vertex(x1, y1);
                 batcher.color(color);
+                batcher.normal(Vector3.AXIS_Z);
 
                 batcher.vertex(x2, y2);
                 batcher.color(color);
+                batcher.normal(Vector3.AXIS_Z);
             }
             batcher.end();
         }
@@ -225,18 +232,22 @@ public class Graphics2D
             {
                 batcher.vertex(x, y);
                 batcher.color(tint);
+                batcher.normal(Vector3.AXIS_Z);
                 batcher.texCoord(flipX ? maxU : minU, flipY ? maxV : minV);
 
                 batcher.vertex(x + w, y);
                 batcher.color(tint);
+                batcher.normal(Vector3.AXIS_Z);
                 batcher.texCoord(flipX ? minU : maxU, flipY ? maxV : minV);
 
                 batcher.vertex(x + w, y + h);
                 batcher.color(tint);
+                batcher.normal(Vector3.AXIS_Z);
                 batcher.texCoord(flipX ? minU : maxU, flipY ? minV : maxV);
 
                 batcher.vertex(x, y + h);
                 batcher.color(tint);
+                batcher.normal(Vector3.AXIS_Z);
                 batcher.texCoord(flipX ? maxU : minU, flipY ? minV : maxV);
             }
             batcher.end();
@@ -271,8 +282,12 @@ public class Graphics2D
 
     public void drawTexture(Texture texture, Vector2 min, Vector2 max)
     {
-        Vector2 size = max.subtract(min);
+        Vector2 temp = Vector2.REUSABLE_STACK.pop();
+        Vector2 size = temp.set(max).subtractSelf(min);
+
         drawTexture(texture, min.x, min.y, size.x, size.y, false, false);
+
+        Vector2.REUSABLE_STACK.push(temp);
     }
 
     /**

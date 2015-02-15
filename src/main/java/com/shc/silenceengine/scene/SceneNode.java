@@ -48,8 +48,7 @@ public class SceneNode
         if (children == null)
             return;
 
-        for (int i = 0; i < children.size(); i++)
-            children.get(i).preInit();
+        children.forEach(SceneNode::preInit);
     }
 
     public void addChild(SceneNode child)

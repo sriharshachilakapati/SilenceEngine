@@ -37,6 +37,7 @@ public final class RenderUtils
             {
                 b.vertex(tempVec2.set(vertex).addSelf(polygon.getPosition()).addSelf(position));
                 b.color(color);
+                b.normal(Vector3.AXIS_Z);
             }
         }
         b.end();
@@ -64,6 +65,7 @@ public final class RenderUtils
             {
                 b.vertex(tempVec2.set(vertex).addSelf(polygon.getPosition()).addSelf(position));
                 b.color(color);
+                b.normal(Vector3.AXIS_Z);
             }
         }
         b.end();
@@ -86,6 +88,11 @@ public final class RenderUtils
         Vector3 tempVec31 = Vector3.REUSABLE_STACK.pop();
         Vector3 tempVec32 = Vector3.REUSABLE_STACK.pop();
         Vector3 tempVec33 = Vector3.REUSABLE_STACK.pop();
+
+        // For the normals!
+        Vector3 tempVec34 = Vector3.REUSABLE_STACK.pop();
+        Vector3 tempVec35 = Vector3.REUSABLE_STACK.pop();
+        Vector3 tempVec36 = Vector3.REUSABLE_STACK.pop();
 
         b.begin(Primitive.LINE_STRIP);
         {
@@ -116,15 +123,26 @@ public final class RenderUtils
                 v2 = tempVec32.set(v2).addSelf(polyhedron.getPosition()).addSelf(position);
                 v3 = tempVec33.set(v3).addSelf(polyhedron.getPosition()).addSelf(position);
 
+                // Compute the edges of the triangle
+                tempVec34.set(v3).subtractSelf(v1);
+                tempVec35.set(v2).subtractSelf(v1);
+
+                // The normal will be the cross of the edges
+                Vector3 normal = tempVec36.set(tempVec34).crossSelf(tempVec35);
+                normal.addSelf(tempVec34.crossSelf(tempVec35));
+
                 // Draw the triangle as a line strip
                 b.vertex(v1);
                 b.color(color);
+                b.normal(normal);
 
                 b.vertex(v2);
                 b.color(color);
+                b.normal(normal);
 
                 b.vertex(v3);
                 b.color(color);
+                b.normal(normal);
             }
         }
         b.end();
@@ -132,6 +150,10 @@ public final class RenderUtils
         Vector3.REUSABLE_STACK.push(tempVec31);
         Vector3.REUSABLE_STACK.push(tempVec32);
         Vector3.REUSABLE_STACK.push(tempVec33);
+
+        Vector3.REUSABLE_STACK.push(tempVec34);
+        Vector3.REUSABLE_STACK.push(tempVec35);
+        Vector3.REUSABLE_STACK.push(tempVec36);
     }
 
     public static void fillPolyhedron(Batcher b, Polyhedron polyhedron)
@@ -147,17 +169,73 @@ public final class RenderUtils
     public static void fillPolyhedron(Batcher b, Polyhedron polyhedron, Vector3 position, Color color)
     {
         Vector3 tempVec31 = Vector3.REUSABLE_STACK.pop();
+        Vector3 tempVec32 = Vector3.REUSABLE_STACK.pop();
+        Vector3 tempVec33 = Vector3.REUSABLE_STACK.pop();
 
-        b.begin(Primitive.TRIANGLE_STRIP);
+        // For the normals!
+        Vector3 tempVec34 = Vector3.REUSABLE_STACK.pop();
+        Vector3 tempVec35 = Vector3.REUSABLE_STACK.pop();
+        Vector3 tempVec36 = Vector3.REUSABLE_STACK.pop();
+
+        b.begin(Primitive.TRIANGLES);
         {
-            for (Vector3 vertex : polyhedron.getVertices())
+            Vector3 v1;
+            Vector3 v2;
+            Vector3 v3;
+
+            // Convert Triangle Strip vertices to Triangles
+            for (int v = 0; v < polyhedron.vertexCount() - 2; v++)
             {
-                b.vertex(tempVec31.set(vertex).addSelf(polyhedron.getPosition()).addSelf(position));
+                if ((v & 1) != 0)
+                {
+                    // The Clock-Wise order
+                    v1 = polyhedron.getVertex(v);
+                    v2 = polyhedron.getVertex(v + 1);
+                    v3 = polyhedron.getVertex(v + 2);
+                }
+                else
+                {
+                    // The Counter-Clock-Wise order
+                    v1 = polyhedron.getVertex(v);
+                    v2 = polyhedron.getVertex(v + 2);
+                    v3 = polyhedron.getVertex(v + 1);
+                }
+
+                // Set the position of the vertices
+                v1 = tempVec31.set(v1).addSelf(polyhedron.getPosition()).addSelf(position);
+                v2 = tempVec32.set(v2).addSelf(polyhedron.getPosition()).addSelf(position);
+                v3 = tempVec33.set(v3).addSelf(polyhedron.getPosition()).addSelf(position);
+
+                // Compute the edges of the triangle
+                tempVec34.set(v3).subtractSelf(v1);
+                tempVec35.set(v2).subtractSelf(v1);
+
+                // The normal will be the cross of the edges
+                Vector3 normal = tempVec36.set(tempVec34).crossSelf(tempVec35);
+                normal.addSelf(tempVec34.crossSelf(tempVec35));
+
+                // Draw the triangle on the screen
+                b.vertex(v1);
                 b.color(color);
+                b.normal(normal);
+
+                b.vertex(v2);
+                b.color(color);
+                b.normal(normal);
+
+                b.vertex(v3);
+                b.color(color);
+                b.normal(normal);
             }
         }
         b.end();
 
         Vector3.REUSABLE_STACK.push(tempVec31);
+        Vector3.REUSABLE_STACK.push(tempVec32);
+        Vector3.REUSABLE_STACK.push(tempVec33);
+
+        Vector3.REUSABLE_STACK.push(tempVec34);
+        Vector3.REUSABLE_STACK.push(tempVec35);
+        Vector3.REUSABLE_STACK.push(tempVec36);
     }
 }

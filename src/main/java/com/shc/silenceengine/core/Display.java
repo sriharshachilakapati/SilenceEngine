@@ -62,6 +62,7 @@ public final class Display
     private static boolean resized    = false;
     private static boolean fullScreen = false;
     private static boolean resizable  = true;
+    private static boolean vSync      = true;
 
     // Clear color
     private static Color clearColor = Color.BLACK;
@@ -132,7 +133,7 @@ public final class Display
 
         // Take care of OpenGL context
         glfwMakeContextCurrent(window);
-        glfwSwapInterval(1);
+        glfwSwapInterval(vSync ? 1 : 0);
 
         GLContext.createFromCurrent();
 
@@ -504,6 +505,18 @@ public final class Display
     public static boolean isResizable()
     {
         return resizable;
+    }
+
+    public static void setVSync(boolean vSync)
+    {
+        Display.vSync = vSync;
+        glfwSwapInterval(vSync ? 1 : 0);
+        update();
+    }
+
+    public static boolean getVSync()
+    {
+        return Display.vSync;
     }
 
     /**

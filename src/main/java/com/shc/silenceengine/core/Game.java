@@ -64,24 +64,20 @@ public class Game
 
         // Every exception occurs after SilenceException, even
         // the uncaught exceptions are thrown as runtime exceptions
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler((t, e) ->
         {
-            @Override
-            public void uncaughtException(Thread t, Throwable e)
+            try
             {
-                try
-                {
-                    Writer result = new StringWriter();
-                    PrintWriter printWriter = new PrintWriter(result);
-                    e.printStackTrace(printWriter);
+                Writer result = new StringWriter();
+                PrintWriter printWriter = new PrintWriter(result);
+                e.printStackTrace(printWriter);
 
-                    throw new SilenceException(result.toString());
-                }
-                catch (SilenceException ex)
-                {
-                    ex.printStackTrace();
-                    System.exit(-1);
-                }
+                throw new SilenceException(result.toString());
+            }
+            catch (SilenceException ex)
+            {
+                ex.printStackTrace();
+                System.exit(-1);
             }
         });
 
