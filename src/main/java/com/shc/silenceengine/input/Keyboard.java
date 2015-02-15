@@ -152,7 +152,17 @@ public class Keyboard
         return glfwGetKey(Display.getDisplayHandle(), key) == GLFW_PRESS || isClicked(key);
     }
 
+    public static boolean isPressed(char key)
+    {
+        return isPressed((int) Character.toUpperCase(key));
+    }
+
     public static boolean isReleased(int key)
+    {
+        return !isPressed(key);
+    }
+
+    public static boolean isReleased(char key)
     {
         return !isPressed(key);
     }
@@ -162,6 +172,11 @@ public class Keyboard
         return eventsThisFrame.contains(key) && !eventsLastFrame.contains(key);
     }
 
+    public static boolean isClicked(char key)
+    {
+        return isClicked((int) Character.toUpperCase(key));
+    }
+
     public static void setKey(int key, boolean pressed)
     {
         if (pressed && !events.contains(key))
@@ -169,6 +184,11 @@ public class Keyboard
 
         if (!pressed && events.contains(key))
             events.remove((Integer) key);
+    }
+
+    public static void setKey(char key, boolean pressed)
+    {
+        setKey((int) Character.toUpperCase(key), pressed);
     }
 
     public static boolean isAnyKeyPressed()
@@ -212,5 +232,15 @@ public class Keyboard
             }
 
         return  "Unknown key code";
+    }
+
+    public static String getKeyName(char key)
+    {
+        return getKeyName((int) Character.toUpperCase(key));
+    }
+
+    public static int getKeyCode(char key)
+    {
+        return (int) Character.toUpperCase(key);
     }
 }

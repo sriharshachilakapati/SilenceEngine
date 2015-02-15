@@ -272,10 +272,10 @@ public class Quaternion
         float cosY = (float) Math.cos(yaw);
         float cosR = (float) Math.cos(roll);
 
-        x = sinR * cosP * cosY - cosR * sinP * sinY;
-        y = cosR * sinP * cosY + sinR * cosP * sinY;
-        z = cosR * cosP * sinY - sinR * sinP * cosY;
-        w = cosR * cosP * cosY + sinR * sinP * sinY;
+        x = sinP * cosY * cosR - cosP * sinY * sinR;
+        y = cosP * sinY * cosR + sinP * cosY * sinR;
+        z = cosP * cosY * sinR - sinP * sinY * cosR;
+        w = cosP * cosY * cosR + sinP * sinY * sinR;
 
         return this;
     }
