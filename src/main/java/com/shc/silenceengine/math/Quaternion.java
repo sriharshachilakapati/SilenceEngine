@@ -153,23 +153,25 @@ public class Quaternion
 
     public Vector3 multiply(Vector3 v, Vector3 dest)
     {
-        Vector3 tempVec3 = Vector3.REUSABLE_STACK.pop();
+        Vector3 temp = Vector3.REUSABLE_STACK.pop();
 
         Quaternion temp1 = Quaternion.REUSABLE_STACK.pop();
         Quaternion temp2 = Quaternion.REUSABLE_STACK.pop();
         Quaternion temp3 = Quaternion.REUSABLE_STACK.pop();
 
-        Vector3 vn = tempVec3.set(v).normalizeSelf();
+        v = temp.set(v).normalizeSelf();
 
         Quaternion q1 = temp1.set(this).conjugateSelf();
-        Quaternion qv = temp2.set(vn.x, vn.y, vn.z, 1);
+        Quaternion qv = temp2.set(v.x, v.y, v.z, 1);
+        Quaternion q  = this;
 
-        qv = temp3.set(this).multiplySelf(qv);
-        qv.multiplySelf(q1);
+        Quaternion res = temp3.set(q).multiplySelf(qv.multiplySelf(q1));
 
-        dest.set(qv.x, qv.y, qv.z).normalizeSelf().scaleSelf(v.length());
+        dest.x = res.x;
+        dest.y = res.y;
+        dest.z = res.z;
 
-        Vector3.REUSABLE_STACK.push(tempVec3);
+        Vector3.REUSABLE_STACK.push(temp);
 
         Quaternion.REUSABLE_STACK.push(temp1);
         Quaternion.REUSABLE_STACK.push(temp2);

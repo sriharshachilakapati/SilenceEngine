@@ -187,6 +187,26 @@ public final class ResourceLoader
             models.get(id).dispose();
     }
 
+    public void clear(boolean dispose)
+    {
+        if (dispose)
+            dispose();
+
+        fonts.clear();
+        fontsToLoad.clear();
+        textures.clear();
+        texturesToLoad.clear();
+        sounds.clear();
+        soundsToLoad.clear();
+        models.clear();
+        modelsToLoad.clear();
+    }
+
+    public void clear()
+    {
+        clear(false);
+    }
+
     private String fontToString(String name, int style, int size)
     {
         return name + "," + style + "," + size;
