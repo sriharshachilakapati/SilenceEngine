@@ -18,6 +18,11 @@ public class Vector4
         this(0, 0, 0, 0);
     }
 
+    public Vector4(float v)
+    {
+        this(v, v, v, v);
+    }
+
     public Vector4(Vector2 v, float z, float w)
     {
         this(v.getX(), v.getY(), z, w);
@@ -50,15 +55,12 @@ public class Vector4
 
     public Vector4(float x, float y, float z, float w)
     {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.w = w;
+        set(x, y, z, w);
     }
 
     public Vector4 add(float x, float y, float z, float w)
     {
-        return new Vector4(this.x + x, this.y + y, this.z + z, this.w + w);
+        return copy().addSelf(x, y, z, w);
     }
 
     public Vector4 addSelf(float x, float y, float z, float w)
@@ -233,12 +235,7 @@ public class Vector4
 
     public Vector4 normalize()
     {
-        float l = length();
-
-        if (l == 0 || l == 1)
-            return copy();
-
-        return new Vector4(x / l, y / l, z / l, w / l);
+        return copy().normalizeSelf();
     }
 
     public Vector4 normalizeSelf()
@@ -373,6 +370,11 @@ public class Vector4
         this.w = w;
 
         return this;
+    }
+
+    public Vector4 set(float v)
+    {
+        return set(v, v, v, v);
     }
 
     public Vector4 set(Vector2 v, float z, float w)

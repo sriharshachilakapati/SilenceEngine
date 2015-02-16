@@ -39,25 +39,25 @@ public class OrthoCam extends BaseCamera
 
     public OrthoCam translate(float x, float y)
     {
-        mView.multiply(TransformUtils.createTranslation(new Vector3(x, y, 0)));
+        mView.multiplySelf(TransformUtils.createTranslation(new Vector3(x, y, 0)));
         return this;
     }
 
     public OrthoCam translate(Vector2 v)
     {
-        mView.multiply(TransformUtils.createTranslation(new Vector3(v, 0)));
+        mView.multiplySelf(TransformUtils.createTranslation(new Vector3(v, 0)));
         return this;
     }
 
     public OrthoCam translateTo(float x, float y)
     {
-        mView.initIdentity().multiply(TransformUtils.createTranslation(new Vector3(x, y, 0)));
+        mView.initIdentity().multiplySelf(TransformUtils.createTranslation(new Vector3(x, y, 0)));
         return this;
     }
 
     public OrthoCam translateTo(Vector2 v)
     {
-        mView.initIdentity().multiply(TransformUtils.createTranslation(new Vector3(v, 0)));
+        mView.initIdentity().multiplySelf(TransformUtils.createTranslation(new Vector3(v, 0)));
         return this;
     }
 
@@ -77,7 +77,7 @@ public class OrthoCam extends BaseCamera
 
     public OrthoCam rotate(Vector3 axis, float angle)
     {
-        mView.multiply(TransformUtils.createRotation(axis, angle));
+        mView.multiplySelf(TransformUtils.createRotation(axis, angle));
         return this;
     }
 

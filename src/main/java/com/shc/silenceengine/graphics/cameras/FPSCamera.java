@@ -127,8 +127,8 @@ public class FPSCamera extends BaseCamera
         Vector3 temp = Vector3.REUSABLE_STACK.pop();
 
         mView.initIdentity()
-             .multiply(TransformUtils.createTranslation(temp.set(position).negateSelf()))
-             .multiply(TransformUtils.createRotation(rotation));
+             .multiplySelf(TransformUtils.createTranslation(temp.set(position).negateSelf()))
+             .multiplySelf(TransformUtils.createRotation(rotation));
 
         Vector3.REUSABLE_STACK.push(temp);
 

@@ -163,8 +163,8 @@ public class PerspCam extends BaseCamera
         Vector3 tempVec3 = Vector3.REUSABLE_STACK.pop();
 
         mView.initIdentity()
-             .multiply(TransformUtils.createTranslation(tempVec3.set(position).negateSelf()))
-             .multiply(TransformUtils.createRotation(rotation));
+             .multiplySelf(TransformUtils.createTranslation(tempVec3.set(position).negateSelf()))
+             .multiplySelf(TransformUtils.createRotation(rotation));
 
         Vector3.REUSABLE_STACK.push(tempVec3);
 

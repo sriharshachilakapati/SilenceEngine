@@ -22,6 +22,11 @@ public class Vector3
         this(0, 0, 0);
     }
 
+    public Vector3(float v)
+    {
+        this(v, v, v);
+    }
+
     public Vector3(Vector2 v, float z)
     {
         this(v.getX(), v.getY(), z);
@@ -161,11 +166,7 @@ public class Vector3
 
     public Vector3 cross(float vx, float vy, float vz)
     {
-        float x = this.x * vz - this.z * vy;
-        float y = this.z * vx - this.x * vz;
-        float z = this.x * vy - this.y * vx;
-
-        return new Vector3(x, y, z);
+        return copy().crossSelf(vx, vy, vz);
     }
 
     public Vector3 crossSelf(float vx, float vy, float vz)
@@ -179,12 +180,7 @@ public class Vector3
 
     public Vector3 normalize()
     {
-        float l = length();
-
-        if (l == 0 || l == 1)
-            return copy();
-
-        return new Vector3(x / l, y / l, z / l);
+        return copy().normalizeSelf();
     }
 
     public Vector3 normalizeSelf()
@@ -258,33 +254,38 @@ public class Vector3
 
     public Vector3 rotate(Vector3 axis, float angle)
     {
-        return new Quaternion(axis, angle).multiply(this);
+        return copy().rotateSelf(axis, angle);
     }
 
     public Vector3 rotateSelf(Vector3 axis, float angle)
     {
-        return set(new Quaternion(axis, angle).multiply(this));
+        Quaternion temp = Quaternion.REUSABLE_STACK.pop();
+
+        temp.set(axis, angle);
+        temp.multiply(this, this);
+
+        Quaternion.REUSABLE_STACK.push(temp);
+
+        return this;
     }
 
     public Vector3 lerp(Vector3 target, float alpha)
     {
-        return scale(1f - alpha).add(target.scale(alpha));
+        return copy().lerpSelf(target, alpha);
     }
 
     public Vector3 lerpSelf(Vector3 target, float alpha)
     {
-        return scaleSelf(1f - alpha).addSelf(target.scale(alpha));
+        Vector3 temp = Vector3.REUSABLE_STACK.pop();
+        scaleSelf(1f - alpha).addSelf(temp.set(target).scaleSelf(alpha));
+        Vector3.REUSABLE_STACK.push(temp);
+
+        return this;
     }
 
     public Vector3 multiply(Matrix3 m)
     {
-        Vector3 result = new Vector3();
-
-        result.x = x * m.get(0, 0) + y * m.get(0, 1) + z * m.get(0, 2);
-        result.y = x * m.get(1, 0) + y * m.get(1, 1) + z * m.get(1, 2);
-        result.z = x * m.get(2, 0) + y * m.get(2, 1) + z * m.get(2, 2);
-
-        return result;
+        return copy().multiplySelf(m);
     }
 
     public Vector3 multiplySelf(Matrix3 m)
@@ -298,13 +299,7 @@ public class Vector3
 
     public Vector3 multiply(Matrix4 m)
     {
-        Vector3 result = new Vector3();
-
-        result.x = x * m.get(0, 0) + y * m.get(0, 1) + z * m.get(0, 2) + 1 * m.get(0, 3);
-        result.y = x * m.get(1, 0) + y * m.get(1, 1) + z * m.get(1, 2) + 1 * m.get(1, 3);
-        result.z = x * m.get(2, 0) + y * m.get(2, 1) + z * m.get(2, 2) + 1 * m.get(2, 3);
-
-        return result;
+        return copy().multiplySelf(m);
     }
 
     public Vector3 multiplySelf(Matrix4 m)
@@ -361,6 +356,11 @@ public class Vector3
         this.z = z;
 
         return this;
+    }
+
+    public Vector3 set(float v)
+    {
+        return set(v, v, v);
     }
 
     public Vector3 set(Vector3 v)

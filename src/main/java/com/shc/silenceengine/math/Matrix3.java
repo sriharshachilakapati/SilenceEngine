@@ -19,13 +19,14 @@ public class Matrix3
 
     public Matrix3(Matrix3 m)
     {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                this.m[i][j] = m.get(i, j);
-            }
-        }
+        this();
+        set(m);
+    }
+
+    public Matrix3(float diagonal)
+    {
+        this();
+        set(diagonal);
     }
 
     public Matrix3 initIdentity()
@@ -57,7 +58,7 @@ public class Matrix3
         return this;
     }
 
-    public Matrix3 add(Matrix3 m)
+    public Matrix3 addSelf(Matrix3 m)
     {
         for (int i = 0; i < 3; i++)
         {
@@ -70,7 +71,12 @@ public class Matrix3
         return this;
     }
 
-    public Matrix3 subtract(Matrix3 m)
+    public Matrix3 add(Matrix3 m)
+    {
+        return new Matrix3(this).addSelf(m);
+    }
+
+    public Matrix3 subtractSelf(Matrix3 m)
     {
         for (int i = 0; i < 3; i++)
         {
@@ -83,7 +89,12 @@ public class Matrix3
         return this;
     }
 
-    public Matrix3 multiply(Matrix3 m)
+    public Matrix3 subtract(Matrix3 m)
+    {
+        return new Matrix3(this).subtractSelf(m);
+    }
+
+    public Matrix3 multiplySelf(Matrix3 m)
     {
         float[][] temp = new float[3][3];
 
@@ -103,7 +114,12 @@ public class Matrix3
         return this;
     }
 
-    public Matrix3 transpose()
+    public Matrix3 multiply(Matrix3 m)
+    {
+        return new Matrix3(this).multiplySelf(m);
+    }
+
+    public Matrix3 transposeSelf()
     {
         float[][] temp = new float[3][3];
 
@@ -120,11 +136,19 @@ public class Matrix3
         return this;
     }
 
+    public Matrix3 transpose()
+    {
+        return new Matrix3(this).transposeSelf();
+    }
+
     public Vector3 multiply(Vector3 v)
     {
-        return new Vector3().setX(m[0][0] * v.getX())
-                .setY(m[0][1] * v.getY())
-                .setZ(m[0][2] * v.getZ());
+        return multiply(v, new Vector3());
+    }
+
+    public Vector3 multiply(Vector3 v, Vector3 dest)
+    {
+        return dest.set(m[0][0] * v.getX(), m[0][1] * v.getY(), m[0][2] * v.getZ());
     }
 
     public Matrix3 copy()
@@ -140,6 +164,32 @@ public class Matrix3
     public Matrix3 set(int x, int j, float val)
     {
         m[x][j] = val;
+
+        return this;
+    }
+
+    public Matrix3 set(float diagonal)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                m[i][j] = (i == j) ? diagonal : 0;
+            }
+        }
+
+        return this;
+    }
+
+    public Matrix3 set(Matrix3 m)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                this.m[i][j] = m.get(i, j);
+            }
+        }
 
         return this;
     }

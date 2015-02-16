@@ -21,6 +21,11 @@ public class Vector2
         this(0, 0);
     }
 
+    public Vector2(float v)
+    {
+        this(v, v);
+    }
+
     public Vector2(float x, float y)
     {
         this.x = x;
@@ -129,23 +134,22 @@ public class Vector2
 
     public Vector2 normalize()
     {
-        float l = length();
-
-        return new Vector2(x / l, y / l);
+        return copy().normalizeSelf();
     }
 
     public Vector2 normalizeSelf()
     {
         float l = length();
 
+        if (l == 0 || l == 1)
+            return this;
+
         return set(x / l, y / l);
     }
 
     public Vector2 rotate(float angle)
     {
-        angle = (float) Math.toRadians(angle);
-        return new Vector2(x * (float) Math.cos(angle) - y * (float) Math.sin(angle),
-                x * (float) Math.sin(angle) + y * (float) Math.cos(angle));
+        return copy().rotateSelf(angle);
     }
 
     public Vector2 rotateSelf(float angle)
@@ -187,12 +191,7 @@ public class Vector2
 
     public Vector2 lerp(Vector2 target, float alpha)
     {
-        final float oneMinusAlpha = 1f - alpha;
-
-        float x = (this.x * oneMinusAlpha) + (target.x * alpha);
-        float y = (this.y * oneMinusAlpha) + (target.y * alpha);
-
-        return new Vector2(x, y);
+        return copy().lerpSelf(target, alpha);
     }
 
     public Vector2 lerpSelf(Vector2 target, float alpha)
@@ -261,6 +260,11 @@ public class Vector2
         this.y = y;
 
         return this;
+    }
+
+    public Vector2 set(float v)
+    {
+        return set(v, v);
     }
 
     public Vector2 set(Vector2 v)

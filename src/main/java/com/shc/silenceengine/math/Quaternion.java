@@ -126,29 +126,7 @@ public class Quaternion
 
     public Vector3 multiply(Vector3 v)
     {
-        Vector3 tempVec3 = Vector3.REUSABLE_STACK.pop();
-
-        Quaternion temp1 = Quaternion.REUSABLE_STACK.pop();
-        Quaternion temp2 = Quaternion.REUSABLE_STACK.pop();
-        Quaternion temp3 = Quaternion.REUSABLE_STACK.pop();
-
-        Vector3 vn = tempVec3.set(v).normalizeSelf();
-
-        Quaternion q1 = temp1.set(this).conjugateSelf();
-        Quaternion qv = temp2.set(vn.x, vn.y, vn.z, 1);
-
-        qv = temp3.set(this).multiplySelf(qv);
-        qv.multiplySelf(q1);
-
-        Vector3 result = new Vector3(qv.x, qv.y, qv.z).normalizeSelf().scaleSelf(v.length());
-
-        Vector3.REUSABLE_STACK.push(tempVec3);
-
-        Quaternion.REUSABLE_STACK.push(temp1);
-        Quaternion.REUSABLE_STACK.push(temp2);
-        Quaternion.REUSABLE_STACK.push(temp3);
-
-        return result;
+        return multiply(v, new Vector3());
     }
 
     public Vector3 multiply(Vector3 v, Vector3 dest)
@@ -159,13 +137,14 @@ public class Quaternion
         Quaternion temp2 = Quaternion.REUSABLE_STACK.pop();
         Quaternion temp3 = Quaternion.REUSABLE_STACK.pop();
 
+        float length = v.length();
         v = temp.set(v).normalizeSelf();
 
-        Quaternion q1 = temp1.set(this).conjugateSelf();
+        Quaternion q1 = temp1.set(this).conjugateSelf().normalizeSelf();
         Quaternion qv = temp2.set(v.x, v.y, v.z, 1);
         Quaternion q  = this;
 
-        Quaternion res = temp3.set(q).multiplySelf(qv.multiplySelf(q1));
+        Quaternion res = temp3.set(q).normalizeSelf().multiplySelf(qv.multiplySelf(q1));
 
         dest.x = res.x;
         dest.y = res.y;
@@ -177,7 +156,26 @@ public class Quaternion
         Quaternion.REUSABLE_STACK.push(temp2);
         Quaternion.REUSABLE_STACK.push(temp3);
 
-        return dest;
+        return dest.normalizeSelf().scaleSelf(length);
+    }
+
+    public Quaternion invertSelf()
+    {
+        float norm = lengthSquared();
+
+        conjugateSelf();
+
+        x /= norm;
+        y /= norm;
+        z /= norm;
+        w /= norm;
+
+        return this;
+    }
+
+    public Quaternion invert()
+    {
+        return copy().invertSelf();
     }
 
     public Quaternion copy()

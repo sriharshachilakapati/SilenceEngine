@@ -25,13 +25,13 @@ public class Transform
 
     public Transform translate(Vector3 v)
     {
-        tMatrix.multiply(TransformUtils.createTranslation(v));
+        tMatrix.multiplySelf(TransformUtils.createTranslation(v));
         return this;
     }
 
     public Transform rotate(Vector3 axis, float angle)
     {
-        tMatrix.multiply(TransformUtils.createRotation(axis, angle));
+        tMatrix.multiplySelf(TransformUtils.createRotation(axis, angle));
         return this;
     }
 
@@ -42,13 +42,13 @@ public class Transform
 
     public Transform scale(Vector3 scale)
     {
-        tMatrix.multiply(TransformUtils.createScaling(scale));
+        tMatrix.multiplySelf(TransformUtils.createScaling(scale));
         return this;
     }
 
     public Transform apply(Matrix4 matrix)
     {
-        tMatrix.multiply(matrix);
+        tMatrix.multiplySelf(matrix);
         return this;
     }
 
