@@ -20,6 +20,9 @@ dependencies {
 // Exclude the tests from JavaDoc
 javadoc {
     exclude("com/shc/silenceengine/tests/**")
+
+    // Add MathJax to the header, so that we can render math inside documentation.
+    javadoc.options.header = '<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>'
 }
 
 // Control what goes into the JAR
