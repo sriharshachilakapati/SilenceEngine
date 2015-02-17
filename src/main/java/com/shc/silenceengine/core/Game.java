@@ -11,7 +11,6 @@ import com.shc.silenceengine.input.Controller;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.utils.*;
-import org.lwjgl.LWJGLUtil;
 import org.lwjgl.Sys;
 
 import java.io.PrintWriter;
@@ -158,41 +157,33 @@ public class Game
     {
         Logger.log("Initializing SilenceEngine version " + VERSION);
 
-        Logger.log("Starting to load natives");
-
         // Load the natives
+        Logger.log("Starting to load natives");
         NativesLoader.load();
-
         Logger.log("Natives loaded successfully");
 
         Logger.log("Using LWJGL Version: " + Sys.getVersion());
 
-        running = true;
-
-        Logger.log("Initializing Display");
-
         // Create and show the display
+        Logger.log("Initializing Display");
         Display.create();
         Display.show();
+        Logger.log("Initialized OpenGL version " + glGetString(GL_VERSION));
 
+        // Initialize the controllers
         Logger.log("Initializing Controllers");
         Controller.create();
 
-        Logger.log("Initializing OpenAL context");
-
         // Initialize OpenAL
+        Logger.log("Initializing OpenAL context");
         ALContext.getInstance().init();
         WaveReader.register();
         OggReader.register();
-
-        Logger.log("Initialized OpenGL version " + glGetString(GL_VERSION));
         Logger.log("Initializing Game");
 
         // Initialize the Game
         init();
-
         Runtime.getRuntime().gc();
-
         Logger.log("Game initialized successfully, proceeding to the main loop");
 
         // GameLoop constants
@@ -213,6 +204,8 @@ public class Game
         int skippedFrames = 0;
 
         previousTime = TimeUtils.currentTime();
+
+        running = true;
 
         while (true)
         {
@@ -238,7 +231,7 @@ public class Game
             {
                 Keyboard.startEventFrame();
                 Mouse.startEventFrame();
-                Controller.poll();
+                Controller.startEventFrame();
 
                 update((float) frameTime);
 
@@ -249,6 +242,7 @@ public class Game
 
                 Keyboard.clearEventFrame();
                 Mouse.clearEventFrame();
+                Controller.clearEventFrame();
 
                 updatesProcessed++;
                 lag -= frameTime;

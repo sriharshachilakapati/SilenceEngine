@@ -5,6 +5,7 @@ import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.input.Controller;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Vector2;
@@ -290,6 +291,7 @@ public final class Display
     {
         glfwSwapBuffers(displayHandle);
         glfwPollEvents();
+        Controller.poll();
 
         GL3Context.clearColor(clearColor);
 

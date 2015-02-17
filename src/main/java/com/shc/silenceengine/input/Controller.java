@@ -109,6 +109,10 @@ public class Controller
     private Map<Integer, Boolean> buttons;
     private Map<Integer, Float>   axes;
 
+    private Map<Integer, Boolean> buttonsThisFrame;
+
+    private Map<Integer, Boolean> buttonsLastFrame;
+
     private Controller(int id, String name)
     {
         this.id = id;
@@ -116,6 +120,9 @@ public class Controller
 
         buttons = new HashMap<>();
         axes = new HashMap<>();
+
+        buttonsThisFrame = new HashMap<>();
+        buttonsLastFrame = new HashMap<>();
 
         // Calculate the number of buttons of this controller
         ByteBuffer buttons = glfwGetJoystickButtons(id);
@@ -146,9 +153,16 @@ public class Controller
 
     public void printValues()
     {
+        printValues(false);
+    }
+
+    public void printValues(boolean repeat)
+    {
         buttons.keySet().forEach(i ->
         {
-            if (isButtonDown(i))
+            boolean condition = repeat ? isPressed(i) : isClicked(i);
+
+            if (condition)
                 System.out.println("Button " + i + " down");
         });
 
@@ -163,6 +177,15 @@ public class Controller
 
     private void pollValues()
     {
+        // Check if controller is still plugged in
+        if (!isPresent())
+        {
+            buttons.keySet().forEach(i -> buttons.put(i, false));
+            axes.keySet().forEach(i -> axes.put(i, 0f));
+
+            return;
+        }
+
         // Poll the buttons
         ByteBuffer buttons = glfwGetJoystickButtons(id);
         int buttonID = 0;
@@ -189,9 +212,38 @@ public class Controller
         }
     }
 
-    public boolean isButtonDown(int button)
+    private void startFrame()
     {
-        return buttons.get(button);
+        buttonsThisFrame.clear();
+        buttonsThisFrame.putAll(buttons);
+    }
+
+    private void clearFrame()
+    {
+        buttonsLastFrame.clear();
+        buttonsLastFrame.putAll(buttonsThisFrame);
+    }
+
+    public boolean isPressed(int button)
+    {
+        if (!buttonsLastFrame.containsKey(button))
+            buttonsLastFrame.put(button, false);
+
+        if (!buttonsThisFrame.containsKey(button))
+            buttonsThisFrame.put(button, false);
+
+        return buttonsLastFrame.get(button) || buttonsThisFrame.get(button);
+    }
+
+    public boolean isClicked(int button)
+    {
+        if (!buttonsLastFrame.containsKey(button))
+            buttonsLastFrame.put(button, false);
+
+        if (!buttonsThisFrame.containsKey(button))
+            buttonsThisFrame.put(button, false);
+
+        return buttonsThisFrame.get(button) && !buttonsLastFrame.get(button);
     }
 
     public float getAxe(int axe)
@@ -224,6 +276,11 @@ public class Controller
         return type;
     }
 
+    public boolean isPresent()
+    {
+        return glfwJoystickPresent(id) == GL_TRUE;
+    }
+
     public static void create()
     {
         // Create a list to store the controllers
@@ -249,6 +306,18 @@ public class Controller
     {
         for (Controller controller : controllers)
             controller.pollValues();
+    }
+
+    public static void startEventFrame()
+    {
+        for (Controller controller : controllers)
+            controller.startFrame();
+    }
+
+    public static void clearEventFrame()
+    {
+        for (Controller controller : controllers)
+            controller.clearFrame();
     }
 
     public static Controller[] getConnectedControllers()
