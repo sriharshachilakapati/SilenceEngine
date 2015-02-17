@@ -7,6 +7,7 @@ import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Graphics2D;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.input.Controller;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.utils.*;
@@ -174,6 +175,9 @@ public class Game
         Display.create();
         Display.show();
 
+        Logger.log("Initializing Controllers");
+        Controller.create();
+
         Logger.log("Initializing OpenAL context");
 
         // Initialize OpenAL
@@ -234,6 +238,7 @@ public class Game
             {
                 Keyboard.startEventFrame();
                 Mouse.startEventFrame();
+                Controller.poll();
 
                 update((float) frameTime);
 
