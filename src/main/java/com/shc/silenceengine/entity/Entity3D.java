@@ -90,12 +90,8 @@ public class Entity3D extends SceneNode
         position.addSelf(velocity);
         polyhedron.setPosition(position);
 
-        // Setup the local transform
-        getLocalTransform().reset()
-                .rotate(Vector3.AXIS_X, polyhedron.getRotationX())
-                .rotate(Vector3.AXIS_Z, polyhedron.getRotationZ())
-                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY())
-                .translate(getPosition());
+        // Update the transforms
+        updateTransforms();
     }
 
     /**
@@ -204,7 +200,11 @@ public class Entity3D extends SceneNode
     public void rotate(float rx, float ry, float rz)
     {
         polyhedron.rotate(rx, ry, rz);
+        updateTransforms();
+    }
 
+    private void updateTransforms()
+    {
         getLocalTransform().reset()
                 .rotate(Vector3.AXIS_X, polyhedron.getRotationX())
                 .rotate(Vector3.AXIS_Z, polyhedron.getRotationZ())
@@ -253,6 +253,7 @@ public class Entity3D extends SceneNode
     {
         position.setX(x);
         polyhedron.setPosition(position);
+        updateTransforms();
     }
 
     /**
@@ -264,6 +265,7 @@ public class Entity3D extends SceneNode
     {
         position.setY(y);
         polyhedron.setPosition(position);
+        updateTransforms();
     }
 
     /**
@@ -275,6 +277,7 @@ public class Entity3D extends SceneNode
     {
         position.setZ(z);
         polyhedron.setPosition(position);
+        updateTransforms();
     }
 
     /**
@@ -328,14 +331,9 @@ public class Entity3D extends SceneNode
      */
     public void setPosition(Vector3 position)
     {
-        this.position = position;
+        this.position.set(position);
         polyhedron.setPosition(position);
-
-        getLocalTransform().reset()
-                .rotate(Vector3.AXIS_X, polyhedron.getRotationX())
-                .rotate(Vector3.AXIS_Z, polyhedron.getRotationZ())
-                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY())
-                .translate(getPosition());
+        updateTransforms();
     }
 
     /**

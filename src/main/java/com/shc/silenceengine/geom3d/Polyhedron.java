@@ -168,7 +168,7 @@ public class Polyhedron
 
     public void setPosition(Vector3 position)
     {
-        this.position = position;
+        this.position.set(position);
 
         if (bounds != null)
             bounds.setPosition(position);
