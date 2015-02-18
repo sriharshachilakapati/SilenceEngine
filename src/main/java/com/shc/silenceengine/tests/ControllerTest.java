@@ -3,6 +3,7 @@ package com.shc.silenceengine.tests;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.input.Controller;
 import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.utils.Logger;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -13,7 +14,10 @@ public class ControllerTest extends Game
     public void init()
     {
         if (Controller.getConnectedControllers().length == 0)
+        {
+            Logger.warn("Error, no controller detected!");
             Game.end();
+        }
 
         // Print information of all the controllers
         for (Controller controller : Controller.getConnectedControllers())
@@ -32,7 +36,8 @@ public class ControllerTest extends Game
         if (Keyboard.isClicked(Keyboard.KEY_ESCAPE))
             Game.end();
 
-        Controller.getConnectedControllers()[0].printValues();
+        if (Controller.getConnectedControllers().length != 0)
+            Controller.getConnectedControllers()[0].printValues();
     }
 
     public static void main(String[] args)

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -323,5 +323,29 @@ public class Controller
     public static Controller[] getConnectedControllers()
     {
         return controllers;
+    }
+
+    public static boolean isPressed(int button, int controller)
+    {
+        if (controllers == null)
+            create();
+
+        return controller < controllers.length && controllers[controller].isPressed(button);
+    }
+
+    public static boolean isClicked(int button, int controller)
+    {
+        if (controllers == null)
+            create();
+
+        return controller < controllers.length && controllers[controller].isClicked(button);
+    }
+
+    public static float getAxe(int axe, int controller)
+    {
+        if (controllers == null)
+            create();
+
+        return controller < controllers.length ? controllers[controller].getAxe(axe) : 0;
     }
 }
