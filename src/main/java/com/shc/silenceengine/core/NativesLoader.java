@@ -1,33 +1,29 @@
 package com.shc.silenceengine.core;
 
+import com.shc.silenceengine.SilenceEngine;
+
 import java.io.*;
 import java.nio.file.Files;
 
 /**
- * A package-private class that takes care of LWJGL natives. Useful
- * since it removes the head-ache of managing natives, it manages
- * by loading the natives from <pre>lwjgl-natives.jar</pre> file.
+ * A class that takes care of LWJGL natives, but also other natives.
+ * It removes the head-ache of managing natives, and it manages
+ * loading the natives from <pre>lwjgl-natives.jar</pre> file, or
+ * from anywhere in the class-path.
  * <p>
  * However, if you want to disable this component, you can do so by
  * setting the property <pre>NativesLoader</pre> to false.
  *
  * @author Sri Harsha Chilakapati
  */
-class NativesLoader
+public class NativesLoader
 {
-    // Operating System and Architecture
-    private static final String OS   = System.getProperty("os.name").toLowerCase();
-    private static final String ARCH = System.getProperty("os.arch").toLowerCase();
-
-    private static boolean isWindows = OS.contains("windows");
-    private static boolean isLinux   = OS.contains("linux");
-    private static boolean isMac     = OS.contains("mac");
-    private static boolean is64Bit   = ARCH.equals("amd64") || ARCH.equals("x86_64");
+    private static File nativesDir;
 
     /**
      * Loads the natives from the JAR resources
      */
-    public static void load()
+    public static void loadLWJGL()
     {
         // If NativesLoader is disabled in properties, do nothing
         if (System.getProperty("NativesLoader", "true").equalsIgnoreCase("false"))
@@ -36,50 +32,44 @@ class NativesLoader
         try
         {
             // Create temporary Directory
-            File tmp = Files.createTempDirectory("SilenceEngine").toFile();
+            nativesDir = Files.createTempDirectory("SilenceEngine").toFile();
 
             // Delete the temp dir on exit
-            tmp.deleteOnExit();
+            nativesDir.deleteOnExit();
 
-            if (isWindows)
+            switch (SilenceEngine.getPlatform())
             {
-                if (!is64Bit)
-                {
-                    // Extract WIN32 natives
-                    extractLibrary(tmp, "/windows/x86/lwjgl.dll");
-                    extractLibrary(tmp, "/windows/x86/OpenAL32.dll");
-                }
-                else
-                {
-                    // Extract WIN64 natives
-                    extractLibrary(tmp, "/windows/x64/lwjgl.dll");
-                    extractLibrary(tmp, "/windows/x64/OpenAL32.dll");
-                }
-            }
-            else if (isMac)
-            {
-                // Extract MacOS natives
-                extractLibrary(tmp, "/macosx/x64/liblwjgl.dylib");
-                extractLibrary(tmp, "/macosx/x64/libopenal.dylib");
-            }
-            else if (isLinux)
-            {
-                if (!is64Bit)
-                {
-                    // Extract x86 Linux natives
-                    extractLibrary(tmp, "/linux/x86/liblwjgl.so");
-                    extractLibrary(tmp, "/linux/x86/libopenal.so");
-                }
-                else
-                {
-                    // Extract x64 Linux natives
-                    extractLibrary(tmp, "/linux/x64/liblwjgl.so");
-                    extractLibrary(tmp, "/linux/x64/libopenal.so");
-                }
+                case WINDOWS_32:
+                    loadLibrary("/windows/x86/lwjgl.dll");
+                    loadLibrary("/windows/x86/OpenAL32.dll");
+                    break;
+
+                case WINDOWS_64:
+                    loadLibrary("/windows/x64/lwjgl.dll");
+                    loadLibrary("/windows/x64/OpenAL32.dll");
+                    break;
+
+                case MACOSX:
+                    loadLibrary("/macosx/x64/liblwjgl.dylib");
+                    loadLibrary("/macosx/x64/libopenal.dylib");
+                    break;
+
+                case LINUX_32:
+                    loadLibrary("/linux/x86/liblwjgl.so");
+                    loadLibrary("/linux/x86/libopenal.so");
+                    break;
+
+                case LINUX_64:
+                    loadLibrary("/linux/x64/liblwjgl.so");
+                    loadLibrary("/linux/x64/libopenal.so");
+                    break;
+
+                case UNKNOWN:
+                    throw new SilenceException("SilenceEngine does not support your Operating System. We're sorry :(");
             }
 
             // Set the LWJGL library path
-            System.setProperty("org.lwjgl.librarypath", tmp.getAbsolutePath());
+            System.setProperty("java.library.path", nativesDir.getAbsolutePath());
         }
         catch (Exception e)
         {
@@ -90,15 +80,12 @@ class NativesLoader
 
     /**
      * Extracts a file in JAR with path to a directory in FileSystem
-     * @param dir  The directory to extract file to
      * @param path The path of the library in JAR to extract
      */
-    private static void extractLibrary(File dir, String path)
+    public static void loadLibrary(String path)
     {
         if (!path.startsWith("/"))
             throw new IllegalArgumentException("The path has to be absolute! (Start with a '/' character)");
-
-        // Get the InputStream from path
 
         // Get the filename from path
         String[] parts    = path.replaceAll("\\\\", "/").split("/");
@@ -110,7 +97,7 @@ class NativesLoader
         try
         {
             // Create a file in the DIR which deletes itself
-            File tmp = new File(dir, filename);
+            File tmp = new File(nativesDir, filename);
             tmp.deleteOnExit();
 
             // Create the OutputStream

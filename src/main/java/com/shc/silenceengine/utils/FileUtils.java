@@ -63,4 +63,10 @@ public final class FileUtils
     {
         return name.split("\\.(?=[^\\.]+$)")[1];
     }
+
+    public static boolean resourceExists(String name)
+    {
+        InputStream is =  FileUtils.class.getClassLoader().getResourceAsStream(name);
+        return is != null;
+    }
 }

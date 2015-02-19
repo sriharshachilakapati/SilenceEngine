@@ -62,7 +62,7 @@ public class OggReader implements ISoundReader
 
     /**
      * Constructs an OGG reader to read from an InputStream.
-     * @param is The InputStream to load the sound samples from.
+     * @param is The InputStream to loadLWJGL the sound samples from.
      */
     public OggReader(InputStream is)
     {

@@ -21,6 +21,6 @@ public abstract class Model
         if (filename.endsWith(".obj"))
             return new OBJModel(filename);
 
-        throw new SilenceException("The model type you are trying to load is unsupported.");
+        throw new SilenceException("The model type you are trying to loadLWJGL is unsupported.");
     }
 }

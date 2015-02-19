@@ -1,8 +1,6 @@
 package com.shc.silenceengine.core;
 
-import com.shc.silenceengine.audio.formats.OggReader;
-import com.shc.silenceengine.audio.formats.WaveReader;
-import com.shc.silenceengine.audio.openal.ALContext;
+import com.shc.silenceengine.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Graphics2D;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
@@ -10,7 +8,9 @@ import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Controller;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
-import com.shc.silenceengine.utils.*;
+import com.shc.silenceengine.utils.GameTimer;
+import com.shc.silenceengine.utils.Logger;
+import com.shc.silenceengine.utils.TimeUtils;
 import org.lwjgl.Sys;
 
 import java.io.PrintWriter;
@@ -55,13 +55,8 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Game
 {
-    public static final String VERSION = "0.0.3";
-
     static
     {
-        // We need to start AWT in Headless mode, Needed for AWT to work on OS X
-        System.setProperty("java.awt.headless", "true");
-
         // Every exception occurs after SilenceException, even
         // the uncaught exceptions are thrown as runtime exceptions
         Thread.setDefaultUncaughtExceptionHandler((t, e) ->
@@ -104,6 +99,9 @@ public class Game
 
     private static Batcher batcher;
     private static GameState gameState;
+
+    // The game instance
+    private static Game instance;
 
     /**
      * Initialize the Game. Loads the resources, and
@@ -155,12 +153,11 @@ public class Game
      */
     public void start()
     {
-        Logger.log("Initializing SilenceEngine version " + VERSION);
+        instance = this;
 
-        // Load the natives
-        Logger.log("Starting to load natives");
-        NativesLoader.load();
-        Logger.log("Natives loaded successfully");
+        Logger.log("Initializing SilenceEngine version " + SilenceEngine.getVersion());
+
+        SilenceEngine.start();
 
         Logger.log("Using LWJGL Version: " + Sys.getVersion());
 
@@ -174,11 +171,6 @@ public class Game
         Logger.log("Initializing Controllers");
         Controller.create();
 
-        // Initialize OpenAL
-        Logger.log("Initializing OpenAL context");
-        ALContext.getInstance().init();
-        WaveReader.register();
-        OggReader.register();
         Logger.log("Initializing Game");
 
         // Initialize the Game
@@ -282,18 +274,7 @@ public class Game
             previousTime = currentTime;
         }
 
-        Logger.log("Disposing the loaded resources");
-
-        // Dispose the Batcher
-        batcher.dispose();
-
-        dispose();
-
-        // Dispose OpenAL and Display
-        ALContext.getInstance().dispose();
-        Display.destroy();
-
-        Logger.log("This game has been terminated successfully.");
+        Game.end();
     }
 
     /**
@@ -301,6 +282,20 @@ public class Game
      */
     public static void end()
     {
+        if (!running)
+        {
+            Logger.log("Disposing the resources.");
+
+            batcher.dispose();
+            instance.dispose();
+            Display.destroy();
+
+            SilenceEngine.cleanUp();
+
+            Logger.log("This game has been terminated successfully.");
+            System.exit(0);
+        }
+
         running = false;
     }
 

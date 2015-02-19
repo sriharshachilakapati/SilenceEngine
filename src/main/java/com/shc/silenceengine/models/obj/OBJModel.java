@@ -232,7 +232,7 @@ public class OBJModel extends Model
     private void sortFaces()
     {
         // We need to sort the faces so that all the faces with
-        // the same material will be together, reducing the load
+        // the same material will be together, reducing the loadLWJGL
         // on the batcher.
         faces.sort((f1, f2) ->
         {
