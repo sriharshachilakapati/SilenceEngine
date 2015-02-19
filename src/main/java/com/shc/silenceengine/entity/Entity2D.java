@@ -101,8 +101,8 @@ public class Entity2D extends SceneNode
 
         // Setup the local transform
         getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                                   .rotate(Vector3.AXIS_Z, polygon.getRotation())
-                                   .translate(getCenter());
+                .rotate(Vector3.AXIS_Z, polygon.getRotation())
+                .translate(getCenter());
 
         Vector2.REUSABLE_STACK.push(tempVec2);
     }
@@ -250,8 +250,8 @@ public class Entity2D extends SceneNode
         Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
 
         getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                           .rotate(Vector3.AXIS_Z, polygon.getRotation())
-                           .translate(getCenter());
+                .rotate(Vector3.AXIS_Z, polygon.getRotation())
+                .translate(getCenter());
 
         Vector2.REUSABLE_STACK.push(tempVec2);
     }
@@ -287,28 +287,8 @@ public class Entity2D extends SceneNode
         Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
 
         getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                           .rotate(Vector3.AXIS_Z, polygon.getRotation())
-                           .translate(getCenter());
-
-        Vector2.REUSABLE_STACK.push(tempVec2);
-    }
-
-    /**
-     * Sets the center position of this entity. Note that the same
-     * rotation is also applied to the polygon this entity is using.
-     *
-     * @param center The new center position
-     */
-    public void setCenter(Vector2 center)
-    {
-        polygon.setCenter(center);
-        position.set(polygon.getPosition());
-
-        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
-
-        getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                           .rotate(Vector3.AXIS_Z, polygon.getRotation())
-                           .translate(getCenter());
+                .rotate(Vector3.AXIS_Z, polygon.getRotation())
+                .translate(getCenter());
 
         Vector2.REUSABLE_STACK.push(tempVec2);
     }
@@ -330,15 +310,8 @@ public class Entity2D extends SceneNode
     }
 
     /**
-     * @return The y-coordinate of this entity
-     */
-    public float getY()
-    {
-        return position.getY();
-    }
-
-    /**
      * Sets the x-coordinate of the position
+     *
      * @param x The x-coordinate of the position
      */
     public void setX(float x)
@@ -348,7 +321,16 @@ public class Entity2D extends SceneNode
     }
 
     /**
+     * @return The y-coordinate of this entity
+     */
+    public float getY()
+    {
+        return position.getY();
+    }
+
+    /**
      * Sets the y-coordinate of the position
+     *
      * @param y The y-coordinate of the position
      */
     public void setY(float y)
@@ -377,7 +359,6 @@ public class Entity2D extends SceneNode
      * Checks the intersection with another Entity2D.
      *
      * @param other The other Entity2D to test intersection with
-     *
      * @return True if intersects, else false.
      */
     public boolean intersects(Entity2D other)
@@ -391,6 +372,26 @@ public class Entity2D extends SceneNode
     public Vector2 getCenter()
     {
         return polygon.getCenter();
+    }
+
+    /**
+     * Sets the center position of this entity. Note that the same
+     * rotation is also applied to the polygon this entity is using.
+     *
+     * @param center The new center position
+     */
+    public void setCenter(Vector2 center)
+    {
+        polygon.setCenter(center);
+        position.set(polygon.getPosition());
+
+        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
+
+        getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
+                .rotate(Vector3.AXIS_Z, polygon.getRotation())
+                .translate(getCenter());
+
+        Vector2.REUSABLE_STACK.push(tempVec2);
     }
 
     /**
@@ -414,8 +415,8 @@ public class Entity2D extends SceneNode
         Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
 
         getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                           .rotate(Vector3.AXIS_Z, polygon.getRotation())
-                           .translate(getCenter());
+                .rotate(Vector3.AXIS_Z, polygon.getRotation())
+                .translate(getCenter());
 
         Vector2.REUSABLE_STACK.push(tempVec2);
     }
@@ -465,8 +466,8 @@ public class Entity2D extends SceneNode
         Entity2D entity2D = (Entity2D) o;
 
         return polygon.equals(entity2D.polygon) &&
-               position.equals(entity2D.position) &&
-               velocity.equals(entity2D.velocity);
+                position.equals(entity2D.position) &&
+                velocity.equals(entity2D.velocity);
 
     }
 
@@ -483,9 +484,9 @@ public class Entity2D extends SceneNode
     public String toString()
     {
         return "Entity2D{" +
-               "position=" + position +
-               ", velocity=" + velocity +
-               ", polygon=" + polygon +
-               '}';
+                "position=" + position +
+                ", velocity=" + velocity +
+                ", polygon=" + polygon +
+                '}';
     }
 }

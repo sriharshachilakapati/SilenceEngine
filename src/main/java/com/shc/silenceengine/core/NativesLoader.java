@@ -2,7 +2,9 @@ package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.SilenceEngine;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.nio.file.Files;
 
 /**
@@ -80,6 +82,7 @@ public class NativesLoader
 
     /**
      * Extracts a file in JAR with path to a directory in FileSystem
+     *
      * @param path The path of the library in JAR to extract
      */
     public static void loadLibrary(String path)
@@ -88,8 +91,8 @@ public class NativesLoader
             throw new IllegalArgumentException("The path has to be absolute! (Start with a '/' character)");
 
         // Get the filename from path
-        String[] parts    = path.replaceAll("\\\\", "/").split("/");
-        String   filename = (parts.length > 1) ? parts[parts.length-1] : null;
+        String[] parts = path.replaceAll("\\\\", "/").split("/");
+        String filename = (parts.length > 1) ? parts[parts.length - 1] : null;
 
         if (filename == null)
             throw new SilenceException("Filename is null. Did you pass a directory?");

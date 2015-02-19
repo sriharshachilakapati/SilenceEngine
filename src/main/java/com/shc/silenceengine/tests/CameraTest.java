@@ -2,7 +2,7 @@ package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
-import com.shc.silenceengine.graphics.*;
+import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.cameras.PerspCam;
 import com.shc.silenceengine.graphics.opengl.Texture;
@@ -22,6 +22,11 @@ public class CameraTest extends Game
     private PerspCam perspCam;
 
     private Transform transform;
+
+    public static void main(String[] args)
+    {
+        new CameraTest().start();
+    }
 
     public void init()
     {
@@ -129,10 +134,5 @@ public class CameraTest extends Game
     public void dispose()
     {
         texture.dispose();
-    }
-
-    public static void main(String[] args)
-    {
-        new CameraTest().start();
     }
 }

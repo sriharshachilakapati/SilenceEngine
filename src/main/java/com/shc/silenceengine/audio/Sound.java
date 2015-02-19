@@ -2,11 +2,12 @@ package com.shc.silenceengine.audio;
 
 import com.shc.silenceengine.audio.openal.ALBuffer;
 import com.shc.silenceengine.audio.openal.ALSource;
-import com.shc.silenceengine.utils.*;
+import com.shc.silenceengine.utils.FileUtils;
 
 import java.io.InputStream;
 
-import static org.lwjgl.openal.AL10.*;
+import static org.lwjgl.openal.AL10.AL_GAIN;
+import static org.lwjgl.openal.AL10.AL_LOOPING;
 
 /**
  * Represents a sound resource that is ready to play. This class uses OpenAL sources
@@ -106,18 +107,6 @@ public class Sound
     }
 
     /**
-     * Sets the looping property of this sound. The parameter
-     * will take effect immediately.
-     *
-     * @param looping The value of the looping property.
-     */
-    public void setLooping(boolean looping)
-    {
-        this.looping = looping;
-        source.setParameter(AL_LOOPING, looping);
-    }
-
-    /**
      * Disposes this sound, and it's resources.
      */
     public void dispose()
@@ -156,5 +145,17 @@ public class Sound
     public boolean isLooping()
     {
         return looping;
+    }
+
+    /**
+     * Sets the looping property of this sound. The parameter
+     * will take effect immediately.
+     *
+     * @param looping The value of the looping property.
+     */
+    public void setLooping(boolean looping)
+    {
+        this.looping = looping;
+        source.setParameter(AL_LOOPING, looping);
     }
 }

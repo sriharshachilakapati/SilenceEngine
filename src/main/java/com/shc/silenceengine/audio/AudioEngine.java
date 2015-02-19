@@ -22,6 +22,16 @@ public final class AudioEngine implements IEngine
         OggReader.register();
     }
 
+    @Override
+    public void beginFrame()
+    {
+    }
+
+    @Override
+    public void endFrame()
+    {
+    }
+
     public Sound getSound(String name)
     {
         return new Sound(name);

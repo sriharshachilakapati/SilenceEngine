@@ -5,25 +5,17 @@ import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.input.Controller;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Vector2;
-import org.lwjgl.glfw.Callbacks;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
-import org.lwjgl.glfw.GLFWScrollCallback;
-import org.lwjgl.glfw.GLFWWindowPosCallback;
-import org.lwjgl.glfw.GLFWWindowSizeCallback;
-import org.lwjgl.glfw.GLFWvidmode;
+import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GLContext;
 
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_FALSE;
+import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
@@ -39,12 +31,12 @@ public final class Display
     private static long displayHandle = NULL;
 
     // Width and height of the display
-    private static int width  = 640;
+    private static int width = 640;
     private static int height = 480;
 
     // Width and height of windowed display, used to
     // restore the properties to the newly created one
-    private static int oldWidth  = 640;
+    private static int oldWidth = 640;
     private static int oldHeight = 480;
 
     // Position of the windowed display, restored when
@@ -60,24 +52,26 @@ public final class Display
     private static String title = "SilenceEngine";
 
     // Private flags to maintain the Display
-    private static boolean resized    = false;
+    private static boolean resized = false;
     private static boolean fullScreen = false;
-    private static boolean resizable  = true;
-    private static boolean vSync      = true;
+    private static boolean resizable = true;
+    private static boolean vSync = true;
 
     // Clear color
     private static Color clearColor = Color.BLACK;
 
     // Callbacks from GLFW
-    private static GLFWWindowSizeCallback  winSizeCallback;
-    private static GLFWKeyCallback         winKeyCallback;
-    private static GLFWWindowPosCallback   winPosCallback;
-    private static GLFWCursorPosCallback   winCurPosCallback;
+    private static GLFWWindowSizeCallback winSizeCallback;
+    private static GLFWKeyCallback winKeyCallback;
+    private static GLFWWindowPosCallback winPosCallback;
+    private static GLFWCursorPosCallback winCurPosCallback;
     private static GLFWMouseButtonCallback winMouseButtonCallback;
-    private static GLFWScrollCallback      winScrollCallback;
-    private static GLFWErrorCallback       errorCallback;
+    private static GLFWScrollCallback winScrollCallback;
+    private static GLFWErrorCallback errorCallback;
 
-    /** Private constructor. Prevent instantiation */
+    /**
+     * Private constructor. Prevent instantiation
+     */
     private Display()
     {
     }
@@ -138,20 +132,7 @@ public final class Display
 
         GLContext.createFromCurrent();
 
-        // Initialize OpenGL
-        GL3Context.enable(GL_BLEND);
-        GL3Context.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        GL3Context.cullFace(GL_FRONT_AND_BACK);
-
-        GL3Context.viewport(0, 0, width, height);
-
         Game.setBatcher(new Batcher());
-
-        if (Program.DEFAULT == null)
-            Program.loadDefaultPrograms();
-        if (Texture.EMPTY == null)
-            Texture.loadNullTexture();
 
         // Window callbacks
         releaseCallbacks();
@@ -271,11 +252,6 @@ public final class Display
      */
     public static void destroy()
     {
-        Program.DEFAULT.dispose();
-        Program.POINT_LIGHT.dispose();
-
-        Texture.EMPTY.dispose();
-
         releaseCallbacks();
         errorCallback.release();
 
@@ -291,7 +267,6 @@ public final class Display
     {
         glfwSwapBuffers(displayHandle);
         glfwPollEvents();
-        Controller.poll();
 
         GL3Context.clearColor(clearColor);
 
@@ -480,6 +455,14 @@ public final class Display
     }
 
     /**
+     * @return Whether the window is resizable or not.
+     */
+    public static boolean isResizable()
+    {
+        return resizable;
+    }
+
+    /**
      * Changes the Resizable property of the Display window.
      *
      * @param resizable The value of the Resizable window property.
@@ -501,12 +484,9 @@ public final class Display
         update();
     }
 
-    /**
-     * @return Whether the window is resizable or not.
-     */
-    public static boolean isResizable()
+    public static boolean getVSync()
     {
-        return resizable;
+        return Display.vSync;
     }
 
     public static void setVSync(boolean vSync)
@@ -514,11 +494,6 @@ public final class Display
         Display.vSync = vSync;
         glfwSwapInterval(vSync ? 1 : 0);
         update();
-    }
-
-    public static boolean getVSync()
-    {
-        return Display.vSync;
     }
 
     /**

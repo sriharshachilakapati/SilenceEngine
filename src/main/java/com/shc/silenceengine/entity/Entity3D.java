@@ -126,7 +126,6 @@ public class Entity3D extends SceneNode
      *
      * @param pos   The new position vector to move to
      * @param speed The speed with which to move
-     *
      * @return True if the new point has been reached
      */
     public boolean moveTo(Vector3 pos, float speed)
@@ -143,7 +142,6 @@ public class Entity3D extends SceneNode
      * @param ny    The new y-position
      * @param nz    The new z-position
      * @param speed The speed with which to move
-     *
      * @return True if the new point has been reached
      */
     public boolean moveTo(float nx, float ny, float nz, float speed)
@@ -229,22 +227,6 @@ public class Entity3D extends SceneNode
     }
 
     /**
-     * @return The y-coordinate of this entity
-     */
-    public float getY()
-    {
-        return position.getY();
-    }
-
-    /**
-     * @return The z-coordinate of this entity
-     */
-    public float getZ()
-    {
-        return position.getZ();
-    }
-
-    /**
      * Sets the x-coordinate of the position
      *
      * @param x The x-coordinate of the position
@@ -257,6 +239,14 @@ public class Entity3D extends SceneNode
     }
 
     /**
+     * @return The y-coordinate of this entity
+     */
+    public float getY()
+    {
+        return position.getY();
+    }
+
+    /**
      * Sets the y-coordinate of the position
      *
      * @param y The y-coordinate of the position
@@ -266,6 +256,14 @@ public class Entity3D extends SceneNode
         position.setY(y);
         polyhedron.setPosition(position);
         updateTransforms();
+    }
+
+    /**
+     * @return The z-coordinate of this entity
+     */
+    public float getZ()
+    {
+        return position.getZ();
     }
 
     /**
@@ -308,7 +306,6 @@ public class Entity3D extends SceneNode
      * Checks the intersection with another Entity3D.
      *
      * @param other The other Entity3D to test intersection with
-     *
      * @return True if intersects, else false.
      */
     public boolean intersects(Entity3D other)

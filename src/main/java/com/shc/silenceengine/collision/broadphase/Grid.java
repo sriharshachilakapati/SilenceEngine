@@ -2,7 +2,7 @@ package com.shc.silenceengine.collision.broadphase;
 
 import com.shc.silenceengine.entity.Entity2D;
 import com.shc.silenceengine.geom2d.Rectangle;
-import com.shc.silenceengine.utils.*;
+import com.shc.silenceengine.utils.MathUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +32,9 @@ public class Grid implements IBroadphaseResolver2D
     /**
      * Creates and initializes the Grid
      *
-     * @param mapWidth  The width of map (in pixels)
-     * @param mapHeight The height of map (in pixels)
-     * @param cellWidth The width of each cell
+     * @param mapWidth   The width of map (in pixels)
+     * @param mapHeight  The height of map (in pixels)
+     * @param cellWidth  The width of each cell
      * @param cellHeight The height of each cell
      */
     public Grid(int mapWidth, int mapHeight, int cellWidth, int cellHeight)
@@ -87,6 +87,7 @@ public class Grid implements IBroadphaseResolver2D
 
     /**
      * Inserts an entity into the grid, by partitioning the available space
+     *
      * @param entity The entity to be added to the grid.
      */
     public void insert(Entity2D entity)
@@ -94,9 +95,9 @@ public class Grid implements IBroadphaseResolver2D
         Rectangle bounds = entity.getPolygon().getBounds();
 
         int topLeftX = MathUtils.clamp((int) (bounds.getX()) / cellWidth, 0, cols - 1);
-        int topLeftY = MathUtils.clamp((int) (bounds.getY()) / cellHeight, 0, rows-1);
-        int bottomRightX = MathUtils.clamp((int) (bounds.getX() + bounds.getWidth() - 1) / cellWidth, 0, cols-1);
-        int bottomRightY = MathUtils.clamp((int) (bounds.getY() + bounds.getHeight() - 1) / cellHeight, 0, rows-1);
+        int topLeftY = MathUtils.clamp((int) (bounds.getY()) / cellHeight, 0, rows - 1);
+        int bottomRightX = MathUtils.clamp((int) (bounds.getX() + bounds.getWidth() - 1) / cellWidth, 0, cols - 1);
+        int bottomRightY = MathUtils.clamp((int) (bounds.getY() + bounds.getHeight() - 1) / cellHeight, 0, rows - 1);
 
         for (int x = topLeftX; x <= bottomRightX; x++)
         {
@@ -109,6 +110,7 @@ public class Grid implements IBroadphaseResolver2D
 
     /**
      * Removes an entity from the Grid
+     *
      * @param entity The entity to be removed
      */
     public void remove(Entity2D entity)

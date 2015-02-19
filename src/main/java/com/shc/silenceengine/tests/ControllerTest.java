@@ -10,6 +10,11 @@ import com.shc.silenceengine.utils.Logger;
  */
 public class ControllerTest extends Game
 {
+    public static void main(String[] args)
+    {
+        new ControllerTest().start();
+    }
+
     @Override
     public void init()
     {
@@ -38,10 +43,5 @@ public class ControllerTest extends Game
 
         if (Controller.getConnectedControllers().length != 0)
             Controller.getConnectedControllers()[0].printValues();
-    }
-
-    public static void main(String[] args)
-    {
-        new ControllerTest().start();
     }
 }

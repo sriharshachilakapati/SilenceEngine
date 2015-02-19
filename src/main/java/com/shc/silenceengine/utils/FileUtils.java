@@ -38,7 +38,7 @@ public final class FileUtils
 
         String[] linesArray = new String[lines.size()];
 
-        for (int i=0; i<lines.size(); i++)
+        for (int i = 0; i < lines.size(); i++)
             linesArray[i] = lines.get(i);
 
         return linesArray;
@@ -51,7 +51,7 @@ public final class FileUtils
 
     public static InputStream getResource(String name)
     {
-        InputStream is =  FileUtils.class.getClassLoader().getResourceAsStream(name);
+        InputStream is = FileUtils.class.getClassLoader().getResourceAsStream(name);
 
         if (is == null)
             throw new SilenceException("Resource not found: " + name);
@@ -66,7 +66,7 @@ public final class FileUtils
 
     public static boolean resourceExists(String name)
     {
-        InputStream is =  FileUtils.class.getClassLoader().getResourceAsStream(name);
+        InputStream is = FileUtils.class.getClassLoader().getResourceAsStream(name);
         return is != null;
     }
 }

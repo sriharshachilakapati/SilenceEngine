@@ -1,11 +1,9 @@
 package com.shc.silenceengine.tests;
 
-import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.Display;
-
-import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
-
+import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.input.Keyboard;
 
 /**
@@ -13,6 +11,11 @@ import com.shc.silenceengine.input.Keyboard;
  */
 public class GameTest extends Game
 {
+    public static void main(String[] args)
+    {
+        new GameTest().start();
+    }
+
     public void init()
     {
         Display.setTitle("GameTest");
@@ -62,10 +65,5 @@ public class GameTest extends Game
     public void resize()
     {
         Display.setViewport(0, 0, Display.getWidth(), Display.getHeight());
-    }
-
-    public static void main(String[] args)
-    {
-        new GameTest().start();
     }
 }

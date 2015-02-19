@@ -48,10 +48,10 @@ public class QuadTree implements IBroadphaseResolver2D
      */
     public QuadTree(int l, Rectangle b)
     {
-        level  = l;
+        level = l;
         bounds = b;
 
-        objects      = new ArrayList<>();
+        objects = new ArrayList<>();
         retrieveList = new ArrayList<>();
 
         nodes = new QuadTree[4];

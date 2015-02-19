@@ -27,7 +27,11 @@ public class Animation
     public Animation()
     {
         // Construct with empty callbacks
-        this(() -> {}, () -> {}, () -> {}, () -> {});
+        this(() -> {
+        }, () -> {
+        }, () -> {
+        }, () -> {
+        });
     }
 
     public Animation(IAnimationStartCallback startCallback,
@@ -115,7 +119,8 @@ public class Animation
     public void setStartCallback(IAnimationStartCallback startCallback)
     {
         if (startCallback == null)
-            startCallback = () -> {};
+            startCallback = () -> {
+            };
 
         this.startCallback = startCallback;
     }
@@ -123,7 +128,8 @@ public class Animation
     public void setPauseCallback(IAnimationPauseCallback pauseCallback)
     {
         if (pauseCallback == null)
-            pauseCallback = () -> {};
+            pauseCallback = () -> {
+            };
 
         this.pauseCallback = pauseCallback;
     }
@@ -131,7 +137,8 @@ public class Animation
     public void setResumeCallback(IAnimationResumeCallback resumeCallback)
     {
         if (resumeCallback == null)
-            resumeCallback = () -> {};
+            resumeCallback = () -> {
+            };
 
         this.resumeCallback = resumeCallback;
     }
@@ -139,7 +146,8 @@ public class Animation
     public void setEndCallback(IAnimationEndCallback endCallback)
     {
         if (endCallback == null)
-            endCallback = () -> {};
+            endCallback = () -> {
+            };
 
         this.endCallback = endCallback;
     }

@@ -10,7 +10,7 @@ public class Cuboid extends Polyhedron
     private float width;
     private float height;
     private float thickness;
-    
+
     private Vector3[] vertices;
 
     public Cuboid()

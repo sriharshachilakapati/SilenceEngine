@@ -18,9 +18,14 @@ import com.shc.silenceengine.utils.RenderUtils;
  */
 public class DynamicTreeSceneColliderTest2D extends Game
 {
-    private Scene                  scene;
+    private Scene scene;
     private DynamicSceneCollider2D collider;
-    private OrthoCam               cam;
+    private OrthoCam cam;
+
+    public static void main(String[] args)
+    {
+        new DynamicTreeSceneColliderTest2D().start();
+    }
 
     public void init()
     {
@@ -79,11 +84,6 @@ public class DynamicTreeSceneColliderTest2D extends Game
         scene.destroy();
     }
 
-    public static void main(String[] args)
-    {
-        new DynamicTreeSceneColliderTest2D().start();
-    }
-
     public class Box extends Entity2D
     {
         public Box(Vector2 position)
@@ -102,6 +102,7 @@ public class DynamicTreeSceneColliderTest2D extends Game
     public class Player extends Entity2D
     {
         private Color color;
+        private Vector2 temp = new Vector2();
 
         public Player(Vector2 position)
         {
@@ -139,8 +140,6 @@ public class DynamicTreeSceneColliderTest2D extends Game
             alignNextTo(other);
             bounce(other);
         }
-
-        private Vector2 temp = new Vector2();
 
         public void render(float delta, Batcher batcher)
         {

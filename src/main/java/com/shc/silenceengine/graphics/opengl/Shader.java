@@ -1,6 +1,6 @@
 package com.shc.silenceengine.graphics.opengl;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 
 /**
@@ -12,13 +12,13 @@ import static org.lwjgl.opengl.GL20.*;
  */
 public class Shader
 {
-    private int     id;
+    private int id;
     private boolean disposed;
 
     /**
      * Creates a shader with a specified type. Valid types are GL_VERTEX_SHADER,
      * GL_GEOMETRY_SHADER or GL_FRAGMENT_SHADER.
-     * 
+     *
      * @param type The type of this shader
      */
     public Shader(int type)
@@ -30,7 +30,7 @@ public class Shader
     /**
      * Sets the source code for this shader. Any source code previously stored
      * in the shader object is completely replaced.
-     * 
+     *
      * @param source The source code for this shader
      */
     public void source(String source)
@@ -59,7 +59,7 @@ public class Shader
 
     /**
      * Returns the information log for a shader object.
-     * 
+     *
      * @return Information log for this shader
      */
     public String getInfoLog()
@@ -82,7 +82,7 @@ public class Shader
 
     /**
      * Tells if the shader is disposed.
-     * 
+     *
      * @return True if this Shader is disposed, else it returns false
      */
     public boolean isDisposed()
@@ -92,9 +92,9 @@ public class Shader
 
     /**
      * Gets the ID of the shader.
-     * 
+     *
      * @return The ID of this Shader. Useful if you directly
-     *         want to use any OpenGL function yourself.
+     * want to use any OpenGL function yourself.
      */
     public int getId()
     {

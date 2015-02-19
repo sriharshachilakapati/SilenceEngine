@@ -20,19 +20,13 @@ import com.shc.silenceengine.utils.RenderUtils;
 public class Graphics2D
 {
     private static Graphics2D instance;
-
-    public static Graphics2D getInstance()
-    {
-        if (instance == null)
-            instance = new Graphics2D();
-
-        return instance;
-    }
-
     private OrthoCam camera;
     private Color color;
     private TrueTypeFont font;
     private Transform transform;
+    /* Utility Methods */
+    private BaseCamera originalCamera;
+    private Texture originalTexture;
 
     protected Graphics2D()
     {
@@ -40,6 +34,14 @@ public class Graphics2D
 
         color = Color.WHITE;
         transform = new Transform();
+    }
+
+    public static Graphics2D getInstance()
+    {
+        if (instance == null)
+            instance = new Graphics2D();
+
+        return instance;
     }
 
     /* SHAPE DRAWING METHODS */
@@ -188,6 +190,8 @@ public class Graphics2D
         endPainting();
     }
 
+    /* TEXTURE DRAWING METHODS */
+
     public void drawPolygon(Polygon polygon)
     {
         Batcher batcher = Game.getBatcher();
@@ -211,8 +215,6 @@ public class Graphics2D
         }
         endPainting();
     }
-
-    /* TEXTURE DRAWING METHODS */
 
     public void drawTexture(Texture texture, float x, float y, float w, float h, boolean flipX, boolean flipY, Color tint)
     {
@@ -352,10 +354,6 @@ public class Graphics2D
     {
         transform.reset();
     }
-
-    /* Utility Methods */
-    private BaseCamera originalCamera;
-    private Texture originalTexture;
 
     protected void startPainting()
     {

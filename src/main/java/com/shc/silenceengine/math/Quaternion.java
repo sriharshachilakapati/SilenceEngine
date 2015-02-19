@@ -142,7 +142,7 @@ public class Quaternion
 
         Quaternion q1 = temp1.set(this).conjugateSelf().normalizeSelf();
         Quaternion qv = temp2.set(v.x, v.y, v.z, 1);
-        Quaternion q  = this;
+        Quaternion q = this;
 
         Quaternion res = temp3.set(q).normalizeSelf().multiplySelf(qv.multiplySelf(q1));
 

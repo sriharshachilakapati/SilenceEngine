@@ -15,13 +15,11 @@ import static org.lwjgl.openal.AL10.*;
  * PCM and is expected to be in native order.
  * </p>
  *
- *
- *
  * @author Sri Harsha Chilakapati
  */
 public class ALBuffer
 {
-    private int     id;
+    private int id;
     private boolean disposed;
 
     /**
@@ -42,7 +40,6 @@ public class ALBuffer
      * @param data      The NIO Buffer containing the data samples
      * @param format    The OpenAL format of the data samples in the buffer
      * @param frequency The frequency of the sound samples (in Hz)
-     *
      * @throws ALException.InvalidValue If the data does not match the format specified.
      * @throws ALException.OutOfMemory  If there is no available memory to store the data.
      */
@@ -59,7 +56,7 @@ public class ALBuffer
 
         else if (data instanceof ShortBuffer)
 
-        ALError.check();
+            ALError.check();
     }
 
     /**

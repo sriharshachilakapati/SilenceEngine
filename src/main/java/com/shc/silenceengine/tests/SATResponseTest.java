@@ -18,10 +18,15 @@ import com.shc.silenceengine.utils.RenderUtils;
  */
 public class SATResponseTest extends Game
 {
-    private Circle    circle;
+    private Circle circle;
     private Rectangle rectangle;
 
     private OrthoCam cam;
+
+    public static void main(String[] args)
+    {
+        new SATResponseTest().start();
+    }
 
     public void init()
     {
@@ -61,10 +66,5 @@ public class SATResponseTest extends Game
     public void resize()
     {
         cam.initProjection(Display.getWidth(), Display.getHeight());
-    }
-
-    public static void main(String[] args)
-    {
-        new SATResponseTest().start();
     }
 }

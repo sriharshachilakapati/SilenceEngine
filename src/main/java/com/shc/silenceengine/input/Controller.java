@@ -15,11 +15,6 @@ import static org.lwjgl.opengl.GL11.GL_TRUE;
  */
 public class Controller
 {
-    public static enum Type
-    {
-        PS3, PS4, XBOX, GENERIC
-    }
-
     // Generic Button Constants
     public static final int GENERIC_BUTTON_1 = 1;
     public static final int GENERIC_BUTTON_2 = 2;
@@ -52,7 +47,6 @@ public class Controller
     public static final int GENERIC_BUTTON_29 = 29;
     public static final int GENERIC_BUTTON_30 = 30;
     public static final int GENERIC_BUTTON_31 = 31;
-
     // Named generic buttons
     public static final int GENERIC_BUTTON_L1 = 5;
     public static final int GENERIC_BUTTON_L2 = 7;
@@ -60,19 +54,16 @@ public class Controller
     public static final int GENERIC_BUTTON_R2 = 8;
     public static final int GENERIC_BUTTON_SELECT = 9;
     public static final int GENERIC_BUTTON_START = 10;
-
     // Generic D-PAD constants, You need to optimize for other controllers
     public static final int GENERIC_DPAD_UP = 13;
     public static final int GENERIC_DPAD_RIGHT = 14;
     public static final int GENERIC_DPAD_DOWN = 15;
     public static final int GENERIC_DPAD_LEFT = 16;
-
     // Generic AXE constants
-    public static final int GENERIC_AXE_LEFT_X  = 1;
-    public static final int GENERIC_AXE_LEFT_Y    = 2;
+    public static final int GENERIC_AXE_LEFT_X = 1;
+    public static final int GENERIC_AXE_LEFT_Y = 2;
     public static final int GENERIC_AXE_RIGHT_X = 3;
-    public static final int GENERIC_AXE_RIGHT_Y   = 4;
-
+    public static final int GENERIC_AXE_RIGHT_Y = 4;
     // XBOX Button constants
     public static final int XBOX_BUTTON_A = 1;
     public static final int XBOX_BUTTON_B = 2;
@@ -88,29 +79,23 @@ public class Controller
     public static final int XBOX_DPAD_RIGHT = 12;
     public static final int XBOX_DPAD_DOWN = 13;
     public static final int XBOX_DPAD_LEFT = 14;
-
     // XBOX AXE constants
     public static final int XBOX_LEFT_STICKER_X = 1;
     public static final int XBOX_LEFT_STICKER_Y = 2;
     public static final int XBOX_SHOULDER_TRIGGER = 3;
     public static final int XBOX_RIGHT_STICKER_Y = 4;
     public static final int XBOX_RIGHT_STICKER_X = 5;
-
-    // TODO: ADD MAPPINGS FOR PS3 AND PS4 CONTROLLERS ALSO
-
     private static Controller[] controllers;
 
+    // TODO: ADD MAPPINGS FOR PS3 AND PS4 CONTROLLERS ALSO
     private int id;
     private String name;
     private int numButtons;
     private int numAxes;
     private Type type;
-
     private Map<Integer, Boolean> buttons;
-    private Map<Integer, Float>   axes;
-
+    private Map<Integer, Float> axes;
     private Map<Integer, Boolean> buttonsThisFrame;
-
     private Map<Integer, Boolean> buttonsLastFrame;
 
     private Controller(int id, String name)
@@ -149,6 +134,74 @@ public class Controller
             type = Type.XBOX;
         else
             type = Type.GENERIC;
+    }
+
+    public static void create()
+    {
+        // Create a list to store the controllers
+        List<Controller> controllerList = new ArrayList<>();
+
+        // Iterate over all the controllers GLFW supports
+        for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; i++)
+        {
+            // If the controller is present, add it to the list
+            if (glfwJoystickPresent(i) == GL_TRUE)
+            {
+                String name = glfwGetJoystickName(i);
+                controllerList.add(new Controller(i, name));
+            }
+        }
+
+        // Turn the list into an array
+        controllers = new Controller[controllerList.size()];
+        controllers = controllerList.toArray(controllers);
+    }
+
+    public static void poll()
+    {
+        for (Controller controller : controllers)
+            controller.pollValues();
+    }
+
+    public static void startEventFrame()
+    {
+        for (Controller controller : controllers)
+            controller.startFrame();
+    }
+
+    public static void clearEventFrame()
+    {
+        for (Controller controller : controllers)
+            controller.clearFrame();
+    }
+
+    public static Controller[] getConnectedControllers()
+    {
+        return controllers;
+    }
+
+    public static boolean isPressed(int button, int controller)
+    {
+        if (controllers == null)
+            create();
+
+        return controller < controllers.length && controllers[controller].isPressed(button);
+    }
+
+    public static boolean isClicked(int button, int controller)
+    {
+        if (controllers == null)
+            create();
+
+        return controller < controllers.length && controllers[controller].isClicked(button);
+    }
+
+    public static float getAxe(int axe, int controller)
+    {
+        if (controllers == null)
+            create();
+
+        return controller < controllers.length ? controllers[controller].getAxe(axe) : 0;
     }
 
     public void printValues()
@@ -281,71 +334,8 @@ public class Controller
         return glfwJoystickPresent(id) == GL_TRUE;
     }
 
-    public static void create()
+    public static enum Type
     {
-        // Create a list to store the controllers
-        List<Controller> controllerList = new ArrayList<>();
-
-        // Iterate over all the controllers GLFW supports
-        for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; i++)
-        {
-            // If the controller is present, add it to the list
-            if (glfwJoystickPresent(i) == GL_TRUE)
-            {
-                String name = glfwGetJoystickName(i);
-                controllerList.add(new Controller(i, name));
-            }
-        }
-
-        // Turn the list into an array
-        controllers = new Controller[controllerList.size()];
-        controllers = controllerList.toArray(controllers);
-    }
-
-    public static void poll()
-    {
-        for (Controller controller : controllers)
-            controller.pollValues();
-    }
-
-    public static void startEventFrame()
-    {
-        for (Controller controller : controllers)
-            controller.startFrame();
-    }
-
-    public static void clearEventFrame()
-    {
-        for (Controller controller : controllers)
-            controller.clearFrame();
-    }
-
-    public static Controller[] getConnectedControllers()
-    {
-        return controllers;
-    }
-
-    public static boolean isPressed(int button, int controller)
-    {
-        if (controllers == null)
-            create();
-
-        return controller < controllers.length && controllers[controller].isPressed(button);
-    }
-
-    public static boolean isClicked(int button, int controller)
-    {
-        if (controllers == null)
-            create();
-
-        return controller < controllers.length && controllers[controller].isClicked(button);
-    }
-
-    public static float getAxe(int axe, int controller)
-    {
-        if (controllers == null)
-            create();
-
-        return controller < controllers.length ? controllers[controller].getAxe(axe) : 0;
+        PS3, PS4, XBOX, GENERIC
     }
 }

@@ -15,6 +15,13 @@ public final class ALContext
 {
     // Singleton pattern
     private static ALContext instance;
+    // The Device and the context
+    private ALDevice device;
+    private org.lwjgl.openal.ALContext context;
+    // Prevent instantiation
+    private ALContext()
+    {
+    }
 
     /**
      * @return The only one instance of the ALContext.
@@ -27,22 +34,13 @@ public final class ALContext
         return instance;
     }
 
-    // The Device and the context
-    private ALDevice                   device;
-    private org.lwjgl.openal.ALContext context;
-
-    // Prevent instantiation
-    private ALContext()
-    {
-    }
-
     /**
      * Initializes this context. This is not meant to be called by the user,
      * as this is called by the Engine internally.
      *
      * @throws ALCException.InvalidDevice  If there is no available OpenAL device.
      * @throws ALCException.InvalidContext If the context created is invalid.
-     * @throws ALCException If the context doesn't support OpenAL 1.1
+     * @throws ALCException                If the context doesn't support OpenAL 1.1
      */
     public void init()
     {

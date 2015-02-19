@@ -9,22 +9,29 @@ import java.util.List;
 public class GameTimer
 {
     private static List<GameTimer> timers = new ArrayList<>();
-
-    public static interface TimerCallback
-    {
-        public void invoke();
-    }
-
     private TimerCallback callback;
-
     private double time;
     private double elapsed;
-
     private boolean active;
 
     public GameTimer(double time, TimeUtils.Unit unit)
     {
         this.time = TimeUtils.convert(time, unit, TimeUtils.getDefaultTimeUnit());
+    }
+
+    public static void updateTimers(float delta)
+    {
+        for (int i = 0; i < timers.size(); i++)
+        {
+            GameTimer timer = timers.get(i);
+            timer.update(delta);
+
+            if (!timer.isActive())
+            {
+                timers.remove(timer);
+                i--;
+            }
+        }
     }
 
     public void start()
@@ -54,21 +61,6 @@ public class GameTimer
         elapsed = 0;
     }
 
-    public static void updateTimers(float delta)
-    {
-        for (int i = 0; i < timers.size(); i++)
-        {
-            GameTimer timer = timers.get(i);
-            timer.update(delta);
-
-            if (!timer.isActive())
-            {
-                timers.remove(timer);
-                i--;
-            }
-        }
-    }
-
     public void update(float delta)
     {
         if (active)
@@ -86,5 +78,10 @@ public class GameTimer
     public boolean isActive()
     {
         return active;
+    }
+
+    public static interface TimerCallback
+    {
+        public void invoke();
     }
 }

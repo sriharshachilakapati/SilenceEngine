@@ -4,10 +4,8 @@ import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
 
-import java.awt.Font;
-import java.awt.FontMetrics;
+import java.awt.*;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,7 +17,7 @@ import java.util.List;
 public class TrueTypeFont
 {
     public static final int STYLE_NORMAL = Font.PLAIN;
-    public static final int STYLE_BOLD   = Font.BOLD;
+    public static final int STYLE_BOLD = Font.BOLD;
     public static final int STYLE_ITALIC = Font.ITALIC;
 
     private static final int STANDARD_CHARACTERS = 256;
@@ -28,8 +26,8 @@ public class TrueTypeFont
 
     private boolean antiAlias = true;
 
-    private Texture[]   fontTexture;
-    private Font        awtFont;
+    private Texture[] fontTexture;
+    private Font awtFont;
     private FontMetrics fontMetrics;
 
     public TrueTypeFont(String name, int style, int size)

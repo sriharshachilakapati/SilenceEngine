@@ -1,21 +1,14 @@
 package com.shc.silenceengine.graphics.opengl;
 
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.programs.DefaultProgram;
-import com.shc.silenceengine.graphics.programs.PointLightProgram;
-import com.shc.silenceengine.math.Matrix3;
-import com.shc.silenceengine.math.Matrix4;
-import com.shc.silenceengine.math.Vector2;
-import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.math.Vector4;
+import com.shc.silenceengine.math.*;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
-
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.opengl.GL20.*;
 
 /**
@@ -23,13 +16,11 @@ import static org.lwjgl.opengl.GL20.*;
  */
 public class Program
 {
-    private int     id;
-    private boolean disposed;
-
     public static Program CURRENT;
     public static Program DEFAULT;
     public static Program POINT_LIGHT;
-    
+    private int id;
+    private boolean disposed;
     private Map<String, Integer> uniformLocations;
     private Map<String, Integer> attributeLocations;
 
@@ -37,7 +28,7 @@ public class Program
     {
         id = glCreateProgram();
         GLError.check();
-        
+
         uniformLocations = new HashMap<>();
         attributeLocations = new HashMap<>();
     }
@@ -58,7 +49,9 @@ public class Program
         prepareFrame();
     }
 
-    public void prepareFrame(){}
+    public void prepareFrame()
+    {
+    }
 
     public void attach(Shader shader)
     {
@@ -78,10 +71,10 @@ public class Program
     public int getAttribute(String name)
     {
         use();
-        
+
         if (attributeLocations.containsKey(name))
             return attributeLocations.get(name);
-            
+
         int location = glGetAttribLocation(id, name);
         attributeLocations.put(name, location);
 
@@ -92,10 +85,10 @@ public class Program
     public int getUniform(String name)
     {
         use();
-        
+
         if (uniformLocations.containsKey(name))
             return uniformLocations.get(name);
-        
+
         int location = glGetUniformLocation(id, name);
         uniformLocations.put(name, location);
 
@@ -217,9 +210,9 @@ public class Program
 
         FloatBuffer buffer = BufferUtils.createFloatBuffer(9);
 
-        for (int i=0; i<3; i++)
+        for (int i = 0; i < 3; i++)
         {
-            for (int j=0; j<3; j++)
+            for (int j = 0; j < 3; j++)
             {
                 buffer.put(value.get(i, j));
             }
@@ -237,9 +230,9 @@ public class Program
 
         FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
 
-        for (int i=0; i<4; i++)
+        for (int i = 0; i < 4; i++)
         {
-            for (int j=0; j<4; j++)
+            for (int j = 0; j < 4; j++)
             {
                 buffer.put(value.get(i, j));
             }
@@ -284,14 +277,6 @@ public class Program
     public String getInfoLog()
     {
         return glGetProgramInfoLog(id);
-    }
-
-    public static void loadDefaultPrograms()
-    {
-        DEFAULT = DefaultProgram.getInstance();
-        POINT_LIGHT = PointLightProgram.getInstance();
-
-        DEFAULT.use();
     }
 
     public void dispose()

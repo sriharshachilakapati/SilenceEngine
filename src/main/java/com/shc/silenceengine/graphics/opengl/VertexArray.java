@@ -14,7 +14,7 @@ import static org.lwjgl.opengl.GL30.*;
  */
 public class VertexArray
 {
-    private int     id;
+    private int id;
     private boolean disposed;
 
     /**
@@ -40,6 +40,7 @@ public class VertexArray
 
     /**
      * Specifies the index of the vertex attribute to be enabled
+     *
      * @param index The index which should be enabled
      */
     public void enableAttributeArray(int index)
@@ -51,6 +52,7 @@ public class VertexArray
 
     /**
      * Specifies the index of the vertex attribute to be disabled
+     *
      * @param index The index which should be disabled
      */
     public void disableAttributeArray(int index)

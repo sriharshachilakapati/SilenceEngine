@@ -11,17 +11,8 @@ import static org.lwjgl.openal.AL10.*;
  */
 public class ALSource
 {
-    /**
-     * The State of this source.
-     */
-    public static enum State
-    {
-        PLAYING, STOPPED, PAUSED, LOOPING
-    }
-
     private int id;
     private boolean disposed;
-
     /**
      * Constructs a new OpenAL source.
      *
@@ -37,7 +28,6 @@ public class ALSource
      * samples that this source should play.
      *
      * @param buffer The ALBuffer containing the sound samples to be played.
-     *
      * @throws ALException.InvalidValue If the buffer is already disposed.
      */
     public void attachBuffer(ALBuffer buffer)
@@ -49,9 +39,7 @@ public class ALSource
      * Gets a property from this ALSource.
      *
      * @param parameter The parameter of the property to be returned.
-     *
      * @return The value of the property with key parameter.
-     *
      * @throws ALException.InvalidEnum      If the value is invalid for the parameter.
      * @throws ALException.InvalidName      If this source is already disposed.
      * @throws ALException.InvalidOperation If there is no context.
@@ -70,9 +58,8 @@ public class ALSource
      *
      * @param parameter The name of the parameter to be set
      * @param value     The value of the parameter to be set
-     *
-     * @throws ALException.InvalidEnum  If the value is invalid for parameter.
-     * @throws ALException If this source is already disposed.
+     * @throws ALException.InvalidEnum If the value is invalid for parameter.
+     * @throws ALException             If this source is already disposed.
      */
     public void setParameter(int parameter, boolean value)
     {
@@ -84,9 +71,8 @@ public class ALSource
      *
      * @param parameter The name of the parameter to be set
      * @param value     The value of the parameter to be set
-     *
-     * @throws ALException.InvalidEnum  If the value is invalid for parameter.
-     * @throws ALException If this source is already disposed.
+     * @throws ALException.InvalidEnum If the value is invalid for parameter.
+     * @throws ALException             If this source is already disposed.
      */
     public void setParameter(int parameter, int value)
     {
@@ -102,9 +88,8 @@ public class ALSource
      *
      * @param parameter The name of the parameter to be set
      * @param value     The value of the parameter to be set
-     *
-     * @throws ALException.InvalidEnum  If the value is invalid for parameter.
-     * @throws ALException If this source is already disposed.
+     * @throws ALException.InvalidEnum If the value is invalid for parameter.
+     * @throws ALException             If this source is already disposed.
      */
     public void setParameter(int parameter, float value)
     {
@@ -122,9 +107,8 @@ public class ALSource
      * @param value1    The first value of the parameter to be set
      * @param value2    The second value of the parameter to be set
      * @param value3    The third value of the parameter to be set
-     *
-     * @throws ALException.InvalidEnum  If the values are invalid for parameter.
-     * @throws ALException If this source is already disposed.
+     * @throws ALException.InvalidEnum If the values are invalid for parameter.
+     * @throws ALException             If this source is already disposed.
      */
     public void setParameter(int parameter, float value1, float value2, float value3)
     {
@@ -140,9 +124,8 @@ public class ALSource
      *
      * @param parameter The name of the parameter to be set
      * @param value     The value of the parameter to be set
-     *
-     * @throws ALException.InvalidEnum  If the value is invalid for parameter.
-     * @throws ALException If this source is already disposed.
+     * @throws ALException.InvalidEnum If the value is invalid for parameter.
+     * @throws ALException             If this source is already disposed.
      */
     public void setParameter(int parameter, Vector3 value)
     {
@@ -209,7 +192,6 @@ public class ALSource
      * Queries the current playback state of this ALSource.
      *
      * @return The playback state of this ALSource.
-     *
      * @throws ALException.InvalidName If the source is already disposed.
      */
     public State getState()
@@ -224,7 +206,8 @@ public class ALSource
                 else
                     return State.PLAYING;
 
-            case AL_PAUSED : return State.PAUSED;
+            case AL_PAUSED:
+                return State.PAUSED;
         }
 
         return State.STOPPED;
@@ -258,5 +241,13 @@ public class ALSource
     public boolean isDisposed()
     {
         return disposed;
+    }
+
+    /**
+     * The State of this source.
+     */
+    public static enum State
+    {
+        PLAYING, STOPPED, PAUSED, LOOPING
     }
 }

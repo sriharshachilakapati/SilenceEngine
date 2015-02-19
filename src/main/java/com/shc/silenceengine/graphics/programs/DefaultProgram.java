@@ -1,9 +1,9 @@
 package com.shc.silenceengine.graphics.programs;
 
 import com.shc.silenceengine.core.Game;
-import com.shc.silenceengine.graphics.cameras.BaseCamera;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.RenderContext;
+import com.shc.silenceengine.graphics.cameras.BaseCamera;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Shader;
@@ -11,7 +11,8 @@ import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.utils.FileUtils;
 import org.lwjgl.opengl.GL11;
 
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
+import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -19,14 +20,6 @@ import static org.lwjgl.opengl.GL20.*;
 public class DefaultProgram extends Program
 {
     private static DefaultProgram instance;
-
-    public static Program getInstance()
-    {
-        if (instance == null)
-            instance = new DefaultProgram();
-
-        return instance;
-    }
 
     private DefaultProgram()
     {
@@ -47,6 +40,14 @@ public class DefaultProgram extends Program
 
         Program.DEFAULT = this;
         use();
+    }
+
+    public static Program getInstance()
+    {
+        if (instance == null)
+            instance = new DefaultProgram();
+
+        return instance;
     }
 
     public void prepareFrame()

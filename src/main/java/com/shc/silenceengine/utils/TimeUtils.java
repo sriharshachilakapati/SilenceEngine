@@ -1,6 +1,6 @@
 package com.shc.silenceengine.utils;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 /**
  * A standard Time Utility class
@@ -9,11 +9,6 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public final class TimeUtils
 {
-    public static enum Unit
-    {
-        NANOS, MICROS, MILLIS, SECONDS
-    }
-
     private TimeUtils()
     {
     }
@@ -42,9 +37,12 @@ public final class TimeUtils
     {
         switch (unit)
         {
-            case NANOS: return currentNanos();
-            case MICROS: return currentMicros();
-            case MILLIS: return currentMillis();
+            case NANOS:
+                return currentNanos();
+            case MICROS:
+                return currentMicros();
+            case MILLIS:
+                return currentMillis();
         }
 
         return currentSeconds();
@@ -74,7 +72,7 @@ public final class TimeUtils
         else if (source == Unit.MILLIS)
         {
             if (target == Unit.SECONDS)
-                factor = 1/1000.0;
+                factor = 1 / 1000.0;
             else if (target == Unit.MICROS)
                 factor = 1000.0;
             else
@@ -83,20 +81,20 @@ public final class TimeUtils
         else if (source == Unit.MICROS)
         {
             if (target == Unit.SECONDS)
-                factor = 1/1000000.0;
+                factor = 1 / 1000000.0;
             else if (target == Unit.MILLIS)
-                factor = 1/1000.0;
+                factor = 1 / 1000.0;
             else
                 factor = 1000.0;
         }
         else
         {
             if (target == Unit.SECONDS)
-                factor = 1/1000000000.0;
+                factor = 1 / 1000000000.0;
             else if (target == Unit.MILLIS)
-                factor = 1/1000000.0;
+                factor = 1 / 1000000.0;
             else if (target == Unit.MICROS)
-                factor = 1/1000.0;
+                factor = 1 / 1000.0;
         }
 
         return time * factor;
@@ -105,5 +103,10 @@ public final class TimeUtils
     public static Unit getDefaultTimeUnit()
     {
         return Unit.SECONDS;
+    }
+
+    public static enum Unit
+    {
+        NANOS, MICROS, MILLIS, SECONDS
     }
 }

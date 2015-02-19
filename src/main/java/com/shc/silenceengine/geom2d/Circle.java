@@ -86,6 +86,7 @@ public class Circle extends Polygon
 
     /**
      * Checks if a point exists inside this circle.
+     *
      * @param p The point to check
      * @return True if inside, else False.
      */
@@ -153,9 +154,9 @@ public class Circle extends Polygon
     public String toString()
     {
         return "Circle{" +
-               "x=" + getX() +
-               ", y=" + getY() +
-               ", r=" + radius +
-               '}';
+                "x=" + getX() +
+                ", y=" + getY() +
+                ", r=" + radius +
+                '}';
     }
 }

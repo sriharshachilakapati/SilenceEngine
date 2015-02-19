@@ -18,6 +18,8 @@ public class DynamicTree2D implements IBroadphaseResolver2D
     private List<Entity2D> retrieveList;
     private Map<Integer, Node> nodeMap;
     private Map<Integer, AABB> aabbMap;
+    private AABB tmpUnion = new AABB();
+    private AABB tmpU = new AABB();
 
     public DynamicTree2D()
     {
@@ -45,9 +47,6 @@ public class DynamicTree2D implements IBroadphaseResolver2D
 
         insert(node);
     }
-
-    private AABB tmpUnion = new AABB();
-    private AABB tmpU = new AABB();
 
     private void insert(Node item)
     {
@@ -277,6 +276,24 @@ public class DynamicTree2D implements IBroadphaseResolver2D
             this.max = min.add(width, height);
         }
 
+        public static AABB create(Entity2D entity)
+        {
+            return new AABB(entity.getBounds().getMin(), entity.getBounds().getMax());
+        }
+
+        public static AABB union(AABB aabb1, AABB aabb2, AABB store)
+        {
+            if (store == null)
+                store = new AABB();
+
+            store.min.set(aabb1.min);
+            store.max.set(aabb1.max);
+
+            store.union(aabb2);
+
+            return store;
+        }
+
         public void union(AABB aabb)
         {
             min.x = Math.min(aabb.min.x, min.x);
@@ -295,24 +312,6 @@ public class DynamicTree2D implements IBroadphaseResolver2D
         public float getPerimeter()
         {
             return 2 * (this.max.x - this.min.x + this.max.y - this.min.y);
-        }
-
-        public static AABB create(Entity2D entity)
-        {
-            return new AABB(entity.getBounds().getMin(), entity.getBounds().getMax());
-        }
-
-        public static AABB union(AABB aabb1, AABB aabb2, AABB store)
-        {
-            if (store == null)
-                store = new AABB();
-
-            store.min.set(aabb1.min);
-            store.max.set(aabb1.max);
-
-            store.union(aabb2);
-
-            return store;
         }
     }
 

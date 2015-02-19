@@ -19,6 +19,8 @@ public class DynamicTree3D implements IBroadphaseResolver3D
     private List<Entity3D> retrieveList;
     private Map<Integer, Node> nodeMap;
     private Map<Integer, AABB> aabbMap;
+    private AABB tmpUnion = new AABB();
+    private AABB tmpU = new AABB();
 
     public DynamicTree3D()
     {
@@ -46,9 +48,6 @@ public class DynamicTree3D implements IBroadphaseResolver3D
 
         insert(node);
     }
-
-    private AABB tmpUnion = new AABB();
-    private AABB tmpU = new AABB();
 
     private void insert(Node item)
     {
@@ -279,6 +278,27 @@ public class DynamicTree3D implements IBroadphaseResolver3D
             this.max = min.add(width, height, thickness);
         }
 
+        public static AABB create(Entity3D entity)
+        {
+            Cuboid bounds = entity.getBounds();
+
+            return new AABB(entity.getPosition().subtract(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2),
+                    bounds.getWidth(), bounds.getHeight(), bounds.getThickness());
+        }
+
+        public static AABB union(AABB aabb1, AABB aabb2, AABB store)
+        {
+            if (store == null)
+                store = new AABB();
+
+            store.min.set(aabb1.min);
+            store.max.set(aabb1.max);
+
+            store.union(aabb2);
+
+            return store;
+        }
+
         public void union(AABB aabb)
         {
             min.x = Math.min(aabb.min.x, min.x);
@@ -300,27 +320,6 @@ public class DynamicTree3D implements IBroadphaseResolver3D
         public float getPerimeter()
         {
             return 2 * (max.x - min.x + max.y - min.y + max.z - min.z);
-        }
-
-        public static AABB create(Entity3D entity)
-        {
-            Cuboid bounds = entity.getBounds();
-
-            return new AABB(entity.getPosition().subtract(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2),
-                    bounds.getWidth(), bounds.getHeight(), bounds.getThickness());
-        }
-
-        public static AABB union(AABB aabb1, AABB aabb2, AABB store)
-        {
-            if (store == null)
-                store = new AABB();
-
-            store.min.set(aabb1.min);
-            store.max.set(aabb1.max);
-
-            store.union(aabb2);
-
-            return store;
         }
     }
 

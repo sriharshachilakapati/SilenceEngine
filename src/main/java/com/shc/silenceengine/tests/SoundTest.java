@@ -12,6 +12,11 @@ public class SoundTest extends Game
     private Sound music;
     private Sound audio;
 
+    public static void main(String[] args)
+    {
+        new SoundTest().start();
+    }
+
     public void init()
     {
         music = new Sound("resources/music.wav");
@@ -34,10 +39,5 @@ public class SoundTest extends Game
     {
         music.dispose();
         audio.dispose();
-    }
-
-    public static void main(String[] args)
-    {
-        new SoundTest().start();
     }
 }

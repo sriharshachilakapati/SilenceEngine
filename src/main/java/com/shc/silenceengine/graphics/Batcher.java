@@ -1,17 +1,12 @@
 package com.shc.silenceengine.graphics;
 
-import com.shc.silenceengine.graphics.opengl.BufferObject;
-import com.shc.silenceengine.graphics.opengl.GL3Context;
-import com.shc.silenceengine.graphics.opengl.Primitive;
-import com.shc.silenceengine.graphics.opengl.Program;
-import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.graphics.opengl.VertexArray;
+import com.shc.silenceengine.graphics.opengl.*;
 import com.shc.silenceengine.math.*;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL15.*;
 
 /**
@@ -37,18 +32,15 @@ import static org.lwjgl.opengl.GL15.*;
  */
 public class Batcher
 {
-    // Active state of this batcher
-    private boolean active = false;
-
     // The sizes (no. of components) in vertex, color, texcoord
     private static final int SIZE_OF_VERTEX = 4;
     private static final int SIZE_OF_NORMAL = 4;
     private static final int SIZE_OF_COLOR = 4;
     private static final int SIZE_OF_TEXCOORD = 2;
-
     // The maximum size of the batch is 4 MB
     private static final int BATCH_SIZE = 4 * 1024 * 1024;
-
+    // Active state of this batcher
+    private boolean active = false;
     // The buffers to store the collected data
     private ByteBuffer vBuffer;
     private ByteBuffer cBuffer;
@@ -56,7 +48,7 @@ public class Batcher
     private ByteBuffer nBuffer;
 
     // VAO and VBOs
-    private VertexArray  vao;
+    private VertexArray vao;
     private BufferObject vboVert;
     private BufferObject vboCol;
     private BufferObject vboTex;
@@ -130,7 +122,7 @@ public class Batcher
         vboNorm.bind();
         vboNorm.uploadData(BATCH_SIZE, GL_STREAM_DRAW);
     }
-    
+
     /**
      * Maps the buffers to get their data storage pointers.
      */
@@ -148,7 +140,7 @@ public class Batcher
         nBuffer = vboNorm.map(GL_WRITE_ONLY, nBuffer);
         vao.pointAttribute(normalLocation, SIZE_OF_NORMAL, GL_FLOAT, vboNorm);
     }
-    
+
     /**
      * Unmaps the buffers and invalidates the pointer to their data store.
      */
@@ -169,14 +161,14 @@ public class Batcher
     {
         if (active)
             throw new IllegalStateException("Batcher Already Active!");
-        
+
         active = true;
 
-        vertexCount   = 0;
-        colorCount    = 0;
+        vertexCount = 0;
+        colorCount = 0;
         texCoordCount = 0;
-        normalCount   = 0;
-        
+        normalCount = 0;
+
         this.beginMode = beginMode;
 
         mapBuffers();
@@ -194,9 +186,9 @@ public class Batcher
     {
         if (!active)
             throw new IllegalStateException("Batcher not Active!");
-        
+
         active = false;
-        
+
         flush();
 
         transform.reset();
@@ -250,19 +242,21 @@ public class Batcher
         nBuffer.clear();
 
         // Clear the vertex count
-        vertexCount   = 0;
-        colorCount    = 0;
+        vertexCount = 0;
+        colorCount = 0;
         texCoordCount = 0;
-        normalCount   = 0;
-        
+        normalCount = 0;
+
         // Map buffers again if still active
-        if(active) {
+        if (active)
+        {
             mapBuffers();
         }
     }
 
     /**
      * Applies a Transform to the batcher data
+     *
      * @param t The transform to use
      */
     public void applyTransform(Transform t)

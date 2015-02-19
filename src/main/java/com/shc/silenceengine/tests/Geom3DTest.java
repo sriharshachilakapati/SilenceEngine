@@ -8,9 +8,9 @@ import com.shc.silenceengine.geom3d.Cuboid;
 import com.shc.silenceengine.geom3d.Sphere;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.cameras.PerspCam;
-import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector3;
@@ -29,6 +29,11 @@ public class Geom3DTest extends Game
     private Sphere sphere;
 
     private TrueTypeFont hudFont;
+
+    public static void main(String[] args)
+    {
+        new Geom3DTest().start();
+    }
 
     public void init()
     {
@@ -149,10 +154,5 @@ public class Geom3DTest extends Game
     public void dispose()
     {
         ResourceLoader.getInstance().dispose();
-    }
-
-    public static void main(String[] args)
-    {
-        new Geom3DTest().start();
     }
 }

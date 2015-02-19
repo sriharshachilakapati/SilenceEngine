@@ -11,16 +11,21 @@ import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.scene.Scene;
-import com.shc.silenceengine.utils.*;
+import com.shc.silenceengine.utils.RenderUtils;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class QuadTreeSceneColliderTest extends Game
 {
-    private Scene                 scene;
+    private Scene scene;
     private QuadTreeSceneCollider collider;
-    private OrthoCam              cam;
+    private OrthoCam cam;
+
+    public static void main(String[] args)
+    {
+        new QuadTreeSceneColliderTest().start();
+    }
 
     public void init()
     {
@@ -79,11 +84,6 @@ public class QuadTreeSceneColliderTest extends Game
     public void dispose()
     {
         scene.destroy();
-    }
-
-    public static void main(String[] args)
-    {
-        new QuadTreeSceneColliderTest().start();
     }
 
     public class Box extends Entity2D

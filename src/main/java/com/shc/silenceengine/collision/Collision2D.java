@@ -15,11 +15,11 @@ import java.util.List;
  */
 public final class Collision2D
 {
+    private static Response tmpResponse = new Response();
+
     private Collision2D()
     {
     }
-
-    private static Response tmpResponse = new Response();
 
     private static Vector2 flattenPoints(List<Vector2> vertices, Vector2 normal, Vector2 projection)
     {

@@ -33,18 +33,18 @@ public interface ISceneCollider3D
     HashMap<Class<? extends Entity3D>, Class<? extends Entity3D>> collisionMap = new HashMap<>();
 
     /**
+     * @return The scene that this ISceneCollider2D is using to
+     * resolve collisions.
+     */
+    public Scene getScene();
+
+    /**
      * Sets the scene that this ISceneCollider2D should use to get
      * the entities and check for collisions.
      *
      * @param scene The scene to be used.
      */
     public void setScene(Scene scene);
-
-    /**
-     * @return The scene that this ISceneCollider2D is using to
-     * resolve collisions.
-     */
-    public Scene getScene();
 
     /**
      * Registers collisions between two types type1 and type2. Every

@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class QuadTreeSceneCollider implements ISceneCollider2D
 {
-    private Scene          scene;
+    private Scene scene;
     private QuadTree quadTree;
     private List<Entity2D> entities;
 
@@ -37,15 +37,15 @@ public class QuadTreeSceneCollider implements ISceneCollider2D
     }
 
     @Override
-    public void setScene(Scene scene)
-    {
-        this.scene = scene;
-    }
-
-    @Override
     public Scene getScene()
     {
         return scene;
+    }
+
+    @Override
+    public void setScene(Scene scene)
+    {
+        this.scene = scene;
     }
 
     @Override

@@ -4,25 +4,30 @@ import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.cameras.PerspCam;
-import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.scene.Scene;
 import com.shc.silenceengine.scene.SceneNode;
-import com.shc.silenceengine.utils.*;
+import com.shc.silenceengine.utils.TimeUtils;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class SceneTest extends Game
 {
-    private PerspCam     cam;
-    private OrthoCam     fontCam;
+    private PerspCam cam;
+    private OrthoCam fontCam;
     private TrueTypeFont font;
-    private Scene        scene;
+    private Scene scene;
+
+    public static void main(String[] args)
+    {
+        new SceneTest().start();
+    }
 
     public void init()
     {
@@ -104,11 +109,6 @@ public class SceneTest extends Game
         font.dispose();
     }
 
-    public static void main(String[] args)
-    {
-        new SceneTest().start();
-    }
-
     public static class SceneObject extends SceneNode
     {
         private Color color;
@@ -128,7 +128,7 @@ public class SceneTest extends Game
             float z = -Math.abs((float) Math.sin(TimeUtils.currentSeconds()));
 
             getLocalTransform().reset().rotate(Vector3.AXIS_Z, rotation)
-                                       .translate(new Vector3(position.getX(), position.getY(), z));
+                    .translate(new Vector3(position.getX(), position.getY(), z));
         }
 
         public void render(float delta, Batcher batcher)

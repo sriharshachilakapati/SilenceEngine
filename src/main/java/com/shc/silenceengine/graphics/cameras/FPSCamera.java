@@ -5,7 +5,7 @@ import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Quaternion;
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.utils.*;
+import com.shc.silenceengine.utils.TransformUtils;
 import org.lwjgl.opengl.GL11;
 
 public class FPSCamera extends BaseCamera
@@ -13,7 +13,7 @@ public class FPSCamera extends BaseCamera
     private Matrix4 mProj;
     private Matrix4 mView;
 
-    private Vector3    position;
+    private Vector3 position;
     private Quaternion rotation;
 
     public FPSCamera()
@@ -116,7 +116,7 @@ public class FPSCamera extends BaseCamera
 
     public FPSCamera initProjection(float left, float right, float bottom, float top, float zNear, float zFar)
     {
-        mProj  = TransformUtils.createFrustum(left, right, bottom, top, zNear, zFar).copy();
+        mProj = TransformUtils.createFrustum(left, right, bottom, top, zNear, zFar).copy();
         return this;
     }
 
@@ -127,8 +127,8 @@ public class FPSCamera extends BaseCamera
         Vector3 temp = Vector3.REUSABLE_STACK.pop();
 
         mView.initIdentity()
-             .multiplySelf(TransformUtils.createTranslation(temp.set(position).negateSelf()))
-             .multiplySelf(TransformUtils.createRotation(rotation));
+                .multiplySelf(TransformUtils.createTranslation(temp.set(position).negateSelf()))
+                .multiplySelf(TransformUtils.createRotation(rotation));
 
         Vector3.REUSABLE_STACK.push(temp);
 

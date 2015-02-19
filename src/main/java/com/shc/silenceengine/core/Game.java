@@ -4,20 +4,13 @@ import com.shc.silenceengine.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Graphics2D;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
-import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.input.Controller;
-import com.shc.silenceengine.input.Keyboard;
-import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.utils.GameTimer;
 import com.shc.silenceengine.utils.Logger;
 import com.shc.silenceengine.utils.TimeUtils;
-import org.lwjgl.Sys;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * The basic class for all the games made with SilenceEngine. Every game
@@ -91,7 +84,7 @@ public class Game
     private static boolean running = false;
 
     // Game logic rate
-    private static int ups       = 60;
+    private static int ups = 60;
     private static int targetUPS = 60;
 
     // Game frame rate
@@ -104,180 +97,6 @@ public class Game
     private static Game instance;
 
     /**
-     * Initialize the Game. Loads the resources, and
-     * sets the game states.
-     */
-    public void init()
-    {
-    }
-
-    /**
-     * Performs game logic. Also, it is a place to check
-     * for input, collisions, what-not, everything except
-     * rendering.
-     *
-     * @param delta It is the time taken by the last update (in ms)
-     */
-    public void update(float delta)
-    {
-    }
-
-    /**
-     * Renders the game to the OpenGL Scene.
-     *
-     * @param delta   It is the time taken by the last render (in ms)
-     * @param batcher The Batcher to batch OpenGL calls
-     */
-    public void render(float delta, Batcher batcher)
-    {
-    }
-
-    /**
-     * Handle the window-resize event. Used to set the view-port
-     * and re-size the camera.
-     */
-    public void resize()
-    {
-    }
-
-    /**
-     * Properly disposes all the resources created in init method
-     */
-    public void dispose()
-    {
-    }
-
-    /**
-     * Starts the game. Initiates the game life-cycle and starts
-     * the main game-loop.
-     */
-    public void start()
-    {
-        instance = this;
-
-        Logger.log("Initializing SilenceEngine version " + SilenceEngine.getVersion());
-
-        SilenceEngine.start();
-
-        Logger.log("Using LWJGL Version: " + Sys.getVersion());
-
-        // Create and show the display
-        Logger.log("Initializing Display");
-        Display.create();
-        Display.show();
-        Logger.log("Initialized OpenGL version " + glGetString(GL_VERSION));
-
-        // Initialize the controllers
-        Logger.log("Initializing Controllers");
-        Controller.create();
-
-        Logger.log("Initializing Game");
-
-        // Initialize the Game
-        init();
-        Runtime.getRuntime().gc();
-        Logger.log("Game initialized successfully, proceeding to the main loop");
-
-        // GameLoop constants
-        final double frameTime = 1.0/targetUPS;
-        final double maxFrameSkips = 10;
-
-        double currentTime;
-        double previousTime;
-        double elapsed;
-
-        double lag = 0;
-
-        double lastUPSUpdate = 0;
-        double lastFPSUpdate = 0;
-
-        int updatesProcessed = 0;
-        int framesProcessed = 0;
-        int skippedFrames = 0;
-
-        previousTime = TimeUtils.currentTime();
-
-        running = true;
-
-        while (true)
-        {
-            if (Display.isCloseRequested() || !isRunning())
-                break;
-
-            if (Display.wasResized())
-            {
-                GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
-                Graphics2D.getInstance().getCamera().initProjection(Display.getWidth(), Display.getHeight());
-                resize();
-
-                if (gameState != null)
-                    gameState.resize();
-            }
-
-            currentTime = TimeUtils.currentTime();
-            elapsed = currentTime - previousTime;
-
-            lag += elapsed;
-
-            while (lag > frameTime && skippedFrames < maxFrameSkips)
-            {
-                Keyboard.startEventFrame();
-                Mouse.startEventFrame();
-                Controller.startEventFrame();
-
-                update((float) frameTime);
-
-                if (gameState != null)
-                    gameState.update((float) frameTime);
-
-                GameTimer.updateTimers((float) frameTime);
-
-                Keyboard.clearEventFrame();
-                Mouse.clearEventFrame();
-                Controller.clearEventFrame();
-
-                updatesProcessed++;
-                lag -= frameTime;
-
-                skippedFrames++;
-
-                if (currentTime - lastUPSUpdate >= 1000)
-                {
-                    ups = updatesProcessed;
-                    updatesProcessed = 0;
-                    lastUPSUpdate = currentTime;
-                }
-            }
-
-            float lagOffset = (float) (lag / frameTime);
-
-            GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            Texture.setActiveUnit(0);
-            render(lagOffset, batcher);
-
-            if (gameState != null)
-                gameState.render(lagOffset, batcher);
-
-            framesProcessed++;
-
-            if (currentTime - lastFPSUpdate >= 1000)
-            {
-                fps = framesProcessed;
-                framesProcessed = 0;
-                lastFPSUpdate = currentTime;
-            }
-
-            Display.update();
-
-            skippedFrames = 0;
-
-            previousTime = currentTime;
-        }
-
-        Game.end();
-    }
-
-    /**
      * Kills the running game!
      */
     public static void end()
@@ -288,9 +107,8 @@ public class Game
 
             batcher.dispose();
             instance.dispose();
-            Display.destroy();
 
-            SilenceEngine.cleanUp();
+            SilenceEngine.getInstance().dispose();
 
             Logger.log("This game has been terminated successfully.");
             System.exit(0);
@@ -310,7 +128,10 @@ public class Game
     /**
      * @return number of frames rendered in last second
      */
-    public static int getFPS() { return fps; }
+    public static int getFPS()
+    {
+        return fps;
+    }
 
     /**
      * @return The target updates per second
@@ -321,14 +142,6 @@ public class Game
     }
 
     /**
-     * @return True if running, else false
-     */
-    public static boolean isRunning()
-    {
-        return running;
-    }
-
-    /**
      * Sets the target logic speed of the Game.
      *
      * @param targetUPS The number of steps the game should try to make in a second
@@ -336,6 +149,14 @@ public class Game
     public static void setTargetUPS(int targetUPS)
     {
         Game.targetUPS = targetUPS;
+    }
+
+    /**
+     * @return True if running, else false
+     */
+    public static boolean isRunning()
+    {
+        return running;
     }
 
     /**
@@ -392,5 +213,158 @@ public class Game
     public static long getUsedMemory()
     {
         return getTotalMemory() - getFreeMemory();
+    }
+
+    /**
+     * Initialize the Game. Loads the resources, and
+     * sets the game states.
+     */
+    public void init()
+    {
+    }
+
+    /**
+     * Performs game logic. Also, it is a place to check
+     * for input, collisions, what-not, everything except
+     * rendering.
+     *
+     * @param delta It is the time taken by the last update (in ms)
+     */
+    public void update(float delta)
+    {
+    }
+
+    /**
+     * Renders the game to the OpenGL Scene.
+     *
+     * @param delta   It is the time taken by the last render (in ms)
+     * @param batcher The Batcher to batch OpenGL calls
+     */
+    public void render(float delta, Batcher batcher)
+    {
+    }
+
+    /**
+     * Handle the window-resize event. Used to set the view-port
+     * and re-size the camera.
+     */
+    public void resize()
+    {
+    }
+
+    /**
+     * Properly disposes all the resources created in init method
+     */
+    public void dispose()
+    {
+    }
+
+    /**
+     * Starts the game. Initiates the game life-cycle and starts
+     * the main game-loop.
+     */
+    public void start()
+    {
+        instance = this;
+
+        // Initialize SilenceEngine
+        SilenceEngine.getInstance().init();
+
+        // Initialize the Game
+        init();
+        Runtime.getRuntime().gc();
+        Logger.log("Game initialized successfully, proceeding to the main loop");
+
+        // GameLoop constants
+        final double frameTime = 1.0 / targetUPS;
+        final double maxFrameSkips = 10;
+
+        double currentTime;
+        double previousTime;
+        double elapsed;
+
+        double lag = 0;
+
+        double lastUPSUpdate = 0;
+        double lastFPSUpdate = 0;
+
+        int updatesProcessed = 0;
+        int framesProcessed = 0;
+        int skippedFrames = 0;
+
+        previousTime = TimeUtils.currentTime();
+
+        running = true;
+
+        // The Game Loop
+        while (true)
+        {
+            // Start a frame in the game loop
+            SilenceEngine.getInstance().beginFrame();
+
+            if (Display.isCloseRequested() || !isRunning())
+                break;
+
+            if (Display.wasResized())
+            {
+                GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
+                Graphics2D.getInstance().getCamera().initProjection(Display.getWidth(), Display.getHeight());
+                resize();
+
+                if (gameState != null)
+                    gameState.resize();
+            }
+
+            currentTime = TimeUtils.currentTime();
+            elapsed = currentTime - previousTime;
+
+            lag += elapsed;
+
+            while (lag > frameTime && skippedFrames < maxFrameSkips)
+            {
+                update((float) frameTime);
+
+                if (gameState != null)
+                    gameState.update((float) frameTime);
+
+                GameTimer.updateTimers((float) frameTime);
+
+                updatesProcessed++;
+                lag -= frameTime;
+
+                skippedFrames++;
+
+                if (currentTime - lastUPSUpdate >= 1000)
+                {
+                    ups = updatesProcessed;
+                    updatesProcessed = 0;
+                    lastUPSUpdate = currentTime;
+                }
+            }
+
+            float lagOffset = (float) (lag / frameTime);
+            render(lagOffset, batcher);
+
+            if (gameState != null)
+                gameState.render(lagOffset, batcher);
+
+            framesProcessed++;
+
+            if (currentTime - lastFPSUpdate >= 1000)
+            {
+                fps = framesProcessed;
+                framesProcessed = 0;
+                lastFPSUpdate = currentTime;
+            }
+
+            SilenceEngine.getInstance().endFrame();
+            Display.update();
+
+            skippedFrames = 0;
+
+            previousTime = currentTime;
+        }
+
+        Game.end();
     }
 }

@@ -38,15 +38,15 @@ public class DynamicSceneCollider2D implements ISceneCollider2D
     }
 
     @Override
-    public void setScene(Scene scene)
-    {
-        this.scene = scene;
-    }
-
-    @Override
     public Scene getScene()
     {
         return scene;
+    }
+
+    @Override
+    public void setScene(Scene scene)
+    {
+        this.scene = scene;
     }
 
     @Override

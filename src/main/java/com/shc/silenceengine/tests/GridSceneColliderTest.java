@@ -11,16 +11,21 @@ import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.scene.Scene;
-import com.shc.silenceengine.utils.*;
+import com.shc.silenceengine.utils.RenderUtils;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class GridSceneColliderTest extends Game
 {
-    private Scene                 scene;
-    private GridSceneCollider     collider;
-    private OrthoCam              cam;
+    private Scene scene;
+    private GridSceneCollider collider;
+    private OrthoCam cam;
+
+    public static void main(String[] args)
+    {
+        new GridSceneColliderTest().start();
+    }
 
     public void init()
     {
@@ -74,11 +79,6 @@ public class GridSceneColliderTest extends Game
     public void dispose()
     {
         scene.destroy();
-    }
-
-    public static void main(String[] args)
-    {
-        new GridSceneColliderTest().start();
     }
 
     public class Box extends Entity2D

@@ -15,8 +15,6 @@ import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.openal.AL10.*;
-
 /**
  * <p>
  * A sound reader based on the JavaSound API. That means, this class is able to
@@ -24,7 +22,7 @@ import static org.lwjgl.openal.AL10.*;
  * class is able to decode. Currently, it can read from .wav, .wave, .au, .aif,
  * .aiff, .mid, .midi formats.
  * </p>
- *
+ * <p>
  * <p>
  * Though you are allowed to create instances of this reader on your own, it is
  * recommended that you use the {@link com.shc.silenceengine.audio.ISoundReader}
@@ -33,7 +31,7 @@ import static org.lwjgl.openal.AL10.*;
  * will be called automatically for you. Even if you do call it explicitly, there
  * is no harm.
  * </p>
- *
+ * <p>
  * <p>
  * If you are really in using this class though, feel free to use it. All it takes
  * is an <code>InputStream</code> to construct the reader, and you can use it in
@@ -48,21 +46,6 @@ public class WaveReader implements ISoundReader
 
     private int sampleRate;
     private ALFormat format;
-
-    /**
-     * Registers this class to handle specific extensions.
-     */
-    public static void register()
-    {
-        // Register extensions that we handle
-        ISoundReader.register("wav",  WaveReader.class);
-        ISoundReader.register("wave", WaveReader.class);
-        ISoundReader.register("au",   WaveReader.class);
-        ISoundReader.register("aif",  WaveReader.class);
-        ISoundReader.register("aiff", WaveReader.class);
-        ISoundReader.register("mid",  WaveReader.class);
-        ISoundReader.register("midi", WaveReader.class);
-    }
 
     /**
      * Constructs a WaveReader that reads the sound samples from an InputStream.
@@ -119,6 +102,21 @@ public class WaveReader implements ISoundReader
         {
             SilenceException.reThrow(e);
         }
+    }
+
+    /**
+     * Registers this class to handle specific extensions.
+     */
+    public static void register()
+    {
+        // Register extensions that we handle
+        ISoundReader.register("wav", WaveReader.class);
+        ISoundReader.register("wave", WaveReader.class);
+        ISoundReader.register("au", WaveReader.class);
+        ISoundReader.register("aif", WaveReader.class);
+        ISoundReader.register("aiff", WaveReader.class);
+        ISoundReader.register("mid", WaveReader.class);
+        ISoundReader.register("midi", WaveReader.class);
     }
 
     public Buffer getData()

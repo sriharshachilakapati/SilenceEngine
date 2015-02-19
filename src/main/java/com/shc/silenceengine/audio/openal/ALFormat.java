@@ -42,16 +42,6 @@ public enum ALFormat
     }
 
     /**
-     * Returns the OpenAL format constant integer
-     *
-     * @return The integer constant value of this OpenAL Format
-     */
-    public int getAlFormat()
-    {
-        return alFormat;
-    }
-
-    /**
      * Turns the OpenAL Format integer constant into a ALFormat enum.
      *
      * @param value The integer constant
@@ -61,12 +51,26 @@ public enum ALFormat
     {
         switch (value)
         {
-            case AL_FORMAT_MONO8:    return MONO_8;
-            case AL_FORMAT_MONO16:   return MONO_16;
-            case AL_FORMAT_STEREO8:  return STEREO_8;
-            case AL_FORMAT_STEREO16: return STEREO_16;
+            case AL_FORMAT_MONO8:
+                return MONO_8;
+            case AL_FORMAT_MONO16:
+                return MONO_16;
+            case AL_FORMAT_STEREO8:
+                return STEREO_8;
+            case AL_FORMAT_STEREO16:
+                return STEREO_16;
         }
 
         throw new SilenceException("Unknown format value: " + value);
+    }
+
+    /**
+     * Returns the OpenAL format constant integer
+     *
+     * @return The integer constant value of this OpenAL Format
+     */
+    public int getAlFormat()
+    {
+        return alFormat;
     }
 }

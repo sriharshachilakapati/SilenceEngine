@@ -11,10 +11,10 @@ import java.util.List;
  */
 public class Polygon
 {
-    private Vector2       position;
-    private Vector2       center;
+    private Vector2 position;
+    private Vector2 center;
     private List<Vector2> vertices;
-    private float         rotation;
+    private float rotation;
 
     private float minX;
     private float minY;
@@ -27,7 +27,7 @@ public class Polygon
     {
         this.vertices = new ArrayList<>();
         this.position = new Vector2();
-        this.center   = new Vector2();
+        this.center = new Vector2();
 
         clearVertices();
     }
@@ -113,7 +113,7 @@ public class Polygon
         }
 
         updateBounds();
-}
+    }
 
     public boolean intersects(Polygon other)
     {
@@ -134,8 +134,8 @@ public class Polygon
             vj.set(getVertex(j)).addSelf(position);
 
             if ((((vi.getY() <= p.getY()) && (p.getY() < vj.getY())) ||
-                 ((vj.getY() <= p.getY()) && (p.getY() < vi.getY()))) &&
-                (p.getX() < (vj.getX() - vi.getX()) * (p.getY() - vi.getY()) / (vj.getY() - vi.getY()) + vi.getX()))
+                    ((vj.getY() <= p.getY()) && (p.getY() < vi.getY()))) &&
+                    (p.getX() < (vj.getX() - vi.getX()) * (p.getY() - vi.getY()) / (vj.getY() - vi.getY()) + vi.getX()))
                 oddNodes = !oddNodes;
         }
 
@@ -174,6 +174,15 @@ public class Polygon
         return position;
     }
 
+    public void setPosition(Vector2 v)
+    {
+        this.position.set(v);
+        center.set(position).addSelf((maxX - minX) / 2, (maxY - minY) / 2);
+
+        if (bounds != null)
+            bounds.setPosition(position);
+    }
+
     public Vector2 getCenter()
     {
         return center;
@@ -182,7 +191,7 @@ public class Polygon
     public void setCenter(Vector2 center)
     {
         this.center.set(center);
-        position.set(center).subtractSelf((maxX - minX)/2, (maxY - minY)/2);
+        position.set(center).subtractSelf((maxX - minX) / 2, (maxY - minY) / 2);
     }
 
     public void setPosition(float x, float y)
@@ -190,7 +199,7 @@ public class Polygon
         position.x = x;
         position.y = y;
 
-        center.set(position).addSelf((maxX - minX)/2, (maxY - minY)/2);
+        center.set(position).addSelf((maxX - minX) / 2, (maxY - minY) / 2);
 
         if (bounds != null)
             bounds.setPosition(position);
@@ -202,15 +211,6 @@ public class Polygon
             bounds = new Rectangle(position.getX(), position.getY(), maxX - minX, maxY - minY);
 
         return bounds;
-    }
-
-    public void setPosition(Vector2 v)
-    {
-        this.position.set(v);
-        center.set(position).addSelf((maxX - minX)/2, (maxY - minY)/2);
-
-        if (bounds != null)
-            bounds.setPosition(position);
     }
 
     public float getRotation()
@@ -232,14 +232,14 @@ public class Polygon
         Polygon polygon = (Polygon) o;
 
         return Float.compare(polygon.maxX, maxX) == 0 &&
-               Float.compare(polygon.maxY, maxY) == 0 &&
-               Float.compare(polygon.minX, minX) == 0 &&
-               Float.compare(polygon.minY, minY) == 0 &&
-               Float.compare(polygon.rotation, rotation) == 0 &&
-               bounds.equals(polygon.bounds) &&
-               center.equals(polygon.center) &&
-               position.equals(polygon.position) &&
-               vertices.equals(polygon.vertices);
+                Float.compare(polygon.maxY, maxY) == 0 &&
+                Float.compare(polygon.minX, minX) == 0 &&
+                Float.compare(polygon.minY, minY) == 0 &&
+                Float.compare(polygon.rotation, rotation) == 0 &&
+                bounds.equals(polygon.bounds) &&
+                center.equals(polygon.center) &&
+                position.equals(polygon.position) &&
+                vertices.equals(polygon.vertices);
     }
 
     @Override
@@ -261,15 +261,15 @@ public class Polygon
     public String toString()
     {
         return "Polygon{" +
-               "position=" + position +
-               ", center=" + center +
-               ", vertices=" + vertices +
-               ", rotation=" + rotation +
-               ", minX=" + minX +
-               ", minY=" + minY +
-               ", maxX=" + maxX +
-               ", maxY=" + maxY +
-               ", bounds=" + bounds +
-               '}';
+                "position=" + position +
+                ", center=" + center +
+                ", vertices=" + vertices +
+                ", rotation=" + rotation +
+                ", minX=" + minX +
+                ", minY=" + minY +
+                ", maxX=" + maxX +
+                ", maxY=" + maxY +
+                ", bounds=" + bounds +
+                '}';
     }
 }

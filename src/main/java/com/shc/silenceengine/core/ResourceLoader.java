@@ -15,35 +15,28 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public final class ResourceLoader
 {
-    private Map<Integer, Texture>      textures;
+    private static ResourceLoader instance;
+    private Map<Integer, Texture> textures;
     private Map<Integer, TrueTypeFont> fonts;
-    private Map<Integer, Sound>        sounds;
+    private Map<Integer, Sound> sounds;
     private Map<Integer, Model> models;
-
     private Map<String, Integer> texturesToLoad;
     private Map<String, Integer> fontsToLoad;
     private Map<String, Integer> soundsToLoad;
     private Map<String, Integer> modelsToLoad;
-
-    private int     numLoaded;
+    private int numLoaded;
     private Texture logo;
-
-    private static ResourceLoader instance;
-
-    public static ResourceLoader getInstance()
-    {
-        if (instance == null)
-            instance = new ResourceLoader();
-
-        return instance;
-    }
+    // How much progress that is rendered, used to smooth the
+    // transition in the progressbar.
+    private float renderedProgress;
 
     private ResourceLoader()
     {
@@ -60,6 +53,14 @@ public final class ResourceLoader
         numLoaded = 0;
 
         logo = Texture.fromResource("resources/logo.png");
+    }
+
+    public static ResourceLoader getInstance()
+    {
+        if (instance == null)
+            instance = new ResourceLoader();
+
+        return instance;
     }
 
     public void setLogo(String logoName)
@@ -211,10 +212,6 @@ public final class ResourceLoader
     {
         return name + "," + style + "," + size;
     }
-
-    // How much progress that is rendered, used to smooth the
-    // transition in the progressbar.
-    private float renderedProgress;
 
     private void renderProgress()
     {

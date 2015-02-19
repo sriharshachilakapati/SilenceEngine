@@ -17,7 +17,7 @@ public class PerspCam extends BaseCamera
     private Matrix4 mProj;
     private Matrix4 mView;
 
-    private Vector3    position;
+    private Vector3 position;
     private Quaternion rotation;
     private Quaternion tempQuat;
 
@@ -153,9 +153,10 @@ public class PerspCam extends BaseCamera
 
     public PerspCam initProjection(float left, float right, float bottom, float top, float zNear, float zFar)
     {
-        mProj  = TransformUtils.createFrustum(left, right, bottom, top, zNear, zFar).copy();
+        mProj = TransformUtils.createFrustum(left, right, bottom, top, zNear, zFar).copy();
         return this;
     }
+
     public void apply()
     {
         super.apply();
@@ -163,8 +164,8 @@ public class PerspCam extends BaseCamera
         Vector3 tempVec3 = Vector3.REUSABLE_STACK.pop();
 
         mView.initIdentity()
-             .multiplySelf(TransformUtils.createTranslation(tempVec3.set(position).negateSelf()))
-             .multiplySelf(TransformUtils.createRotation(rotation));
+                .multiplySelf(TransformUtils.createTranslation(tempVec3.set(position).negateSelf()))
+                .multiplySelf(TransformUtils.createRotation(rotation));
 
         Vector3.REUSABLE_STACK.push(tempVec3);
 

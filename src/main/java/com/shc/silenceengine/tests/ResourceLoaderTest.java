@@ -5,8 +5,8 @@ import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.ResourceLoader;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.TrueTypeFont;
+import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
@@ -23,6 +23,11 @@ public class ResourceLoaderTest extends Game
 
     private OrthoCam cam;
 
+    public static void main(String[] args)
+    {
+        new ResourceLoaderTest().start();
+    }
+
     public void init()
     {
         ResourceLoader loader = ResourceLoader.getInstance();
@@ -34,8 +39,8 @@ public class ResourceLoaderTest extends Game
         loader.startLoading();
 
         texture = loader.getTexture(textureID);
-        font1   = loader.getFont(fontID1);
-        font2   = loader.getFont(fontID2);
+        font1 = loader.getFont(fontID1);
+        font2 = loader.getFont(fontID2);
 
         cam = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
     }
@@ -64,10 +69,5 @@ public class ResourceLoaderTest extends Game
     public void dispose()
     {
         ResourceLoader.getInstance().dispose();
-    }
-
-    public static void main(String[] args)
-    {
-        new ResourceLoaderTest().start();
     }
 }

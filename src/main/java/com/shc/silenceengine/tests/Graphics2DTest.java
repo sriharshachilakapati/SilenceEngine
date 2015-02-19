@@ -16,6 +16,11 @@ public class Graphics2DTest extends Game
 {
     private Texture texture;
 
+    public static void main(String[] args)
+    {
+        new Graphics2DTest().start();
+    }
+
     public void init()
     {
         ResourceLoader loader = ResourceLoader.getInstance();
@@ -56,10 +61,5 @@ public class Graphics2DTest extends Game
     public void dispose()
     {
         ResourceLoader.getInstance().dispose();
-    }
-
-    public static void main(String[] args)
-    {
-        new Graphics2DTest().start();
     }
 }

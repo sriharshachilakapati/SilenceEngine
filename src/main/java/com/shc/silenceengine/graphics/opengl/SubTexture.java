@@ -1,7 +1,6 @@
 package com.shc.silenceengine.graphics.opengl;
 
 import com.shc.silenceengine.core.SilenceException;
-import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.math.Vector2;
 
 /**

@@ -5,8 +5,8 @@ import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector2;
 
 /**
@@ -15,12 +15,17 @@ import com.shc.silenceengine.math.Vector2;
 public class TransformTest extends Game
 {
     private Transform transform;
-    private Texture   texture;
+    private Texture texture;
+
+    public static void main(String[] args)
+    {
+        new TransformTest().start();
+    }
 
     public void init()
     {
         transform = new Transform();
-        texture   = Texture.fromResource("resources/texture2.png");
+        texture = Texture.fromResource("resources/texture2.png");
     }
 
     public void update(float delta)
@@ -85,10 +90,5 @@ public class TransformTest extends Game
     public void dispose()
     {
         texture.dispose();
-    }
-
-    public static void main(String[] args)
-    {
-        new TransformTest().start();
     }
 }

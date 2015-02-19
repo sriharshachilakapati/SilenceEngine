@@ -16,7 +16,7 @@ public class SpriteSheet
     {
         this.texture = texture;
 
-        this.cellWidth  = cellWidth;
+        this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
     }
 

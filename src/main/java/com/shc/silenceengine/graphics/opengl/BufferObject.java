@@ -2,20 +2,12 @@ package com.shc.silenceengine.graphics.opengl;
 
 import org.lwjgl.BufferUtils;
 
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
-import java.nio.Buffer;
+import java.nio.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL14.*;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL30.glMapBufferRange;
 
 /**
  * This class encapsulates OpenGL Buffer Objects nicely and cleanly
@@ -34,13 +26,11 @@ import static org.lwjgl.opengl.GL30.*;
  */
 public class BufferObject
 {
+    private static Map<Integer, BufferObject> current = new HashMap<>();
     private int id;
     private int capacity;
     private int target;
-
     private boolean disposed;
-
-    private static Map<Integer, BufferObject> current = new HashMap<>();
 
     /**
      * Creates a VertexBufferObject that binds to a target. Valid targets
@@ -117,10 +107,10 @@ public class BufferObject
      * <code>glBufferData()</code> function.
      *
      * @param capacity The capacity of the data store to be created
-     * @param usage How the is intended to be used. Valid usage values are
-     *              GL_STREAM_DRAW​, GL_STREAM_READ​, GL_STREAM_COPY​, GL_STATIC_DRAW​,
-     *              GL_STATIC_READ​, GL_STATIC_COPY​, GL_DYNAMIC_DRAW​, GL_DYNAMIC_READ​,
-     *              or GL_DYNAMIC_COPY​.
+     * @param usage    How the is intended to be used. Valid usage values are
+     *                 GL_STREAM_DRAW​, GL_STREAM_READ​, GL_STREAM_COPY​, GL_STATIC_DRAW​,
+     *                 GL_STATIC_READ​, GL_STATIC_COPY​, GL_DYNAMIC_DRAW​, GL_DYNAMIC_READ​,
+     *                 or GL_DYNAMIC_COPY​.
      */
     public void uploadData(int capacity, int usage)
     {
@@ -170,7 +160,6 @@ public class BufferObject
      *               from which data will be returned, measured in bytes.
      * @param length Specifies the size in bytes of the data store region
      *               being returned.
-     *
      * @return The data as a NIO ByteBuffer.
      */
     public ByteBuffer getSubData(int offset, int length)
@@ -186,7 +175,6 @@ public class BufferObject
      * @param length Specifies the size in bytes of the data store region
      *               being returned.
      * @param data   A NIO ByteBuffer used to store the retrieved data.
-     *
      * @return The data as a NIO ByteBuffer.
      */
     public ByteBuffer getSubData(int offset, int length, ByteBuffer data)
@@ -211,47 +199,46 @@ public class BufferObject
      * Returns all the data present in the data store of this VertexBufferObject.
      *
      * @param data A NIO ByteBuffer used to store the retrieved data.
-     *
      * @return The data as a NIO ByteBuffer
      */
     public ByteBuffer getData(ByteBuffer data)
     {
         return getSubData(0, capacity, data);
     }
-    
+
     /**
      * Maps the buffer object's data store.
-     * 
+     *
      * @param access  The access policy. Valid accesses are READ_ONLY, WRITE_ONLY
      *                or READ_WRITE.
      * @param pointer A NIO ByteBuffer used for the data store.
-     * 
      * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
      */
-    public ByteBuffer map(int access, ByteBuffer pointer) {
+    public ByteBuffer map(int access, ByteBuffer pointer)
+    {
         bind();
         pointer = glMapBuffer(target, access, pointer.capacity(), pointer);
-        
+
         GLError.check();
-        
+
         return pointer;
     }
-    
+
     /**
      * Maps the buffer object's data store.
-     * 
+     *
      * @param access The access policy. Valid accesses are READ_ONLY, WRITE_ONLY
      *               or READ_WRITE.
-     * 
      * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
      */
-    public ByteBuffer map(int access) {
+    public ByteBuffer map(int access)
+    {
         return map(access, BufferUtils.createByteBuffer(capacity));
     }
-    
+
     /**
      * Maps a section of a buffer object's data store.
-     * 
+     *
      * @param offset  The starting offset within the buffer of the range to be
      *                mapped.
      * @param access  Combination of access flags indicating the desired access
@@ -259,21 +246,21 @@ public class BufferObject
      *                MAP_INVALIDATE_RANGE_BIT, MAP_INVALIDATE_BUFFER_BIT,
      *                MAP_FLUSH_EXPLICIT_BIT, MAP_UNSYNCHRONIZED_BIT.
      * @param pointer A NIO ByteBuffer used for the data store.
-     * 
      * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
      */
-    public ByteBuffer mapRange(long offset, int access, ByteBuffer pointer) {
+    public ByteBuffer mapRange(long offset, int access, ByteBuffer pointer)
+    {
         bind();
         pointer = glMapBufferRange(target, offset, pointer.capacity(), access);
-        
+
         GLError.check();
-        
+
         return pointer;
     }
-    
+
     /**
      * Maps a section of a buffer object's data store.
-     * 
+     *
      * @param offset The starting offset within the buffer of the range to be
      *               mapped.
      * @param length The length of the range to be mapped.
@@ -281,24 +268,25 @@ public class BufferObject
      *               to the range. One or more of: MAP_READ_BIT, MAP_WRITE_BIT,
      *               MAP_INVALIDATE_RANGE_BIT, MAP_INVALIDATE_BUFFER_BIT,
      *               MAP_FLUSH_EXPLICIT_BIT, MAP_UNSYNCHRONIZED_BIT.
-     * 
      * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
      */
-    public ByteBuffer mapRange(long offset, int length, int access) {
+    public ByteBuffer mapRange(long offset, int length, int access)
+    {
         return mapRange(offset, access, BufferUtils.createByteBuffer(length));
     }
-    
+
     /**
      * Unmaps the buffer object and invalidates the pointer to its data store.
-     * 
+     *
      * @return Returns true if the unmapping was successful.
      */
-    public boolean unmap() {
+    public boolean unmap()
+    {
         bind();
         boolean unmapped = glUnmapBuffer(target);
-        
+
         GLError.check();
-        
+
         return unmapped;
     }
 
@@ -319,7 +307,7 @@ public class BufferObject
 
     /**
      * @return The ID of this VertexBufferObject. Useful if you directly
-     *         want to use any OpenGL function yourself.
+     * want to use any OpenGL function yourself.
      */
     public int getId()
     {
@@ -328,7 +316,7 @@ public class BufferObject
 
     /**
      * @return The capacity of the data store currently allocated
-     *         to store the data of this VertexBufferObject on the GPU.
+     * to store the data of this VertexBufferObject on the GPU.
      */
     public int getCapacity()
     {

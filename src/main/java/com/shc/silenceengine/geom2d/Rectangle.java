@@ -29,7 +29,7 @@ public class Rectangle extends Polygon
 
     public Rectangle(float x, float y, float width, float height)
     {
-        this.width  = width;
+        this.width = width;
         this.height = height;
 
         v1 = new Vector2();
@@ -113,15 +113,15 @@ public class Rectangle extends Polygon
         return height;
     }
 
-    public Rectangle copy()
-    {
-        return new Rectangle(getX(), getY(), width, height);
-    }
-
     public void setHeight(float height)
     {
         this.height = height;
         updateVertices();
+    }
+
+    public Rectangle copy()
+    {
+        return new Rectangle(getX(), getY(), width, height);
     }
 
     public void set(float x, float y, float width, float height)
@@ -141,11 +141,11 @@ public class Rectangle extends Polygon
     public String toString()
     {
         return "Rectangle{" +
-               "x=" + getX() +
-               ", y=" + getY() +
-               ", width=" + width +
-               ", height=" + height +
-               '}';
+                "x=" + getX() +
+                ", y=" + getY() +
+                ", width=" + width +
+                ", height=" + height +
+                '}';
     }
 
     @Override
@@ -157,9 +157,9 @@ public class Rectangle extends Polygon
         Rectangle rectangle = (Rectangle) o;
 
         return Float.compare(rectangle.height, height) == 0 &&
-               Float.compare(rectangle.width, width)   == 0 &&
-               Float.compare(rectangle.getX(), getX()) == 0 &&
-               Float.compare(rectangle.getY(), getY()) == 0;
+                Float.compare(rectangle.width, width) == 0 &&
+                Float.compare(rectangle.getX(), getX()) == 0 &&
+                Float.compare(rectangle.getY(), getY()) == 0;
     }
 
     @Override

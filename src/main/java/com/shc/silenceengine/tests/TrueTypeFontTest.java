@@ -4,9 +4,9 @@ import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
 
@@ -16,8 +16,13 @@ import com.shc.silenceengine.math.Vector2;
 public class TrueTypeFontTest extends Game
 {
     private TrueTypeFont font;
-    private OrthoCam     cam;
-    private Texture      logo;
+    private OrthoCam cam;
+    private Texture logo;
+
+    public static void main(String[] args)
+    {
+        new TrueTypeFontTest().start();
+    }
 
     public void init()
     {
@@ -59,10 +64,5 @@ public class TrueTypeFontTest extends Game
     {
         font.dispose();
         logo.dispose();
-    }
-
-    public static void main(String[] args)
-    {
-        new TrueTypeFontTest().start();
     }
 }

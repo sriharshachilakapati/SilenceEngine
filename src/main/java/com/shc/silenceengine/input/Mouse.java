@@ -25,15 +25,17 @@ public class Mouse
     public static final int MOUSE_BUTTON_7 = GLFW_MOUSE_BUTTON_7;
     public static final int MOUSE_BUTTON_8 = GLFW_MOUSE_BUTTON_8;
 
-    public static final int MOUSE_BUTTON_LEFT   = GLFW_MOUSE_BUTTON_LEFT;
-    public static final int MOUSE_BUTTON_RIGHT  = GLFW_MOUSE_BUTTON_RIGHT;
+    public static final int MOUSE_BUTTON_LEFT = GLFW_MOUSE_BUTTON_LEFT;
+    public static final int MOUSE_BUTTON_RIGHT = GLFW_MOUSE_BUTTON_RIGHT;
     public static final int MOUSE_BUTTON_MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE;
 
     public static final int MOUSE_BUTTON_LAST = GLFW_MOUSE_BUTTON_LAST;
 
-    private static List<Integer> events          = new ArrayList<>();
+    private static List<Integer> events = new ArrayList<>();
     private static List<Integer> eventsThisFrame = new ArrayList<>();
     private static List<Integer> eventsLastFrame = new ArrayList<>();
+    private static float x, y, dx, dy;
+    private static float scrollX, scrollY;
 
     public static void setButton(int button, boolean pressed)
     {
@@ -70,9 +72,6 @@ public class Mouse
     {
         return eventsThisFrame.contains(button) && !eventsLastFrame.contains(button);
     }
-
-    private static float x, y, dx, dy;
-    private static float scrollX, scrollY;
 
     public static float getX()
     {

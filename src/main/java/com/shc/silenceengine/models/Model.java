@@ -10,12 +10,6 @@ import com.shc.silenceengine.models.obj.OBJModel;
  */
 public abstract class Model
 {
-    public abstract void update(float delta);
-
-    public abstract void render(float delta, Batcher batcher, Transform transform);
-
-    public abstract void dispose();
-
     public static Model load(String filename)
     {
         if (filename.endsWith(".obj"))
@@ -23,4 +17,10 @@ public abstract class Model
 
         throw new SilenceException("The model type you are trying to loadLWJGL is unsupported.");
     }
+
+    public abstract void update(float delta);
+
+    public abstract void render(float delta, Batcher batcher, Transform transform);
+
+    public abstract void dispose();
 }

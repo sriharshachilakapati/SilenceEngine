@@ -17,8 +17,6 @@ import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.openal.AL10.*;
-
 /**
  * <p>
  * A sound reader based on the j-ogg and JOrbis libraries. That means, this class
@@ -26,7 +24,7 @@ import static org.lwjgl.openal.AL10.*;
  * j-ogg and JOrbis libraries are able to decode. Currently, it can read from .ogg
  * and .oga file formats.
  * </p>
- *
+ * <p>
  * <p>
  * Though you are allowed to create instances of this reader on your own, it is
  * recommended that you use the {@link com.shc.silenceengine.audio.ISoundReader}
@@ -35,7 +33,7 @@ import static org.lwjgl.openal.AL10.*;
  * will be called automatically for you. Even if you do call it explicitly, there
  * is no harm.
  * </p>
- *
+ * <p>
  * <p>
  * If you are really in using this class though, feel free to use it. All it takes
  * is an <code>InputStream</code> to construct the reader, and you can use it in
@@ -52,21 +50,22 @@ public class OggReader implements ISoundReader
     private ALFormat format;
 
     /**
+     * Constructs an OGG reader to read from an InputStream.
+     *
+     * @param is The InputStream to loadLWJGL the sound samples from.
+     */
+    public OggReader(InputStream is)
+    {
+        decodeToPCM(is);
+    }
+
+    /**
      * Registers the extensions that this class is able to handle.
      */
     public static void register()
     {
         ISoundReader.register("ogg", OggReader.class);
         ISoundReader.register("oga", OggReader.class);
-    }
-
-    /**
-     * Constructs an OGG reader to read from an InputStream.
-     * @param is The InputStream to loadLWJGL the sound samples from.
-     */
-    public OggReader(InputStream is)
-    {
-        decodeToPCM(is);
     }
 
     /**

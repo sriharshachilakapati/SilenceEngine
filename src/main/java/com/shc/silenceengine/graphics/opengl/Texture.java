@@ -12,26 +12,23 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.*;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL12.GL_TEXTURE_WRAP_R;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class Texture
 {
-    private int id;
-
-    private float width;
-    private float height;
-
-    private boolean disposed;
-
     public static Texture CURRENT;
     public static Texture EMPTY;
-
     private static int activeUnit;
+    private int id;
+    private float width;
+    private float height;
+    private boolean disposed;
 
     public Texture()
     {
@@ -42,86 +39,6 @@ public class Texture
     public Texture(int id)
     {
         this.id = id;
-    }
-
-    public void bind()
-    {
-        if (CURRENT == this)
-            return;
-
-        if (disposed)
-            throw new GLException("Cannot bind a disposed texture!");
-
-        glBindTexture(GL_TEXTURE_2D, id);
-        GLError.check();
-
-        CURRENT = this;
-    }
-
-    public void image2d(ByteBuffer data, int type, int format, int width, int height, int internalFormat)
-    {
-        bind();
-
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
-        GLError.check();
-
-        this.width = width;
-        this.height = height;
-    }
-
-    public void setWrapping(int s)
-    {
-        bind();
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s);
-        GLError.check();
-    }
-
-    public void setWrapping(int s, int t)
-    {
-        bind();
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s); GLError.check();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, t); GLError.check();
-    }
-
-    public void setWrapping(int s, int t, int r)
-    {
-        bind();
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s); GLError.check();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, t); GLError.check();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, r); GLError.check();
-    }
-
-    public void setFilter(int min, int mag)
-    {
-        bind();
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min); GLError.check();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag); GLError.check();
-    }
-
-    public void generateMipMaps()
-    {
-        bind();
-        glGenerateMipmap(GL_TEXTURE_2D);
-        GLError.check();
-    }
-
-    public SubTexture getSubTexture(float minU, float minV, float maxU, float maxV)
-    {
-        return new SubTexture(this, minU, minV, maxU, maxV);
-    }
-
-    public SubTexture getSubTexture(Vector2 min, Vector2 max)
-    {
-        return new SubTexture(this, min, max);
-    }
-
-    public SubTexture getSubTexture(float minU, float minV, float maxU, float maxV, float width, float height)
-    {
-        return new SubTexture(this, minU, minV, maxU, maxV, width, height);
     }
 
     public static int getActiveUnit()
@@ -157,14 +74,14 @@ public class Texture
     {
         ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4);
 
-        for (int i=0; i<height; i++)
+        for (int i = 0; i < height; i++)
         {
-            for (int j=0; j<width; j++)
+            for (int j = 0; j < width; j++)
             {
                 buffer.put((byte) (c.getR() * 255f))
-                      .put((byte) (c.getG() * 255f))
-                      .put((byte) (c.getB() * 255f))
-                      .put((byte) (c.getA() * 255f));
+                        .put((byte) (c.getG() * 255f))
+                        .put((byte) (c.getB() * 255f))
+                        .put((byte) (c.getA() * 255f));
             }
         }
 
@@ -216,10 +133,91 @@ public class Texture
         return fromInputStream(FileUtils.getResource(name));
     }
 
-    public static void loadNullTexture()
+    public void bind()
     {
-        if (EMPTY == null)
-            EMPTY = fromColor(Color.TRANSPARENT, 16, 16);
+        if (CURRENT == this)
+            return;
+
+        if (disposed)
+            throw new GLException("Cannot bind a disposed texture!");
+
+        glBindTexture(GL_TEXTURE_2D, id);
+        GLError.check();
+
+        CURRENT = this;
+    }
+
+    public void image2d(ByteBuffer data, int type, int format, int width, int height, int internalFormat)
+    {
+        bind();
+
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
+        GLError.check();
+
+        this.width = width;
+        this.height = height;
+    }
+
+    public void setWrapping(int s)
+    {
+        bind();
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s);
+        GLError.check();
+    }
+
+    public void setWrapping(int s, int t)
+    {
+        bind();
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s);
+        GLError.check();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, t);
+        GLError.check();
+    }
+
+    public void setWrapping(int s, int t, int r)
+    {
+        bind();
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s);
+        GLError.check();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, t);
+        GLError.check();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, r);
+        GLError.check();
+    }
+
+    public void setFilter(int min, int mag)
+    {
+        bind();
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
+        GLError.check();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
+        GLError.check();
+    }
+
+    public void generateMipMaps()
+    {
+        bind();
+        glGenerateMipmap(GL_TEXTURE_2D);
+        GLError.check();
+    }
+
+    public SubTexture getSubTexture(float minU, float minV, float maxU, float maxV)
+    {
+        return new SubTexture(this, minU, minV, maxU, maxV);
+    }
+
+    public SubTexture getSubTexture(Vector2 min, Vector2 max)
+    {
+        return new SubTexture(this, min, max);
+    }
+
+    public SubTexture getSubTexture(float minU, float minV, float maxU, float maxV, float width, float height)
+    {
+        return new SubTexture(this, minU, minV, maxU, maxV, width, height);
     }
 
     public void dispose()
