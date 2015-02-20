@@ -1,6 +1,5 @@
 package com.shc.silenceengine.core;
 
-import com.shc.silenceengine.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Graphics2D;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
@@ -8,13 +7,10 @@ import com.shc.silenceengine.utils.GameTimer;
 import com.shc.silenceengine.utils.Logger;
 import com.shc.silenceengine.utils.TimeUtils;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-
 /**
  * The basic class for all the games made with SilenceEngine. Every game will simply extend this Game class, and call
- * the start method to play. <p>
+ * the start method to play.
+ *
  * <pre>
  *     public class MyGame extends Game
  *     {
@@ -39,37 +35,13 @@ import java.io.Writer;
  *         }
  *     }
  * </pre>
- * <p> Creating a game in SilenceEngine is as simple as that. This is the skeleton of your game.
+ *
+ * Creating a game in SilenceEngine is as simple as that. This is the skeleton of your game.
  *
  * @author Sri Harsha Chilakapati
  */
 public class Game
 {
-    static
-    {
-        // Every exception occurs after SilenceException, even
-        // the uncaught exceptions are thrown as runtime exceptions
-        Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-        {
-            try
-            {
-                Writer result = new StringWriter();
-                PrintWriter printWriter = new PrintWriter(result);
-                e.printStackTrace(printWriter);
-
-                throw new SilenceException(result.toString());
-            }
-            catch (SilenceException ex)
-            {
-                ex.printStackTrace();
-                System.exit(-1);
-            }
-        });
-
-        // Set target UPS
-        setTargetUPS(60);
-    }
-
     /**
      * Specifies the development status of the game. Before distributing make sure to change this to false, leaving this
      * enabled causes the GLExceptions, if any, to be displayed to the user.
@@ -193,6 +165,7 @@ public class Game
         SilenceEngine.getInstance().init();
 
         // Initialize the Game
+        Logger.log("Initializing the Game resources");
         init();
         Runtime.getRuntime().gc();
         Logger.log("Game initialized successfully, proceeding to the main loop");
@@ -244,12 +217,17 @@ public class Game
 
             while (lag > frameTime && skippedFrames < maxFrameSkips)
             {
-                update((float) frameTime);
+                // Input needs to be updated even faster!
+                SilenceEngine.input.beginFrame();
+                {
+                    update((float) frameTime);
 
-                if (gameState != null)
-                    gameState.update((float) frameTime);
+                    if (gameState != null)
+                        gameState.update((float) frameTime);
 
-                GameTimer.updateTimers((float) frameTime);
+                    GameTimer.updateTimers((float) frameTime);
+                }
+                SilenceEngine.input.endFrame();
 
                 updatesProcessed++;
                 lag -= frameTime;
@@ -297,14 +275,14 @@ public class Game
     {
         if (!running)
         {
-            Logger.log("Disposing the resources.");
+            Logger.log("Disposing the Game resources");
 
             batcher.dispose();
             instance.dispose();
 
             SilenceEngine.getInstance().dispose();
 
-            Logger.log("This game has been terminated successfully.");
+            Logger.log("This game has been terminated successfully");
             System.exit(0);
         }
 

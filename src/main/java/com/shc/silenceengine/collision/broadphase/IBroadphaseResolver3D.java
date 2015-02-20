@@ -1,7 +1,7 @@
 package com.shc.silenceengine.collision.broadphase;
 
-import com.shc.silenceengine.entity.Entity3D;
-import com.shc.silenceengine.geom3d.Polyhedron;
+import com.shc.silenceengine.scene.entity.Entity3D;
+import com.shc.silenceengine.math.geom3d.Polyhedron;
 
 import java.util.List;
 

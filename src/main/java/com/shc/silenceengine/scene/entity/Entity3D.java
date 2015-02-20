@@ -1,7 +1,7 @@
-package com.shc.silenceengine.entity;
+package com.shc.silenceengine.scene.entity;
 
-import com.shc.silenceengine.geom3d.Cuboid;
-import com.shc.silenceengine.geom3d.Polyhedron;
+import com.shc.silenceengine.math.geom3d.Cuboid;
+import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.scene.SceneNode;

@@ -1,6 +1,7 @@
-package com.shc.silenceengine.core;
+package com.shc.silenceengine.utils;
 
-import com.shc.silenceengine.SilenceEngine;
+import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.core.SilenceException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,6 +38,9 @@ public class NativesLoader
             // Delete the temp dir on exit
             nativesDir.deleteOnExit();
 
+            // Set the LWJGL library path
+            System.setProperty("java.library.path", nativesDir.getAbsolutePath());
+
             switch (SilenceEngine.getPlatform())
             {
                 case WINDOWS_32:
@@ -67,9 +71,6 @@ public class NativesLoader
                 case UNKNOWN:
                     throw new SilenceException("SilenceEngine does not support your Operating System. We're sorry :(");
             }
-
-            // Set the LWJGL library path
-            System.setProperty("java.library.path", nativesDir.getAbsolutePath());
         }
         catch (Exception e)
         {
@@ -112,11 +113,14 @@ public class NativesLoader
                 while ((readBytes = is.read(buffer)) != -1)
                     os.write(buffer, 0, readBytes);
             }
+
+            // Load the library
+            System.load(tmp.getAbsolutePath());
         }
         catch (Exception e)
         {
             // Error again, :( Throw an exception
-            throw new SilenceException(e.getMessage());
+            SilenceException.reThrow(e);
         }
     }
 }

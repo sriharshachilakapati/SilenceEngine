@@ -1,8 +1,8 @@
-package com.shc.silenceengine.entity;
+package com.shc.silenceengine.scene.entity;
 
 import com.shc.silenceengine.collision.Collision2D;
-import com.shc.silenceengine.geom2d.Polygon;
-import com.shc.silenceengine.geom2d.Rectangle;
+import com.shc.silenceengine.math.geom2d.Polygon;
+import com.shc.silenceengine.math.geom2d.Rectangle;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;

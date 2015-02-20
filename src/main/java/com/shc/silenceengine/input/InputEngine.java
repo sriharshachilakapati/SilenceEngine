@@ -1,6 +1,6 @@
 package com.shc.silenceengine.input;
 
-import com.shc.silenceengine.IEngine;
+import com.shc.silenceengine.core.IEngine;
 
 /**
  * @author Sri Harsha Chilakapati

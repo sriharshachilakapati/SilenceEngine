@@ -1,7 +1,7 @@
 package com.shc.silenceengine.scene;
 
 import com.shc.silenceengine.core.SilenceException;
-import com.shc.silenceengine.entity.Entity2D;
+import com.shc.silenceengine.scene.entity.Entity2D;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.math.Transform;

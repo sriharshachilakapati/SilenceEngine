@@ -2,8 +2,8 @@ package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
-import com.shc.silenceengine.entity.ModelEntity;
-import com.shc.silenceengine.geom3d.Cuboid;
+import com.shc.silenceengine.scene.entity.ModelEntity;
+import com.shc.silenceengine.math.geom3d.Cuboid;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.cameras.PerspCam;

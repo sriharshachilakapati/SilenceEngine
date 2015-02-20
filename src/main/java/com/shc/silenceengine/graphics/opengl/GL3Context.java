@@ -1,6 +1,6 @@
 package com.shc.silenceengine.graphics.opengl;
 
-import com.shc.silenceengine.geom2d.Rectangle;
+import com.shc.silenceengine.math.geom2d.Rectangle;
 import com.shc.silenceengine.graphics.Color;
 
 import static org.lwjgl.opengl.GL11.*;

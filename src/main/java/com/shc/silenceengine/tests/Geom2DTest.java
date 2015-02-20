@@ -2,8 +2,8 @@ package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
-import com.shc.silenceengine.geom2d.Circle;
-import com.shc.silenceengine.geom2d.Rectangle;
+import com.shc.silenceengine.math.geom2d.Circle;
+import com.shc.silenceengine.math.geom2d.Rectangle;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;

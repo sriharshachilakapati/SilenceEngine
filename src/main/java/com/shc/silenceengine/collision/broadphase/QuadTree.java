@@ -1,7 +1,7 @@
 package com.shc.silenceengine.collision.broadphase;
 
-import com.shc.silenceengine.entity.Entity2D;
-import com.shc.silenceengine.geom2d.Rectangle;
+import com.shc.silenceengine.scene.entity.Entity2D;
+import com.shc.silenceengine.math.geom2d.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;

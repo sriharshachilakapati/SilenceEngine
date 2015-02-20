@@ -1,8 +1,8 @@
 package com.shc.silenceengine.collision.broadphase;
 
-import com.shc.silenceengine.entity.Entity3D;
-import com.shc.silenceengine.geom3d.Cuboid;
-import com.shc.silenceengine.geom3d.Polyhedron;
+import com.shc.silenceengine.scene.entity.Entity3D;
+import com.shc.silenceengine.math.geom3d.Cuboid;
+import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.math.Vector3;
 
 import java.util.ArrayList;

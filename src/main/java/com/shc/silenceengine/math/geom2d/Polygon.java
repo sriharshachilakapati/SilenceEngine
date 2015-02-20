@@ -1,4 +1,4 @@
-package com.shc.silenceengine.geom2d;
+package com.shc.silenceengine.math.geom2d;
 
 import com.shc.silenceengine.collision.Collision2D;
 import com.shc.silenceengine.math.Vector2;

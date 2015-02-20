@@ -94,10 +94,6 @@ public final class Display
             throw new SilenceException("" + error + ": " + Callbacks.errorCallbackDescriptionString(description));
         }));
 
-        // Initialize GLFW
-        if (glfwInit() != GL_TRUE)
-            throw new SilenceException("Error creating Display. Your system is unsupported.");
-
         // Create the window
         displayHandle = createWindow(width, height, title, NULL, NULL, false, resizable);
         centerOnScreen();
@@ -264,8 +260,6 @@ public final class Display
         errorCallback.release();
 
         glfwDestroyWindow(displayHandle);
-
-        glfwTerminate();
     }
 
     /**
@@ -538,7 +532,7 @@ public final class Display
      */
     public static void hideCursor()
     {
-        glfwSetInputMode(displayHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetInputMode(displayHandle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
 
     /**
@@ -547,5 +541,10 @@ public final class Display
     public static void showCursor()
     {
         glfwSetInputMode(displayHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+
+    public static void grabCursor()
+    {
+        glfwSetInputMode(displayHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 }

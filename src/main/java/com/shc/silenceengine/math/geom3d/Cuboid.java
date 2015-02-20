@@ -1,4 +1,4 @@
-package com.shc.silenceengine.geom3d;
+package com.shc.silenceengine.math.geom3d;
 
 import com.shc.silenceengine.math.Vector3;
 

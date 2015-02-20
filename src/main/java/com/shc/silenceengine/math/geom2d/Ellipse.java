@@ -1,4 +1,4 @@
-package com.shc.silenceengine.geom2d;
+package com.shc.silenceengine.math.geom2d;
 
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.utils.MathUtils;

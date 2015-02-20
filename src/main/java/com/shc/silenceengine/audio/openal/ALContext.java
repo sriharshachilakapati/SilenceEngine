@@ -1,7 +1,5 @@
 package com.shc.silenceengine.audio.openal;
 
-import com.shc.silenceengine.utils.Logger;
-import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALDevice;
 
@@ -61,8 +59,6 @@ public final class ALContext
         // The context creation is failed.
         if (!capabilities.OpenALC11)
             throw new ALCException("OpenAL Context Creation failed");
-
-        Logger.log("Using device: " + ALC10.alcGetString(device.getPointer(), ALC10.ALC_DEVICE_SPECIFIER));
     }
 
     /**

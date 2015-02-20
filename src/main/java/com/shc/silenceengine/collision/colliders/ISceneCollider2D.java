@@ -1,6 +1,6 @@
 package com.shc.silenceengine.collision.colliders;
 
-import com.shc.silenceengine.entity.Entity2D;
+import com.shc.silenceengine.scene.entity.Entity2D;
 import com.shc.silenceengine.scene.Scene;
 
 import java.util.HashMap;

@@ -1,7 +1,7 @@
 package com.shc.silenceengine.collision.colliders;
 
 import com.shc.silenceengine.collision.broadphase.DynamicTree2D;
-import com.shc.silenceengine.entity.Entity2D;
+import com.shc.silenceengine.scene.entity.Entity2D;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.scene.Scene;
 import com.shc.silenceengine.scene.SceneNode;

@@ -1,6 +1,6 @@
-package com.shc.silenceengine.entity;
+package com.shc.silenceengine.scene.entity;
 
-import com.shc.silenceengine.geom3d.Polyhedron;
+import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.models.Model;
 

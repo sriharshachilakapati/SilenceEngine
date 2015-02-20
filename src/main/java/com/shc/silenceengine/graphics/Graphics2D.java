@@ -2,7 +2,7 @@ package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
-import com.shc.silenceengine.geom2d.Polygon;
+import com.shc.silenceengine.math.geom2d.Polygon;
 import com.shc.silenceengine.graphics.cameras.BaseCamera;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.opengl.Primitive;

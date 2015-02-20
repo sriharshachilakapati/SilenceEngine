@@ -1,6 +1,6 @@
 package com.shc.silenceengine.graphics;
 
-import com.shc.silenceengine.IEngine;
+import com.shc.silenceengine.core.IEngine;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;

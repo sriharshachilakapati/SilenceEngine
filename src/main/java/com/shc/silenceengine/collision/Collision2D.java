@@ -1,6 +1,6 @@
 package com.shc.silenceengine.collision;
 
-import com.shc.silenceengine.geom2d.Polygon;
+import com.shc.silenceengine.math.geom2d.Polygon;
 import com.shc.silenceengine.math.Vector2;
 
 import java.util.List;

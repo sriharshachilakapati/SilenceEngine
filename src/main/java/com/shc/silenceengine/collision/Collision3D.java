@@ -1,6 +1,6 @@
 package com.shc.silenceengine.collision;
 
-import com.shc.silenceengine.geom3d.Polyhedron;
+import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 

@@ -1,7 +1,7 @@
 package com.shc.silenceengine.utils;
 
-import com.shc.silenceengine.geom2d.Polygon;
-import com.shc.silenceengine.geom3d.Polyhedron;
+import com.shc.silenceengine.math.geom2d.Polygon;
+import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.opengl.Primitive;
