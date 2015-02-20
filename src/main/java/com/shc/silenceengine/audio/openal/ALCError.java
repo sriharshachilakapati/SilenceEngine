@@ -5,8 +5,7 @@ import com.shc.silenceengine.core.Game;
 import static org.lwjgl.openal.ALC10.*;
 
 /**
- * This class is used to check OpenAL Context errors and rethrow them
- * as ALCException. Useful for debugging purposes.
+ * This class is used to check OpenAL Context errors and rethrow them as ALCException. Useful for debugging purposes.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -18,8 +17,8 @@ public final class ALCError
     }
 
     /**
-     * Checks for OpenAL context errors with the default OpenAL device. This
-     * method only checks for errors in development mode.
+     * Checks for OpenAL context errors with the default OpenAL device. This method only checks for errors in
+     * development mode.
      */
     public static void check()
     {
@@ -27,37 +26,12 @@ public final class ALCError
     }
 
     /**
-     * Checks for OpenAL context errors with the default OpenAL device. This
-     * method only checks for errors in development mode unless forced.
+     * Checks for the OpenAL context errors with the specified OpenAL device. This method only checks for errors in the
+     * development mode unless forced.
      *
-     * @param force If true, the checks are performed even when the game is not
-     *              in the development mode.
-     */
-    public static void check(boolean force)
-    {
-        check(ALContext.getInstance().getDevice().getPointer(), force);
-    }
-
-    /**
-     * Checks for the OpenAL context errors with the specified OpenAL device. This
-     * method only checks for errors in the development mode.
-     *
-     * @param device The memory location aka the pointer of the device. You can use
-     *               ALDevice.getPointer() to obtain this.
-     */
-    public static void check(long device)
-    {
-        check(device, false);
-    }
-
-    /**
-     * Checks for the OpenAL context errors with the specified OpenAL device. This
-     * method only checks for errors in the development mode unless forced.
-     *
-     * @param device The memory location aka the pointer of the device. You can use
-     *               ALDevice.getPointer() to obtain this.
-     * @param force  If true, the checks are performed even when the game is not in
-     *               the development mode.
+     * @param device The memory location aka the pointer of the device. You can use ALDevice.getPointer() to obtain
+     *               this.
+     * @param force  If true, the checks are performed even when the game is not in the development mode.
      */
     public static void check(long device, boolean force)
     {
@@ -86,11 +60,45 @@ public final class ALCError
     }
 
     /**
-     * Checks for the OpenAL context error and return the error on the top of the
-     * OpenAL error stack.
+     * Checks for OpenAL context errors with the default OpenAL device. This method only checks for errors in
+     * development mode unless forced.
      *
-     * @param device The memory location aka the pointer of the device. You can use
-     *               ALDevice.getPointer() to obtain this.
+     * @param force If true, the checks are performed even when the game is not in the development mode.
+     */
+    public static void check(boolean force)
+    {
+        check(ALContext.getInstance().getDevice().getPointer(), force);
+    }
+
+    /**
+     * Checks for the OpenAL context errors with the specified OpenAL device. This method only checks for errors in the
+     * development mode.
+     *
+     * @param device The memory location aka the pointer of the device. You can use ALDevice.getPointer() to obtain
+     *               this.
+     */
+    public static void check(long device)
+    {
+        check(device, false);
+    }
+
+    /**
+     * Checks for the OpenAL context error and return the error on the top of the OpenAL error stack, using the default
+     * device.
+     *
+     * @return The value of the error as an enum.
+     */
+    public static Value get()
+    {
+        return get(ALContext.getInstance().getDevice().getPointer());
+    }
+
+    /**
+     * Checks for the OpenAL context error and return the error on the top of the OpenAL error stack.
+     *
+     * @param device The memory location aka the pointer of the device. You can use ALDevice.getPointer() to obtain
+     *               this.
+     *
      * @return The value of the error as an enum.
      */
     public static Value get(long device)
@@ -110,17 +118,6 @@ public final class ALCError
         }
 
         return Value.NO_ERROR;
-    }
-
-    /**
-     * Checks for the OpenAL context error and return the error on the top of the
-     * OpenAL error stack, using the default device.
-     *
-     * @return The value of the error as an enum.
-     */
-    public static Value get()
-    {
-        return get(ALContext.getInstance().getDevice().getPointer());
     }
 
     /**

@@ -19,12 +19,9 @@ public class OrthoCam extends BaseCamera
     private float width;
     private float height;
 
-    public OrthoCam(float left, float right, float bottom, float top)
+    public OrthoCam()
     {
-        width = right - left;
-        height = bottom - top;
-        mProj = TransformUtils.createOrtho2d(left, right, bottom, top, 0, 100).copy();
-        mView = new Matrix4().initIdentity();
+        this(Display.getWidth(), Display.getHeight());
     }
 
     public OrthoCam(float width, float height)
@@ -32,15 +29,12 @@ public class OrthoCam extends BaseCamera
         this(0, width, height, 0);
     }
 
-    public OrthoCam()
+    public OrthoCam(float left, float right, float bottom, float top)
     {
-        this(Display.getWidth(), Display.getHeight());
-    }
-
-    public OrthoCam translate(float x, float y)
-    {
-        mView.multiplySelf(TransformUtils.createTranslation(new Vector3(x, y, 0)));
-        return this;
+        width = right - left;
+        height = bottom - top;
+        mProj = TransformUtils.createOrtho2d(left, right, bottom, top, 0, 100).copy();
+        mView = new Matrix4().initIdentity();
     }
 
     public OrthoCam translate(Vector2 v)
@@ -73,6 +67,12 @@ public class OrthoCam extends BaseCamera
         float y = (height / 2) - v.getY();
 
         return translate(x, y);
+    }
+
+    public OrthoCam translate(float x, float y)
+    {
+        mView.multiplySelf(TransformUtils.createTranslation(new Vector3(x, y, 0)));
+        return this;
     }
 
     public OrthoCam rotate(Vector3 axis, float angle)

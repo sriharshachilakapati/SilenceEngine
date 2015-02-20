@@ -20,21 +20,6 @@ public class Framebuffer
         GLError.check();
     }
 
-    public void bind()
-    {
-        if (disposed)
-            throw new GLException("Cannot bind a disposed framebuffer");
-
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, id);
-        GLError.check();
-
-        glViewport(0, 0, Display.getWidth(), Display.getHeight());
-        GLError.check();
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        GLError.check();
-    }
-
     public void texture2d(Texture texture)
     {
         texture2d(texture, GL_COLOR_ATTACHMENT0);
@@ -56,6 +41,21 @@ public class Framebuffer
         GLError.check();
     }
 
+    public void bind()
+    {
+        if (disposed)
+            throw new GLException("Cannot bind a disposed framebuffer");
+
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, id);
+        GLError.check();
+
+        glViewport(0, 0, Display.getWidth(), Display.getHeight());
+        GLError.check();
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GLError.check();
+    }
+
     public boolean isComplete()
     {
         bind();
@@ -63,12 +63,6 @@ public class Framebuffer
         GLError.check();
 
         return status == GL_FRAMEBUFFER_COMPLETE;
-    }
-
-    public void release()
-    {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        GLError.check();
     }
 
     public void dispose()
@@ -79,6 +73,12 @@ public class Framebuffer
         GLError.check();
 
         disposed = true;
+    }
+
+    public void release()
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        GLError.check();
     }
 
     public boolean isDisposed()

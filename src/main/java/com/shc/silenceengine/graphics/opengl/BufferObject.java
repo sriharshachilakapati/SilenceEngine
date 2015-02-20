@@ -2,7 +2,12 @@ package com.shc.silenceengine.graphics.opengl;
 
 import org.lwjgl.BufferUtils;
 
-import java.nio.*;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,16 +15,10 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL30.glMapBufferRange;
 
 /**
- * This class encapsulates OpenGL Buffer Objects nicely and cleanly
- * allowing you to use OpenGL in an Object Oriented way.
- * <p>
- * Buffer Objects in OpenGL allows to store data directly on the GPU.
- * They are just regular OpenGL objects, and hence you have to take
- * care of their destruction on your own by calling the dispose()
- * method.
- * <p>
- * This class doesn't store any data you upload to the GPU, it just
- * exists to make the usage of OpenGL functions convenient.
+ * This class encapsulates OpenGL Buffer Objects nicely and cleanly allowing you to use OpenGL in an Object Oriented
+ * way. <p> Buffer Objects in OpenGL allows to store data directly on the GPU. They are just regular OpenGL objects, and
+ * hence you have to take care of their destruction on your own by calling the dispose() method. <p> This class doesn't
+ * store any data you upload to the GPU, it just exists to make the usage of OpenGL functions convenient.
  *
  * @author Sri Harsha Chilakapati
  * @author Heiko Brumme
@@ -33,12 +32,11 @@ public class BufferObject
     private boolean disposed;
 
     /**
-     * Creates a VertexBufferObject that binds to a target. Valid targets
-     * are GL_ARRAY_BUFFER​, GL_ATOMIC_COUNTER_BUFFER​, GL_COPY_READ_BUFFER​,
-     * GL_COPY_WRITE_BUFFER​, GL_DRAW_INDIRECT_BUFFER​, GL_DISPATCH_INDIRECT_BUFFER​,
-     * GL_ELEMENT_ARRAY_BUFFER​, GL_PIXEL_PACK_BUFFER​, GL_PIXEL_UNPACK_BUFFER​,
-     * GL_QUERY_BUFFER​, GL_SHADER_STORAGE_BUFFER​, GL_TEXTURE_BUFFER​,
-     * GL_TRANSFORM_FEEDBACK_BUFFER​, or GL_UNIFORM_BUFFER​.
+     * Creates a VertexBufferObject that binds to a target. Valid targets are GL_ARRAY_BUFFER​,
+     * GL_ATOMIC_COUNTER_BUFFER​, GL_COPY_READ_BUFFER​, GL_COPY_WRITE_BUFFER​, GL_DRAW_INDIRECT_BUFFER​,
+     * GL_DISPATCH_INDIRECT_BUFFER​, GL_ELEMENT_ARRAY_BUFFER​, GL_PIXEL_PACK_BUFFER​, GL_PIXEL_UNPACK_BUFFER​,
+     * GL_QUERY_BUFFER​, GL_SHADER_STORAGE_BUFFER​, GL_TEXTURE_BUFFER​, GL_TRANSFORM_FEEDBACK_BUFFER​, or
+     * GL_UNIFORM_BUFFER​.
      *
      * @param target The target to bind this VertexBufferObject
      */
@@ -51,33 +49,13 @@ public class BufferObject
     }
 
     /**
-     * Binds this VertexBufferObject to the OpenGL binding point specified
-     * by the target you specified in the constructor.
-     */
-    public void bind()
-    {
-        if (disposed)
-            throw new GLException("VertexBufferObject is already disposed!");
-
-        // Prevent un-necessary bindings, they are costly
-        if (current.containsKey(target) && current.get(target) == this)
-            return;
-
-        glBindBuffer(target, id);
-        current.put(target, this);
-
-        GLError.check();
-    }
-
-    /**
-     * Uploads the data in the specified NIO Buffer to this VertexBufferObject
-     * by calling the <code>glBufferData()</code> function.
+     * Uploads the data in the specified NIO Buffer to this VertexBufferObject by calling the
+     * <code>glBufferData()</code> function.
      *
      * @param data  The NIO buffer with data to be copied into the data store
-     * @param usage How the is intended to be used. Valid usage values are
-     *              GL_STREAM_DRAW​, GL_STREAM_READ​, GL_STREAM_COPY​, GL_STATIC_DRAW​,
-     *              GL_STATIC_READ​, GL_STATIC_COPY​, GL_DYNAMIC_DRAW​, GL_DYNAMIC_READ​,
-     *              or GL_DYNAMIC_COPY​.
+     * @param usage How the is intended to be used. Valid usage values are GL_STREAM_DRAW​, GL_STREAM_READ​,
+     *              GL_STREAM_COPY​, GL_STATIC_DRAW​, GL_STATIC_READ​, GL_STATIC_COPY​, GL_DYNAMIC_DRAW​,
+     *              GL_DYNAMIC_READ​, or GL_DYNAMIC_COPY​.
      */
     public void uploadData(Buffer data, int usage)
     {
@@ -103,14 +81,31 @@ public class BufferObject
     }
 
     /**
-     * Uploads NULL data to this VertexBufferObject by calling the
-     * <code>glBufferData()</code> function.
+     * Binds this VertexBufferObject to the OpenGL binding point specified by the target you specified in the
+     * constructor.
+     */
+    public void bind()
+    {
+        if (disposed)
+            throw new GLException("VertexBufferObject is already disposed!");
+
+        // Prevent un-necessary bindings, they are costly
+        if (current.containsKey(target) && current.get(target) == this)
+            return;
+
+        glBindBuffer(target, id);
+        current.put(target, this);
+
+        GLError.check();
+    }
+
+    /**
+     * Uploads NULL data to this VertexBufferObject by calling the <code>glBufferData()</code> function.
      *
      * @param capacity The capacity of the data store to be created
-     * @param usage    How the is intended to be used. Valid usage values are
-     *                 GL_STREAM_DRAW​, GL_STREAM_READ​, GL_STREAM_COPY​, GL_STATIC_DRAW​,
-     *                 GL_STATIC_READ​, GL_STATIC_COPY​, GL_DYNAMIC_DRAW​, GL_DYNAMIC_READ​,
-     *                 or GL_DYNAMIC_COPY​.
+     * @param usage    How the is intended to be used. Valid usage values are GL_STREAM_DRAW​, GL_STREAM_READ​,
+     *                 GL_STREAM_COPY​, GL_STATIC_DRAW​, GL_STATIC_READ​, GL_STATIC_COPY​, GL_DYNAMIC_DRAW​,
+     *                 GL_DYNAMIC_READ​, or GL_DYNAMIC_COPY​.
      */
     public void uploadData(int capacity, int usage)
     {
@@ -122,8 +117,8 @@ public class BufferObject
     }
 
     /**
-     * Updates a subset of data starting from the offset in the
-     * VertexBufferObject's data store with the data from a NIO Buffer
+     * Updates a subset of data starting from the offset in the VertexBufferObject's data store with the data from a NIO
+     * Buffer
      *
      * @param data   The NIO buffer with data to be copied into the data store
      * @param offset The starting index from which the data should be updated.
@@ -156,10 +151,10 @@ public class BufferObject
     /**
      * Returns some or all of the data from the data store of this VertexBufferObject.
      *
-     * @param offset Specifies the offset into the buffer object's data store
-     *               from which data will be returned, measured in bytes.
-     * @param length Specifies the size in bytes of the data store region
-     *               being returned.
+     * @param offset Specifies the offset into the buffer object's data store from which data will be returned, measured
+     *               in bytes.
+     * @param length Specifies the size in bytes of the data store region being returned.
+     *
      * @return The data as a NIO ByteBuffer.
      */
     public ByteBuffer getSubData(int offset, int length)
@@ -170,11 +165,11 @@ public class BufferObject
     /**
      * Returns some or all of the data from the data store of this VertexBufferObject.
      *
-     * @param offset Specifies the offset into the buffer object's data store
-     *               from which data will be returned, measured in bytes.
-     * @param length Specifies the size in bytes of the data store region
-     *               being returned.
+     * @param offset Specifies the offset into the buffer object's data store from which data will be returned, measured
+     *               in bytes.
+     * @param length Specifies the size in bytes of the data store region being returned.
      * @param data   A NIO ByteBuffer used to store the retrieved data.
+     *
      * @return The data as a NIO ByteBuffer.
      */
     public ByteBuffer getSubData(int offset, int length, ByteBuffer data)
@@ -199,6 +194,7 @@ public class BufferObject
      * Returns all the data present in the data store of this VertexBufferObject.
      *
      * @param data A NIO ByteBuffer used to store the retrieved data.
+     *
      * @return The data as a NIO ByteBuffer
      */
     public ByteBuffer getData(ByteBuffer data)
@@ -209,9 +205,21 @@ public class BufferObject
     /**
      * Maps the buffer object's data store.
      *
-     * @param access  The access policy. Valid accesses are READ_ONLY, WRITE_ONLY
-     *                or READ_WRITE.
+     * @param access The access policy. Valid accesses are READ_ONLY, WRITE_ONLY or READ_WRITE.
+     *
+     * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
+     */
+    public ByteBuffer map(int access)
+    {
+        return map(access, BufferUtils.createByteBuffer(capacity));
+    }
+
+    /**
+     * Maps the buffer object's data store.
+     *
+     * @param access  The access policy. Valid accesses are READ_ONLY, WRITE_ONLY or READ_WRITE.
      * @param pointer A NIO ByteBuffer used for the data store.
+     *
      * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
      */
     public ByteBuffer map(int access, ByteBuffer pointer)
@@ -225,27 +233,30 @@ public class BufferObject
     }
 
     /**
-     * Maps the buffer object's data store.
+     * Maps a section of a buffer object's data store.
      *
-     * @param access The access policy. Valid accesses are READ_ONLY, WRITE_ONLY
-     *               or READ_WRITE.
+     * @param offset The starting offset within the buffer of the range to be mapped.
+     * @param length The length of the range to be mapped.
+     * @param access Combination of access flags indicating the desired access to the range. One or more of:
+     *               MAP_READ_BIT, MAP_WRITE_BIT, MAP_INVALIDATE_RANGE_BIT, MAP_INVALIDATE_BUFFER_BIT,
+     *               MAP_FLUSH_EXPLICIT_BIT, MAP_UNSYNCHRONIZED_BIT.
+     *
      * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
      */
-    public ByteBuffer map(int access)
+    public ByteBuffer mapRange(long offset, int length, int access)
     {
-        return map(access, BufferUtils.createByteBuffer(capacity));
+        return mapRange(offset, access, BufferUtils.createByteBuffer(length));
     }
 
     /**
      * Maps a section of a buffer object's data store.
      *
-     * @param offset  The starting offset within the buffer of the range to be
-     *                mapped.
-     * @param access  Combination of access flags indicating the desired access
-     *                to the range. One or more of: MAP_READ_BIT, MAP_WRITE_BIT,
-     *                MAP_INVALIDATE_RANGE_BIT, MAP_INVALIDATE_BUFFER_BIT,
+     * @param offset  The starting offset within the buffer of the range to be mapped.
+     * @param access  Combination of access flags indicating the desired access to the range. One or more of:
+     *                MAP_READ_BIT, MAP_WRITE_BIT, MAP_INVALIDATE_RANGE_BIT, MAP_INVALIDATE_BUFFER_BIT,
      *                MAP_FLUSH_EXPLICIT_BIT, MAP_UNSYNCHRONIZED_BIT.
      * @param pointer A NIO ByteBuffer used for the data store.
+     *
      * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
      */
     public ByteBuffer mapRange(long offset, int access, ByteBuffer pointer)
@@ -256,23 +267,6 @@ public class BufferObject
         GLError.check();
 
         return pointer;
-    }
-
-    /**
-     * Maps a section of a buffer object's data store.
-     *
-     * @param offset The starting offset within the buffer of the range to be
-     *               mapped.
-     * @param length The length of the range to be mapped.
-     * @param access Combination of access flags indicating the desired access
-     *               to the range. One or more of: MAP_READ_BIT, MAP_WRITE_BIT,
-     *               MAP_INVALIDATE_RANGE_BIT, MAP_INVALIDATE_BUFFER_BIT,
-     *               MAP_FLUSH_EXPLICIT_BIT, MAP_UNSYNCHRONIZED_BIT.
-     * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
-     */
-    public ByteBuffer mapRange(long offset, int length, int access)
-    {
-        return mapRange(offset, access, BufferUtils.createByteBuffer(length));
     }
 
     /**
@@ -291,9 +285,8 @@ public class BufferObject
     }
 
     /**
-     * Disposes this VertexBufferObject. This clears the memory used to store
-     * the data of this VertexBufferObject from the GPU. This method should be
-     * called once you no longer need this VertexBufferObject. A disposed
+     * Disposes this VertexBufferObject. This clears the memory used to store the data of this VertexBufferObject from
+     * the GPU. This method should be called once you no longer need this VertexBufferObject. A disposed
      * VertexBufferObject can no longer be used.
      */
     public void dispose()
@@ -306,8 +299,7 @@ public class BufferObject
     }
 
     /**
-     * @return The ID of this VertexBufferObject. Useful if you directly
-     * want to use any OpenGL function yourself.
+     * @return The ID of this VertexBufferObject. Useful if you directly want to use any OpenGL function yourself.
      */
     public int getId()
     {
@@ -315,8 +307,8 @@ public class BufferObject
     }
 
     /**
-     * @return The capacity of the data store currently allocated
-     * to store the data of this VertexBufferObject on the GPU.
+     * @return The capacity of the data store currently allocated to store the data of this VertexBufferObject on the
+     * GPU.
      */
     public int getCapacity()
     {

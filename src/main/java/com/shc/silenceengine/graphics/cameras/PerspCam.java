@@ -78,6 +78,17 @@ public class PerspCam extends BaseCamera
         return move(getForward(), amount);
     }
 
+    public PerspCam move(Vector3 dir, float amount)
+    {
+        position.addSelf(dir.normalize().scale(amount));
+        return this;
+    }
+
+    public Vector3 getForward()
+    {
+        return rotation.multiply(Vector3.AXIS_Z.negate(), tempVec);
+    }
+
     public PerspCam moveBackward(float amount)
     {
         return move(getForward().negate(), amount);
@@ -86,6 +97,11 @@ public class PerspCam extends BaseCamera
     public PerspCam moveLeft(float amount)
     {
         return move(getRight().negate(), amount);
+    }
+
+    public Vector3 getRight()
+    {
+        return rotation.multiply(Vector3.AXIS_X, tempVec);
     }
 
     public PerspCam moveRight(float amount)
@@ -98,15 +114,14 @@ public class PerspCam extends BaseCamera
         return move(getUp(), amount);
     }
 
+    public Vector3 getUp()
+    {
+        return rotation.multiply(Vector3.AXIS_Y, tempVec);
+    }
+
     public PerspCam moveDown(float amount)
     {
         return move(getUp().negateSelf(), amount);
-    }
-
-    public PerspCam move(Vector3 dir, float amount)
-    {
-        position.addSelf(dir.normalize().scale(amount));
-        return this;
     }
 
     public PerspCam rotateX(float angle)
@@ -123,21 +138,6 @@ public class PerspCam extends BaseCamera
         rotation.set(yRot.multiplySelf(rotation));
 
         return this;
-    }
-
-    public Vector3 getUp()
-    {
-        return rotation.multiply(Vector3.AXIS_Y, tempVec);
-    }
-
-    public Vector3 getForward()
-    {
-        return rotation.multiply(Vector3.AXIS_Z.negate(), tempVec);
-    }
-
-    public Vector3 getRight()
-    {
-        return rotation.multiply(Vector3.AXIS_X, tempVec);
     }
 
     public PerspCam initProjection(float fovy, float aspect, float zNear, float zFar)

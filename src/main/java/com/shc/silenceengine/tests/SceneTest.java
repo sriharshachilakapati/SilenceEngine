@@ -29,6 +29,12 @@ public class SceneTest extends Game
         new SceneTest().start();
     }
 
+    public void dispose()
+    {
+        scene.destroy();
+        font.dispose();
+    }
+
     public void init()
     {
         cam = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
@@ -86,12 +92,6 @@ public class SceneTest extends Game
             cam.rotateY(-1);
     }
 
-    public void resize()
-    {
-        cam.initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
-        fontCam.initProjection(Display.getWidth(), Display.getHeight());
-    }
-
     public void render(float delta, Batcher batcher)
     {
         cam.apply();
@@ -103,10 +103,10 @@ public class SceneTest extends Game
         font.drawString(batcher, "\n\nDelta: " + delta, 10, 10);
     }
 
-    public void dispose()
+    public void resize()
     {
-        scene.destroy();
-        font.dispose();
+        cam.initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
+        fontCam.initProjection(Display.getWidth(), Display.getHeight());
     }
 
     public static class SceneObject extends SceneNode

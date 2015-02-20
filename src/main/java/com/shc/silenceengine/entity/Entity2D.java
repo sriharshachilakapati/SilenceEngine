@@ -9,10 +9,8 @@ import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.scene.SceneNode;
 
 /**
- * This class represents all the 2D Entities in a Scene. Any entity which
- * is 2D and wants to be in a Scene must extend this class. Here is an
- * example entity.
- * <p>
+ * This class represents all the 2D Entities in a Scene. Any entity which is 2D and wants to be in a Scene must extend
+ * this class. Here is an example entity. <p>
  * <pre>
  *     public class MyEntity2D extends Entity2D
  *     {
@@ -38,9 +36,8 @@ import com.shc.silenceengine.scene.SceneNode;
  *         }
  *     }
  * </pre>
- * <p>
- * Note that the collisions will only be notified if you are using a
- * ISceneCollider2D and registered a collision check.
+ * <p> Note that the collisions will only be notified if you are using a ISceneCollider2D and registered a collision
+ * check.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -56,6 +53,17 @@ public class Entity2D extends SceneNode
     private int depth;
 
     /**
+     * Constructs a Entity2D to use a Polygon that can be used to perform collisions.
+     *
+     * @param polygon The collision mask.
+     */
+    public Entity2D(Polygon polygon)
+    {
+        this();
+        this.polygon = polygon;
+    }
+
+    /**
      * The default constructor.
      */
     public Entity2D()
@@ -67,20 +75,8 @@ public class Entity2D extends SceneNode
     }
 
     /**
-     * Constructs a Entity2D to use a Polygon that can be used
-     * to perform collisions.
-     *
-     * @param polygon The collision mask.
-     */
-    public Entity2D(Polygon polygon)
-    {
-        this();
-        this.polygon = polygon;
-    }
-
-    /**
-     * Prepares this Entity2D for a new frame. This method is not
-     * meant to be called by the user and is called by the SceneGraph.
+     * Prepares this Entity2D for a new frame. This method is not meant to be called by the user and is called by the
+     * SceneGraph.
      *
      * @param delta The delta time.
      */
@@ -108,8 +104,8 @@ public class Entity2D extends SceneNode
     }
 
     /**
-     * Prepares this Entity2D for a new frame. This method is not meant
-     * to be called by the user and is called by the SceneGraph.
+     * Prepares this Entity2D for a new frame. This method is not meant to be called by the user and is called by the
+     * SceneGraph.
      *
      * @param delta   The delta time.
      * @param batcher The Batcher to batch rendering.
@@ -123,8 +119,7 @@ public class Entity2D extends SceneNode
     }
 
     /**
-     * Called by the ISceneCollider2D instance to notify that a
-     * collision event has occurred.
+     * Called by the ISceneCollider2D instance to notify that a collision event has occurred.
      *
      * @param other The other entity that collided with this entity.
      */
@@ -133,12 +128,12 @@ public class Entity2D extends SceneNode
     }
 
     /**
-     * Moves this object to a specified point with a specific speed. Note that
-     * the velocity used is independent of vertical or horizontal velocities of
-     * this object.
+     * Moves this object to a specified point with a specific speed. Note that the velocity used is independent of
+     * vertical or horizontal velocities of this object.
      *
      * @param pos   The new position vector to move to
      * @param speed The speed with which to move
+     *
      * @return True if the new point has been reached
      */
     public boolean moveTo(Vector2 pos, float speed)
@@ -147,13 +142,13 @@ public class Entity2D extends SceneNode
     }
 
     /**
-     * Moves this object to a specified point with a specific speed. Note that
-     * the velocity used is independent of vertical or horizontal velocities of
-     * this object.
+     * Moves this object to a specified point with a specific speed. Note that the velocity used is independent of
+     * vertical or horizontal velocities of this object.
      *
      * @param nx    The new x-position
      * @param ny    The new y-position
      * @param speed The speed with which to move
+     *
      * @return True if the new point has been reached
      */
     public boolean moveTo(float nx, float ny, float speed)
@@ -191,9 +186,8 @@ public class Entity2D extends SceneNode
     }
 
     /**
-     * This object bounces back from the other object in a natural way. Please
-     * realize that the bounce is not completely accurate because this depends
-     * on many properties. But in many situations the effect is good enough.
+     * This object bounces back from the other object in a natural way. Please realize that the bounce is not completely
+     * accurate because this depends on many properties. But in many situations the effect is good enough.
      */
     public void bounce(Entity2D other)
     {
@@ -218,6 +212,22 @@ public class Entity2D extends SceneNode
         velocity.y = dy;
     }
 
+    /**
+     * @return The width of the bounding rectangle of this entity
+     */
+    public float getWidth()
+    {
+        return polygon.getBounds().getWidth();
+    }
+
+    /**
+     * @return The height of the bounding rectangle of this entity
+     */
+    public float getHeight()
+    {
+        return polygon.getBounds().getHeight();
+    }
+
     public void alignNextTo(Entity2D other)
     {
         Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
@@ -236,6 +246,24 @@ public class Entity2D extends SceneNode
 
         Vector2.REUSABLE_STACK.push(tempVec2);
         Vector2.REUSABLE_STACK.push(direction);
+    }
+
+    /**
+     * @return The collision polygon of this entity
+     */
+    public Polygon getPolygon()
+    {
+        return polygon;
+    }
+
+    /**
+     * Sets the Polygon this entity should use to check for collisions.
+     *
+     * @param polygon The new collision polygon
+     */
+    public void setPolygon(Polygon polygon)
+    {
+        this.polygon = polygon;
     }
 
     /**
@@ -275,8 +303,8 @@ public class Entity2D extends SceneNode
     }
 
     /**
-     * Sets the rotation of this entity. Note that the same rotation
-     * is also applied to the polygon this entity is using.
+     * Sets the rotation of this entity. Note that the same rotation is also applied to the polygon this entity is
+     * using.
      *
      * @param rotation The amount of rotation (in degrees)
      */
@@ -337,36 +365,7 @@ public class Entity2D extends SceneNode
     {
         position.setY(y);
         polygon.setPosition(position);
-    }
-
-    /**
-     * @return The width of the bounding rectangle of this entity
-     */
-    public float getWidth()
-    {
-        return polygon.getBounds().getWidth();
-    }
-
-    /**
-     * @return The height of the bounding rectangle of this entity
-     */
-    public float getHeight()
-    {
-        return polygon.getBounds().getHeight();
-    }
-
-    /**
-     * Checks the intersection with another Entity2D.
-     *
-     * @param other The other Entity2D to test intersection with
-     * @return True if intersects, else false.
-     */
-    public boolean intersects(Entity2D other)
-    {
-        return polygon.intersects(other.getPolygon());
-    }
-
-    /**
+    }    /**
      * @return The center position of the entity
      */
     public Vector2 getCenter()
@@ -375,8 +374,18 @@ public class Entity2D extends SceneNode
     }
 
     /**
-     * Sets the center position of this entity. Note that the same
-     * rotation is also applied to the polygon this entity is using.
+     * Checks the intersection with another Entity2D.
+     *
+     * @param other The other Entity2D to test intersection with
+     *
+     * @return True if intersects, else false.
+     */
+    public boolean intersects(Entity2D other)
+    {
+        return polygon.intersects(other.getPolygon());
+    }    /**
+     * Sets the center position of this entity. Note that the same rotation is also applied to the polygon this entity
+     * is using.
      *
      * @param center The new center position
      */
@@ -395,6 +404,12 @@ public class Entity2D extends SceneNode
     }
 
     /**
+     * @return The velocity of this entity
+     */
+    public Vector2 getVelocity()
+    {
+        return velocity;
+    }    /**
      * @return The position of this entity
      */
     public Vector2 getPosition()
@@ -403,6 +418,14 @@ public class Entity2D extends SceneNode
     }
 
     /**
+     * Sets the velocity of this entity
+     *
+     * @param velocity The velocity as a Vector2
+     */
+    public void setVelocity(Vector2 velocity)
+    {
+        this.velocity.set(velocity);
+    }    /**
      * Sets the position of this entity
      *
      * @param position The new position as a Vector2
@@ -421,40 +444,13 @@ public class Entity2D extends SceneNode
         Vector2.REUSABLE_STACK.push(tempVec2);
     }
 
-    /**
-     * @return The velocity of this entity
-     */
-    public Vector2 getVelocity()
+    @Override
+    public int hashCode()
     {
-        return velocity;
-    }
-
-    /**
-     * Sets the velocity of this entity
-     *
-     * @param velocity The velocity as a Vector2
-     */
-    public void setVelocity(Vector2 velocity)
-    {
-        this.velocity.set(velocity);
-    }
-
-    /**
-     * @return The collision polygon of this entity
-     */
-    public Polygon getPolygon()
-    {
-        return polygon;
-    }
-
-    /**
-     * Sets the Polygon this entity should use to check for collisions.
-     *
-     * @param polygon The new collision polygon
-     */
-    public void setPolygon(Polygon polygon)
-    {
-        this.polygon = polygon;
+        int result = position.hashCode();
+        result = 31 * result + velocity.hashCode();
+        result = 31 * result + polygon.hashCode();
+        return result;
     }
 
     @Override
@@ -466,27 +462,26 @@ public class Entity2D extends SceneNode
         Entity2D entity2D = (Entity2D) o;
 
         return polygon.equals(entity2D.polygon) &&
-                position.equals(entity2D.position) &&
-                velocity.equals(entity2D.velocity);
+               position.equals(entity2D.position) &&
+               velocity.equals(entity2D.velocity);
 
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = position.hashCode();
-        result = 31 * result + velocity.hashCode();
-        result = 31 * result + polygon.hashCode();
-        return result;
     }
 
     @Override
     public String toString()
     {
         return "Entity2D{" +
-                "position=" + position +
-                ", velocity=" + velocity +
-                ", polygon=" + polygon +
-                '}';
+               "position=" + position +
+               ", velocity=" + velocity +
+               ", polygon=" + polygon +
+               '}';
     }
+
+
+
+
+
+
+
+
 }

@@ -10,9 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An implementation of the ISceneCollider2D that resolves collisions
- * using a Dynamic tree. The GridSceneCollider is efficient for all
- * maps has entities less than 500. If more, use QuadTreeSceneCollider.
+ * An implementation of the ISceneCollider2D that resolves collisions using a Dynamic tree. The GridSceneCollider is
+ * efficient for all maps has entities less than 500. If more, use QuadTreeSceneCollider.
  *
  * @author Sri Harsha Chilakapati
  */

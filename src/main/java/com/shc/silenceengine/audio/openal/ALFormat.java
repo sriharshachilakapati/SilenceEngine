@@ -5,9 +5,8 @@ import com.shc.silenceengine.core.SilenceException;
 import static org.lwjgl.openal.AL10.*;
 
 /**
- * Represents the internal format of an OpenAL Buffer. This format is not
- * the file format or the encoding, but it is whether the audio is mono or
- * stereo and whether the audio is 8-bit or 16-bit audio.
+ * Represents the internal format of an OpenAL Buffer. This format is not the file format or the encoding, but it is
+ * whether the audio is mono or stereo and whether the audio is 8-bit or 16-bit audio.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -45,6 +44,7 @@ public enum ALFormat
      * Turns the OpenAL Format integer constant into a ALFormat enum.
      *
      * @param value The integer constant
+     *
      * @return The equivalent ALFormat enum
      */
     public static ALFormat getEnum(int value)

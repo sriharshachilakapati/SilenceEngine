@@ -27,6 +27,11 @@ public class QuadTreeSceneColliderTest extends Game
         new QuadTreeSceneColliderTest().start();
     }
 
+    public void dispose()
+    {
+        scene.destroy();
+    }
+
     public void init()
     {
         Display.setTitle("QuadTreeCollider Test");
@@ -79,11 +84,6 @@ public class QuadTreeSceneColliderTest extends Game
     public void resize()
     {
         cam.initProjection(Display.getWidth(), Display.getHeight());
-    }
-
-    public void dispose()
-    {
-        scene.destroy();
     }
 
     public class Box extends Entity2D

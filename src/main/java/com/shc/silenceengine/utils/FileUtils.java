@@ -16,6 +16,11 @@ public final class FileUtils
     {
     }
 
+    public static String readLinesToString(InputStream stream)
+    {
+        return String.join("\n", readLinesToStringArray(stream));
+    }
+
     public static String[] readLinesToStringArray(InputStream stream)
     {
         ArrayList<String> lines = new ArrayList<>();
@@ -42,11 +47,6 @@ public final class FileUtils
             linesArray[i] = lines.get(i);
 
         return linesArray;
-    }
-
-    public static String readLinesToString(InputStream stream)
-    {
-        return String.join("\n", readLinesToStringArray(stream));
     }
 
     public static InputStream getResource(String name)

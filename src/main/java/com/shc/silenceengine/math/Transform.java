@@ -46,15 +46,20 @@ public class Transform
         return this;
     }
 
+    public Transform apply(Transform transform)
+    {
+        return apply(transform.getMatrix());
+    }
+
     public Transform apply(Matrix4 matrix)
     {
         tMatrix.multiplySelf(matrix);
         return this;
     }
 
-    public Transform apply(Transform transform)
+    public Matrix4 getMatrix()
     {
-        return apply(transform.getMatrix());
+        return tMatrix;
     }
 
     public Transform apply(Quaternion q)
@@ -71,10 +76,5 @@ public class Transform
     {
         tMatrix.initIdentity();
         return this;
-    }
-
-    public Matrix4 getMatrix()
-    {
-        return tMatrix;
     }
 }

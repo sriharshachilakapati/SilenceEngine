@@ -35,33 +35,6 @@ public class TrueTypeFont
         this(new Font(name, style, size));
     }
 
-    public TrueTypeFont(InputStream is)
-    {
-        this(is, true);
-    }
-
-    public TrueTypeFont(InputStream is, boolean antiAlias)
-    {
-        this(is, STYLE_NORMAL, 18, antiAlias);
-    }
-
-    public TrueTypeFont(InputStream is, int style, int size, boolean antiAlias)
-    {
-        try
-        {
-            this.awtFont = Font.createFont(Font.TRUETYPE_FONT, is);
-            this.antiAlias = antiAlias;
-
-            awtFont = awtFont.deriveFont(style, (float) size);
-
-            createSet();
-        }
-        catch (Exception e)
-        {
-            throw new SilenceException(e.getMessage());
-        }
-    }
-
     public TrueTypeFont(Font fnt)
     {
         this(fnt, true);
@@ -171,6 +144,33 @@ public class TrueTypeFont
 
         fontTexture = new Texture[pages.size()];
         fontTexture = pages.toArray(fontTexture);
+    }
+
+    public TrueTypeFont(InputStream is)
+    {
+        this(is, true);
+    }
+
+    public TrueTypeFont(InputStream is, boolean antiAlias)
+    {
+        this(is, STYLE_NORMAL, 18, antiAlias);
+    }
+
+    public TrueTypeFont(InputStream is, int style, int size, boolean antiAlias)
+    {
+        try
+        {
+            this.awtFont = Font.createFont(Font.TRUETYPE_FONT, is);
+            this.antiAlias = antiAlias;
+
+            awtFont = awtFont.deriveFont(style, (float) size);
+
+            createSet();
+        }
+        catch (Exception e)
+        {
+            throw new SilenceException(e.getMessage());
+        }
     }
 
     public void drawString(Batcher b, String text, float x, float y)

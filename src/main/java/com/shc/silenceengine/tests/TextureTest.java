@@ -19,6 +19,11 @@ public class TextureTest extends Game
         new TextureTest().start();
     }
 
+    public void dispose()
+    {
+        texture.dispose();
+    }
+
     public void init()
     {
         Display.setClearColor(Color.CORN_FLOWER_BLUE);
@@ -94,10 +99,5 @@ public class TextureTest extends Game
     public void resize()
     {
         Display.setViewport(0, 0, Display.getWidth(), Display.getHeight());
-    }
-
-    public void dispose()
-    {
-        texture.dispose();
     }
 }

@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A QuadTree implementation to reduce collision checks. Every level contains
- * a maximum of 10 objects and the tree sub divides on exceeding this limit.
+ * A QuadTree implementation to reduce collision checks. Every level contains a maximum of 10 objects and the tree sub
+ * divides on exceeding this limit.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -88,6 +88,70 @@ public class QuadTree implements IBroadphaseResolver2D
         }
     }
 
+    /**
+     * Insert an object into this tree
+     */
+    public void insert(Entity2D r)
+    {
+        if (nodes[0] != null)
+        {
+            int index = getIndex(r);
+            if (index != -1)
+            {
+                nodes[index].insert(r);
+                return;
+            }
+        }
+        objects.add(r);
+        if (objects.size() > MAX_OBJECTS)
+        {
+            if (nodes[0] == null)
+            {
+                split();
+            }
+            for (int i = 0; i < objects.size(); i++)
+            {
+                int index = getIndex(objects.get(i));
+                if (index != -1)
+                {
+                    nodes[index].insert(objects.remove(i));
+                }
+            }
+        }
+    }
+
+    public void remove(Entity2D e)
+    {
+        if (nodes[0] != null)
+        {
+            int index = getIndex(e);
+            if (index != -1)
+            {
+                nodes[index].remove(e);
+                return;
+            }
+        }
+
+        objects.remove(e);
+    }
+
+    /**
+     * Returns the collidable objects with the given rectangle
+     */
+    public List<Entity2D> retrieve(Rectangle r)
+    {
+        retrieveList.clear();
+        int index = getIndex(r);
+
+        if (index != -1 && nodes[0] != null)
+        {
+            retrieveList = nodes[index].retrieve(r);
+        }
+
+        retrieveList.addAll(objects);
+        return retrieveList;
+    }
+
     // Split the tree into 4 quadrants
     private void split()
     {
@@ -146,74 +210,10 @@ public class QuadTree implements IBroadphaseResolver2D
     }
 
     /**
-     * Insert an object into this tree
-     */
-    public void insert(Entity2D r)
-    {
-        if (nodes[0] != null)
-        {
-            int index = getIndex(r);
-            if (index != -1)
-            {
-                nodes[index].insert(r);
-                return;
-            }
-        }
-        objects.add(r);
-        if (objects.size() > MAX_OBJECTS)
-        {
-            if (nodes[0] == null)
-            {
-                split();
-            }
-            for (int i = 0; i < objects.size(); i++)
-            {
-                int index = getIndex(objects.get(i));
-                if (index != -1)
-                {
-                    nodes[index].insert(objects.remove(i));
-                }
-            }
-        }
-    }
-
-    /**
      * Insert an ArrayList of objects into this tree
      */
     public void insertAll(ArrayList<Entity2D> o)
     {
         o.forEach(this::insert);
-    }
-
-    /**
-     * Returns the collidable objects with the given rectangle
-     */
-    public List<Entity2D> retrieve(Rectangle r)
-    {
-        retrieveList.clear();
-        int index = getIndex(r);
-
-        if (index != -1 && nodes[0] != null)
-        {
-            retrieveList = nodes[index].retrieve(r);
-        }
-
-        retrieveList.addAll(objects);
-        return retrieveList;
-    }
-
-    public void remove(Entity2D e)
-    {
-        if (nodes[0] != null)
-        {
-            int index = getIndex(e);
-            if (index != -1)
-            {
-                nodes[index].remove(e);
-                return;
-            }
-        }
-
-        objects.remove(e);
     }
 }

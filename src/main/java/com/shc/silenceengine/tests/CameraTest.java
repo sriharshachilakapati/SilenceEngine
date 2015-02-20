@@ -28,6 +28,11 @@ public class CameraTest extends Game
         new CameraTest().start();
     }
 
+    public void dispose()
+    {
+        texture.dispose();
+    }
+
     public void init()
     {
         transform = new Transform();
@@ -129,10 +134,5 @@ public class CameraTest extends Game
     {
         orthoCam.initProjection(Display.getWidth(), Display.getHeight());
         perspCam.initProjection(70, Display.getAspectRatio(), 0.1f, 100);
-    }
-
-    public void dispose()
-    {
-        texture.dispose();
     }
 }

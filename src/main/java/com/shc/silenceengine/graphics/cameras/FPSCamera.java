@@ -35,6 +35,23 @@ public class FPSCamera extends BaseCamera
         return move(getForward(), amount);
     }
 
+    public FPSCamera move(Vector3 dir, float amount)
+    {
+        Vector3 deltaMove = position.add(dir.normalizeSelf().scaleSelf(amount));
+
+        // Restrict y-component
+        deltaMove.y = 0;
+
+        position = position.add(deltaMove);
+
+        return this;
+    }
+
+    public Vector3 getForward()
+    {
+        return rotation.multiply(Vector3.AXIS_Z.negate());
+    }
+
     public FPSCamera moveBackward(float amount)
     {
         return move(getForward().negate(), amount);
@@ -43,6 +60,11 @@ public class FPSCamera extends BaseCamera
     public FPSCamera moveLeft(float amount)
     {
         return move(getRight().negate(), amount);
+    }
+
+    public Vector3 getRight()
+    {
+        return rotation.multiply(Vector3.AXIS_X);
     }
 
     public FPSCamera moveRight(float amount)
@@ -55,21 +77,14 @@ public class FPSCamera extends BaseCamera
         return move(getUp(), amount);
     }
 
+    public Vector3 getUp()
+    {
+        return rotation.multiply(Vector3.AXIS_Y);
+    }
+
     public FPSCamera moveDown(float amount)
     {
         return move(getUp().negate(), amount);
-    }
-
-    public FPSCamera move(Vector3 dir, float amount)
-    {
-        Vector3 deltaMove = position.add(dir.normalizeSelf().scaleSelf(amount));
-
-        // Restrict y-component
-        deltaMove.y = 0;
-
-        position = position.add(deltaMove);
-
-        return this;
     }
 
     public FPSCamera rotateX(float angle)
@@ -86,21 +101,6 @@ public class FPSCamera extends BaseCamera
         rotation = yRot.multiply(rotation);
 
         return this;
-    }
-
-    public Vector3 getUp()
-    {
-        return rotation.multiply(Vector3.AXIS_Y);
-    }
-
-    public Vector3 getForward()
-    {
-        return rotation.multiply(Vector3.AXIS_Z.negate());
-    }
-
-    public Vector3 getRight()
-    {
-        return rotation.multiply(Vector3.AXIS_X);
     }
 
     public FPSCamera initProjection(float fovy, float aspect, float zNear, float zFar)

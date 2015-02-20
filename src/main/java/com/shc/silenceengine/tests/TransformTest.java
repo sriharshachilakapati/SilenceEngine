@@ -22,6 +22,11 @@ public class TransformTest extends Game
         new TransformTest().start();
     }
 
+    public void dispose()
+    {
+        texture.dispose();
+    }
+
     public void init()
     {
         transform = new Transform();
@@ -85,10 +90,5 @@ public class TransformTest extends Game
     public void resize()
     {
         Display.setViewport(0, 0, Display.getWidth(), Display.getHeight());
-    }
-
-    public void dispose()
-    {
-        texture.dispose();
     }
 }

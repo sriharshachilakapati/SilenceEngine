@@ -21,23 +21,6 @@ public final class SilenceEngine implements IEngine
     {
     }
 
-    public static Platform getPlatform()
-    {
-        final String OS = System.getProperty("os.name").toLowerCase();
-        final String ARCH = System.getProperty("os.arch").toLowerCase();
-
-        boolean isWindows = OS.contains("windows");
-        boolean isLinux = OS.contains("linux");
-        boolean isMac = OS.contains("mac");
-        boolean is64Bit = ARCH.equals("amd64") || ARCH.equals("x86_64");
-
-        if (isWindows) return is64Bit ? Platform.WINDOWS_64 : Platform.WINDOWS_32;
-        if (isLinux) return is64Bit ? Platform.LINUX_64 : Platform.LINUX_32;
-        if (isMac) return Platform.MACOSX;
-
-        return Platform.UNKNOWN;
-    }
-
     public static IEngine getInstance()
     {
         if (instance == null)
@@ -74,6 +57,23 @@ public final class SilenceEngine implements IEngine
         audio.init();
         collision.init();
         input.init();
+    }
+
+    public static Platform getPlatform()
+    {
+        final String OS = System.getProperty("os.name").toLowerCase();
+        final String ARCH = System.getProperty("os.arch").toLowerCase();
+
+        boolean isWindows = OS.contains("windows");
+        boolean isLinux = OS.contains("linux");
+        boolean isMac = OS.contains("mac");
+        boolean is64Bit = ARCH.equals("amd64") || ARCH.equals("x86_64");
+
+        if (isWindows) return is64Bit ? Platform.WINDOWS_64 : Platform.WINDOWS_32;
+        if (isLinux) return is64Bit ? Platform.LINUX_64 : Platform.LINUX_32;
+        if (isMac) return Platform.MACOSX;
+
+        return Platform.UNKNOWN;
     }
 
     @Override

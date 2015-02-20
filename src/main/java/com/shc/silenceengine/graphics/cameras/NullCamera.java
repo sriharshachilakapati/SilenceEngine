@@ -3,9 +3,8 @@ package com.shc.silenceengine.graphics.cameras;
 import com.shc.silenceengine.math.Matrix4;
 
 /**
- * A NullCamera, whose view and projection matrices are always
- * identities. Allows you to use the default transformations of
- * OpenGL context.
+ * A NullCamera, whose view and projection matrices are always identities. Allows you to use the default transformations
+ * of OpenGL context.
  *
  * @author Sri Harsha Chilakapati
  */

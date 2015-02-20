@@ -8,7 +8,15 @@ import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Vector2;
-import org.lwjgl.glfw.*;
+import org.lwjgl.glfw.Callbacks;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
+import org.lwjgl.glfw.GLFWWindowPosCallback;
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
+import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GLContext;
 
 import java.nio.ByteBuffer;
@@ -19,9 +27,8 @@ import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
- * The Display class takes care of creating a display and managing it.
- * As a user of SilenceEngine, I don't expect you to create the Display,
- * the display creation will be handled automatically by the Game class.
+ * The Display class takes care of creating a display and managing it. As a user of SilenceEngine, I don't expect you to
+ * create the Display, the display creation will be handled automatically by the Game class.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -77,9 +84,28 @@ public final class Display
     }
 
     /**
-     * A private method to handle the creation of GLFW windows. Takes care of creating
-     * the window with windowing hints, a size, a title, fullscreen or not, parent window
-     * to share the context, and whether initially visible or not.
+     * Creates the default display, in windowed mode, initially hidden.
+     */
+    public static void create()
+    {
+        // Set error callback
+        glfwSetErrorCallback(errorCallback = GLFWErrorCallback((error, description) ->
+        {
+            throw new SilenceException("" + error + ": " + Callbacks.errorCallbackDescriptionString(description));
+        }));
+
+        // Initialize GLFW
+        if (glfwInit() != GL_TRUE)
+            throw new SilenceException("Error creating Display. Your system is unsupported.");
+
+        // Create the window
+        displayHandle = createWindow(width, height, title, NULL, NULL, false, resizable);
+        centerOnScreen();
+    }
+
+    /**
+     * A private method to handle the creation of GLFW windows. Takes care of creating the window with windowing hints,
+     * a size, a title, fullscreen or not, parent window to share the context, and whether initially visible or not.
      *
      * @param width     The width of the window
      * @param height    The height of the window
@@ -88,6 +114,7 @@ public final class Display
      * @param parent    The parent window, if the context needs to be shared
      * @param visible   Is the window visible upon creation?
      * @param resizable Is the window resizable?
+     *
      * @return A window handle. (GLFWWindow* as in C++, but this is Java, so a long)
      */
     private static long createWindow(int width, int height, String title, long monitor, long parent, boolean visible, boolean resizable)
@@ -161,8 +188,7 @@ public final class Display
     }
 
     /**
-     * Used to release GLFW callbacks. This is necessary to prevent
-     * segmentation fault errors in native code.
+     * Used to release GLFW callbacks. This is necessary to prevent segmentation fault errors in native code.
      */
     private static void releaseCallbacks()
     {
@@ -186,37 +212,21 @@ public final class Display
     }
 
     /**
-     * Creates the default display, in windowed mode, initially hidden.
+     * Centers the display on screen.
      */
-    public static void create()
+    public static void centerOnScreen()
     {
-        // Set error callback
-        glfwSetErrorCallback(errorCallback = GLFWErrorCallback((error, description) ->
-        {
-            throw new SilenceException("" + error + ": " + Callbacks.errorCallbackDescriptionString(description));
-        }));
+        if (fullScreen || displayHandle == NULL)
+            return;
 
-        // Initialize GLFW
-        if (glfwInit() != GL_TRUE)
-            throw new SilenceException("Error creating Display. Your system is unsupported.");
-
-        // Create the window
-        displayHandle = createWindow(width, height, title, NULL, NULL, false, resizable);
-        centerOnScreen();
+        ByteBuffer vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfwSetWindowPos(displayHandle, (GLFWvidmode.width(vidMode) - width) / 2,
+                (GLFWvidmode.height(vidMode) - height) / 2);
     }
 
     /**
-     * Makes the display visible to the users.
-     */
-    public static void show()
-    {
-        glfwShowWindow(displayHandle);
-    }
-
-    /**
-     * @return true if the user has clicked the close button, or pressed
-     * platform specific close shortcut keys like Cmd-Q(Mac) or
-     * Alt-F4 (linux &amp; windows)
+     * @return true if the user has clicked the close button, or pressed platform specific close shortcut keys like
+     * Cmd-Q(Mac) or Alt-F4 (linux &amp; windows)
      */
     public static boolean isCloseRequested()
     {
@@ -245,10 +255,8 @@ public final class Display
     }
 
     /**
-     * Destroy the display, will be unusable until create is called.
-     * Please don't call this method in between frames, unless you
-     * are keenly awaiting for a number of runtime exceptions to be
-     * thrown.
+     * Destroy the display, will be unusable until create is called. Please don't call this method in between frames,
+     * unless you are keenly awaiting for a number of runtime exceptions to be thrown.
      */
     public static void destroy()
     {
@@ -261,26 +269,7 @@ public final class Display
     }
 
     /**
-     * Updates the display. Swaps the buffers and polls new events.
-     */
-    public static void update()
-    {
-        glfwSwapBuffers(displayHandle);
-        glfwPollEvents();
-
-        GL3Context.clearColor(clearColor);
-
-        // Force binding
-        Program.CURRENT = null;
-        Texture.CURRENT = null;
-
-        Program.DEFAULT.use();
-        Texture.EMPTY.bind();
-    }
-
-    /**
-     * @return the handle of the current display. Please don't store
-     * this handle, and always use this method to get one,
+     * @return the handle of the current display. Please don't store this handle, and always use this method to get one,
      * because a stored handle can get invalid at any time.
      */
     public static long getDisplayHandle()
@@ -357,36 +346,6 @@ public final class Display
     }
 
     /**
-     * Centers the display on screen.
-     */
-    public static void centerOnScreen()
-    {
-        if (fullScreen || displayHandle == NULL)
-            return;
-
-        ByteBuffer vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowPos(displayHandle, (GLFWvidmode.width(vidMode) - width) / 2,
-                (GLFWvidmode.height(vidMode) - height) / 2);
-    }
-
-    /**
-     * Sets the window position on the screen
-     *
-     * @param x The x-coordinate of the window (in screen coordinates)
-     * @param y The y-coordinate of the window (in screen coordinates)
-     */
-    public static void setPosition(int x, int y)
-    {
-        if (fullScreen || displayHandle == NULL)
-            return;
-
-        posX = x;
-        posY = y;
-
-        glfwSetWindowPos(displayHandle, x, y);
-    }
-
-    /**
      * Sets the clear color of the Display, i.e., the background color
      *
      * @param c The background color to clear the window
@@ -452,6 +411,49 @@ public final class Display
 
         // Make an update
         update();
+    }
+
+    /**
+     * Makes the display visible to the users.
+     */
+    public static void show()
+    {
+        glfwShowWindow(displayHandle);
+    }
+
+    /**
+     * Updates the display. Swaps the buffers and polls new events.
+     */
+    public static void update()
+    {
+        glfwSwapBuffers(displayHandle);
+        glfwPollEvents();
+
+        GL3Context.clearColor(clearColor);
+
+        // Force binding
+        Program.CURRENT = null;
+        Texture.CURRENT = null;
+
+        Program.DEFAULT.use();
+        Texture.EMPTY.bind();
+    }
+
+    /**
+     * Sets the window position on the screen
+     *
+     * @param x The x-coordinate of the window (in screen coordinates)
+     * @param y The y-coordinate of the window (in screen coordinates)
+     */
+    public static void setPosition(int x, int y)
+    {
+        if (fullScreen || displayHandle == NULL)
+            return;
+
+        posX = x;
+        posY = y;
+
+        glfwSetWindowPos(displayHandle, x, y);
     }
 
     /**

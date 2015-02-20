@@ -24,6 +24,14 @@ public final class Logger
             System.out.println("[INFO " + getTimeStamp() + "] " + message);
     }
 
+    public static String getTimeStamp()
+    {
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
+
+        return sdf.format(date);
+    }
+
     public static void warn(String... messages)
     {
         if (!Game.development)
@@ -40,13 +48,5 @@ public final class Logger
 
         System.err.println("Terminating with exception");
         throw new SilenceException("FATAL Error occurred, cannot continue further");
-    }
-
-    public static String getTimeStamp()
-    {
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
-
-        return sdf.format(date);
     }
 }

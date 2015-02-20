@@ -21,6 +21,11 @@ public class Graphics2DTest extends Game
         new Graphics2DTest().start();
     }
 
+    public void dispose()
+    {
+        ResourceLoader.getInstance().dispose();
+    }
+
     public void init()
     {
         ResourceLoader loader = ResourceLoader.getInstance();
@@ -56,10 +61,5 @@ public class Graphics2DTest extends Game
 
         g2d.drawTexture(texture, 100, 100, 254, 252);
         g2d.drawString("Hello World", 10, 10);
-    }
-
-    public void dispose()
-    {
-        ResourceLoader.getInstance().dispose();
     }
 }

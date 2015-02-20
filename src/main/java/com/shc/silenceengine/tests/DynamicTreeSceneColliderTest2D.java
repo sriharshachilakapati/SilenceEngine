@@ -27,6 +27,11 @@ public class DynamicTreeSceneColliderTest2D extends Game
         new DynamicTreeSceneColliderTest2D().start();
     }
 
+    public void dispose()
+    {
+        scene.destroy();
+    }
+
     public void init()
     {
         Display.setTitle("DynamicTree Collider Test 2D");
@@ -77,11 +82,6 @@ public class DynamicTreeSceneColliderTest2D extends Game
     public void resize()
     {
         cam.initProjection(Display.getWidth(), Display.getHeight());
-    }
-
-    public void dispose()
-    {
-        scene.destroy();
     }
 
     public class Box extends Entity2D

@@ -97,6 +97,11 @@ public final class ResourceLoader
         return id;
     }
 
+    private String fontToString(String name, int style, int size)
+    {
+        return name + "," + style + "," + size;
+    }
+
     public void startLoading()
     {
         Display.setResizable(false);
@@ -151,66 +156,6 @@ public final class ResourceLoader
         }
 
         Display.setResizable(true);
-    }
-
-    public Texture getTexture(int id)
-    {
-        return textures.get(id);
-    }
-
-    public TrueTypeFont getFont(int id)
-    {
-        return fonts.get(id);
-    }
-
-    public Sound getSound(int id)
-    {
-        return sounds.get(id);
-    }
-
-    public Model getModel(int id)
-    {
-        return models.get(id);
-    }
-
-    public void dispose()
-    {
-        for (int id : textures.keySet())
-            textures.get(id).dispose();
-
-        for (int id : fonts.keySet())
-            fonts.get(id).dispose();
-
-        for (int id : sounds.keySet())
-            sounds.get(id).dispose();
-
-        for (int id : models.keySet())
-            models.get(id).dispose();
-    }
-
-    public void clear(boolean dispose)
-    {
-        if (dispose)
-            dispose();
-
-        fonts.clear();
-        fontsToLoad.clear();
-        textures.clear();
-        texturesToLoad.clear();
-        sounds.clear();
-        soundsToLoad.clear();
-        models.clear();
-        modelsToLoad.clear();
-    }
-
-    public void clear()
-    {
-        clear(false);
-    }
-
-    private String fontToString(String name, int style, int size)
-    {
-        return name + "," + style + "," + size;
     }
 
     private void renderProgress()
@@ -292,5 +237,60 @@ public final class ResourceLoader
                 throw new SilenceException(e.getMessage());
             }
         }
+    }
+
+    public Texture getTexture(int id)
+    {
+        return textures.get(id);
+    }
+
+    public TrueTypeFont getFont(int id)
+    {
+        return fonts.get(id);
+    }
+
+    public Sound getSound(int id)
+    {
+        return sounds.get(id);
+    }
+
+    public Model getModel(int id)
+    {
+        return models.get(id);
+    }
+
+    public void clear()
+    {
+        clear(false);
+    }
+
+    public void clear(boolean dispose)
+    {
+        if (dispose)
+            dispose();
+
+        fonts.clear();
+        fontsToLoad.clear();
+        textures.clear();
+        texturesToLoad.clear();
+        sounds.clear();
+        soundsToLoad.clear();
+        models.clear();
+        modelsToLoad.clear();
+    }
+
+    public void dispose()
+    {
+        for (int id : textures.keySet())
+            textures.get(id).dispose();
+
+        for (int id : fonts.keySet())
+            fonts.get(id).dispose();
+
+        for (int id : sounds.keySet())
+            sounds.get(id).dispose();
+
+        for (int id : models.keySet())
+            models.get(id).dispose();
     }
 }

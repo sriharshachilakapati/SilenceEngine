@@ -13,99 +13,9 @@ public class Collision3D
 {
     private static Response tmpResponse = new Response();
 
-    private static Vector2 flattenPoints(List<Vector3> vertices, Vector3 axis, Vector2 projection)
+    public static boolean testPolyhedronCollision(Polyhedron a, Polyhedron b)
     {
-        float min = axis.dot(vertices.get(0));
-        float max = min;
-
-        for (Vector3 v : vertices)
-        {
-            float dot = axis.dot(v);
-
-            if (dot < min) min = dot;
-            if (dot > max) max = dot;
-        }
-
-        return projection.set(min, max);
-    }
-
-    public static boolean isSeparatingAxis(Polyhedron a, Polyhedron b, Vector3 axis, Response response)
-    {
-        if (response == null)
-            response = tmpResponse.clear();
-
-        Vector3 tmpOffset = Vector3.REUSABLE_STACK.pop();
-        Vector2 tmpRangeA = Vector2.REUSABLE_STACK.pop();
-        Vector2 tmpRangeB = Vector2.REUSABLE_STACK.pop();
-
-        Vector3 offset = tmpOffset.set(b.getPosition()).subtractSelf(a.getPosition());
-        float projectedOffset = offset.dot(axis);
-
-        Vector2 rangeA = flattenPoints(a.getVertices(), axis, tmpRangeA);
-        Vector2 rangeB = flattenPoints(b.getVertices(), axis, tmpRangeB);
-
-        rangeB.addSelf(projectedOffset, projectedOffset);
-
-        if (rangeA.x > rangeB.y || rangeB.x > rangeA.y)
-        {
-            Vector3.REUSABLE_STACK.push(tmpOffset);
-            Vector2.REUSABLE_STACK.push(tmpRangeA);
-            Vector2.REUSABLE_STACK.push(tmpRangeB);
-
-            return true;
-        }
-
-        float overlap;
-
-        if (rangeA.x < rangeB.x)
-        {
-            response.aInB = false;
-
-            if (rangeA.y < rangeB.y)
-            {
-                overlap = rangeA.y - rangeB.x;
-                response.bInA = false;
-            }
-            else
-            {
-                float option1 = rangeA.y - rangeB.x;
-                float option2 = rangeB.y - rangeA.x;
-                overlap = option1 < option2 ? option1 : -option2;
-            }
-        }
-        else
-        {
-            response.bInA = false;
-
-            if (rangeA.y > rangeB.y)
-            {
-                overlap = rangeA.y - rangeB.x;
-                response.aInB = false;
-            }
-            else
-            {
-                float option1 = rangeA.y - rangeB.x;
-                float option2 = rangeB.y - rangeA.x;
-                overlap = option1 < option2 ? option1 : -option2;
-            }
-        }
-
-        overlap = Math.abs(overlap);
-
-        if (overlap < response.overlap)
-        {
-            response.overlap = overlap;
-            response.overlapN.set(axis.normalizeSelf());
-
-            if (overlap < 0)
-                response.overlapN.negateSelf();
-        }
-
-        Vector3.REUSABLE_STACK.push(tmpOffset);
-        Vector2.REUSABLE_STACK.push(tmpRangeA);
-        Vector2.REUSABLE_STACK.push(tmpRangeB);
-
-        return false;
+        return testPolyhedronCollision(a, b, null);
     }
 
     public static boolean testPolyhedronCollision(Polyhedron a, Polyhedron b, Response response)
@@ -203,9 +113,99 @@ public class Collision3D
         return true;
     }
 
-    public static boolean testPolyhedronCollision(Polyhedron a, Polyhedron b)
+    public static boolean isSeparatingAxis(Polyhedron a, Polyhedron b, Vector3 axis, Response response)
     {
-        return testPolyhedronCollision(a, b, null);
+        if (response == null)
+            response = tmpResponse.clear();
+
+        Vector3 tmpOffset = Vector3.REUSABLE_STACK.pop();
+        Vector2 tmpRangeA = Vector2.REUSABLE_STACK.pop();
+        Vector2 tmpRangeB = Vector2.REUSABLE_STACK.pop();
+
+        Vector3 offset = tmpOffset.set(b.getPosition()).subtractSelf(a.getPosition());
+        float projectedOffset = offset.dot(axis);
+
+        Vector2 rangeA = flattenPoints(a.getVertices(), axis, tmpRangeA);
+        Vector2 rangeB = flattenPoints(b.getVertices(), axis, tmpRangeB);
+
+        rangeB.addSelf(projectedOffset, projectedOffset);
+
+        if (rangeA.x > rangeB.y || rangeB.x > rangeA.y)
+        {
+            Vector3.REUSABLE_STACK.push(tmpOffset);
+            Vector2.REUSABLE_STACK.push(tmpRangeA);
+            Vector2.REUSABLE_STACK.push(tmpRangeB);
+
+            return true;
+        }
+
+        float overlap;
+
+        if (rangeA.x < rangeB.x)
+        {
+            response.aInB = false;
+
+            if (rangeA.y < rangeB.y)
+            {
+                overlap = rangeA.y - rangeB.x;
+                response.bInA = false;
+            }
+            else
+            {
+                float option1 = rangeA.y - rangeB.x;
+                float option2 = rangeB.y - rangeA.x;
+                overlap = option1 < option2 ? option1 : -option2;
+            }
+        }
+        else
+        {
+            response.bInA = false;
+
+            if (rangeA.y > rangeB.y)
+            {
+                overlap = rangeA.y - rangeB.x;
+                response.aInB = false;
+            }
+            else
+            {
+                float option1 = rangeA.y - rangeB.x;
+                float option2 = rangeB.y - rangeA.x;
+                overlap = option1 < option2 ? option1 : -option2;
+            }
+        }
+
+        overlap = Math.abs(overlap);
+
+        if (overlap < response.overlap)
+        {
+            response.overlap = overlap;
+            response.overlapN.set(axis.normalizeSelf());
+
+            if (overlap < 0)
+                response.overlapN.negateSelf();
+        }
+
+        Vector3.REUSABLE_STACK.push(tmpOffset);
+        Vector2.REUSABLE_STACK.push(tmpRangeA);
+        Vector2.REUSABLE_STACK.push(tmpRangeB);
+
+        return false;
+    }
+
+    private static Vector2 flattenPoints(List<Vector3> vertices, Vector3 axis, Vector2 projection)
+    {
+        float min = axis.dot(vertices.get(0));
+        float max = min;
+
+        for (Vector3 v : vertices)
+        {
+            float dot = axis.dot(v);
+
+            if (dot < min) min = dot;
+            if (dot > max) max = dot;
+        }
+
+        return projection.set(min, max);
     }
 
     public static Response getResponse()
@@ -285,14 +285,14 @@ public class Collision3D
         public String toString()
         {
             return "Response{" +
-                    "a=" + a +
-                    ", b=" + b +
-                    ", overlapV=" + overlapV +
-                    ", overlapN=" + overlapN +
-                    ", overlap=" + overlap +
-                    ", aInB=" + aInB +
-                    ", bInA=" + bInA +
-                    '}';
+                   "a=" + a +
+                   ", b=" + b +
+                   ", overlapV=" + overlapV +
+                   ", overlapN=" + overlapN +
+                   ", overlap=" + overlap +
+                   ", aInB=" + aInB +
+                   ", bInA=" + bInA +
+                   '}';
         }
     }
 }

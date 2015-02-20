@@ -204,14 +204,6 @@ public class DynamicTree3D implements IBroadphaseResolver3D
     }
 
     @Override
-    public List<Entity3D> retrieve(Entity3D e)
-    {
-        retrieveList.clear();
-        queryNode(getAABB(e), root);
-        return retrieveList;
-    }
-
-    @Override
     public List<Entity3D> retrieve(Polyhedron bounds)
     {
         retrieveList.clear();
@@ -224,21 +216,12 @@ public class DynamicTree3D implements IBroadphaseResolver3D
         return retrieveList;
     }
 
-    private void queryNode(AABB aabb, Node node)
+    @Override
+    public List<Entity3D> retrieve(Entity3D e)
     {
-        if (node == null)
-            return;
-
-        if (node.aabb.intersects(aabb))
-        {
-            if (node.isLeaf())
-                retrieveList.add(node.entity);
-            else
-            {
-                queryNode(aabb, node.left);
-                queryNode(aabb, node.right);
-            }
-        }
+        retrieveList.clear();
+        queryNode(getAABB(e), root);
+        return retrieveList;
     }
 
     private AABB getAABB(Entity3D e)
@@ -259,6 +242,23 @@ public class DynamicTree3D implements IBroadphaseResolver3D
         aabb.max.set(e.getPosition()).addSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
 
         return aabb;
+    }
+
+    private void queryNode(AABB aabb, Node node)
+    {
+        if (node == null)
+            return;
+
+        if (node.aabb.intersects(aabb))
+        {
+            if (node.isLeaf())
+                retrieveList.add(node.entity);
+            else
+            {
+                queryNode(aabb, node.left);
+                queryNode(aabb, node.right);
+            }
+        }
     }
 
     private static class AABB
@@ -313,8 +313,8 @@ public class DynamicTree3D implements IBroadphaseResolver3D
         public boolean intersects(AABB aabb)
         {
             return !(min.x > aabb.max.x || max.x < aabb.min.x) &&
-                    !(min.y > aabb.max.y || max.y < aabb.min.y) &&
-                    !(min.z > aabb.max.z || max.z < aabb.min.z);
+                   !(min.y > aabb.max.y || max.y < aabb.min.y) &&
+                   !(min.z > aabb.max.z || max.z < aabb.min.z);
         }
 
         public float getPerimeter()

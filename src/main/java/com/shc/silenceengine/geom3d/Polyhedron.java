@@ -31,6 +31,15 @@ public class Polyhedron
 
     private Quaternion tempQuat;
 
+    public Polyhedron(Polyhedron other)
+    {
+        this();
+
+        position.set(other.position);
+
+        other.vertices.forEach(vertices::add);
+    }
+
     public Polyhedron()
     {
         vertices = new ArrayList<>();
@@ -39,15 +48,6 @@ public class Polyhedron
         tempQuat = new Quaternion();
 
         clearVertices();
-    }
-
-    public Polyhedron(Polyhedron other)
-    {
-        this();
-
-        position.set(other.position);
-
-        other.vertices.forEach(vertices::add);
     }
 
     protected void clearVertices()

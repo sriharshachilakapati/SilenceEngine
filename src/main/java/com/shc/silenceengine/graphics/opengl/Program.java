@@ -1,7 +1,11 @@
 package com.shc.silenceengine.graphics.opengl;
 
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.math.*;
+import com.shc.silenceengine.math.Matrix3;
+import com.shc.silenceengine.math.Matrix4;
+import com.shc.silenceengine.math.Vector2;
+import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.math.Vector4;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -33,6 +37,40 @@ public class Program
         attributeLocations = new HashMap<>();
     }
 
+    public void attach(Shader shader)
+    {
+        glAttachShader(id, shader.getId());
+        GLError.check();
+    }
+
+    public void link()
+    {
+        glLinkProgram(id);
+        GLError.check();
+
+        if (glGetProgrami(id, GL_LINK_STATUS) != GL_TRUE)
+            throw new GLException("Unable to link program:\n" + getInfoLog());
+    }
+
+    public String getInfoLog()
+    {
+        return glGetProgramInfoLog(id);
+    }
+
+    public int getAttribute(String name)
+    {
+        use();
+
+        if (attributeLocations.containsKey(name))
+            return attributeLocations.get(name);
+
+        int location = glGetAttribLocation(id, name);
+        attributeLocations.put(name, location);
+
+        GLError.check();
+        return location;
+    }
+
     public void use()
     {
         if (CURRENT == this)
@@ -51,35 +89,6 @@ public class Program
 
     public void prepareFrame()
     {
-    }
-
-    public void attach(Shader shader)
-    {
-        glAttachShader(id, shader.getId());
-        GLError.check();
-    }
-
-    public void link()
-    {
-        glLinkProgram(id);
-        GLError.check();
-
-        if (glGetProgrami(id, GL_LINK_STATUS) != GL_TRUE)
-            throw new GLException("Unable to link program:\n" + getInfoLog());
-    }
-
-    public int getAttribute(String name)
-    {
-        use();
-
-        if (attributeLocations.containsKey(name))
-            return attributeLocations.get(name);
-
-        int location = glGetAttribLocation(id, name);
-        attributeLocations.put(name, location);
-
-        GLError.check();
-        return location;
     }
 
     public int getUniform(String name)
@@ -125,6 +134,21 @@ public class Program
         GLError.check();
     }
 
+    public void setUniform(String name, int... values)
+    {
+        setUniform(getUniform(name), values);
+    }
+
+    public void setUniform(String name, float... values)
+    {
+        setUniform(getUniform(name), values);
+    }
+
+    public void setUniform(int location, Vector2 value)
+    {
+        setUniform(location, value.getX(), value.getY());
+    }
+
     public void setUniform(int location, float... values)
     {
         if (values.length > 4)
@@ -154,34 +178,19 @@ public class Program
         GLError.check();
     }
 
-    public void setUniform(String name, int... values)
-    {
-        setUniform(getUniform(name), values);
-    }
-
-    public void setUniform(String name, float... values)
-    {
-        setUniform(getUniform(name), values);
-    }
-
-    public void setUniform(int location, Vector2 value)
-    {
-        setUniform(location, value.getX(), value.getY());
-    }
-
     public void setUniform(int location, Vector3 value)
     {
         setUniform(location, value.getX(), value.getY(), value.getZ());
     }
 
-    public void setUniform(int location, Vector4 value)
-    {
-        setUniform(location, value.getX(), value.getY(), value.getZ(), value.getW());
-    }
-
     public void setUniform(int location, Color value)
     {
         setUniform(location, (Vector4) value);
+    }
+
+    public void setUniform(int location, Vector4 value)
+    {
+        setUniform(location, value.getX(), value.getY(), value.getZ(), value.getW());
     }
 
     public void setUniform(String name, Vector2 value)
@@ -204,6 +213,11 @@ public class Program
         setUniform(name, (Vector4) value);
     }
 
+    public void setUniform(int location, Matrix3 value)
+    {
+        setUniform(location, false, value);
+    }
+
     public void setUniform(int location, boolean transpose, Matrix3 value)
     {
         use();
@@ -222,6 +236,11 @@ public class Program
 
         glUniformMatrix3(location, transpose, buffer);
         GLError.check();
+    }
+
+    public void setUniform(int location, Matrix4 value)
+    {
+        setUniform(location, false, value);
     }
 
     public void setUniform(int location, boolean transpose, Matrix4 value)
@@ -244,16 +263,6 @@ public class Program
         GLError.check();
     }
 
-    public void setUniform(int location, Matrix3 value)
-    {
-        setUniform(location, false, value);
-    }
-
-    public void setUniform(int location, Matrix4 value)
-    {
-        setUniform(location, false, value);
-    }
-
     public void setUniform(String name, boolean transpose, Matrix3 value)
     {
         setUniform(getUniform(name), transpose, value);
@@ -272,11 +281,6 @@ public class Program
     public void setUniform(String name, Matrix4 value)
     {
         setUniform(name, false, value);
-    }
-
-    public String getInfoLog()
-    {
-        return glGetProgramInfoLog(id);
     }
 
     public void dispose()

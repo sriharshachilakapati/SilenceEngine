@@ -32,6 +32,11 @@ public final class AudioEngine implements IEngine
     {
     }
 
+    public void dispose()
+    {
+        ALContext.getInstance().dispose();
+    }
+
     public Sound getSound(String name)
     {
         return new Sound(name);
@@ -40,10 +45,5 @@ public final class AudioEngine implements IEngine
     public Sound getSound(InputStream is, String extension)
     {
         return new Sound(is, extension);
-    }
-
-    public void dispose()
-    {
-        ALContext.getInstance().dispose();
     }
 }

@@ -8,10 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A Grid based collision resolver. Reduces the number of collision
- * checks and increases performance. This class implements the broad
- * phase collision detection. Though this class is public, you should
- * be using the ISceneCollider2D interface with the scene.
+ * A Grid based collision resolver. Reduces the number of collision checks and increases performance. This class
+ * implements the broad phase collision detection. Though this class is public, you should be using the ISceneCollider2D
+ * interface with the scene.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -72,17 +71,6 @@ public class Grid implements IBroadphaseResolver2D
             for (int j = 0; j < rows; j++)
                 grid.get(i).get(j).clear();
         }
-    }
-
-    /**
-     * Simplification method to insert bulk data
-     *
-     * @param list The list of Entity2Ds
-     */
-    public void insertAll(List<Entity2D> list)
-    {
-        for (Entity2D e : list)
-            insert(e);
     }
 
     /**
@@ -154,5 +142,16 @@ public class Grid implements IBroadphaseResolver2D
         }
 
         return retrieveList;
+    }
+
+    /**
+     * Simplification method to insert bulk data
+     *
+     * @param list The list of Entity2Ds
+     */
+    public void insertAll(List<Entity2D> list)
+    {
+        for (Entity2D e : list)
+            insert(e);
     }
 }

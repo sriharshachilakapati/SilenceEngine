@@ -18,6 +18,21 @@ public class Vector4
         this(0, 0, 0, 0);
     }
 
+    public Vector4(float x, float y, float z, float w)
+    {
+        set(x, y, z, w);
+    }
+
+    public Vector4 set(float x, float y, float z, float w)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.w = w;
+
+        return this;
+    }
+
     public Vector4(float v)
     {
         this(v, v, v, v);
@@ -53,9 +68,9 @@ public class Vector4
         this(v.x, v.y, v.z, v.w);
     }
 
-    public Vector4(float x, float y, float z, float w)
+    public Vector4 add(Vector4 v)
     {
-        set(x, y, z, w);
+        return add(v.x, v.y, v.z, v.w);
     }
 
     public Vector4 add(float x, float y, float z, float w)
@@ -68,9 +83,9 @@ public class Vector4
         return set(this.x + x, this.y + y, this.z + z, this.w + w);
     }
 
-    public Vector4 add(Vector4 v)
+    public Vector4 copy()
     {
-        return add(v.x, v.y, v.z, v.w);
+        return new Vector4(this);
     }
 
     public Vector4 addSelf(Vector4 v)
@@ -128,16 +143,6 @@ public class Vector4
         return addSelf(x, y, v.x, v.y);
     }
 
-    public Vector4 subtract(float x, float y, float z, float w)
-    {
-        return add(-x, -y, -z, -w);
-    }
-
-    public Vector4 subtractSelf(float x, float y, float z, float w)
-    {
-        return addSelf(-x, -y, -z, -w);
-    }
-
     public Vector4 subtract(Vector4 v)
     {
         return add(-v.x, -v.y, -v.z, -v.w);
@@ -153,9 +158,19 @@ public class Vector4
         return subtract(v.x, v.y, v.z, w);
     }
 
+    public Vector4 subtract(float x, float y, float z, float w)
+    {
+        return add(-x, -y, -z, -w);
+    }
+
     public Vector4 subtractSelf(Vector3 v, float w)
     {
         return subtractSelf(v.x, v.y, v.z, w);
+    }
+
+    public Vector4 subtractSelf(float x, float y, float z, float w)
+    {
+        return addSelf(-x, -y, -z, -w);
     }
 
     public Vector4 subtract(float x, Vector3 v)
@@ -203,14 +218,14 @@ public class Vector4
         return scale(s, s, s, s);
     }
 
-    public Vector4 scaleSelf(float s)
-    {
-        return scaleSelf(s, s, s, s);
-    }
-
     public Vector4 scale(float sx, float sy, float sz, float sw)
     {
         return new Vector4(x * sx, y * sy, z * sz, w * sw);
+    }
+
+    public Vector4 scaleSelf(float s)
+    {
+        return scaleSelf(s, s, s, s);
     }
 
     public Vector4 scaleSelf(float sx, float sy, float sz, float sw)
@@ -221,16 +236,6 @@ public class Vector4
     public float dot(Vector4 v)
     {
         return x * v.x + y * v.y + z * v.z + w * v.w;
-    }
-
-    public float lengthSquared()
-    {
-        return x * x + y * y + z * z + w * w;
-    }
-
-    public float length()
-    {
-        return (float) Math.sqrt(lengthSquared());
     }
 
     public Vector4 normalize()
@@ -246,6 +251,16 @@ public class Vector4
             return this;
 
         return set(x / l, y / l, z / l, w / l);
+    }
+
+    public float length()
+    {
+        return (float) Math.sqrt(lengthSquared());
+    }
+
+    public float lengthSquared()
+    {
+        return x * x + y * y + z * z + w * w;
     }
 
     public Vector4 negate()
@@ -266,11 +281,6 @@ public class Vector4
     public Vector4 multiplySelf(Vector4 v)
     {
         return scaleSelf(v.x, v.y, v.z, v.w);
-    }
-
-    public Vector4 copy()
-    {
-        return new Vector4(this);
     }
 
     public float getX()
@@ -359,16 +369,6 @@ public class Vector4
     public Vector4 setA(float a)
     {
         w = a;
-        return this;
-    }
-
-    public Vector4 set(float x, float y, float z, float w)
-    {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.w = w;
-
         return this;
     }
 

@@ -28,6 +28,11 @@ public class ResourceLoaderTest extends Game
         new ResourceLoaderTest().start();
     }
 
+    public void dispose()
+    {
+        ResourceLoader.getInstance().dispose();
+    }
+
     public void init()
     {
         ResourceLoader loader = ResourceLoader.getInstance();
@@ -64,10 +69,5 @@ public class ResourceLoaderTest extends Game
     public void resize()
     {
         cam.initProjection(Display.getWidth(), Display.getHeight());
-    }
-
-    public void dispose()
-    {
-        ResourceLoader.getInstance().dispose();
     }
 }

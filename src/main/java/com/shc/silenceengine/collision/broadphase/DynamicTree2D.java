@@ -203,14 +203,6 @@ public class DynamicTree2D implements IBroadphaseResolver2D
     }
 
     @Override
-    public List<Entity2D> retrieve(Entity2D e)
-    {
-        retrieveList.clear();
-        queryNode(getAABB(e), root);
-        return retrieveList;
-    }
-
-    @Override
     public List<Entity2D> retrieve(Rectangle rect)
     {
         retrieveList.clear();
@@ -218,21 +210,12 @@ public class DynamicTree2D implements IBroadphaseResolver2D
         return retrieveList;
     }
 
-    private void queryNode(AABB aabb, Node node)
+    @Override
+    public List<Entity2D> retrieve(Entity2D e)
     {
-        if (node == null)
-            return;
-
-        if (node.aabb.intersects(aabb))
-        {
-            if (node.isLeaf())
-                retrieveList.add(node.entity);
-            else
-            {
-                queryNode(aabb, node.left);
-                queryNode(aabb, node.right);
-            }
-        }
+        retrieveList.clear();
+        queryNode(getAABB(e), root);
+        return retrieveList;
     }
 
     private AABB getAABB(Entity2D e)
@@ -251,6 +234,23 @@ public class DynamicTree2D implements IBroadphaseResolver2D
         aabb.max.set(e.getBounds().getMax());
 
         return aabb;
+    }
+
+    private void queryNode(AABB aabb, Node node)
+    {
+        if (node == null)
+            return;
+
+        if (node.aabb.intersects(aabb))
+        {
+            if (node.isLeaf())
+                retrieveList.add(node.entity);
+            else
+            {
+                queryNode(aabb, node.left);
+                queryNode(aabb, node.right);
+            }
+        }
     }
 
     private static class AABB
@@ -306,7 +306,7 @@ public class DynamicTree2D implements IBroadphaseResolver2D
         public boolean intersects(AABB aabb)
         {
             return !(min.x > aabb.max.x || max.x < aabb.min.x) &&
-                    !(min.y > aabb.max.y || max.y < aabb.min.y);
+                   !(min.y > aabb.max.y || max.y < aabb.min.y);
         }
 
         public float getPerimeter()

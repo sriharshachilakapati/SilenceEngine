@@ -37,15 +37,6 @@ public class Mouse
     private static float x, y, dx, dy;
     private static float scrollX, scrollY;
 
-    public static void setButton(int button, boolean pressed)
-    {
-        if (pressed && !events.contains(button))
-            events.add(button);
-
-        if (!pressed && events.contains(button))
-            events.remove((Integer) button);
-    }
-
     public static void startEventFrame()
     {
         eventsThisFrame.clear();
@@ -58,14 +49,14 @@ public class Mouse
         eventsLastFrame.addAll(eventsThisFrame);
     }
 
-    public static boolean isPressed(int button)
-    {
-        return glfwGetMouseButton(Display.getDisplayHandle(), button) == GLFW_PRESS || isClicked(button);
-    }
-
     public static boolean isReleased(int button)
     {
         return !isPressed(button);
+    }
+
+    public static boolean isPressed(int button)
+    {
+        return glfwGetMouseButton(Display.getDisplayHandle(), button) == GLFW_PRESS || isClicked(button);
     }
 
     public static boolean isClicked(int button)
@@ -114,6 +105,15 @@ public class Mouse
     public static void glfwMouseButtonCallback(long window, int button, int action, int mods)
     {
         Mouse.setButton(button, action != GLFW_RELEASE);
+    }
+
+    public static void setButton(int button, boolean pressed)
+    {
+        if (pressed && !events.contains(button))
+            events.add(button);
+
+        if (!pressed && events.contains(button))
+            events.remove((Integer) button);
     }
 
     public static void glfwCursorCallback(long window, double x, double y)

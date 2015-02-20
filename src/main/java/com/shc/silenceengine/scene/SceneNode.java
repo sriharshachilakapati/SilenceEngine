@@ -75,6 +75,16 @@ public class SceneNode
         }
     }
 
+    public SceneNode getParent()
+    {
+        return parent;
+    }
+
+    private void setParent(SceneNode parent)
+    {
+        this.parent = parent;
+    }
+
     public void addComponent(SceneComponent component)
     {
         if (components == null)
@@ -190,6 +200,18 @@ public class SceneNode
         }
     }
 
+    public void removeChildren()
+    {
+        if (children == null)
+            return;
+
+        for (int i = 0; i < children.size(); i++)
+        {
+            removeChild(children.get(i));
+            i--;
+        }
+    }
+
     public void removeChild(SceneNode child)
     {
         if (child.getParent() != this)
@@ -201,18 +223,6 @@ public class SceneNode
         child.destroy();
         children.remove(child);
         child.setParent(null);
-    }
-
-    public void removeChildren()
-    {
-        if (children == null)
-            return;
-
-        for (int i = 0; i < children.size(); i++)
-        {
-            removeChild(children.get(i));
-            i--;
-        }
     }
 
     public void destroy()
@@ -248,16 +258,6 @@ public class SceneNode
     public List<SceneComponent> getComponents()
     {
         return components;
-    }
-
-    public SceneNode getParent()
-    {
-        return parent;
-    }
-
-    private void setParent(SceneNode parent)
-    {
-        this.parent = parent;
     }
 
     public Transform getTransform()

@@ -10,9 +10,8 @@ import static org.lwjgl.openal.AL10.AL_GAIN;
 import static org.lwjgl.openal.AL10.AL_LOOPING;
 
 /**
- * Represents a sound resource that is ready to play. This class uses OpenAL sources
- * and buffers underneath using the default listener. This class is very basic, but
- * can be extended.
+ * Represents a sound resource that is ready to play. This class uses OpenAL sources and buffers underneath using the
+ * default listener. This class is very basic, but can be extended.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -22,6 +21,17 @@ public class Sound
     private ALBuffer buffer;
 
     private boolean looping;
+
+    /**
+     * Creates a new sound object from a resource file name. The resource can be a file, or can be embedded in the JAR
+     * directly.
+     *
+     * @param filename The file name of the resource file.
+     */
+    public Sound(String filename)
+    {
+        this(FileUtils.getResource(filename), FileUtils.getExtension(filename));
+    }
 
     /**
      * Creates a new sound object from an input stream and an extension.
@@ -46,17 +56,6 @@ public class Sound
     }
 
     /**
-     * Creates a new sound object from a resource file name. The resource
-     * can be a file, or can be embedded in the JAR directly.
-     *
-     * @param filename The file name of the resource file.
-     */
-    public Sound(String filename)
-    {
-        this(FileUtils.getResource(filename), FileUtils.getExtension(filename));
-    }
-
-    /**
      * Sets the volume of this sound, a.k.a the gain of the source.
      *
      * @param volume The volume of the sound.
@@ -67,8 +66,7 @@ public class Sound
     }
 
     /**
-     * Starts playing this sound. No action will be taken if
-     * it was already playing or looping.
+     * Starts playing this sound. No action will be taken if it was already playing or looping.
      */
     public void play()
     {
@@ -81,8 +79,7 @@ public class Sound
     }
 
     /**
-     * Pauses the sound playback. No action will be taken if
-     * the sound is already paused.
+     * Pauses the sound playback. No action will be taken if the sound is already paused.
      */
     public void pause()
     {
@@ -95,8 +92,7 @@ public class Sound
     }
 
     /**
-     * Stops the sound playback. No action will be taken if the
-     * sound is already stopped.
+     * Stops the sound playback. No action will be taken if the sound is already stopped.
      */
     public void stop()
     {
@@ -107,20 +103,20 @@ public class Sound
     }
 
     /**
+     * @return The current state of the underlying source.
+     */
+    public ALSource.State getState()
+    {
+        return source.getState();
+    }
+
+    /**
      * Disposes this sound, and it's resources.
      */
     public void dispose()
     {
         source.dispose();
         buffer.dispose();
-    }
-
-    /**
-     * @return The current state of the underlying source.
-     */
-    public ALSource.State getState()
-    {
-        return source.getState();
     }
 
     /**
@@ -148,8 +144,7 @@ public class Sound
     }
 
     /**
-     * Sets the looping property of this sound. The parameter
-     * will take effect immediately.
+     * Sets the looping property of this sound. The parameter will take effect immediately.
      *
      * @param looping The value of the looping property.
      */

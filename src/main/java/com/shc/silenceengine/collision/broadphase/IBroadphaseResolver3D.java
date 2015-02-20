@@ -16,10 +16,10 @@ public interface IBroadphaseResolver3D
 
     public void remove(Entity3D e);
 
-    public List<Entity3D> retrieve(Polyhedron rect);
-
     public default List<Entity3D> retrieve(Entity3D e)
     {
         return retrieve(e.getBounds());
     }
+
+    public List<Entity3D> retrieve(Polyhedron rect);
 }

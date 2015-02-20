@@ -21,15 +21,15 @@ public class Vector2
         this(0, 0);
     }
 
-    public Vector2(float v)
-    {
-        this(v, v);
-    }
-
     public Vector2(float x, float y)
     {
         this.x = x;
         this.y = y;
+    }
+
+    public Vector2(float v)
+    {
+        this(v, v);
     }
 
     public Vector2(Vector2 v)
@@ -47,19 +47,9 @@ public class Vector2
         this(v.x, v.y);
     }
 
-    public float lengthSquared()
+    public Vector2 add(Vector2 v)
     {
-        return x * x + y * y;
-    }
-
-    public float length()
-    {
-        return (float) Math.sqrt(lengthSquared());
-    }
-
-    public Vector2 copy()
-    {
-        return new Vector2(this);
+        return add(v.x, v.y);
     }
 
     public Vector2 add(float x, float y)
@@ -67,19 +57,22 @@ public class Vector2
         return new Vector2(this.x + x, this.y + y);
     }
 
+    public Vector2 addSelf(Vector2 v)
+    {
+        return addSelf(v.x, v.y);
+    }
+
     public Vector2 addSelf(float x, float y)
     {
         return set(this.x + x, this.y + y);
     }
 
-    public Vector2 add(Vector2 v)
+    public Vector2 set(float x, float y)
     {
-        return add(v.x, v.y);
-    }
+        this.x = x;
+        this.y = y;
 
-    public Vector2 addSelf(Vector2 v)
-    {
-        return addSelf(v.x, v.y);
+        return this;
     }
 
     public Vector2 subtract(float x, float y)
@@ -87,54 +80,14 @@ public class Vector2
         return add(-x, -y);
     }
 
-    public Vector2 subtractSelf(float x, float y)
-    {
-        return addSelf(-x, -y);
-    }
-
-    public Vector2 subtract(Vector2 v)
-    {
-        return add(-v.x, -v.y);
-    }
-
-    public Vector2 subtractSelf(Vector2 v)
-    {
-        return subtractSelf(v.x, v.y);
-    }
-
-    public Vector2 scale(float s)
-    {
-        return scale(s, s);
-    }
-
-    public Vector2 scaleSelf(float s)
-    {
-        return scaleSelf(s, s);
-    }
-
-    public Vector2 scale(float sx, float sy)
-    {
-        return new Vector2(x * sx, y * sy);
-    }
-
-    public Vector2 scaleSelf(float sx, float sy)
-    {
-        return set(x * sx, y * sy);
-    }
-
-    public float dot(Vector2 v)
-    {
-        return dot(v.x, v.y);
-    }
-
-    public float dot(float x, float y)
-    {
-        return this.x * x + this.y * y;
-    }
-
     public Vector2 normalize()
     {
         return copy().normalizeSelf();
+    }
+
+    public Vector2 copy()
+    {
+        return new Vector2(this);
     }
 
     public Vector2 normalizeSelf()
@@ -145,6 +98,16 @@ public class Vector2
             return this;
 
         return set(x / l, y / l);
+    }
+
+    public float length()
+    {
+        return (float) Math.sqrt(lengthSquared());
+    }
+
+    public float lengthSquared()
+    {
+        return x * x + y * y;
     }
 
     public Vector2 rotate(float angle)
@@ -179,14 +142,24 @@ public class Vector2
         return MathUtils.acos(this.dot(v) / (length() * v.length()));
     }
 
-    public float distanceSquared(Vector2 v)
+    public float dot(Vector2 v)
     {
-        return (v.x - x) * (v.x - x) + (v.y - y) * (v.y - y);
+        return dot(v.x, v.y);
+    }
+
+    public float dot(float x, float y)
+    {
+        return this.x * x + this.y * y;
     }
 
     public float distance(Vector2 v)
     {
         return MathUtils.sqrt(distanceSquared(v));
+    }
+
+    public float distanceSquared(Vector2 v)
+    {
+        return (v.x - x) * (v.x - x) + (v.y - y) * (v.y - y);
     }
 
     public Vector2 lerp(Vector2 target, float alpha)
@@ -214,14 +187,19 @@ public class Vector2
         return set(y, x);
     }
 
-    public Vector2 project(Vector2 v)
-    {
-        return scale(dot(v) / v.lengthSquared());
-    }
-
     public Vector2 projectSelf(Vector2 v)
     {
         return scaleSelf(dot(v) / v.lengthSquared());
+    }
+
+    public Vector2 scaleSelf(float s)
+    {
+        return scaleSelf(s, s);
+    }
+
+    public Vector2 scaleSelf(float sx, float sy)
+    {
+        return set(x * sx, y * sy);
     }
 
     public Vector2 reflect(Vector2 axis)
@@ -229,9 +207,44 @@ public class Vector2
         return project(axis).scale(2).subtract(this);
     }
 
+    public Vector2 subtract(Vector2 v)
+    {
+        return add(-v.x, -v.y);
+    }
+
+    public Vector2 scale(float s)
+    {
+        return scale(s, s);
+    }
+
+    public Vector2 scale(float sx, float sy)
+    {
+        return new Vector2(x * sx, y * sy);
+    }
+
+    public Vector2 project(Vector2 v)
+    {
+        return scale(dot(v) / v.lengthSquared());
+    }
+
     public Vector2 reflectSelf(Vector2 axis)
     {
         return set(project(axis).scaleSelf(2).subtractSelf(this));
+    }
+
+    public Vector2 subtractSelf(Vector2 v)
+    {
+        return subtractSelf(v.x, v.y);
+    }
+
+    public Vector2 subtractSelf(float x, float y)
+    {
+        return addSelf(-x, -y);
+    }
+
+    public Vector2 set(Vector2 v)
+    {
+        return set(v.x, v.y);
     }
 
     public float getX()
@@ -254,28 +267,17 @@ public class Vector2
         this.y = y;
     }
 
-    public Vector2 set(float x, float y)
-    {
-        this.x = x;
-        this.y = y;
-
-        return this;
-    }
-
     public Vector2 set(float v)
     {
         return set(v, v);
     }
 
-    public Vector2 set(Vector2 v)
-    {
-        return set(v.x, v.y);
-    }
-
     @Override
-    public String toString()
+    public int hashCode()
     {
-        return "[" + x + ", " + y + "]";
+        int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
+        result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+        return result;
     }
 
     @Override
@@ -290,10 +292,8 @@ public class Vector2
     }
 
     @Override
-    public int hashCode()
+    public String toString()
     {
-        int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
-        result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
-        return result;
+        return "[" + x + ", " + y + "]";
     }
 }

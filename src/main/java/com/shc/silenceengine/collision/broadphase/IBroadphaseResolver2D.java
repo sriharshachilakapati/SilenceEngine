@@ -16,10 +16,10 @@ public interface IBroadphaseResolver2D
 
     public void remove(Entity2D e);
 
-    public List<Entity2D> retrieve(Rectangle rect);
-
     public default List<Entity2D> retrieve(Entity2D e)
     {
         return retrieve(e.getBounds());
     }
+
+    public List<Entity2D> retrieve(Rectangle rect);
 }

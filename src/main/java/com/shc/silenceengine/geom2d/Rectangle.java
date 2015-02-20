@@ -22,11 +22,6 @@ public class Rectangle extends Polygon
         this(0, 0, 0, 0);
     }
 
-    public Rectangle(float width, float height)
-    {
-        this(0, 0, width, height);
-    }
-
     public Rectangle(float x, float y, float width, float height)
     {
         this.width = width;
@@ -53,6 +48,11 @@ public class Rectangle extends Polygon
         addVertex(v2.set(width, 0));
         addVertex(v3.set(width, height));
         addVertex(v4.set(0, height));
+    }
+
+    public Rectangle(float width, float height)
+    {
+        this(0, 0, width, height);
     }
 
     public boolean intersects(Polygon p)
@@ -97,6 +97,46 @@ public class Rectangle extends Polygon
         setPosition(position);
     }
 
+    public Rectangle copy()
+    {
+        return new Rectangle(getX(), getY(), width, height);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = (getX() != +0.0f ? Float.floatToIntBits(getX()) : 0);
+        result = 31 * result + (getY() != +0.0f ? Float.floatToIntBits(getY()) : 0);
+        result = 31 * result + (width != +0.0f ? Float.floatToIntBits(width) : 0);
+        result = 31 * result + (height != +0.0f ? Float.floatToIntBits(height) : 0);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Rectangle rectangle = (Rectangle) o;
+
+        return Float.compare(rectangle.height, height) == 0 &&
+               Float.compare(rectangle.width, width) == 0 &&
+               Float.compare(rectangle.getX(), getX()) == 0 &&
+               Float.compare(rectangle.getY(), getY()) == 0;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Rectangle{" +
+               "x=" + getX() +
+               ", y=" + getY() +
+               ", width=" + width +
+               ", height=" + height +
+               '}';
+    }
+
     public float getWidth()
     {
         return width;
@@ -119,11 +159,6 @@ public class Rectangle extends Polygon
         updateVertices();
     }
 
-    public Rectangle copy()
-    {
-        return new Rectangle(getX(), getY(), width, height);
-    }
-
     public void set(float x, float y, float width, float height)
     {
         setPosition(x, y);
@@ -135,41 +170,6 @@ public class Rectangle extends Polygon
         updateVertices();
 
         setRotation(rotation);
-    }
-
-    @Override
-    public String toString()
-    {
-        return "Rectangle{" +
-                "x=" + getX() +
-                ", y=" + getY() +
-                ", width=" + width +
-                ", height=" + height +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Rectangle rectangle = (Rectangle) o;
-
-        return Float.compare(rectangle.height, height) == 0 &&
-                Float.compare(rectangle.width, width) == 0 &&
-                Float.compare(rectangle.getX(), getX()) == 0 &&
-                Float.compare(rectangle.getY(), getY()) == 0;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = (getX() != +0.0f ? Float.floatToIntBits(getX()) : 0);
-        result = 31 * result + (getY() != +0.0f ? Float.floatToIntBits(getY()) : 0);
-        result = 31 * result + (width != +0.0f ? Float.floatToIntBits(width) : 0);
-        result = 31 * result + (height != +0.0f ? Float.floatToIntBits(height) : 0);
-        return result;
     }
 
     public Vector2 getMin()

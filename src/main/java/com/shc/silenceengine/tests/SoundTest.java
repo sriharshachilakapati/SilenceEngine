@@ -17,6 +17,12 @@ public class SoundTest extends Game
         new SoundTest().start();
     }
 
+    public void dispose()
+    {
+        music.dispose();
+        audio.dispose();
+    }
+
     public void init()
     {
         music = new Sound("resources/music.wav");
@@ -33,11 +39,5 @@ public class SoundTest extends Game
 
         if (Keyboard.isClicked(Keyboard.KEY_SPACE))
             audio.play();
-    }
-
-    public void dispose()
-    {
-        music.dispose();
-        audio.dispose();
     }
 }

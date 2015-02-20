@@ -10,9 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An implementation of ISceneCollider2D that resolves collisions in a
- * scene containing 2D entities using a QuadTree. The QuadTreeSceneCollider
- * is efficient for very large scenes containing
+ * An implementation of ISceneCollider2D that resolves collisions in a scene containing 2D entities using a QuadTree.
+ * The QuadTreeSceneCollider is efficient for very large scenes containing
  *
  * @author Sri Harsha Chilakapati
  */

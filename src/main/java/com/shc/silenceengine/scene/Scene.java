@@ -15,13 +15,13 @@ public final class Scene extends SceneNode
     {
     }
 
-    public void preRender(float delta, Batcher batcher)
-    {
-    }
-
     public void update(float delta)
     {
         updateChildren(delta);
+    }
+
+    public void preRender(float delta, Batcher batcher)
+    {
     }
 
     public void render(float delta, Batcher batcher)

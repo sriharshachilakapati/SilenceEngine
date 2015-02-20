@@ -1,7 +1,16 @@
 package com.shc.silenceengine.graphics;
 
-import com.shc.silenceengine.graphics.opengl.*;
-import com.shc.silenceengine.math.*;
+import com.shc.silenceengine.graphics.opengl.BufferObject;
+import com.shc.silenceengine.graphics.opengl.GL3Context;
+import com.shc.silenceengine.graphics.opengl.Primitive;
+import com.shc.silenceengine.graphics.opengl.Program;
+import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.graphics.opengl.VertexArray;
+import com.shc.silenceengine.math.Matrix4;
+import com.shc.silenceengine.math.Transform;
+import com.shc.silenceengine.math.Vector2;
+import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.math.Vector4;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
@@ -10,22 +19,13 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL15.*;
 
 /**
- * A simple class which eases the rendering of Graphics by batching
- * the vertices, colors, textures to the shaders using VAOs and VBOs.
- * The Batcher is where, all the rendering takes place in SilenceEngine.
- * <p>
- * The batcher is just instantiated like an object, usually only once
- * in a game. Then, you can use the methods defined to add various
- * shapes, or even raw vertices. They get rendered whenever the end
- * method is called.
- * <p>
- * A batcher can also take transforms, and Cameras and render using
- * them. To use them, either pass them to the begin method, or apply
- * them manually using the apply[Camera/Transform] methods.
- * <p>
- * After the game completes, before the termination, the dispose method
- * should be called by the user. Better place it in the dispose method
- * of the game.
+ * A simple class which eases the rendering of Graphics by batching the vertices, colors, textures to the shaders using
+ * VAOs and VBOs. The Batcher is where, all the rendering takes place in SilenceEngine. <p> The batcher is just
+ * instantiated like an object, usually only once in a game. Then, you can use the methods defined to add various
+ * shapes, or even raw vertices. They get rendered whenever the end method is called. <p> A batcher can also take
+ * transforms, and Cameras and render using them. To use them, either pass them to the begin method, or apply them
+ * manually using the apply[Camera/Transform] methods. <p> After the game completes, before the termination, the dispose
+ * method should be called by the user. Better place it in the dispose method of the game.
  *
  * @author Sri Harsha Chilakapati
  * @author Heiko Brumme
@@ -91,8 +91,7 @@ public class Batcher
     }
 
     /**
-     * Initialises VAOs and VBOs and creates the data store to
-     * store the entire batch.
+     * Initialises VAOs and VBOs and creates the data store to store the entire batch.
      */
     private void initGLHandles()
     {
@@ -121,35 +120,6 @@ public class Batcher
         // Initialize normal-buffer
         vboNorm.bind();
         vboNorm.uploadData(BATCH_SIZE, GL_STREAM_DRAW);
-    }
-
-    /**
-     * Maps the buffers to get their data storage pointers.
-     */
-    private void mapBuffers()
-    {
-        vBuffer = vboVert.map(GL_WRITE_ONLY, vBuffer);
-        vao.pointAttribute(vertexLocation, SIZE_OF_VERTEX, GL_FLOAT, vboVert);
-
-        cBuffer = vboCol.map(GL_WRITE_ONLY, cBuffer);
-        vao.pointAttribute(colorLocation, SIZE_OF_COLOR, GL_FLOAT, vboCol);
-
-        tBuffer = vboTex.map(GL_WRITE_ONLY, tBuffer);
-        vao.pointAttribute(texCoordLocation, SIZE_OF_TEXCOORD, GL_FLOAT, vboTex);
-
-        nBuffer = vboNorm.map(GL_WRITE_ONLY, nBuffer);
-        vao.pointAttribute(normalLocation, SIZE_OF_NORMAL, GL_FLOAT, vboNorm);
-    }
-
-    /**
-     * Unmaps the buffers and invalidates the pointer to their data store.
-     */
-    private void unmapBuffers()
-    {
-        vboVert.unmap();
-        vboCol.unmap();
-        vboTex.unmap();
-        vboNorm.unmap();
     }
 
     /**
@@ -192,6 +162,20 @@ public class Batcher
         flush();
 
         transform.reset();
+    }
+
+    /**
+     * Applies a Transform to the batcher data
+     *
+     * @param t The transform to use
+     */
+    public void applyTransform(Transform t)
+    {
+        // Flush the data first
+        flush();
+
+        // Apply transform
+        transform.apply(t);
     }
 
     /**
@@ -255,24 +239,32 @@ public class Batcher
     }
 
     /**
-     * Applies a Transform to the batcher data
-     *
-     * @param t The transform to use
+     * Maps the buffers to get their data storage pointers.
      */
-    public void applyTransform(Transform t)
+    private void mapBuffers()
     {
-        // Flush the data first
-        flush();
+        vBuffer = vboVert.map(GL_WRITE_ONLY, vBuffer);
+        vao.pointAttribute(vertexLocation, SIZE_OF_VERTEX, GL_FLOAT, vboVert);
 
-        // Apply transform
-        transform.apply(t);
+        cBuffer = vboCol.map(GL_WRITE_ONLY, cBuffer);
+        vao.pointAttribute(colorLocation, SIZE_OF_COLOR, GL_FLOAT, vboCol);
+
+        tBuffer = vboTex.map(GL_WRITE_ONLY, tBuffer);
+        vao.pointAttribute(texCoordLocation, SIZE_OF_TEXCOORD, GL_FLOAT, vboTex);
+
+        nBuffer = vboNorm.map(GL_WRITE_ONLY, nBuffer);
+        vao.pointAttribute(normalLocation, SIZE_OF_NORMAL, GL_FLOAT, vboNorm);
     }
 
-    public void applyTransform(Matrix4 m)
+    /**
+     * Unmaps the buffers and invalidates the pointer to their data store.
+     */
+    private void unmapBuffers()
     {
-        flush();
-
-        transform.apply(m);
+        vboVert.unmap();
+        vboCol.unmap();
+        vboTex.unmap();
+        vboNorm.unmap();
     }
 
     private void fillBuffers()
@@ -303,14 +295,16 @@ public class Batcher
         }
     }
 
+    public void applyTransform(Matrix4 m)
+    {
+        flush();
+
+        transform.apply(m);
+    }
+
     public void vertex(float x, float y)
     {
         vertex(x, y, 0, 1);
-    }
-
-    public void vertex(float x, float y, float z)
-    {
-        vertex(x, y, z, 1);
     }
 
     public void vertex(float x, float y, float z, float w)
@@ -320,6 +314,17 @@ public class Batcher
 
         vBuffer.putFloat(x).putFloat(y).putFloat(z).putFloat(w);
         vertexCount++;
+    }
+
+    public void flushOnOverflow(int capacity)
+    {
+        if (vertexCount + capacity >= BATCH_SIZE / 4)
+            flush();
+    }
+
+    public void vertex(float x, float y, float z)
+    {
+        vertex(x, y, z, 1);
     }
 
     public void vertex(Vector2 v)
@@ -337,13 +342,6 @@ public class Batcher
         vertex(v.getX(), v.getY(), v.getZ(), v.getW());
     }
 
-    public void color(float r, float g, float b, float a)
-    {
-        // Add the specified color
-        cBuffer.putFloat(r).putFloat(g).putFloat(b).putFloat(a);
-        colorCount++;
-    }
-
     public void color(Color c)
     {
         color(c.getR(), c.getG(), c.getB(), c.getA());
@@ -354,6 +352,18 @@ public class Batcher
         color(c.getR(), c.getG(), c.getB(), c.getA());
     }
 
+    public void color(float r, float g, float b, float a)
+    {
+        // Add the specified color
+        cBuffer.putFloat(r).putFloat(g).putFloat(b).putFloat(a);
+        colorCount++;
+    }
+
+    public void texCoord(Vector2 v)
+    {
+        texCoord(v.getX(), v.getY());
+    }
+
     public void texCoord(float u, float v)
     {
         // Add the specified texcoord
@@ -361,9 +371,9 @@ public class Batcher
         texCoordCount++;
     }
 
-    public void texCoord(Vector2 v)
+    public void normal(float x, float y, float z)
     {
-        texCoord(v.getX(), v.getY());
+        normal(x, y, z, 1);
     }
 
     public void normal(float x, float y, float z, float w)
@@ -372,17 +382,12 @@ public class Batcher
         normalCount++;
     }
 
-    public void normal(float x, float y, float z)
-    {
-        normal(x, y, z, 1);
-    }
+    /* Draw Texture */
 
     public void normal(Vector3 n)
     {
         normal(n.getX(), n.getY(), n.getZ(), 1);
     }
-
-    /* Draw Texture */
 
     public void drawTexture2d(Texture texture, Vector2 p)
     {
@@ -426,12 +431,6 @@ public class Batcher
 
         end();
         current.bind();
-    }
-
-    public void flushOnOverflow(int capacity)
-    {
-        if (vertexCount + capacity >= BATCH_SIZE / 4)
-            flush();
     }
 
     public Transform getTransform()

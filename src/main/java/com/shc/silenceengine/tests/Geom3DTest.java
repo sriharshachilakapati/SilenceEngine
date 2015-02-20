@@ -35,6 +35,11 @@ public class Geom3DTest extends Game
         new Geom3DTest().start();
     }
 
+    public void dispose()
+    {
+        ResourceLoader.getInstance().dispose();
+    }
+
     public void init()
     {
         ResourceLoader loader = ResourceLoader.getInstance();
@@ -149,10 +154,5 @@ public class Geom3DTest extends Game
     {
         camera.initProjection(70, Display.getAspectRatio(), 0.01f, 1000f);
         hudCam.initProjection(Display.getWidth(), Display.getHeight());
-    }
-
-    public void dispose()
-    {
-        ResourceLoader.getInstance().dispose();
     }
 }

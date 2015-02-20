@@ -13,9 +13,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 /**
- * The basic class for all the games made with SilenceEngine. Every game
- * will simply extend this Game class, and call the start method to play.
- * <p>
+ * The basic class for all the games made with SilenceEngine. Every game will simply extend this Game class, and call
+ * the start method to play. <p>
  * <pre>
  *     public class MyGame extends Game
  *     {
@@ -40,9 +39,7 @@ import java.io.Writer;
  *         }
  *     }
  * </pre>
- * <p>
- * Creating a game in SilenceEngine is as simple as that. This is the
- * skeleton of your game.
+ * <p> Creating a game in SilenceEngine is as simple as that. This is the skeleton of your game.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -74,9 +71,8 @@ public class Game
     }
 
     /**
-     * Specifies the development status of the game. Before distributing
-     * make sure to change this to false, leaving this enabled causes the
-     * GLExceptions, if any, to be displayed to the user.
+     * Specifies the development status of the game. Before distributing make sure to change this to false, leaving this
+     * enabled causes the GLExceptions, if any, to be displayed to the user.
      */
     public static boolean development = true;
 
@@ -95,27 +91,6 @@ public class Game
 
     // The game instance
     private static Game instance;
-
-    /**
-     * Kills the running game!
-     */
-    public static void end()
-    {
-        if (!running)
-        {
-            Logger.log("Disposing the resources.");
-
-            batcher.dispose();
-            instance.dispose();
-
-            SilenceEngine.getInstance().dispose();
-
-            Logger.log("This game has been terminated successfully.");
-            System.exit(0);
-        }
-
-        running = false;
-    }
 
     /**
      * @return number of updates done in last second
@@ -149,14 +124,6 @@ public class Game
     public static void setTargetUPS(int targetUPS)
     {
         Game.targetUPS = targetUPS;
-    }
-
-    /**
-     * @return True if running, else false
-     */
-    public static boolean isRunning()
-    {
-        return running;
     }
 
     /**
@@ -200,6 +167,11 @@ public class Game
         return Graphics2D.getInstance();
     }
 
+    public static long getUsedMemory()
+    {
+        return getTotalMemory() - getFreeMemory();
+    }
+
     public static long getTotalMemory()
     {
         return Runtime.getRuntime().totalMemory();
@@ -210,58 +182,8 @@ public class Game
         return Runtime.getRuntime().freeMemory();
     }
 
-    public static long getUsedMemory()
-    {
-        return getTotalMemory() - getFreeMemory();
-    }
-
     /**
-     * Initialize the Game. Loads the resources, and
-     * sets the game states.
-     */
-    public void init()
-    {
-    }
-
-    /**
-     * Performs game logic. Also, it is a place to check
-     * for input, collisions, what-not, everything except
-     * rendering.
-     *
-     * @param delta It is the time taken by the last update (in ms)
-     */
-    public void update(float delta)
-    {
-    }
-
-    /**
-     * Renders the game to the OpenGL Scene.
-     *
-     * @param delta   It is the time taken by the last render (in ms)
-     * @param batcher The Batcher to batch OpenGL calls
-     */
-    public void render(float delta, Batcher batcher)
-    {
-    }
-
-    /**
-     * Handle the window-resize event. Used to set the view-port
-     * and re-size the camera.
-     */
-    public void resize()
-    {
-    }
-
-    /**
-     * Properly disposes all the resources created in init method
-     */
-    public void dispose()
-    {
-    }
-
-    /**
-     * Starts the game. Initiates the game life-cycle and starts
-     * the main game-loop.
+     * Starts the game. Initiates the game life-cycle and starts the main game-loop.
      */
     public void start()
     {
@@ -366,5 +288,74 @@ public class Game
         }
 
         Game.end();
+    }
+
+    /**
+     * Kills the running game!
+     */
+    public static void end()
+    {
+        if (!running)
+        {
+            Logger.log("Disposing the resources.");
+
+            batcher.dispose();
+            instance.dispose();
+
+            SilenceEngine.getInstance().dispose();
+
+            Logger.log("This game has been terminated successfully.");
+            System.exit(0);
+        }
+
+        running = false;
+    }
+
+    /**
+     * Properly disposes all the resources created in init method
+     */
+    public void dispose()
+    {
+    }
+
+    /**
+     * @return True if running, else false
+     */
+    public static boolean isRunning()
+    {
+        return running;
+    }
+
+    /**
+     * Initialize the Game. Loads the resources, and sets the game states.
+     */
+    public void init()
+    {
+    }
+
+    /**
+     * Performs game logic. Also, it is a place to check for input, collisions, what-not, everything except rendering.
+     *
+     * @param delta It is the time taken by the last update (in ms)
+     */
+    public void update(float delta)
+    {
+    }
+
+    /**
+     * Renders the game to the OpenGL Scene.
+     *
+     * @param delta   It is the time taken by the last render (in ms)
+     * @param batcher The Batcher to batch OpenGL calls
+     */
+    public void render(float delta, Batcher batcher)
+    {
+    }
+
+    /**
+     * Handle the window-resize event. Used to set the view-port and re-size the camera.
+     */
+    public void resize()
+    {
     }
 }

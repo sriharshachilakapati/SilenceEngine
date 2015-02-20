@@ -6,8 +6,8 @@ import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALDevice;
 
 /**
- * Represents an OpenAL Context. This class is not meant to be used
- * directly by the user, as this is used internally in the engine.
+ * Represents an OpenAL Context. This class is not meant to be used directly by the user, as this is used internally in
+ * the engine.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -18,6 +18,7 @@ public final class ALContext
     // The Device and the context
     private ALDevice device;
     private org.lwjgl.openal.ALContext context;
+
     // Prevent instantiation
     private ALContext()
     {
@@ -35,8 +36,8 @@ public final class ALContext
     }
 
     /**
-     * Initializes this context. This is not meant to be called by the user,
-     * as this is called by the Engine internally.
+     * Initializes this context. This is not meant to be called by the user, as this is called by the Engine
+     * internally.
      *
      * @throws ALCException.InvalidDevice  If there is no available OpenAL device.
      * @throws ALCException.InvalidContext If the context created is invalid.
@@ -65,8 +66,7 @@ public final class ALContext
     }
 
     /**
-     * Disposes this OpenAL context. This method is also called by the
-     * engine automatically. Don't call it yourselves.
+     * Disposes this OpenAL context. This method is also called by the engine automatically. Don't call it yourselves.
      */
     public void dispose()
     {

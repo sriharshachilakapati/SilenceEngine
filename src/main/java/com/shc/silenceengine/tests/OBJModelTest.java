@@ -31,6 +31,11 @@ public class OBJModelTest extends Game
         new OBJModelTest().start();
     }
 
+    public void dispose()
+    {
+        model.dispose();
+    }
+
     public void init()
     {
         cam = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
@@ -104,10 +109,5 @@ public class OBJModelTest extends Game
     public void resize()
     {
         cam.initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
-    }
-
-    public void dispose()
-    {
-        model.dispose();
     }
 }

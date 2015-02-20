@@ -78,17 +78,6 @@ public class Animation
         pauseCallback.invoke();
     }
 
-    public void stop()
-    {
-        if (!active)
-            return;
-
-        active = false;
-        currentFrame = 0;
-
-        endCallback.invoke();
-    }
-
     public void update(float delta)
     {
         if (!active)
@@ -104,6 +93,17 @@ public class Animation
             if (currentFrame >= frameLengths.size())
                 stop();
         }
+    }
+
+    public void stop()
+    {
+        if (!active)
+            return;
+
+        active = false;
+        currentFrame = 0;
+
+        endCallback.invoke();
     }
 
     public Texture getCurrentFrame()

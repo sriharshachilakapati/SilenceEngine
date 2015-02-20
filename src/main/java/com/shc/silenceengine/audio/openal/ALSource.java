@@ -13,6 +13,7 @@ public class ALSource
 {
     private int id;
     private boolean disposed;
+
     /**
      * Constructs a new OpenAL source.
      *
@@ -24,10 +25,10 @@ public class ALSource
     }
 
     /**
-     * Attaches an ALBuffer to this source. The buffer contains the audio
-     * samples that this source should play.
+     * Attaches an ALBuffer to this source. The buffer contains the audio samples that this source should play.
      *
      * @param buffer The ALBuffer containing the sound samples to be played.
+     *
      * @throws ALException.InvalidValue If the buffer is already disposed.
      */
     public void attachBuffer(ALBuffer buffer)
@@ -36,41 +37,11 @@ public class ALSource
     }
 
     /**
-     * Gets a property from this ALSource.
-     *
-     * @param parameter The parameter of the property to be returned.
-     * @return The value of the property with key parameter.
-     * @throws ALException.InvalidEnum      If the value is invalid for the parameter.
-     * @throws ALException.InvalidName      If this source is already disposed.
-     * @throws ALException.InvalidOperation If there is no context.
-     * @throws ALException.InvalidValue     If the value is not an integer.
-     */
-    public int getParameter(int parameter)
-    {
-        int result = alGetSourcei(id, parameter);
-        ALError.check();
-
-        return result;
-    }
-
-    /**
      * Sets the value of a property in this source object.
      *
      * @param parameter The name of the parameter to be set
      * @param value     The value of the parameter to be set
-     * @throws ALException.InvalidEnum If the value is invalid for parameter.
-     * @throws ALException             If this source is already disposed.
-     */
-    public void setParameter(int parameter, boolean value)
-    {
-        setParameter(parameter, value ? AL_TRUE : AL_FALSE);
-    }
-
-    /**
-     * Sets the value of a property in this source object.
      *
-     * @param parameter The name of the parameter to be set
-     * @param value     The value of the parameter to be set
      * @throws ALException.InvalidEnum If the value is invalid for parameter.
      * @throws ALException             If this source is already disposed.
      */
@@ -88,6 +59,21 @@ public class ALSource
      *
      * @param parameter The name of the parameter to be set
      * @param value     The value of the parameter to be set
+     *
+     * @throws ALException.InvalidEnum If the value is invalid for parameter.
+     * @throws ALException             If this source is already disposed.
+     */
+    public void setParameter(int parameter, boolean value)
+    {
+        setParameter(parameter, value ? AL_TRUE : AL_FALSE);
+    }
+
+    /**
+     * Sets the value of a property in this source object.
+     *
+     * @param parameter The name of the parameter to be set
+     * @param value     The value of the parameter to be set
+     *
      * @throws ALException.InvalidEnum If the value is invalid for parameter.
      * @throws ALException             If this source is already disposed.
      */
@@ -104,9 +90,24 @@ public class ALSource
      * Sets the value of a property in this source object.
      *
      * @param parameter The name of the parameter to be set
+     * @param value     The value of the parameter to be set
+     *
+     * @throws ALException.InvalidEnum If the value is invalid for parameter.
+     * @throws ALException             If this source is already disposed.
+     */
+    public void setParameter(int parameter, Vector3 value)
+    {
+        setParameter(parameter, value.x, value.y, value.z);
+    }
+
+    /**
+     * Sets the value of a property in this source object.
+     *
+     * @param parameter The name of the parameter to be set
      * @param value1    The first value of the parameter to be set
      * @param value2    The second value of the parameter to be set
      * @param value3    The third value of the parameter to be set
+     *
      * @throws ALException.InvalidEnum If the values are invalid for parameter.
      * @throws ALException             If this source is already disposed.
      */
@@ -117,19 +118,6 @@ public class ALSource
 
         alSource3f(id, parameter, value1, value2, value3);
         ALError.check();
-    }
-
-    /**
-     * Sets the value of a property in this source object.
-     *
-     * @param parameter The name of the parameter to be set
-     * @param value     The value of the parameter to be set
-     * @throws ALException.InvalidEnum If the value is invalid for parameter.
-     * @throws ALException             If this source is already disposed.
-     */
-    public void setParameter(int parameter, Vector3 value)
-    {
-        setParameter(parameter, value.x, value.y, value.z);
     }
 
     /**
@@ -192,6 +180,7 @@ public class ALSource
      * Queries the current playback state of this ALSource.
      *
      * @return The playback state of this ALSource.
+     *
      * @throws ALException.InvalidName If the source is already disposed.
      */
     public State getState()
@@ -211,6 +200,26 @@ public class ALSource
         }
 
         return State.STOPPED;
+    }
+
+    /**
+     * Gets a property from this ALSource.
+     *
+     * @param parameter The parameter of the property to be returned.
+     *
+     * @return The value of the property with key parameter.
+     *
+     * @throws ALException.InvalidEnum      If the value is invalid for the parameter.
+     * @throws ALException.InvalidName      If this source is already disposed.
+     * @throws ALException.InvalidOperation If there is no context.
+     * @throws ALException.InvalidValue     If the value is not an integer.
+     */
+    public int getParameter(int parameter)
+    {
+        int result = alGetSourcei(id, parameter);
+        ALError.check();
+
+        return result;
     }
 
     /**

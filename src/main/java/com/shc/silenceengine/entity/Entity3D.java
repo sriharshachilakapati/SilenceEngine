@@ -7,10 +7,8 @@ import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.scene.SceneNode;
 
 /**
- * This class represents all the 3D Entities in a Scene. Any entity which
- * is 2D and wants to be in a Scene must extend this class. Here is an
- * example entity.
- * <p>
+ * This class represents all the 3D Entities in a Scene. Any entity which is 2D and wants to be in a Scene must extend
+ * this class. Here is an example entity. <p>
  * <pre>
  *     public class MyEntity3D extends Entity3D
  *     {
@@ -36,9 +34,8 @@ import com.shc.silenceengine.scene.SceneNode;
  *         }
  *     }
  * </pre>
- * <p>
- * Note that the collisions will only be notified if you are using a
- * ISceneCollider3D and registered a collision check.
+ * <p> Note that the collisions will only be notified if you are using a ISceneCollider3D and registered a collision
+ * check.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -50,17 +47,7 @@ public class Entity3D extends SceneNode
     private Polyhedron polyhedron;
 
     /**
-     * The default constructor.
-     */
-    public Entity3D()
-    {
-        position = new Vector3();
-        velocity = new Vector3();
-    }
-
-    /**
-     * Constructs a Entity3D to use a Polyhedron that can be used
-     * to perform collisions.
+     * Constructs a Entity3D to use a Polyhedron that can be used to perform collisions.
      *
      * @param polyhedron The collision mask.
      */
@@ -71,8 +58,17 @@ public class Entity3D extends SceneNode
     }
 
     /**
-     * Prepares this Entity3D for a new frame. This method is not
-     * meant to be called by the user and is called by the SceneGraph.
+     * The default constructor.
+     */
+    public Entity3D()
+    {
+        position = new Vector3();
+        velocity = new Vector3();
+    }
+
+    /**
+     * Prepares this Entity3D for a new frame. This method is not meant to be called by the user and is called by the
+     * SceneGraph.
      *
      * @param delta The delta time.
      */
@@ -95,8 +91,8 @@ public class Entity3D extends SceneNode
     }
 
     /**
-     * Prepares this Entity3D for a new frame. This method is not meant
-     * to be called by the user and is called by the SceneGraph.
+     * Prepares this Entity3D for a new frame. This method is not meant to be called by the user and is called by the
+     * SceneGraph.
      *
      * @param delta   The delta time.
      * @param batcher The Batcher to batch rendering.
@@ -109,9 +105,37 @@ public class Entity3D extends SceneNode
         super.preRender(delta, batcher);
     }
 
+    private void updateTransforms()
+    {
+        getLocalTransform().reset()
+                .rotate(Vector3.AXIS_X, polyhedron.getRotationX())
+                .rotate(Vector3.AXIS_Z, polyhedron.getRotationZ())
+                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY())
+                .translate(getPosition());
+    }
+
     /**
-     * Called by the ISceneCollider3D instance to notify that a
-     * collision event has occurred.
+     * @return The position of this entity
+     */
+    public Vector3 getPosition()
+    {
+        return position;
+    }
+
+    /**
+     * Sets the position of this entity
+     *
+     * @param position The new position as a Vector3
+     */
+    public void setPosition(Vector3 position)
+    {
+        this.position.set(position);
+        polyhedron.setPosition(position);
+        updateTransforms();
+    }
+
+    /**
+     * Called by the ISceneCollider3D instance to notify that a collision event has occurred.
      *
      * @param other The other entity that collided with this entity.
      */
@@ -120,12 +144,12 @@ public class Entity3D extends SceneNode
     }
 
     /**
-     * Moves this object to a specified point with a specific speed. Note that
-     * the velocity used is independent of vertical or horizontal velocities of
-     * this object.
+     * Moves this object to a specified point with a specific speed. Note that the velocity used is independent of
+     * vertical or horizontal velocities of this object.
      *
      * @param pos   The new position vector to move to
      * @param speed The speed with which to move
+     *
      * @return True if the new point has been reached
      */
     public boolean moveTo(Vector3 pos, float speed)
@@ -134,14 +158,14 @@ public class Entity3D extends SceneNode
     }
 
     /**
-     * Moves this object to a specified point with a specific speed. Note that
-     * the velocity used is independent of vertical or horizontal velocities of
-     * this object.
+     * Moves this object to a specified point with a specific speed. Note that the velocity used is independent of
+     * vertical or horizontal velocities of this object.
      *
      * @param nx    The new x-position
      * @param ny    The new y-position
      * @param nz    The new z-position
      * @param speed The speed with which to move
+     *
      * @return True if the new point has been reached
      */
     public boolean moveTo(float nx, float ny, float nz, float speed)
@@ -199,15 +223,6 @@ public class Entity3D extends SceneNode
     {
         polyhedron.rotate(rx, ry, rz);
         updateTransforms();
-    }
-
-    private void updateTransforms()
-    {
-        getLocalTransform().reset()
-                .rotate(Vector3.AXIS_X, polyhedron.getRotationX())
-                .rotate(Vector3.AXIS_Z, polyhedron.getRotationZ())
-                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY())
-                .translate(getPosition());
     }
 
     /**
@@ -306,49 +321,12 @@ public class Entity3D extends SceneNode
      * Checks the intersection with another Entity3D.
      *
      * @param other The other Entity3D to test intersection with
+     *
      * @return True if intersects, else false.
      */
     public boolean intersects(Entity3D other)
     {
         return polyhedron.intersects(other.getPolyhedron());
-    }
-
-    /**
-     * @return The position of this entity
-     */
-    public Vector3 getPosition()
-    {
-        return position;
-    }
-
-    /**
-     * Sets the position of this entity
-     *
-     * @param position The new position as a Vector3
-     */
-    public void setPosition(Vector3 position)
-    {
-        this.position.set(position);
-        polyhedron.setPosition(position);
-        updateTransforms();
-    }
-
-    /**
-     * @return The velocity of this entity
-     */
-    public Vector3 getVelocity()
-    {
-        return velocity;
-    }
-
-    /**
-     * Sets the velocity of this entity
-     *
-     * @param velocity The velocity as a Vector3
-     */
-    public void setVelocity(Vector3 velocity)
-    {
-        this.velocity = velocity;
     }
 
     /**
@@ -369,18 +347,22 @@ public class Entity3D extends SceneNode
         this.polyhedron = polyhedron;
     }
 
-    @Override
-    public boolean equals(Object o)
+    /**
+     * @return The velocity of this entity
+     */
+    public Vector3 getVelocity()
     {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        return velocity;
+    }
 
-        Entity3D entity3D = (Entity3D) o;
-
-        return polyhedron.equals(entity3D.polyhedron) &&
-                position.equals(entity3D.position) &&
-                velocity.equals(entity3D.velocity);
-
+    /**
+     * Sets the velocity of this entity
+     *
+     * @param velocity The velocity as a Vector3
+     */
+    public void setVelocity(Vector3 velocity)
+    {
+        this.velocity = velocity;
     }
 
     @Override
@@ -393,12 +375,26 @@ public class Entity3D extends SceneNode
     }
 
     @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Entity3D entity3D = (Entity3D) o;
+
+        return polyhedron.equals(entity3D.polyhedron) &&
+               position.equals(entity3D.position) &&
+               velocity.equals(entity3D.velocity);
+
+    }
+
+    @Override
     public String toString()
     {
         return "Entity3D{" +
-                "position=" + position +
-                ", velocity=" + velocity +
-                ", polyhedron=" + polyhedron +
-                '}';
+               "position=" + position +
+               ", velocity=" + velocity +
+               ", polyhedron=" + polyhedron +
+               '}';
     }
 }

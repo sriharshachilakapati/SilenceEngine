@@ -18,27 +18,14 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 /**
- * <p>
- * A sound reader based on the j-ogg and JOrbis libraries. That means, this class
- * is able to read sound samples from a OGG audio file in Vorbis encoding that the
- * j-ogg and JOrbis libraries are able to decode. Currently, it can read from .ogg
- * and .oga file formats.
- * </p>
- * <p>
- * <p>
- * Though you are allowed to create instances of this reader on your own, it is
- * recommended that you use the {@link com.shc.silenceengine.audio.ISoundReader}
- * interface to construct readers, as it is more flexible that way. And also, you
- * do not need to call the <code>register()</code> method in this class, as it
- * will be called automatically for you. Even if you do call it explicitly, there
- * is no harm.
- * </p>
- * <p>
- * <p>
- * If you are really in using this class though, feel free to use it. All it takes
- * is an <code>InputStream</code> to construct the reader, and you can use it in
- * anyway that makes sense for you.
- * </p>
+ * <p> A sound reader based on the j-ogg and JOrbis libraries. That means, this class is able to read sound samples from
+ * a OGG audio file in Vorbis encoding that the j-ogg and JOrbis libraries are able to decode. Currently, it can read
+ * from .ogg and .oga file formats. </p> <p> <p> Though you are allowed to create instances of this reader on your own,
+ * it is recommended that you use the {@link com.shc.silenceengine.audio.ISoundReader} interface to construct readers,
+ * as it is more flexible that way. And also, you do not need to call the <code>register()</code> method in this class,
+ * as it will be called automatically for you. Even if you do call it explicitly, there is no harm. </p> <p> <p> If you
+ * are really in using this class though, feel free to use it. All it takes is an <code>InputStream</code> to construct
+ * the reader, and you can use it in anyway that makes sense for you. </p>
  *
  * @author Sri Harsha Chilakapati
  */
@@ -60,18 +47,8 @@ public class OggReader implements ISoundReader
     }
 
     /**
-     * Registers the extensions that this class is able to handle.
-     */
-    public static void register()
-    {
-        ISoundReader.register("ogg", OggReader.class);
-        ISoundReader.register("oga", OggReader.class);
-    }
-
-    /**
-     * Borrowed from DecodeExample.java file of JOrbis examples, but heavily modified.
-     * This method reads in the OGG data, and convert it into PCM samples ready to be
-     * fed into the mouth of OpenAL ALBuffer class.
+     * Borrowed from DecodeExample.java file of JOrbis examples, but heavily modified. This method reads in the OGG
+     * data, and convert it into PCM samples ready to be fed into the mouth of OpenAL ALBuffer class.
      */
     private void decodeToPCM(InputStream input)
     {
@@ -351,6 +328,15 @@ public class OggReader implements ISoundReader
         // Convert the decoded samples into mono / stereo bytes
         byte[] samples = output.toByteArray();
         data = ISoundReader.convertAudioBytes(samples, vi.channels == 2);
+    }
+
+    /**
+     * Registers the extensions that this class is able to handle.
+     */
+    public static void register()
+    {
+        ISoundReader.register("ogg", OggReader.class);
+        ISoundReader.register("oga", OggReader.class);
     }
 
     @Override

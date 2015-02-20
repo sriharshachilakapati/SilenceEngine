@@ -11,22 +11,16 @@ public class Matrix3
 
     private float[][] m;
 
-    public Matrix3()
-    {
-        m = new float[3][3];
-        initIdentity();
-    }
-
     public Matrix3(Matrix3 m)
     {
         this();
         set(m);
     }
 
-    public Matrix3(float diagonal)
+    public Matrix3()
     {
-        this();
-        set(diagonal);
+        m = new float[3][3];
+        initIdentity();
     }
 
     public Matrix3 initIdentity()
@@ -39,6 +33,43 @@ public class Matrix3
                     m[i][j] = 1;
                 else
                     m[i][j] = 0;
+            }
+        }
+
+        return this;
+    }
+
+    public Matrix3 set(Matrix3 m)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                this.m[i][j] = m.get(i, j);
+            }
+        }
+
+        return this;
+    }
+
+    public float get(int x, int y)
+    {
+        return m[x][y];
+    }
+
+    public Matrix3(float diagonal)
+    {
+        this();
+        set(diagonal);
+    }
+
+    public Matrix3 set(float diagonal)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                m[i][j] = (i == j) ? diagonal : 0;
             }
         }
 
@@ -58,6 +89,11 @@ public class Matrix3
         return this;
     }
 
+    public Matrix3 add(Matrix3 m)
+    {
+        return new Matrix3(this).addSelf(m);
+    }
+
     public Matrix3 addSelf(Matrix3 m)
     {
         for (int i = 0; i < 3; i++)
@@ -71,9 +107,9 @@ public class Matrix3
         return this;
     }
 
-    public Matrix3 add(Matrix3 m)
+    public Matrix3 subtract(Matrix3 m)
     {
-        return new Matrix3(this).addSelf(m);
+        return new Matrix3(this).subtractSelf(m);
     }
 
     public Matrix3 subtractSelf(Matrix3 m)
@@ -89,9 +125,9 @@ public class Matrix3
         return this;
     }
 
-    public Matrix3 subtract(Matrix3 m)
+    public Matrix3 multiply(Matrix3 m)
     {
-        return new Matrix3(this).subtractSelf(m);
+        return new Matrix3(this).multiplySelf(m);
     }
 
     public Matrix3 multiplySelf(Matrix3 m)
@@ -114,9 +150,9 @@ public class Matrix3
         return this;
     }
 
-    public Matrix3 multiply(Matrix3 m)
+    public Matrix3 transpose()
     {
-        return new Matrix3(this).multiplySelf(m);
+        return new Matrix3(this).transposeSelf();
     }
 
     public Matrix3 transposeSelf()
@@ -136,11 +172,6 @@ public class Matrix3
         return this;
     }
 
-    public Matrix3 transpose()
-    {
-        return new Matrix3(this).transposeSelf();
-    }
-
     public Vector3 multiply(Vector3 v)
     {
         return multiply(v, new Vector3());
@@ -156,40 +187,9 @@ public class Matrix3
         return new Matrix3(this);
     }
 
-    public float get(int x, int y)
-    {
-        return m[x][y];
-    }
-
     public Matrix3 set(int x, int j, float val)
     {
         m[x][j] = val;
-
-        return this;
-    }
-
-    public Matrix3 set(float diagonal)
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                m[i][j] = (i == j) ? diagonal : 0;
-            }
-        }
-
-        return this;
-    }
-
-    public Matrix3 set(Matrix3 m)
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                this.m[i][j] = m.get(i, j);
-            }
-        }
 
         return this;
     }

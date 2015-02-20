@@ -58,18 +58,6 @@ public class Texture
         activeUnit = unit;
     }
 
-    public static Texture fromByteBuffer(ByteBuffer buffer, int width, int height)
-    {
-        Texture texture = new Texture();
-
-        texture.bind();
-        texture.setFilter(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-        texture.image2d(buffer, GL_UNSIGNED_BYTE, GL_RGBA, width, height, GL_RGBA8);
-        texture.generateMipMaps();
-
-        return texture;
-    }
-
     public static Texture fromColor(Color c, int width, int height)
     {
         ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4);
@@ -88,6 +76,77 @@ public class Texture
         buffer.flip();
 
         return fromByteBuffer(buffer, width, height);
+    }
+
+    public static Texture fromByteBuffer(ByteBuffer buffer, int width, int height)
+    {
+        Texture texture = new Texture();
+
+        texture.bind();
+        texture.setFilter(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+        texture.image2d(buffer, GL_UNSIGNED_BYTE, GL_RGBA, width, height, GL_RGBA8);
+        texture.generateMipMaps();
+
+        return texture;
+    }
+
+    public void bind()
+    {
+        if (CURRENT == this)
+            return;
+
+        if (disposed)
+            throw new GLException("Cannot bind a disposed texture!");
+
+        glBindTexture(GL_TEXTURE_2D, id);
+        GLError.check();
+
+        CURRENT = this;
+    }
+
+    public void image2d(ByteBuffer data, int type, int format, int width, int height, int internalFormat)
+    {
+        bind();
+
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
+        GLError.check();
+
+        this.width = width;
+        this.height = height;
+    }
+
+    public void setFilter(int min, int mag)
+    {
+        bind();
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
+        GLError.check();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
+        GLError.check();
+    }
+
+    public void generateMipMaps()
+    {
+        bind();
+        glGenerateMipmap(GL_TEXTURE_2D);
+        GLError.check();
+    }
+
+    public static Texture fromResource(String name)
+    {
+        return fromInputStream(FileUtils.getResource(name));
+    }
+
+    public static Texture fromInputStream(InputStream stream)
+    {
+        try
+        {
+            return fromBufferedImage(ImageIO.read(stream));
+        }
+        catch (Exception e)
+        {
+            throw new SilenceException(e.getMessage());
+        }
     }
 
     public static Texture fromBufferedImage(BufferedImage img)
@@ -114,48 +173,6 @@ public class Texture
         buffer.rewind();
 
         return fromByteBuffer(buffer, img.getWidth(), img.getHeight());
-    }
-
-    public static Texture fromInputStream(InputStream stream)
-    {
-        try
-        {
-            return fromBufferedImage(ImageIO.read(stream));
-        }
-        catch (Exception e)
-        {
-            throw new SilenceException(e.getMessage());
-        }
-    }
-
-    public static Texture fromResource(String name)
-    {
-        return fromInputStream(FileUtils.getResource(name));
-    }
-
-    public void bind()
-    {
-        if (CURRENT == this)
-            return;
-
-        if (disposed)
-            throw new GLException("Cannot bind a disposed texture!");
-
-        glBindTexture(GL_TEXTURE_2D, id);
-        GLError.check();
-
-        CURRENT = this;
-    }
-
-    public void image2d(ByteBuffer data, int type, int format, int width, int height, int internalFormat)
-    {
-        bind();
-
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
-        GLError.check();
-
-        this.width = width;
-        this.height = height;
     }
 
     public void setWrapping(int s)
@@ -185,23 +202,6 @@ public class Texture
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, t);
         GLError.check();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, r);
-        GLError.check();
-    }
-
-    public void setFilter(int min, int mag)
-    {
-        bind();
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
-        GLError.check();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
-        GLError.check();
-    }
-
-    public void generateMipMaps()
-    {
-        bind();
-        glGenerateMipmap(GL_TEXTURE_2D);
         GLError.check();
     }
 

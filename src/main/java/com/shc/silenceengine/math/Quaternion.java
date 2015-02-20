@@ -19,9 +19,40 @@ public class Quaternion
         this(0, 0, 0, 1);
     }
 
+    public Quaternion(float x, float y, float z, float w)
+    {
+        set(x, y, z, w);
+    }
+
+    public Quaternion set(float x, float y, float z, float w)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.w = w;
+
+        return this;
+    }
+
     public Quaternion(Vector3 axis, float angle)
     {
         set(axis, angle);
+    }
+
+    public Quaternion set(Vector3 axis, float angle)
+    {
+        angle = (float) Math.toRadians(angle) * 0.5f;
+        axis = axis.normalize();
+
+        float sinAngle = (float) Math.sin(angle);
+        float cosAngle = (float) Math.cos(angle);
+
+        x = axis.x * sinAngle;
+        y = axis.y * sinAngle;
+        z = axis.z * sinAngle;
+        w = cosAngle;
+
+        return this;
     }
 
     public Quaternion(float pitch, float yaw, float roll)
@@ -29,19 +60,25 @@ public class Quaternion
         set(pitch, yaw, roll);
     }
 
-    public Quaternion(float x, float y, float z, float w)
+    public Quaternion set(float pitch, float yaw, float roll)
     {
-        set(x, y, z, w);
-    }
+        pitch = (float) Math.toRadians(pitch) * 0.5f;
+        yaw = (float) Math.toRadians(yaw) * 0.5f;
+        roll = (float) Math.toRadians(roll) * 0.5f;
 
-    public Quaternion add(float x, float y, float z, float w)
-    {
-        return new Quaternion(this.x + x, this.y + y, this.z + z, this.w + w);
-    }
+        float sinP = (float) Math.sin(pitch);
+        float sinY = (float) Math.sin(yaw);
+        float sinR = (float) Math.sin(roll);
+        float cosP = (float) Math.cos(pitch);
+        float cosY = (float) Math.cos(yaw);
+        float cosR = (float) Math.cos(roll);
 
-    public Quaternion addSelf(float x, float y, float z, float w)
-    {
-        return set(this.x + x, this.y + y, this.z + z, this.w + w);
+        x = sinP * cosY * cosR - cosP * sinY * sinR;
+        y = cosP * sinY * cosR + sinP * cosY * sinR;
+        z = cosP * cosY * sinR - sinP * sinY * cosR;
+        w = cosP * cosY * cosR + sinP * sinY * sinR;
+
+        return this;
     }
 
     public Quaternion add(Quaternion q)
@@ -49,19 +86,19 @@ public class Quaternion
         return add(q.x, q.y, q.z, q.w);
     }
 
+    public Quaternion add(float x, float y, float z, float w)
+    {
+        return new Quaternion(this.x + x, this.y + y, this.z + z, this.w + w);
+    }
+
     public Quaternion addSelf(Quaternion q)
     {
         return addSelf(q.x, q.y, q.z, q.w);
     }
 
-    public Quaternion subtract(float x, float y, float z, float w)
+    public Quaternion addSelf(float x, float y, float z, float w)
     {
-        return add(-x, -y, -z, -w);
-    }
-
-    public Quaternion subtractSelf(float x, float y, float z, float w)
-    {
-        return addSelf(-x, -y, -z, -w);
+        return set(this.x + x, this.y + y, this.z + z, this.w + w);
     }
 
     public Quaternion subtract(Quaternion q)
@@ -69,9 +106,19 @@ public class Quaternion
         return subtract(q.x, q.y, q.z, q.w);
     }
 
+    public Quaternion subtract(float x, float y, float z, float w)
+    {
+        return add(-x, -y, -z, -w);
+    }
+
     public Quaternion subtractSelf(Quaternion q)
     {
         return subtractSelf(q.x, q.y, q.z, q.w);
+    }
+
+    public Quaternion subtractSelf(float x, float y, float z, float w)
+    {
+        return addSelf(-x, -y, -z, -w);
     }
 
     public Quaternion normalize()
@@ -84,24 +131,24 @@ public class Quaternion
         return new Quaternion(x / length, y / length, z / length, w / length);
     }
 
-    public Quaternion normalizeSelf()
+    public Quaternion copy()
     {
-        float length = length();
+        return new Quaternion(x, y, z, w);
+    }
 
-        if (length == 0 || length == 1)
-            return this;
+    public float length()
+    {
+        return (float) Math.sqrt(lengthSquared());
+    }
 
-        return set(x / length, y / length, z / length, w / length);
+    public float lengthSquared()
+    {
+        return x * x + y * y + z * z + w * w;
     }
 
     public Quaternion conjugate()
     {
         return new Quaternion(-x, -y, -z, w);
-    }
-
-    public Quaternion conjugateSelf()
-    {
-        return set(-x, -y, -z, w);
     }
 
     public Quaternion multiply(Quaternion q)
@@ -112,6 +159,16 @@ public class Quaternion
         float nw = w * q.w - x * q.x - y * q.y - z * q.z;
 
         return new Quaternion(nx, ny, nz, nw).normalizeSelf();
+    }
+
+    public Quaternion normalizeSelf()
+    {
+        float length = length();
+
+        if (length == 0 || length == 1)
+            return this;
+
+        return set(x / length, y / length, z / length, w / length);
     }
 
     public Quaternion multiplySelf(Quaternion q)
@@ -159,6 +216,11 @@ public class Quaternion
         return dest.normalizeSelf().scaleSelf(length);
     }
 
+    public Quaternion invert()
+    {
+        return copy().invertSelf();
+    }
+
     public Quaternion invertSelf()
     {
         float norm = lengthSquared();
@@ -173,24 +235,9 @@ public class Quaternion
         return this;
     }
 
-    public Quaternion invert()
+    public Quaternion conjugateSelf()
     {
-        return copy().invertSelf();
-    }
-
-    public Quaternion copy()
-    {
-        return new Quaternion(x, y, z, w);
-    }
-
-    public float lengthSquared()
-    {
-        return x * x + y * y + z * z + w * w;
-    }
-
-    public float length()
-    {
-        return (float) Math.sqrt(lengthSquared());
+        return set(-x, -y, -z, w);
     }
 
     public float getX()
@@ -231,53 +278,6 @@ public class Quaternion
     public void setW(float w)
     {
         this.w = w;
-    }
-
-    public Quaternion set(float x, float y, float z, float w)
-    {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.w = w;
-
-        return this;
-    }
-
-    public Quaternion set(Vector3 axis, float angle)
-    {
-        angle = (float) Math.toRadians(angle) * 0.5f;
-        axis = axis.normalize();
-
-        float sinAngle = (float) Math.sin(angle);
-        float cosAngle = (float) Math.cos(angle);
-
-        x = axis.x * sinAngle;
-        y = axis.y * sinAngle;
-        z = axis.z * sinAngle;
-        w = cosAngle;
-
-        return this;
-    }
-
-    public Quaternion set(float pitch, float yaw, float roll)
-    {
-        pitch = (float) Math.toRadians(pitch) * 0.5f;
-        yaw = (float) Math.toRadians(yaw) * 0.5f;
-        roll = (float) Math.toRadians(roll) * 0.5f;
-
-        float sinP = (float) Math.sin(pitch);
-        float sinY = (float) Math.sin(yaw);
-        float sinR = (float) Math.sin(roll);
-        float cosP = (float) Math.cos(pitch);
-        float cosY = (float) Math.cos(yaw);
-        float cosR = (float) Math.cos(roll);
-
-        x = sinP * cosY * cosR - cosP * sinY * sinR;
-        y = cosP * sinY * cosR + sinP * cosY * sinR;
-        z = cosP * cosY * sinR - sinP * sinY * cosR;
-        w = cosP * cosY * cosR + sinP * sinY * sinR;
-
-        return this;
     }
 
     public Quaternion set()

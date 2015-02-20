@@ -6,9 +6,8 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.GL_INVALID_FRAMEBUFFER_OPERATION;
 
 /**
- * Static Utility class to check for OpenGL errors. If you want to check
- * for errors anytime, just make a call to <code>GlError.check()</code>
- * and you are done.
+ * Static Utility class to check for OpenGL errors. If you want to check for errors anytime, just make a call to
+ * <code>GlError.check()</code> and you are done.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -22,9 +21,8 @@ public final class GLError
     }
 
     /**
-     * Checks for OpenGL errors. If any error is found, it throws a GLException
-     * which is a runtime exception. Use this if you are suspecting if there is
-     * some error in your OpenGL code. This does not run if the game is not in
+     * Checks for OpenGL errors. If any error is found, it throws a GLException which is a runtime exception. Use this
+     * if you are suspecting if there is some error in your OpenGL code. This does not run if the game is not in
      * development mode.
      */
     public static void check()
@@ -33,12 +31,11 @@ public final class GLError
     }
 
     /**
-     * Checks for OpenGL errors. If any error is found, it throws a GLException
-     * which is a runtime exception. Use this if you are suspecting if there is
-     * some error in your OpenGL code.
+     * Checks for OpenGL errors. If any error is found, it throws a GLException which is a runtime exception. Use this
+     * if you are suspecting if there is some error in your OpenGL code.
      *
-     * @param force Forces the running of glGetError even in Deployed mode. By
-     *              default, it is only executed in development mode
+     * @param force Forces the running of glGetError even in Deployed mode. By default, it is only executed in
+     *              development mode
      */
     public static void check(boolean force)
     {

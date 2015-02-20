@@ -34,33 +34,6 @@ public class GameTimer
         }
     }
 
-    public void start()
-    {
-        active = true;
-        elapsed = 0;
-
-        if (timers.contains(this))
-            return;
-
-        timers.add(this);
-    }
-
-    public void stop()
-    {
-        active = false;
-    }
-
-    public void setCallback(TimerCallback callback)
-    {
-        this.callback = callback;
-    }
-
-    public void setTime(float time, TimeUtils.Unit unit)
-    {
-        this.time = TimeUtils.convert(time, unit, TimeUtils.getDefaultTimeUnit());
-        elapsed = 0;
-    }
-
     public void update(float delta)
     {
         if (active)
@@ -75,9 +48,36 @@ public class GameTimer
         }
     }
 
+    public void stop()
+    {
+        active = false;
+    }
+
     public boolean isActive()
     {
         return active;
+    }
+
+    public void start()
+    {
+        active = true;
+        elapsed = 0;
+
+        if (timers.contains(this))
+            return;
+
+        timers.add(this);
+    }
+
+    public void setCallback(TimerCallback callback)
+    {
+        this.callback = callback;
+    }
+
+    public void setTime(float time, TimeUtils.Unit unit)
+    {
+        this.time = TimeUtils.convert(time, unit, TimeUtils.getDefaultTimeUnit());
+        elapsed = 0;
     }
 
     public static interface TimerCallback

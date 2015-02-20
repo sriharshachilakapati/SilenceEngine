@@ -4,8 +4,7 @@ import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 
 /**
- * Encapsulates OpenGL Shader objects nicely in a Java Wrapper making
- * it easy to use in an object oriented way.
+ * Encapsulates OpenGL Shader objects nicely in a Java Wrapper making it easy to use in an object oriented way.
  *
  * @author Sri Harsha Chilakapati
  * @author Heiko Brumme
@@ -16,8 +15,8 @@ public class Shader
     private boolean disposed;
 
     /**
-     * Creates a shader with a specified type. Valid types are GL_VERTEX_SHADER,
-     * GL_GEOMETRY_SHADER or GL_FRAGMENT_SHADER.
+     * Creates a shader with a specified type. Valid types are GL_VERTEX_SHADER, GL_GEOMETRY_SHADER or
+     * GL_FRAGMENT_SHADER.
      *
      * @param type The type of this shader
      */
@@ -28,8 +27,8 @@ public class Shader
     }
 
     /**
-     * Sets the source code for this shader. Any source code previously stored
-     * in the shader object is completely replaced.
+     * Sets the source code for this shader. Any source code previously stored in the shader object is completely
+     * replaced.
      *
      * @param source The source code for this shader
      */
@@ -93,8 +92,7 @@ public class Shader
     /**
      * Gets the ID of the shader.
      *
-     * @return The ID of this Shader. Useful if you directly
-     * want to use any OpenGL function yourself.
+     * @return The ID of this Shader. Useful if you directly want to use any OpenGL function yourself.
      */
     public int getId()
     {

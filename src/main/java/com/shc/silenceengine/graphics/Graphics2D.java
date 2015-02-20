@@ -24,6 +24,7 @@ public class Graphics2D
     private Color color;
     private TrueTypeFont font;
     private Transform transform;
+
     /* Utility Methods */
     private BaseCamera originalCamera;
     private Texture originalTexture;
@@ -42,6 +43,16 @@ public class Graphics2D
             instance = new Graphics2D();
 
         return instance;
+    }
+
+    public void drawRect(Vector2 pos, float w, float h)
+    {
+        drawRect(pos.x, pos.y, w, h);
+    }
+
+    public void drawRect(float x, float y, float w, float h)
+    {
+        rect(x, y, w, h, Primitive.LINE_LOOP);
     }
 
     /* SHAPE DRAWING METHODS */
@@ -75,6 +86,54 @@ public class Graphics2D
         endPainting();
     }
 
+    protected void startPainting()
+    {
+        originalCamera = BaseCamera.CURRENT;
+        camera.apply();
+
+        originalTexture = Texture.CURRENT;
+    }
+
+    protected void endPainting()
+    {
+        originalTexture.bind();
+
+        if (originalCamera != null)
+            originalCamera.apply();
+    }
+
+    public void drawRect(Vector2 min, Vector2 max)
+    {
+        Vector2 size = max.subtract(min);
+        drawRect(min.x, min.y, size.x, size.y);
+    }
+
+    public void fillRect(Vector2 pos, float w, float h)
+    {
+        fillRect(pos.x, pos.y, w, h);
+    }
+
+    public void fillRect(float x, float y, float w, float h)
+    {
+        rect(x, y, w, h, Primitive.TRIANGLE_FAN);
+    }
+
+    public void fillRect(Vector2 min, Vector2 max)
+    {
+        Vector2 size = max.subtract(min);
+        fillRect(min.x, min.y, size.x, size.y);
+    }
+
+    public void drawOval(Vector2 pos, float rx, float ry)
+    {
+        drawOval(pos.x, pos.y, rx, ry);
+    }
+
+    public void drawOval(float x, float y, float rx, float ry)
+    {
+        oval(x, y, rx, ry, Primitive.LINE_LOOP);
+    }
+
     private void oval(float x, float y, float rx, float ry, Primitive primitive)
     {
         Batcher batcher = Game.getBatcher();
@@ -96,46 +155,9 @@ public class Graphics2D
         endPainting();
     }
 
-    public void drawRect(float x, float y, float w, float h)
+    public void fillOval(Vector2 pos, float rx, float ry)
     {
-        rect(x, y, w, h, Primitive.LINE_LOOP);
-    }
-
-    public void drawRect(Vector2 pos, float w, float h)
-    {
-        drawRect(pos.x, pos.y, w, h);
-    }
-
-    public void drawRect(Vector2 min, Vector2 max)
-    {
-        Vector2 size = max.subtract(min);
-        drawRect(min.x, min.y, size.x, size.y);
-    }
-
-    public void fillRect(float x, float y, float w, float h)
-    {
-        rect(x, y, w, h, Primitive.TRIANGLE_FAN);
-    }
-
-    public void fillRect(Vector2 pos, float w, float h)
-    {
-        fillRect(pos.x, pos.y, w, h);
-    }
-
-    public void fillRect(Vector2 min, Vector2 max)
-    {
-        Vector2 size = max.subtract(min);
-        fillRect(min.x, min.y, size.x, size.y);
-    }
-
-    public void drawOval(float x, float y, float rx, float ry)
-    {
-        oval(x, y, rx, ry, Primitive.LINE_LOOP);
-    }
-
-    public void drawOval(Vector2 pos, float rx, float ry)
-    {
-        drawOval(pos.x, pos.y, rx, ry);
+        fillOval(pos.x, pos.y, rx, ry);
     }
 
     public void fillOval(float x, float y, float rx, float ry)
@@ -143,9 +165,9 @@ public class Graphics2D
         oval(x, y, rx, ry, Primitive.TRIANGLE_FAN);
     }
 
-    public void fillOval(Vector2 pos, float rx, float ry)
+    public void drawCircle(Vector2 pos, float r)
     {
-        fillOval(pos.x, pos.y, rx, ry);
+        drawCircle(pos.x, pos.y, r);
     }
 
     public void drawCircle(float x, float y, float r)
@@ -153,19 +175,16 @@ public class Graphics2D
         drawOval(x, y, r, r);
     }
 
-    public void drawCircle(Vector2 pos, float r)
+    public void fillCircle(Vector2 pos, float r)
     {
-        drawCircle(pos.x, pos.y, r);
+        fillCircle(pos.x, pos.y, r);
     }
+
+    /* TEXTURE DRAWING METHODS */
 
     public void fillCircle(float x, float y, float r)
     {
         fillOval(x, y, r, r);
-    }
-
-    public void fillCircle(Vector2 pos, float r)
-    {
-        fillCircle(pos.x, pos.y, r);
     }
 
     public void drawLine(float x1, float y1, float x2, float y2)
@@ -190,8 +209,6 @@ public class Graphics2D
         endPainting();
     }
 
-    /* TEXTURE DRAWING METHODS */
-
     public void drawPolygon(Polygon polygon)
     {
         Batcher batcher = Game.getBatcher();
@@ -214,6 +231,16 @@ public class Graphics2D
             RenderUtils.fillPolygon(batcher, polygon, color);
         }
         endPainting();
+    }
+
+    public void drawTexture(Texture texture, float x, float y)
+    {
+        drawTexture(texture, x, y, texture.getWidth(), texture.getHeight(), false, false);
+    }
+
+    public void drawTexture(Texture texture, float x, float y, float w, float h, boolean flipX, boolean flipY)
+    {
+        drawTexture(texture, x, y, w, h, flipX, flipY, Color.TRANSPARENT);
     }
 
     public void drawTexture(Texture texture, float x, float y, float w, float h, boolean flipX, boolean flipY, Color tint)
@@ -257,16 +284,6 @@ public class Graphics2D
         endPainting();
     }
 
-    public void drawTexture(Texture texture, float x, float y, float w, float h, boolean flipX, boolean flipY)
-    {
-        drawTexture(texture, x, y, w, h, flipX, flipY, Color.TRANSPARENT);
-    }
-
-    public void drawTexture(Texture texture, float x, float y)
-    {
-        drawTexture(texture, x, y, texture.getWidth(), texture.getHeight(), false, false);
-    }
-
     public void drawTexture(Texture texture, float x, float y, float w, float h)
     {
         drawTexture(texture, x, y, w, h, false, false);
@@ -292,6 +309,11 @@ public class Graphics2D
         Vector2.REUSABLE_STACK.push(temp);
     }
 
+    public void drawString(String string, Vector2 pos)
+    {
+        drawString(string, pos.x, pos.y);
+    }
+
     /**
      * String drawing functions
      */
@@ -305,11 +327,6 @@ public class Graphics2D
             font.drawString(batcher, string, x, y, color);
         }
         endPainting();
-    }
-
-    public void drawString(String string, Vector2 pos)
-    {
-        drawString(string, pos.x, pos.y);
     }
 
     /**
@@ -353,22 +370,6 @@ public class Graphics2D
     public void resetTransform()
     {
         transform.reset();
-    }
-
-    protected void startPainting()
-    {
-        originalCamera = BaseCamera.CURRENT;
-        camera.apply();
-
-        originalTexture = Texture.CURRENT;
-    }
-
-    protected void endPainting()
-    {
-        originalTexture.bind();
-
-        if (originalCamera != null)
-            originalCamera.apply();
     }
 
     /**

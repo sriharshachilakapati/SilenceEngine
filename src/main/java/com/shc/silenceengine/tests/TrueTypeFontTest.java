@@ -24,6 +24,12 @@ public class TrueTypeFontTest extends Game
         new TrueTypeFontTest().start();
     }
 
+    public void dispose()
+    {
+        font.dispose();
+        logo.dispose();
+    }
+
     public void init()
     {
         cam = new OrthoCam();
@@ -58,11 +64,5 @@ public class TrueTypeFontTest extends Game
     public void resize()
     {
         cam.initProjection(Display.getWidth(), Display.getHeight());
-    }
-
-    public void dispose()
-    {
-        font.dispose();
-        logo.dispose();
     }
 }

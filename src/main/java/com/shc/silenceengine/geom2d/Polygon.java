@@ -53,45 +53,6 @@ public class Polygon
         maxY = Math.max(v.y, maxY);
     }
 
-    public void rotate(float angle)
-    {
-        if (angle == 0 || this instanceof Circle)
-            return;
-
-        float width = maxX - minX;
-        float height = maxY - minY;
-
-        float originX = width / 2;
-        float originY = height / 2;
-
-        float minX, maxX, minY, maxY;
-
-        minX = minY = Float.POSITIVE_INFINITY;
-        maxX = maxY = Float.NEGATIVE_INFINITY;
-
-        for (Vector2 vertex : vertices)
-        {
-            vertex.subtractSelf(originX, originY).rotateSelf(angle).addSelf(originX, originY);
-
-            minX = Math.min(vertex.x, minX);
-            minY = Math.min(vertex.y, minY);
-
-            maxX = Math.max(vertex.x, maxX);
-            maxY = Math.max(vertex.y, maxY);
-        }
-
-        rotation += angle;
-        updateBounds();
-    }
-
-    private void updateBounds()
-    {
-        if (bounds == null)
-            bounds = new Rectangle();
-
-        bounds.set(position.getX() + minX, position.getY() + minY, maxX - minX, maxY - minY);
-    }
-
     public void scale(float s)
     {
         scale(s, s);
@@ -115,6 +76,14 @@ public class Polygon
         updateBounds();
     }
 
+    private void updateBounds()
+    {
+        if (bounds == null)
+            bounds = new Rectangle();
+
+        bounds.set(position.getX() + minX, position.getY() + minY, maxX - minX, maxY - minY);
+    }
+
     public boolean intersects(Polygon other)
     {
         return Collision2D.testPolygonCollision(this, other, null);
@@ -134,8 +103,8 @@ public class Polygon
             vj.set(getVertex(j)).addSelf(position);
 
             if ((((vi.getY() <= p.getY()) && (p.getY() < vj.getY())) ||
-                    ((vj.getY() <= p.getY()) && (p.getY() < vi.getY()))) &&
-                    (p.getX() < (vj.getX() - vi.getX()) * (p.getY() - vi.getY()) / (vj.getY() - vi.getY()) + vi.getX()))
+                 ((vj.getY() <= p.getY()) && (p.getY() < vi.getY()))) &&
+                (p.getX() < (vj.getX() - vi.getX()) * (p.getY() - vi.getY()) / (vj.getY() - vi.getY()) + vi.getX()))
                 oddNodes = !oddNodes;
         }
 
@@ -143,6 +112,16 @@ public class Polygon
         Vector2.REUSABLE_STACK.push(vj);
 
         return oddNodes;
+    }
+
+    public List<Vector2> getVertices()
+    {
+        return vertices;
+    }
+
+    public Vector2 getVertex(int index)
+    {
+        return vertices.get(index);
     }
 
     public Polygon copy()
@@ -157,16 +136,6 @@ public class Polygon
     public int vertexCount()
     {
         return vertices.size();
-    }
-
-    public List<Vector2> getVertices()
-    {
-        return vertices;
-    }
-
-    public Vector2 getVertex(int index)
-    {
-        return vertices.get(index);
     }
 
     public Vector2 getPosition()
@@ -223,23 +192,35 @@ public class Polygon
         rotate(rotation - this.rotation);
     }
 
-    @Override
-    public boolean equals(Object o)
+    public void rotate(float angle)
     {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (angle == 0 || this instanceof Circle)
+            return;
 
-        Polygon polygon = (Polygon) o;
+        float width = maxX - minX;
+        float height = maxY - minY;
 
-        return Float.compare(polygon.maxX, maxX) == 0 &&
-                Float.compare(polygon.maxY, maxY) == 0 &&
-                Float.compare(polygon.minX, minX) == 0 &&
-                Float.compare(polygon.minY, minY) == 0 &&
-                Float.compare(polygon.rotation, rotation) == 0 &&
-                bounds.equals(polygon.bounds) &&
-                center.equals(polygon.center) &&
-                position.equals(polygon.position) &&
-                vertices.equals(polygon.vertices);
+        float originX = width / 2;
+        float originY = height / 2;
+
+        float minX, maxX, minY, maxY;
+
+        minX = minY = Float.POSITIVE_INFINITY;
+        maxX = maxY = Float.NEGATIVE_INFINITY;
+
+        for (Vector2 vertex : vertices)
+        {
+            vertex.subtractSelf(originX, originY).rotateSelf(angle).addSelf(originX, originY);
+
+            minX = Math.min(vertex.x, minX);
+            minY = Math.min(vertex.y, minY);
+
+            maxX = Math.max(vertex.x, maxX);
+            maxY = Math.max(vertex.y, maxY);
+        }
+
+        rotation += angle;
+        updateBounds();
     }
 
     @Override
@@ -258,18 +239,37 @@ public class Polygon
     }
 
     @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Polygon polygon = (Polygon) o;
+
+        return Float.compare(polygon.maxX, maxX) == 0 &&
+               Float.compare(polygon.maxY, maxY) == 0 &&
+               Float.compare(polygon.minX, minX) == 0 &&
+               Float.compare(polygon.minY, minY) == 0 &&
+               Float.compare(polygon.rotation, rotation) == 0 &&
+               bounds.equals(polygon.bounds) &&
+               center.equals(polygon.center) &&
+               position.equals(polygon.position) &&
+               vertices.equals(polygon.vertices);
+    }
+
+    @Override
     public String toString()
     {
         return "Polygon{" +
-                "position=" + position +
-                ", center=" + center +
-                ", vertices=" + vertices +
-                ", rotation=" + rotation +
-                ", minX=" + minX +
-                ", minY=" + minY +
-                ", maxX=" + maxX +
-                ", maxY=" + maxY +
-                ", bounds=" + bounds +
-                '}';
+               "position=" + position +
+               ", center=" + center +
+               ", vertices=" + vertices +
+               ", rotation=" + rotation +
+               ", minX=" + minX +
+               ", minY=" + minY +
+               ", maxX=" + maxX +
+               ", maxY=" + maxY +
+               ", bounds=" + bounds +
+               '}';
     }
 }

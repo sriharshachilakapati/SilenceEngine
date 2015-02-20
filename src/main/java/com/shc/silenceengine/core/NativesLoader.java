@@ -8,12 +8,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 
 /**
- * A class that takes care of LWJGL natives, but also other natives.
- * It removes the head-ache of managing natives, and it manages
+ * A class that takes care of LWJGL natives, but also other natives. It removes the head-ache of managing natives, and
+ * it manages
  * loading the natives from <pre>lwjgl-natives.jar</pre> file, or
- * from anywhere in the class-path.
- * <p>
- * However, if you want to disable this component, you can do so by
+ * from anywhere in the class-path. <p> However, if you want to disable this component, you can do so by
  * setting the property <pre>NativesLoader</pre> to false.
  *
  * @author Sri Harsha Chilakapati

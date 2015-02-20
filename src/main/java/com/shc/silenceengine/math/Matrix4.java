@@ -11,28 +11,16 @@ public class Matrix4
 
     private float[][] m;
 
-    public Matrix4()
-    {
-        m = new float[4][4];
-        initIdentity();
-    }
-
     public Matrix4(Matrix3 m)
     {
         this();
         set(m);
     }
 
-    public Matrix4(Matrix4 m)
+    public Matrix4()
     {
-        this();
-        set(m);
-    }
-
-    public Matrix4(float diagonal)
-    {
-        this();
-        set(diagonal);
+        m = new float[4][4];
+        initIdentity();
     }
 
     public Matrix4 initIdentity()
@@ -45,6 +33,62 @@ public class Matrix4
                     m[i][j] = 1;
                 else
                     m[i][j] = 0;
+            }
+        }
+
+        return this;
+    }
+
+    public Matrix4 set(Matrix3 m)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                this.m[i][j] = m.get(i, j);
+            }
+        }
+
+        return this;
+    }
+
+    public Matrix4(Matrix4 m)
+    {
+        this();
+        set(m);
+    }
+
+    public Matrix4 set(Matrix4 m)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                this.m[i][j] = m.get(i, j);
+            }
+        }
+
+        return this;
+    }
+
+    public float get(int x, int y)
+    {
+        return m[x][y];
+    }
+
+    public Matrix4(float diagonal)
+    {
+        this();
+        set(diagonal);
+    }
+
+    public Matrix4 set(float diagonal)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                m[i][j] = (i == j) ? diagonal : 0;
             }
         }
 
@@ -64,6 +108,11 @@ public class Matrix4
         return this;
     }
 
+    public Matrix4 add(Matrix4 m)
+    {
+        return new Matrix4(this).addSelf(m);
+    }
+
     public Matrix4 addSelf(Matrix4 m)
     {
         for (int i = 0; i < 4; i++)
@@ -77,9 +126,9 @@ public class Matrix4
         return this;
     }
 
-    public Matrix4 add(Matrix4 m)
+    public Matrix4 subtract(Matrix4 m)
     {
-        return new Matrix4(this).addSelf(m);
+        return new Matrix4(this).subtractSelf(m);
     }
 
     public Matrix4 subtractSelf(Matrix4 m)
@@ -95,9 +144,9 @@ public class Matrix4
         return this;
     }
 
-    public Matrix4 subtract(Matrix4 m)
+    public Matrix4 multiply(Matrix4 m)
     {
-        return new Matrix4(this).subtractSelf(m);
+        return new Matrix4(this).multiplySelf(m);
     }
 
     public Matrix4 multiplySelf(Matrix4 m)
@@ -120,9 +169,9 @@ public class Matrix4
         return this;
     }
 
-    public Matrix4 multiply(Matrix4 m)
+    public Vector3 multiply(Vector3 v)
     {
-        return new Matrix4(this).multiplySelf(m);
+        return multiply(v, new Vector3());
     }
 
     public Vector3 multiply(Vector3 v, Vector3 dest)
@@ -148,9 +197,9 @@ public class Matrix4
                 I * X + J * Y + K * Z + L * W);
     }
 
-    public Vector3 multiply(Vector3 v)
+    public Vector4 multiply(Vector4 v)
     {
-        return multiply(v, new Vector3());
+        return multiply(v, new Vector4());
     }
 
     public Vector4 multiply(Vector4 v, Vector4 dest)
@@ -178,9 +227,9 @@ public class Matrix4
                 M * X + N * Y + O * Z + P * W);
     }
 
-    public Vector4 multiply(Vector4 v)
+    public Matrix4 transpose()
     {
-        return multiply(v, new Vector4());
+        return new Matrix4(this).transposeSelf();
     }
 
     public Matrix4 transposeSelf()
@@ -200,63 +249,14 @@ public class Matrix4
         return this;
     }
 
-    public Matrix4 transpose()
-    {
-        return new Matrix4(this).transposeSelf();
-    }
-
     public Matrix4 copy()
     {
         return new Matrix4(this);
     }
 
-    public float get(int x, int y)
-    {
-        return m[x][y];
-    }
-
     public Matrix4 set(int x, int j, float val)
     {
         m[x][j] = val;
-
-        return this;
-    }
-
-    public Matrix4 set(Matrix4 m)
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                this.m[i][j] = m.get(i, j);
-            }
-        }
-
-        return this;
-    }
-
-    public Matrix4 set(Matrix3 m)
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                this.m[i][j] = m.get(i, j);
-            }
-        }
-
-        return this;
-    }
-
-    public Matrix4 set(float diagonal)
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                m[i][j] = (i == j) ? diagonal : 0;
-            }
-        }
 
         return this;
     }

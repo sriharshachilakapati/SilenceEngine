@@ -10,9 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An implementation of the ISceneCollider2D that resolves collisions
- * using a Grid. The GridSceneCollider is efficient for all maps that
- * has entities less than 500. If more, use QuadTreeSceneCollider.
+ * An implementation of the ISceneCollider2D that resolves collisions using a Grid. The GridSceneCollider is efficient
+ * for all maps that has entities less than 500. If more, use QuadTreeSceneCollider.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -29,8 +28,8 @@ public class GridSceneCollider implements ISceneCollider2D
     private List<Entity2D> entities;
 
     /**
-     * Creates a GridSceneCollider with the required properties to create
-     * the grid that this collider should use to resolve collisions.
+     * Creates a GridSceneCollider with the required properties to create the grid that this collider should use to
+     * resolve collisions.
      *
      * @param mapWidth   The width of the Scene (in pixels)
      * @param mapHeight  The height of the scene (in pixels)

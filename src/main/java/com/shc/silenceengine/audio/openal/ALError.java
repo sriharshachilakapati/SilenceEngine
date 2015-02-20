@@ -5,8 +5,8 @@ import com.shc.silenceengine.core.Game;
 import static org.lwjgl.openal.AL10.*;
 
 /**
- * Class used to check for OpenAL errors (non contextual) and rethrow them
- * as ALException, which is a runtime exception.
+ * Class used to check for OpenAL errors (non contextual) and rethrow them as ALException, which is a runtime
+ * exception.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -18,9 +18,8 @@ public final class ALError
     }
 
     /**
-     * Checks for OpenAL errors. If any error is found, the error is
-     * thrown as a ALException to help you find the error where it occurs.
-     * This method only checks for errors in the development mode.
+     * Checks for OpenAL errors. If any error is found, the error is thrown as a ALException to help you find the error
+     * where it occurs. This method only checks for errors in the development mode.
      */
     public static void check()
     {
@@ -28,13 +27,10 @@ public final class ALError
     }
 
     /**
-     * Checks for OpenAL errors. If any error is found, the error is
-     * thrown as a ALException to help you find the error where it occurs.
-     * This method only checks for errors in the development mode unless
-     * forced.
+     * Checks for OpenAL errors. If any error is found, the error is thrown as a ALException to help you find the error
+     * where it occurs. This method only checks for errors in the development mode unless forced.
      *
-     * @param force If true, the errors are also checked if the game is
-     *              not in the development mode.
+     * @param force If true, the errors are also checked if the game is not in the development mode.
      */
     public static void check(boolean force)
     {
@@ -63,8 +59,7 @@ public final class ALError
     }
 
     /**
-     * Checks for the OpenAL error and return the error on the top of the
-     * OpenAL error stack, using the default device.
+     * Checks for the OpenAL error and return the error on the top of the OpenAL error stack, using the default device.
      *
      * @return The value of the error as an enum.
      */

@@ -136,96 +136,10 @@ public class Controller
             type = Type.GENERIC;
     }
 
-    public static void create()
-    {
-        // Create a list to store the controllers
-        List<Controller> controllerList = new ArrayList<>();
-
-        // Iterate over all the controllers GLFW supports
-        for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; i++)
-        {
-            // If the controller is present, add it to the list
-            if (glfwJoystickPresent(i) == GL_TRUE)
-            {
-                String name = glfwGetJoystickName(i);
-                controllerList.add(new Controller(i, name));
-            }
-        }
-
-        // Turn the list into an array
-        controllers = new Controller[controllerList.size()];
-        controllers = controllerList.toArray(controllers);
-    }
-
     public static void poll()
     {
         for (Controller controller : controllers)
             controller.pollValues();
-    }
-
-    public static void startEventFrame()
-    {
-        for (Controller controller : controllers)
-            controller.startFrame();
-    }
-
-    public static void clearEventFrame()
-    {
-        for (Controller controller : controllers)
-            controller.clearFrame();
-    }
-
-    public static Controller[] getConnectedControllers()
-    {
-        return controllers;
-    }
-
-    public static boolean isPressed(int button, int controller)
-    {
-        if (controllers == null)
-            create();
-
-        return controller < controllers.length && controllers[controller].isPressed(button);
-    }
-
-    public static boolean isClicked(int button, int controller)
-    {
-        if (controllers == null)
-            create();
-
-        return controller < controllers.length && controllers[controller].isClicked(button);
-    }
-
-    public static float getAxe(int axe, int controller)
-    {
-        if (controllers == null)
-            create();
-
-        return controller < controllers.length ? controllers[controller].getAxe(axe) : 0;
-    }
-
-    public void printValues()
-    {
-        printValues(false);
-    }
-
-    public void printValues(boolean repeat)
-    {
-        buttons.keySet().forEach(i ->
-        {
-            boolean condition = repeat ? isPressed(i) : isClicked(i);
-
-            if (condition)
-                System.out.println("Button " + i + " down");
-        });
-
-        axes.keySet().forEach(i ->
-        {
-            float value = getAxe(i);
-
-            if (value != 0)
-                System.out.println("Axe " + i + ": " + value);
-        });
     }
 
     private void pollValues()
@@ -265,16 +179,67 @@ public class Controller
         }
     }
 
+    public boolean isPresent()
+    {
+        return glfwJoystickPresent(id) == GL_TRUE;
+    }
+
+    public static void startEventFrame()
+    {
+        for (Controller controller : controllers)
+            controller.startFrame();
+    }
+
     private void startFrame()
     {
         buttonsThisFrame.clear();
         buttonsThisFrame.putAll(buttons);
     }
 
+    public static void clearEventFrame()
+    {
+        for (Controller controller : controllers)
+            controller.clearFrame();
+    }
+
     private void clearFrame()
     {
         buttonsLastFrame.clear();
         buttonsLastFrame.putAll(buttonsThisFrame);
+    }
+
+    public static Controller[] getConnectedControllers()
+    {
+        return controllers;
+    }
+
+    public static boolean isPressed(int button, int controller)
+    {
+        if (controllers == null)
+            create();
+
+        return controller < controllers.length && controllers[controller].isPressed(button);
+    }
+
+    public static void create()
+    {
+        // Create a list to store the controllers
+        List<Controller> controllerList = new ArrayList<>();
+
+        // Iterate over all the controllers GLFW supports
+        for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; i++)
+        {
+            // If the controller is present, add it to the list
+            if (glfwJoystickPresent(i) == GL_TRUE)
+            {
+                String name = glfwGetJoystickName(i);
+                controllerList.add(new Controller(i, name));
+            }
+        }
+
+        // Turn the list into an array
+        controllers = new Controller[controllerList.size()];
+        controllers = controllerList.toArray(controllers);
     }
 
     public boolean isPressed(int button)
@@ -288,6 +253,14 @@ public class Controller
         return buttonsLastFrame.get(button) || buttonsThisFrame.get(button);
     }
 
+    public static boolean isClicked(int button, int controller)
+    {
+        if (controllers == null)
+            create();
+
+        return controller < controllers.length && controllers[controller].isClicked(button);
+    }
+
     public boolean isClicked(int button)
     {
         if (!buttonsLastFrame.containsKey(button))
@@ -299,9 +272,41 @@ public class Controller
         return buttonsThisFrame.get(button) && !buttonsLastFrame.get(button);
     }
 
+    public static float getAxe(int axe, int controller)
+    {
+        if (controllers == null)
+            create();
+
+        return controller < controllers.length ? controllers[controller].getAxe(axe) : 0;
+    }
+
     public float getAxe(int axe)
     {
         return axes.get(axe);
+    }
+
+    public void printValues()
+    {
+        printValues(false);
+    }
+
+    public void printValues(boolean repeat)
+    {
+        buttons.keySet().forEach(i ->
+        {
+            boolean condition = repeat ? isPressed(i) : isClicked(i);
+
+            if (condition)
+                System.out.println("Button " + i + " down");
+        });
+
+        axes.keySet().forEach(i ->
+        {
+            float value = getAxe(i);
+
+            if (value != 0)
+                System.out.println("Axe " + i + ": " + value);
+        });
     }
 
     public int getId()
@@ -327,11 +332,6 @@ public class Controller
     public Type getType()
     {
         return type;
-    }
-
-    public boolean isPresent()
-    {
-        return glfwJoystickPresent(id) == GL_TRUE;
     }
 
     public static enum Type

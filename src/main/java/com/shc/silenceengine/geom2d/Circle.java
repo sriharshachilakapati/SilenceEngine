@@ -64,6 +64,7 @@ public class Circle extends Polygon
      * Checks for intersection between this circle and another polygon.
      *
      * @param p The other Polygon to test for intersection.
+     *
      * @return True if intersects, else False.
      */
     public boolean intersects(Polygon p)
@@ -88,11 +89,42 @@ public class Circle extends Polygon
      * Checks if a point exists inside this circle.
      *
      * @param p The point to check
+     *
      * @return True if inside, else False.
      */
     public boolean contains(Vector2 p)
     {
         return (((getX() - p.getX()) * (getX() - p.getX())) + ((getY() - p.getY()) * (getY() - p.getY()))) < radius * radius;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Circle circle = (Circle) o;
+
+        return radius == circle.radius && getX() == circle.getX() && getY() == circle.getY();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = (radius != +0.0f ? Float.floatToIntBits(radius) : 0);
+        result = 31 * result + (getX() != +0.0f ? Float.floatToIntBits(getX()) : 0);
+        result = 31 * result + (getY() != +0.0f ? Float.floatToIntBits(getY()) : 0);
+        return result;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Circle{" +
+               "x=" + getX() +
+               ", y=" + getY() +
+               ", r=" + radius +
+               '}';
     }
 
     public float getX()
@@ -128,35 +160,5 @@ public class Circle extends Polygon
     {
         this.radius = radius;
         updateVertices();
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Circle circle = (Circle) o;
-
-        return radius == circle.radius && getX() == circle.getX() && getY() == circle.getY();
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = (radius != +0.0f ? Float.floatToIntBits(radius) : 0);
-        result = 31 * result + (getX() != +0.0f ? Float.floatToIntBits(getX()) : 0);
-        result = 31 * result + (getY() != +0.0f ? Float.floatToIntBits(getY()) : 0);
-        return result;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "Circle{" +
-                "x=" + getX() +
-                ", y=" + getY() +
-                ", r=" + radius +
-                '}';
     }
 }
