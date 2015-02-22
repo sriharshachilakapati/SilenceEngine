@@ -49,7 +49,9 @@ public class SubTexture extends Texture
     public Texture getParent()
     {
         return parent;
-    }    public SubTexture getSubTexture(float minU, float minV, float maxU, float maxV)
+    }
+
+    public SubTexture getSubTexture(float minU, float minV, float maxU, float maxV)
     {
         minU = (minU * getWidth()) / parent.getWidth();
         minV = (minV * getHeight()) / parent.getHeight();
@@ -98,7 +100,6 @@ public class SubTexture extends Texture
     {
         return height;
     }
-
 
 
     public void dispose()

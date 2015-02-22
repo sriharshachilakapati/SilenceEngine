@@ -3,7 +3,7 @@ package com.shc.silenceengine.graphics.opengl;
 import com.shc.silenceengine.core.Game;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL30.GL_INVALID_FRAMEBUFFER_OPERATION;
+import static org.lwjgl.opengl.GL30.*;
 
 /**
  * Static Utility class to check for OpenGL errors. If you want to check for errors anytime, just make a call to

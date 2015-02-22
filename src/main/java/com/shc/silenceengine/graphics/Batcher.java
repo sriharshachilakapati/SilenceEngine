@@ -15,8 +15,7 @@ import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * A simple class which eases the rendering of Graphics by batching the vertices, colors, textures to the shaders using
@@ -100,26 +99,26 @@ public class Batcher
         vao.bind();
 
         // Create VBOs
-        vboVert = new BufferObject(GL_ARRAY_BUFFER);
-        vboCol = new BufferObject(GL_ARRAY_BUFFER);
-        vboTex = new BufferObject(GL_ARRAY_BUFFER);
-        vboNorm = new BufferObject(GL_ARRAY_BUFFER);
+        vboVert = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
+        vboCol = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
+        vboTex = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
+        vboNorm = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
 
         // Initialize vertex-buffer
         vboVert.bind();
-        vboVert.uploadData(BATCH_SIZE, GL_STREAM_DRAW);
+        vboVert.uploadData(BATCH_SIZE, BufferObject.Usage.STREAM_DRAW);
 
         // Initialize color-buffer
         vboCol.bind();
-        vboCol.uploadData(BATCH_SIZE, GL_STREAM_DRAW);
+        vboCol.uploadData(BATCH_SIZE, BufferObject.Usage.STREAM_DRAW);
 
         // Initialize texcoord-buffer
         vboTex.bind();
-        vboTex.uploadData(BATCH_SIZE, GL_STREAM_DRAW);
+        vboTex.uploadData(BATCH_SIZE, BufferObject.Usage.STREAM_DRAW);
 
         // Initialize normal-buffer
         vboNorm.bind();
-        vboNorm.uploadData(BATCH_SIZE, GL_STREAM_DRAW);
+        vboNorm.uploadData(BATCH_SIZE, BufferObject.Usage.STREAM_DRAW);
     }
 
     /**
@@ -243,16 +242,16 @@ public class Batcher
      */
     private void mapBuffers()
     {
-        vBuffer = vboVert.map(GL_WRITE_ONLY, vBuffer);
+        vBuffer = vboVert.map(BufferObject.MapAccess.WRITE_ONLY, vBuffer);
         vao.pointAttribute(vertexLocation, SIZE_OF_VERTEX, GL_FLOAT, vboVert);
 
-        cBuffer = vboCol.map(GL_WRITE_ONLY, cBuffer);
+        cBuffer = vboCol.map(BufferObject.MapAccess.WRITE_ONLY, cBuffer);
         vao.pointAttribute(colorLocation, SIZE_OF_COLOR, GL_FLOAT, vboCol);
 
-        tBuffer = vboTex.map(GL_WRITE_ONLY, tBuffer);
+        tBuffer = vboTex.map(BufferObject.MapAccess.WRITE_ONLY, tBuffer);
         vao.pointAttribute(texCoordLocation, SIZE_OF_TEXCOORD, GL_FLOAT, vboTex);
 
-        nBuffer = vboNorm.map(GL_WRITE_ONLY, nBuffer);
+        nBuffer = vboNorm.map(BufferObject.MapAccess.WRITE_ONLY, nBuffer);
         vao.pointAttribute(normalLocation, SIZE_OF_NORMAL, GL_FLOAT, vboNorm);
     }
 
@@ -261,10 +260,10 @@ public class Batcher
      */
     private void unmapBuffers()
     {
-        vboVert.unmap();
-        vboCol.unmap();
-        vboTex.unmap();
-        vboNorm.unmap();
+        vboVert.unMap();
+        vboCol.unMap();
+        vboTex.unMap();
+        vboNorm.unMap();
     }
 
     private void fillBuffers()

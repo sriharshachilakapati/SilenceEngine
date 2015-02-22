@@ -12,12 +12,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL30.glMapBufferRange;
+import static org.lwjgl.opengl.GL21.*;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL31.*;
 
 /**
  * This class encapsulates OpenGL Buffer Objects nicely and cleanly allowing you to use OpenGL in an Object Oriented
- * way. <p> Buffer Objects in OpenGL allows to store data directly on the GPU. They are just regular OpenGL objects, and
- * hence you have to take care of their destruction on your own by calling the dispose() method. <p> This class doesn't
+ * way. Buffer Objects in OpenGL allows to store data directly on the GPU. They are just regular OpenGL objects, and
+ * hence you have to take care of their destruction on your own by calling the dispose() method. This class doesn't
  * store any data you upload to the GPU, it just exists to make the usage of OpenGL functions convenient.
  *
  * @author Sri Harsha Chilakapati
@@ -28,19 +30,17 @@ public class BufferObject
     private static Map<Integer, BufferObject> current = new HashMap<>();
     private int id;
     private int capacity;
-    private int target;
+    private Target target;
     private boolean disposed;
 
     /**
-     * Creates a VertexBufferObject that binds to a target. Valid targets are GL_ARRAY_BUFFER​,
-     * GL_ATOMIC_COUNTER_BUFFER​, GL_COPY_READ_BUFFER​, GL_COPY_WRITE_BUFFER​, GL_DRAW_INDIRECT_BUFFER​,
-     * GL_DISPATCH_INDIRECT_BUFFER​, GL_ELEMENT_ARRAY_BUFFER​, GL_PIXEL_PACK_BUFFER​, GL_PIXEL_UNPACK_BUFFER​,
-     * GL_QUERY_BUFFER​, GL_SHADER_STORAGE_BUFFER​, GL_TEXTURE_BUFFER​, GL_TRANSFORM_FEEDBACK_BUFFER​, or
-     * GL_UNIFORM_BUFFER​.
+     * Creates a VertexBufferObject that binds to a target. Valid targets are GL_ARRAY_BUFFER​, GL_COPY_READ_BUFFER​,
+     * GL_COPY_WRITE_BUFFER​, GL_ELEMENT_ARRAY_BUFFER​, GL_PIXEL_PACK_BUFFER​, GL_PIXEL_UNPACK_BUFFER​,
+     * GL_TEXTURE_BUFFER​, GL_TRANSFORM_FEEDBACK_BUFFER​, or GL_UNIFORM_BUFFER​.
      *
      * @param target The target to bind this VertexBufferObject
      */
-    public BufferObject(int target)
+    public BufferObject(Target target)
     {
         id = glGenBuffers();
         this.target = target;
@@ -57,25 +57,25 @@ public class BufferObject
      *              GL_STREAM_COPY​, GL_STATIC_DRAW​, GL_STATIC_READ​, GL_STATIC_COPY​, GL_DYNAMIC_DRAW​,
      *              GL_DYNAMIC_READ​, or GL_DYNAMIC_COPY​.
      */
-    public void uploadData(Buffer data, int usage)
+    public void uploadData(Buffer data, Usage usage)
     {
         bind();
         capacity = data.capacity();
 
         if (data instanceof ByteBuffer)
-            glBufferData(target, (ByteBuffer) data, usage);
+            glBufferData(target.getValue(), (ByteBuffer) data, usage.getValue());
 
         else if (data instanceof IntBuffer)
-            glBufferData(target, (IntBuffer) data, usage);
+            glBufferData(target.getValue(), (IntBuffer) data, usage.getValue());
 
         else if (data instanceof FloatBuffer)
-            glBufferData(target, (FloatBuffer) data, usage);
+            glBufferData(target.getValue(), (FloatBuffer) data, usage.getValue());
 
         else if (data instanceof DoubleBuffer)
-            glBufferData(target, (DoubleBuffer) data, usage);
+            glBufferData(target.getValue(), (DoubleBuffer) data, usage.getValue());
 
         else if (data instanceof ShortBuffer)
-            glBufferData(target, (ShortBuffer) data, usage);
+            glBufferData(target.getValue(), (ShortBuffer) data, usage.getValue());
 
         GLError.check();
     }
@@ -90,11 +90,11 @@ public class BufferObject
             throw new GLException("VertexBufferObject is already disposed!");
 
         // Prevent un-necessary bindings, they are costly
-        if (current.containsKey(target) && current.get(target) == this)
+        if (current.containsKey(target.getValue()) && current.get(target.getValue()) == this)
             return;
 
-        glBindBuffer(target, id);
-        current.put(target, this);
+        glBindBuffer(target.getValue(), id);
+        current.put(target.getValue(), this);
 
         GLError.check();
     }
@@ -107,11 +107,11 @@ public class BufferObject
      *                 GL_STREAM_COPY​, GL_STATIC_DRAW​, GL_STATIC_READ​, GL_STATIC_COPY​, GL_DYNAMIC_DRAW​,
      *                 GL_DYNAMIC_READ​, or GL_DYNAMIC_COPY​.
      */
-    public void uploadData(int capacity, int usage)
+    public void uploadData(int capacity, Usage usage)
     {
         bind();
         this.capacity = capacity;
-        glBufferData(target, capacity, usage);
+        glBufferData(target.getValue(), capacity, usage.getValue());
 
         GLError.check();
     }
@@ -131,19 +131,19 @@ public class BufferObject
         bind();
 
         if (data instanceof ByteBuffer)
-            glBufferSubData(target, offset, (ByteBuffer) data);
+            glBufferSubData(target.getValue(), offset, (ByteBuffer) data);
 
         else if (data instanceof IntBuffer)
-            glBufferSubData(target, offset, (IntBuffer) data);
+            glBufferSubData(target.getValue(), offset, (IntBuffer) data);
 
         else if (data instanceof FloatBuffer)
-            glBufferSubData(target, offset, (FloatBuffer) data);
+            glBufferSubData(target.getValue(), offset, (FloatBuffer) data);
 
         else if (data instanceof DoubleBuffer)
-            glBufferSubData(target, offset, (DoubleBuffer) data);
+            glBufferSubData(target.getValue(), offset, (DoubleBuffer) data);
 
         else if (data instanceof ShortBuffer)
-            glBufferSubData(target, offset, (ShortBuffer) data);
+            glBufferSubData(target.getValue(), offset, (ShortBuffer) data);
 
         GLError.check();
     }
@@ -175,7 +175,7 @@ public class BufferObject
     public ByteBuffer getSubData(int offset, int length, ByteBuffer data)
     {
         bind();
-        glGetBufferSubData(target, offset, length, data);
+        glGetBufferSubData(target.getValue(), offset, length, data);
 
         GLError.check();
 
@@ -209,7 +209,7 @@ public class BufferObject
      *
      * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
      */
-    public ByteBuffer map(int access)
+    public ByteBuffer map(MapAccess access)
     {
         return map(access, BufferUtils.createByteBuffer(capacity));
     }
@@ -222,10 +222,10 @@ public class BufferObject
      *
      * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
      */
-    public ByteBuffer map(int access, ByteBuffer pointer)
+    public ByteBuffer map(MapAccess access, ByteBuffer pointer)
     {
         bind();
-        pointer = glMapBuffer(target, access, pointer.capacity(), pointer);
+        pointer = glMapBuffer(target.getValue(), access.getValue(), pointer.capacity(), pointer);
 
         GLError.check();
 
@@ -243,7 +243,7 @@ public class BufferObject
      *
      * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
      */
-    public ByteBuffer mapRange(long offset, int length, int access)
+    public ByteBuffer mapRange(long offset, int length, MapAccess access)
     {
         return mapRange(offset, access, BufferUtils.createByteBuffer(length));
     }
@@ -259,10 +259,10 @@ public class BufferObject
      *
      * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
      */
-    public ByteBuffer mapRange(long offset, int access, ByteBuffer pointer)
+    public ByteBuffer mapRange(long offset, MapAccess access, ByteBuffer pointer)
     {
         bind();
-        pointer = glMapBufferRange(target, offset, pointer.capacity(), access);
+        pointer = glMapBufferRange(target.getValue(), offset, pointer.capacity(), access.getValue());
 
         GLError.check();
 
@@ -274,10 +274,10 @@ public class BufferObject
      *
      * @return Returns true if the unmapping was successful.
      */
-    public boolean unmap()
+    public boolean unMap()
     {
         bind();
-        boolean unmapped = glUnmapBuffer(target);
+        boolean unmapped = glUnmapBuffer(target.getValue());
 
         GLError.check();
 
@@ -291,7 +291,7 @@ public class BufferObject
      */
     public void dispose()
     {
-        glBindBuffer(target, 0);
+        glBindBuffer(target.getValue(), 0);
         GLError.check();
         glDeleteBuffers(id);
         GLError.check();
@@ -318,7 +318,7 @@ public class BufferObject
     /**
      * @return The binding target of this VertexBufferObject
      */
-    public int getTarget()
+    public Target getTarget()
     {
         return target;
     }
@@ -329,5 +329,74 @@ public class BufferObject
     public boolean isDisposed()
     {
         return disposed;
+    }
+
+    public static enum Target
+    {
+        ARRAY_BUFFER(GL_ARRAY_BUFFER),
+        COPY_READ_BUFFER(GL_COPY_READ_BUFFER),
+        COPY_WRITE_BUFFER(GL_COPY_WRITE_BUFFER),
+        ELEMENT_ARRAY_BUFFER(GL_ELEMENT_ARRAY_BUFFER),
+        PIXEL_PACK_BUFFER(GL_PIXEL_PACK_BUFFER),
+        PIXEL_UNPACK_BUFFER(GL_PIXEL_UNPACK_BUFFER),
+        TEXTURE_BUFFER(GL_TEXTURE_BUFFER),
+        TRANSFORM_FEEDBACK_BUFFER(GL_TRANSFORM_FEEDBACK_BUFFER),
+        UNIFORM_BUFFER(GL_UNIFORM_BUFFER);
+
+        private int value;
+
+        private Target(int value)
+        {
+            this.value = value;
+        }
+
+        public int getValue()
+        {
+            return value;
+        }
+    }
+
+    public static enum Usage
+    {
+        STREAM_DRAW(GL_STREAM_DRAW),
+        STREAM_READ(GL_STREAM_READ),
+        STREAM_COPY(GL_STREAM_COPY),
+        STATIC_DRAW(GL_STATIC_DRAW),
+        STATIC_READ(GL_STATIC_COPY),
+        STATIC_COPY(GL_STATIC_COPY),
+        DYNAMIC_DRAW(GL_DYNAMIC_DRAW),
+        DYNAMIC_READ(GL_DYNAMIC_READ),
+        DYNAMIC_COPY(GL_DYNAMIC_COPY);
+
+        private int value;
+
+        private Usage(int value)
+        {
+            this.value = value;
+        }
+
+        public int getValue()
+        {
+            return value;
+        }
+    }
+
+    public static enum MapAccess
+    {
+        READ_ONLY(GL_READ_ONLY),
+        WRITE_ONLY(GL_WRITE_ONLY),
+        READ_WRITE(GL_READ_WRITE);
+
+        private int value;
+
+        private MapAccess(int value)
+        {
+            this.value = value;
+        }
+
+        public int getValue()
+        {
+            return value;
+        }
     }
 }
