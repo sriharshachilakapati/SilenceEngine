@@ -1,11 +1,35 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2015 Sri Harsha Chilakapati
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.shc.silenceengine.scene.entity;
 
 import com.shc.silenceengine.collision.Collision2D;
-import com.shc.silenceengine.math.geom2d.Polygon;
-import com.shc.silenceengine.math.geom2d.Rectangle;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.math.geom2d.Polygon;
+import com.shc.silenceengine.math.geom2d.Rectangle;
 import com.shc.silenceengine.scene.SceneNode;
 
 /**
@@ -365,12 +389,6 @@ public class Entity2D extends SceneNode
     {
         position.setY(y);
         polygon.setPosition(position);
-    }    /**
-     * @return The center position of the entity
-     */
-    public Vector2 getCenter()
-    {
-        return polygon.getCenter();
     }
 
     /**
@@ -383,24 +401,6 @@ public class Entity2D extends SceneNode
     public boolean intersects(Entity2D other)
     {
         return polygon.intersects(other.getPolygon());
-    }    /**
-     * Sets the center position of this entity. Note that the same rotation is also applied to the polygon this entity
-     * is using.
-     *
-     * @param center The new center position
-     */
-    public void setCenter(Vector2 center)
-    {
-        polygon.setCenter(center);
-        position.set(polygon.getPosition());
-
-        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
-
-        getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                .rotate(Vector3.AXIS_Z, polygon.getRotation())
-                .translate(getCenter());
-
-        Vector2.REUSABLE_STACK.push(tempVec2);
     }
 
     /**
@@ -410,11 +410,11 @@ public class Entity2D extends SceneNode
     {
         return velocity;
     }    /**
-     * @return The position of this entity
+     * @return The center position of the entity
      */
-    public Vector2 getPosition()
+    public Vector2 getCenter()
     {
-        return position;
+        return polygon.getCenter();
     }
 
     /**
@@ -425,23 +425,6 @@ public class Entity2D extends SceneNode
     public void setVelocity(Vector2 velocity)
     {
         this.velocity.set(velocity);
-    }    /**
-     * Sets the position of this entity
-     *
-     * @param position The new position as a Vector2
-     */
-    public void setPosition(Vector2 position)
-    {
-        this.position.set(position);
-        polygon.setPosition(position);
-
-        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
-
-        getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                .rotate(Vector3.AXIS_Z, polygon.getRotation())
-                .translate(getCenter());
-
-        Vector2.REUSABLE_STACK.push(tempVec2);
     }
 
     @Override
@@ -465,6 +448,24 @@ public class Entity2D extends SceneNode
                position.equals(entity2D.position) &&
                velocity.equals(entity2D.velocity);
 
+    }    /**
+     * Sets the center position of this entity. Note that the same rotation is also applied to the polygon this entity
+     * is using.
+     *
+     * @param center The new center position
+     */
+    public void setCenter(Vector2 center)
+    {
+        polygon.setCenter(center);
+        position.set(polygon.getPosition());
+
+        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
+
+        getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
+                .rotate(Vector3.AXIS_Z, polygon.getRotation())
+                .translate(getCenter());
+
+        Vector2.REUSABLE_STACK.push(tempVec2);
     }
 
     @Override
@@ -479,9 +480,34 @@ public class Entity2D extends SceneNode
 
 
 
+    /**
+     * @return The position of this entity
+     */
+    public Vector2 getPosition()
+    {
+        return position;
+    }
 
 
 
+    /**
+     * Sets the position of this entity
+     *
+     * @param position The new position as a Vector2
+     */
+    public void setPosition(Vector2 position)
+    {
+        this.position.set(position);
+        polygon.setPosition(position);
+
+        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
+
+        getLocalTransform().reset().translate(tempVec2.set(getPosition()).subtractSelf(getCenter()))
+                .rotate(Vector3.AXIS_Z, polygon.getRotation())
+                .translate(getCenter());
+
+        Vector2.REUSABLE_STACK.push(tempVec2);
+    }
 
 
 }

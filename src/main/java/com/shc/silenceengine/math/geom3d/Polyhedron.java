@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2015 Sri Harsha Chilakapati
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.shc.silenceengine.math.geom3d;
 
 import com.shc.silenceengine.collision.Collision3D;
@@ -58,6 +82,11 @@ public class Polyhedron
         maxX = maxY = maxZ = Float.NEGATIVE_INFINITY;
     }
 
+    public void addVertex(float x, float y, float z)
+    {
+        addVertex(new Vector3(x, y, z));
+    }
+
     public void addVertex(Vector3 v)
     {
         vertices.add(v);
@@ -68,11 +97,6 @@ public class Polyhedron
         maxX = Math.max(maxX, v.x);
         maxY = Math.max(maxY, v.y);
         maxZ = Math.max(maxZ, v.z);
-    }
-
-    public void addVertex(float x, float y, float z)
-    {
-        addVertex(new Vector3(x, y, z));
     }
 
     public void rotate(float rx, float ry, float rz)
@@ -187,6 +211,16 @@ public class Polyhedron
         return oddNodes;
     }
 
+    public List<Vector3> getVertices()
+    {
+        return vertices;
+    }
+
+    public Vector3 getVertex(int index)
+    {
+        return vertices.get(index);
+    }
+
     public Polyhedron copy()
     {
         return new Polyhedron(this);
@@ -208,16 +242,6 @@ public class Polyhedron
     public int vertexCount()
     {
         return vertices.size();
-    }
-
-    public List<Vector3> getVertices()
-    {
-        return vertices;
-    }
-
-    public Vector3 getVertex(int index)
-    {
-        return vertices.get(index);
     }
 
     public Cuboid getBounds()

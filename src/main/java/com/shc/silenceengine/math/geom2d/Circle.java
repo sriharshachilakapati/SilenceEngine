@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2015 Sri Harsha Chilakapati
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.shc.silenceengine.math.geom2d;
 
 import com.shc.silenceengine.math.Vector2;
@@ -17,11 +41,6 @@ public class Circle extends Polygon
     public Circle()
     {
         this(0, 0, 1);
-    }
-
-    public Circle(float radius)
-    {
-        this(0, 0, radius);
     }
 
     /**
@@ -65,6 +84,11 @@ public class Circle extends Polygon
         }
     }
 
+    public Circle(float radius)
+    {
+        this(0, 0, radius);
+    }
+
     /**
      * Checks for intersection between this circle and another polygon.
      *
@@ -103,6 +127,15 @@ public class Circle extends Polygon
     }
 
     @Override
+    public int hashCode()
+    {
+        int result = (radius != +0.0f ? Float.floatToIntBits(radius) : 0);
+        result = 31 * result + (getX() != +0.0f ? Float.floatToIntBits(getX()) : 0);
+        result = 31 * result + (getY() != +0.0f ? Float.floatToIntBits(getY()) : 0);
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -111,15 +144,6 @@ public class Circle extends Polygon
         Circle circle = (Circle) o;
 
         return radius == circle.radius && getX() == circle.getX() && getY() == circle.getY();
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = (radius != +0.0f ? Float.floatToIntBits(radius) : 0);
-        result = 31 * result + (getX() != +0.0f ? Float.floatToIntBits(getX()) : 0);
-        result = 31 * result + (getY() != +0.0f ? Float.floatToIntBits(getY()) : 0);
-        return result;
     }
 
     @Override
