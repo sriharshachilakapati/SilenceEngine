@@ -19,6 +19,11 @@ public class Circle extends Polygon
         this(0, 0, 1);
     }
 
+    public Circle(float radius)
+    {
+        this(0, 0, radius);
+    }
+
     /**
      * Constructs a circle with a center position and a radius.
      *

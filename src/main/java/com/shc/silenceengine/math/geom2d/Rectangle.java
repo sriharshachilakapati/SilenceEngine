@@ -55,6 +55,11 @@ public class Rectangle extends Polygon
         this(0, 0, width, height);
     }
 
+    public Rectangle(Vector2 min, Vector2 max)
+    {
+        this(min.x, min.y, max.x - min.x, max.y - min.y);
+    }
+
     public boolean intersects(Polygon p)
     {
         if (p instanceof Rectangle && p.getRotation() == 0 && getRotation() == 0)

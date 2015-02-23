@@ -50,7 +50,7 @@ public class Polyhedron
         clearVertices();
     }
 
-    protected void clearVertices()
+    public void clearVertices()
     {
         vertices.clear();
 
@@ -58,7 +58,7 @@ public class Polyhedron
         maxX = maxY = maxZ = Float.NEGATIVE_INFINITY;
     }
 
-    protected void addVertex(Vector3 v)
+    public void addVertex(Vector3 v)
     {
         vertices.add(v);
 
@@ -68,6 +68,11 @@ public class Polyhedron
         maxX = Math.max(maxX, v.x);
         maxY = Math.max(maxY, v.y);
         maxZ = Math.max(maxZ, v.z);
+    }
+
+    public void addVertex(float x, float y, float z)
+    {
+        addVertex(new Vector3(x, y, z));
     }
 
     public void rotate(float rx, float ry, float rz)
@@ -154,6 +159,32 @@ public class Polyhedron
     public boolean intersects(Polyhedron other)
     {
         return Collision3D.testPolyhedronCollision(this, other);
+    }
+
+    public boolean contains(Vector3 p)
+    {
+        int i, j = getVertices().size() - 1;
+        boolean oddNodes = false;
+
+        Vector3 vi = Vector3.REUSABLE_STACK.pop();
+        Vector3 vj = Vector3.REUSABLE_STACK.pop();
+
+        for (i = 0; i < getVertices().size(); j = i++)
+        {
+            vi.set(getVertex(i)).addSelf(position);
+            vj.set(getVertex(j)).addSelf(position);
+
+            if ((((vi.getY() <= p.getY()) && (p.getY() < vj.getY())) ||
+                 ((vj.getY() <= p.getY()) && (p.getY() < vi.getY())) ||
+                 ((vj.getZ() <= p.getZ()) && (p.getZ() < vi.getZ()))) &&
+                (p.getX() < (vj.getX() - vi.getX()) * (p.getY() - vi.getY()) / (vj.getY() - vi.getY()) + vi.getX()))
+                oddNodes = !oddNodes;
+        }
+
+        Vector3.REUSABLE_STACK.push(vi);
+        Vector3.REUSABLE_STACK.push(vj);
+
+        return oddNodes;
     }
 
     public Polyhedron copy()

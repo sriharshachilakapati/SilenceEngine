@@ -32,7 +32,7 @@ public class Polygon
         clearVertices();
     }
 
-    protected void clearVertices()
+    public void clearVertices()
     {
         vertices.clear();
 
@@ -42,7 +42,7 @@ public class Polygon
         rotation = 0;
     }
 
-    protected void addVertex(Vector2 v)
+    public void addVertex(Vector2 v)
     {
         vertices.add(v);
 
@@ -51,6 +51,11 @@ public class Polygon
 
         maxX = Math.max(v.x, maxX);
         maxY = Math.max(v.y, maxY);
+    }
+
+    public void addVertex(float x, float y)
+    {
+        addVertex(new Vector2(x, y));
     }
 
     public void scale(float s)
