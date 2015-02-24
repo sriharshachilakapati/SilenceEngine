@@ -96,6 +96,11 @@ public class Transform
         return new Transform().apply(tMatrix);
     }
 
+    public Transform set(Transform t)
+    {
+        return reset().apply(t);
+    }
+
     public Transform reset()
     {
         tMatrix.initIdentity();

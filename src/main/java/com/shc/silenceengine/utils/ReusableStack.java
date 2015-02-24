@@ -34,7 +34,7 @@ import java.util.Deque;
  *
  * @author Sri Harsha Chilakapati
  */
-public class ReusableStack<T>
+public final class ReusableStack<T>
 {
     private Deque<T> stack;
     private Class<T> tClass;

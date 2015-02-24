@@ -48,9 +48,12 @@ public class SceneNode
     private boolean destroyed;
     private int id;
 
+    private Transform combinedTransform;
+
     public SceneNode()
     {
         transform = new Transform();
+        combinedTransform = new Transform();
         parent = null;
 
         id = ++idGenerator;
@@ -287,9 +290,9 @@ public class SceneNode
     public Transform getTransform()
     {
         if (getParent() != null)
-            return transform.copy().apply(parent.getTransform());
+            return combinedTransform.set(transform).apply(parent.getTransform());
         else
-            return transform;
+            return combinedTransform.set(transform);
     }
 
     public Transform getLocalTransform()
