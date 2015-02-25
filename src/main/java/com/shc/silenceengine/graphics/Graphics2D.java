@@ -358,37 +358,37 @@ public class Graphics2D
      */
     public void rotate(float angle)
     {
-        transform.rotate(Vector3.AXIS_Z, angle);
+        transform.rotateSelf(Vector3.AXIS_Z, angle);
     }
 
     public void translate(float x, float y)
     {
-        transform.translate(new Vector2(x, y));
+        transform.translateSelf(new Vector2(x, y));
     }
 
     public void translate(Vector2 pos)
     {
-        transform.translate(pos);
+        transform.translateSelf(pos);
     }
 
     public void scale(float x, float y)
     {
-        transform.scale(new Vector2(x, y));
+        transform.scaleSelf(new Vector2(x, y));
     }
 
     public void scale(Vector2 scale)
     {
-        transform.scale(scale);
+        transform.scaleSelf(scale);
     }
 
     public void transform(Transform transform)
     {
-        this.transform.apply(transform);
+        this.transform.applySelf(transform);
     }
 
     public void transform(Matrix4 transform)
     {
-        this.transform.apply(transform);
+        this.transform.applySelf(transform);
     }
 
     public void resetTransform()

@@ -63,16 +63,16 @@ public class TransformTest extends Game
             end();
 
         if (Keyboard.isPressed(Keyboard.KEY_LEFT))
-            transform.translate(new Vector2(-0.01f, 0));
+            transform.translateSelf(new Vector2(-0.01f, 0));
 
         if (Keyboard.isPressed(Keyboard.KEY_RIGHT))
-            transform.translate(new Vector2(+0.01f, 0));
+            transform.translateSelf(new Vector2(+0.01f, 0));
 
         if (Keyboard.isPressed(Keyboard.KEY_UP))
-            transform.translate(new Vector2(0, +0.01f));
+            transform.translateSelf(new Vector2(0, +0.01f));
 
         if (Keyboard.isPressed(Keyboard.KEY_DOWN))
-            transform.translate(new Vector2(0, -0.01f));
+            transform.translateSelf(new Vector2(0, -0.01f));
     }
 
     public void render(float delta, Batcher batcher)

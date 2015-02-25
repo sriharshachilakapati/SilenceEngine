@@ -132,10 +132,10 @@ public class Entity3D extends SceneNode
     private void updateTransforms()
     {
         getLocalTransform().reset()
-                .rotate(Vector3.AXIS_X, polyhedron.getRotationX())
-                .rotate(Vector3.AXIS_Z, polyhedron.getRotationZ())
-                .rotate(Vector3.AXIS_Y, polyhedron.getRotationY())
-                .translate(getPosition());
+                .rotateSelf(Vector3.AXIS_X, polyhedron.getRotationX())
+                .rotateSelf(Vector3.AXIS_Z, polyhedron.getRotationZ())
+                .rotateSelf(Vector3.AXIS_Y, polyhedron.getRotationY())
+                .translateSelf(getPosition());
     }
 
     /**

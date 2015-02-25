@@ -46,7 +46,7 @@ import static org.lwjgl.opengl.GL11.*;
  * VAOs and VBOs. The Batcher is where, all the rendering takes place in SilenceEngine. <p> The batcher is just
  * instantiated like an object, usually only once in a game. Then, you can use the methods defined to add various
  * shapes, or even raw vertices. They get rendered whenever the end method is called. <p> A batcher can also take
- * transforms, and Cameras and render using them. To use them, either pass them to the begin method, or apply them
+ * transforms, and Cameras and render using them. To use them, either pass them to the begin method, or applySelf them
  * manually using the apply[Camera/Transform] methods. <p> After the game completes, before the termination, the dispose
  * method should be called by the user. Better place it in the dispose method of the game.
  *
@@ -198,7 +198,7 @@ public class Batcher
         flush();
 
         // Apply transform
-        transform.apply(t);
+        transform.applySelf(t);
     }
 
     /**
@@ -322,7 +322,7 @@ public class Batcher
     {
         flush();
 
-        transform.apply(m);
+        transform.applySelf(m);
     }
 
     public void vertex(float x, float y)

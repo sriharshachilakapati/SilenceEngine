@@ -290,7 +290,7 @@ public class SceneNode
     public Transform getTransform()
     {
         if (getParent() != null)
-            return combinedTransform.set(transform).apply(parent.getTransform());
+            return combinedTransform.set(transform).applySelf(parent.getTransform());
         else
             return combinedTransform.set(transform);
     }

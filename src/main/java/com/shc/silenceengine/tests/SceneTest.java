@@ -151,8 +151,8 @@ public class SceneTest extends Game
 
             float z = -Math.abs((float) Math.sin(TimeUtils.currentSeconds()));
 
-            getLocalTransform().reset().rotate(Vector3.AXIS_Z, rotation)
-                    .translate(new Vector3(position.getX(), position.getY(), z));
+            getLocalTransform().reset().rotateSelf(Vector3.AXIS_Z, rotation)
+                    .translateSelf(new Vector3(position.getX(), position.getY(), z));
         }
 
         public void render(float delta, Batcher batcher)

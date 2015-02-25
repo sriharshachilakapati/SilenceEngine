@@ -175,7 +175,9 @@ public class Matrix4
 
     public Matrix4 multiplySelf(Matrix4 m)
     {
-        float[][] temp = new float[4][4];
+        // Use a temporary matrix from the matrix stack instead of
+        // creating a temporary float array every frame.
+        Matrix4 temp = Matrix4.REUSABLE_STACK.pop().initZero();
 
         for (int i = 0; i < 4; i++)
         {
@@ -183,12 +185,13 @@ public class Matrix4
             {
                 for (int k = 0; k < 4; k++)
                 {
-                    temp[i][j] += this.m[i][k] * m.get(k, j);
+                    temp.set(i, j, temp.get(i, j) + (this.m[i][k] * m.get(k, j)));
                 }
             }
         }
 
-        this.m = temp;
+        this.set(temp);
+        Matrix4.REUSABLE_STACK.push(temp);
 
         return this;
     }
@@ -226,6 +229,34 @@ public class Matrix4
         return multiply(v, new Vector4());
     }
 
+    /**
+     * Multiplies this matrix with a row matrix defined by the vector \( \vec {v} \) from the right side.
+     * The equation is as follows.
+     *
+     * <p>
+     * $$
+     * \begin{bmatrix}
+     * a &amp; b &amp; c &amp; d \\
+     * e &amp; f &amp; g &amp; h \\
+     * i &amp; j &amp; k &amp; l \\
+     * m &amp; n &amp; o &amp; p
+     * \end{bmatrix}
+     *
+     * \begin{bmatrix} x \\ y \\ z \\ w \end{bmatrix} =
+     *
+     * \begin{bmatrix}
+     * a\cdot x+b\cdot y+c\cdot z+d\cdot w \\
+     * e\cdot x+f\cdot y+g\cdot z+h\cdot w \\
+     * i\cdot x+j\cdot y+k\cdot z+l\cdot w \\
+     * m\cdot x+n\cdot y+o\cdot z+p\cdot w
+     * \end{bmatrix}
+     * $$
+     * </p>
+     *
+     * @param v    The vector to multiply this matrix with.
+     * @param dest The vector to store the result.
+     * @return The destination vector, aka the result.
+     */
     public Vector4 multiply(Vector4 v, Vector4 dest)
     {
         float X = v.x;
@@ -258,17 +289,18 @@ public class Matrix4
 
     public Matrix4 transposeSelf()
     {
-        float[][] temp = new float[4][4];
+        Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
 
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                temp[i][j] = m[j][i];
+                temp.set(i, j, m[j][i]);
             }
         }
 
-        m = temp;
+        this.set(temp);
+        Matrix4.REUSABLE_STACK.push(temp);
 
         return this;
     }

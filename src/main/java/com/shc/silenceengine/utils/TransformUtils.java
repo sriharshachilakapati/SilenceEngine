@@ -35,6 +35,7 @@ public final class TransformUtils
 {
     private static Matrix4 tempMat = new Matrix4();
     private static Vector3 tempVec = new Vector3();
+    private static Quaternion tempQuat = new Quaternion();
 
     private TransformUtils()
     {
@@ -219,6 +220,33 @@ public final class TransformUtils
 //
 //        return result;
 //    }
+
+    public static Quaternion createLookAt(Vector3 eye, Vector3 center, Vector3 up, Quaternion dest)
+    {
+        Vector3 temp = Vector3.REUSABLE_STACK.pop();
+
+        Vector3 forward = temp.set(center).subtractSelf(eye).normalizeSelf();
+
+        Vector3 negativeZ = tempVec.set(Vector3.AXIS_Z).negateSelf();
+
+        float dot = negativeZ.dot(forward);
+
+        if (Math.abs(dot + 1) < 0.000001f)
+            return dest.set(up.x, up.y, up.z, (float) Math.PI);
+
+        if (Math.abs(dot - 1) < 0.000001f)
+            return dest.set();
+
+        float rotAngle = MathUtils.acos(dot);
+        Vector3 rotAxis = negativeZ.crossSelf(forward).normalizeSelf();
+
+        return dest.set(rotAxis, rotAngle);
+    }
+
+    public static Quaternion createLookAt(Vector3 eye, Vector3 center, Vector3 up)
+    {
+        return createLookAt(eye, center, up, tempQuat);
+    }
 
     public static Matrix4 createRotation(Quaternion q)
     {

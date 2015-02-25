@@ -29,7 +29,6 @@ import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Quaternion;
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.utils.MathUtils;
 import com.shc.silenceengine.utils.TransformUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -66,35 +65,18 @@ public class PerspCam extends BaseCamera
 
     public PerspCam lookAt(Vector3 point)
     {
-        Vector3 temp = Vector3.REUSABLE_STACK.pop();
+        return lookAt(point, getUp().normalizeSelf());
+    }
 
-        Vector3 forward = temp.set(point).subtractSelf(position).normalizeSelf();
-        Vector3 up = Vector3.AXIS_Y;
-
-        Vector3 negativeZ = tempVec.set(Vector3.AXIS_Z).negateSelf();
-
-        float dot = negativeZ.dot(forward);
-
-        if (Math.abs(dot + 1) < 0.000001f)
-        {
-            rotation.set(up.x, up.y, up.z, (float) Math.PI);
-            return this;
-        }
-
-        if (Math.abs(dot - 1) < 0.000001f)
-        {
-            rotation.set();
-            return this;
-        }
-
-        float rotAngle = MathUtils.acos(dot);
-        Vector3 rotAxis = negativeZ.crossSelf(forward).normalizeSelf();
-
-        rotation.set(rotAxis, rotAngle);
-
-        Vector3.REUSABLE_STACK.push(temp);
-
+    public PerspCam lookAt(Vector3 point, Vector3 up)
+    {
+        rotation = TransformUtils.createLookAt(position, point, up, rotation);
         return this;
+    }
+
+    public PerspCam lookAt(Vector3 position, Vector3 point, Vector3 up)
+    {
+        return setPosition(position).lookAt(point, up);
     }
 
     public PerspCam moveForward(float amount)
@@ -214,8 +196,9 @@ public class PerspCam extends BaseCamera
         return position;
     }
 
-    public void setPosition(Vector3 position)
+    public PerspCam setPosition(Vector3 position)
     {
         this.position.set(position);
+        return this;
     }
 }

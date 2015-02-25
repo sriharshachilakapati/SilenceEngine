@@ -44,10 +44,20 @@ public class Transform
 
     public Transform translate(Vector2 v)
     {
-        return translate(new Vector3(v, 0));
+        return copy().translateSelf(v);
+    }
+
+    public Transform translateSelf(Vector2 v)
+    {
+        return translateSelf(new Vector3(v, 0));
     }
 
     public Transform translate(Vector3 v)
+    {
+        return copy().translateSelf(v);
+    }
+
+    public Transform translateSelf(Vector3 v)
     {
         tMatrix.multiplySelf(TransformUtils.createTranslation(v));
         return this;
@@ -55,16 +65,35 @@ public class Transform
 
     public Transform rotate(Vector3 axis, float angle)
     {
+        return copy().rotateSelf(axis, angle);
+    }
+
+    public Transform rotateSelf(Vector3 axis, float angle)
+    {
         tMatrix.multiplySelf(TransformUtils.createRotation(axis, angle));
         return this;
     }
 
     public Transform scale(Vector2 scale)
     {
-        return scale(new Vector3(scale, 0));
+        return copy().scaleSelf(scale);
+    }
+
+    public Transform scaleSelf(Vector2 scale)
+    {
+        Vector3 temp = Vector3.REUSABLE_STACK.pop();
+        scaleSelf(temp.set(scale.x, scale.y, 0));
+        Vector3.REUSABLE_STACK.push(temp);
+
+        return this;
     }
 
     public Transform scale(Vector3 scale)
+    {
+        return copy().scaleSelf(scale);
+    }
+
+    public Transform scaleSelf(Vector3 scale)
     {
         tMatrix.multiplySelf(TransformUtils.createScaling(scale));
         return this;
@@ -72,13 +101,33 @@ public class Transform
 
     public Transform apply(Transform transform)
     {
-        return apply(transform.getMatrix());
+        return copy().applySelf(transform);
+    }
+
+    public Transform applySelf(Transform transform)
+    {
+        return applySelf(transform.getMatrix());
     }
 
     public Transform apply(Matrix4 matrix)
     {
+        return copy().applySelf(matrix);
+    }
+
+    public Transform applySelf(Matrix4 matrix)
+    {
         tMatrix.multiplySelf(matrix);
         return this;
+    }
+
+    public Transform apply(Quaternion q)
+    {
+        return copy().applySelf(q);
+    }
+
+    public Transform applySelf(Quaternion q)
+    {
+        return applySelf(TransformUtils.createRotation(q));
     }
 
     public Matrix4 getMatrix()
@@ -86,19 +135,14 @@ public class Transform
         return tMatrix;
     }
 
-    public Transform apply(Quaternion q)
-    {
-        return apply(TransformUtils.createRotation(q));
-    }
-
     public Transform copy()
     {
-        return new Transform().apply(tMatrix);
+        return new Transform().applySelf(tMatrix);
     }
 
     public Transform set(Transform t)
     {
-        return reset().apply(t);
+        return reset().applySelf(t);
     }
 
     public Transform reset()

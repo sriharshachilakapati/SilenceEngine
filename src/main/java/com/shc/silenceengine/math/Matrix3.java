@@ -156,7 +156,9 @@ public class Matrix3
 
     public Matrix3 multiplySelf(Matrix3 m)
     {
-        float[][] temp = new float[3][3];
+        // Use a temporary matrix from the matrix stack instead of
+        // creating a temporary float array every frame.
+        Matrix3 temp = Matrix3.REUSABLE_STACK.pop().initZero();
 
         for (int i = 0; i < 3; i++)
         {
@@ -164,12 +166,13 @@ public class Matrix3
             {
                 for (int k = 0; k < 3; k++)
                 {
-                    temp[i][j] += this.m[i][k] * m.get(k, j);
+                    temp.set(i, j, temp.get(i, j) + (this.m[i][k] * m.get(k, j)));
                 }
             }
         }
 
-        this.m = temp;
+        this.set(temp);
+        Matrix3.REUSABLE_STACK.push(temp);
 
         return this;
     }
@@ -181,17 +184,18 @@ public class Matrix3
 
     public Matrix3 transposeSelf()
     {
-        float[][] temp = new float[3][3];
+        Matrix3 temp = Matrix3.REUSABLE_STACK.pop();
 
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 3; j++)
             {
-                temp[i][j] = m[j][i];
+                temp.set(i, j, m[j][i]);
             }
         }
 
-        m = temp;
+        this.set(temp);
+        Matrix3.REUSABLE_STACK.push(temp);
 
         return this;
     }
