@@ -29,18 +29,58 @@ import com.shc.silenceengine.math.Quaternion;
 import com.shc.silenceengine.math.Vector3;
 
 /**
+ * <p> This class is the core of the SilenceEngine's GraphicsEngine, and does the job of creating transformation
+ * matrices and transformation quaternions. All the other functions call-back to this class. There are two types of
+ * functions in this class. </p>
+ *
+ * <p> The first type of functions accept a parameter called as <code>dest</code>, which is used to store the result in,
+ * and the same result is returned by the function. If you passed <code>null</code> as the <code>dest</code> parameter
+ * then a new instance of the the matrix or quaternion is created. </p>
+ *
+ * <p> The second type of functions doesn't accept any extra parameters, and just call the first above mentioned methods
+ * with a temporary matrix or quaternion. Keep in mind, though, that the life-time of the returned result is only until
+ * you called any function of this class again. The work-around, is to use the <code>REUSABLE_STACK</code> of that
+ * required class to generate a temporary instance. </p>
+ *
+ * <pre>
+ *     Matrix4 temp1 = Matrix4.REUSABLE_STACK.pop();
+ *     Matrix4 temp2 = Matrix4.REUSABLE_STACK.pop();
+ *
+ *     Matrix4 scalingMatrix     = TransformUtils.createScaling(scale, temp1);
+ *     Matrix4 translationMatrix = TransformUtils.createTranslation(translation, temp2);
+ *
+ *     // Use the temporary matrices here until they are pushed to the stack again.
+ *
+ *     Matrix4.REUSABLE_STACK.push(temp1);
+ *     Matrix4.REUSABLE_STACK.push(temp2);
+ * </pre>
+ *
+ * <p> It is always encouraged to use the above work-around as you can get full control on the result matrices and the
+ * quaternions. Also, the first type of functions can be soon removed from the engine completely. </p>
+ *
  * @author Sri Harsha Chilakapati
  */
 public final class TransformUtils
 {
+    // The temporary matrix, vector and quaternion. Will soon be deprecated.
     private static Matrix4 tempMat = new Matrix4();
     private static Vector3 tempVec = new Vector3();
     private static Quaternion tempQuat = new Quaternion();
 
+    /**
+     * Prevent instantiation, this is just a collection of utility functions.
+     */
     private TransformUtils()
     {
     }
 
+    /**
+     * Constructs a transformation matrix that translates the world by a vector translation.
+     *
+     * @param translation The amount to translate on all the axes.
+     *
+     * @return The transformation that does translation.
+     */
     public static Matrix4 createTranslation(Vector3 translation)
     {
         return createTranslation(translation, tempMat);
@@ -186,42 +226,47 @@ public final class TransformUtils
         return result;
     }
 
-//    public static Matrix4 createLookAt(Vector3 eye, Vector3 center, Vector3 up)
-//    {
-//        return createLookAt(eye, center, up, tempMat);
-//    }
-//
-//    public static Matrix4 createLookAt(Vector3 eye, Vector3 center, Vector3 up, Matrix4 dest)
-//    {
-//        if (dest == null)
-//            dest = new Matrix4();
-//
-//        Matrix4 result = dest.initIdentity();
-//
-//        final Vector3 f = center.subtract(eye).normalizeSelf();
-//        final Vector3 s = f.cross(up).normalizeSelf();
-//        final Vector3 u = s.cross(f);
-//
-//        result.set(0, 0, s.x)
-//              .set(1, 0, s.y)
-//              .set(2, 0, s.z);
-//
-//        result.set(0, 1, u.x)
-//              .set(1, 1, u.y)
-//              .set(2, 1, u.z);
-//
-//        result.set(0, 2, -f.x)
-//              .set(1, 2, -f.y)
-//              .set(2, 2, -f.z);
-//
-//        result.set(3, 0, -s.dot(eye))
-//              .set(3, 1, -u.dot(eye))
-//              .set(3, 2, f.dot(eye));
-//
-//        return result;
-//    }
+    public static Matrix4 createLookAtMatrix(Vector3 eye, Vector3 center, Vector3 up)
+    {
+        return createLookAtMatrix(eye, center, up, tempMat);
+    }
 
-    public static Quaternion createLookAt(Vector3 eye, Vector3 center, Vector3 up, Quaternion dest)
+    public static Matrix4 createLookAtMatrix(Vector3 eye, Vector3 center, Vector3 up, Matrix4 dest)
+    {
+        if (dest == null)
+            dest = new Matrix4();
+
+        Matrix4 result = dest.initIdentity();
+
+        final Vector3 f = center.subtract(eye).normalizeSelf();
+        final Vector3 s = f.cross(up).normalizeSelf();
+        final Vector3 u = s.cross(f);
+
+        result.set(0, 0, s.x)
+                .set(1, 0, s.y)
+                .set(2, 0, s.z);
+
+        result.set(0, 1, u.x)
+                .set(1, 1, u.y)
+                .set(2, 1, u.z);
+
+        result.set(0, 2, -f.x)
+                .set(1, 2, -f.y)
+                .set(2, 2, -f.z);
+
+        result.set(3, 0, -s.dot(eye))
+                .set(3, 1, -u.dot(eye))
+                .set(3, 2, f.dot(eye));
+
+        return result;
+    }
+
+    public static Quaternion createLookAtQuaternion(Vector3 eye, Vector3 center, Vector3 up)
+    {
+        return createLookAtQuaternion(eye, center, up, tempQuat);
+    }
+
+    public static Quaternion createLookAtQuaternion(Vector3 eye, Vector3 center, Vector3 up, Quaternion dest)
     {
         Vector3 temp = Vector3.REUSABLE_STACK.pop();
 
@@ -241,11 +286,6 @@ public final class TransformUtils
         Vector3 rotAxis = negativeZ.crossSelf(forward).normalizeSelf();
 
         return dest.set(rotAxis, rotAngle);
-    }
-
-    public static Quaternion createLookAt(Vector3 eye, Vector3 center, Vector3 up)
-    {
-        return createLookAt(eye, center, up, tempQuat);
     }
 
     public static Matrix4 createRotation(Quaternion q)

@@ -24,9 +24,10 @@
 
 package com.shc.silenceengine.models.obj;
 
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.RenderContext;
+import com.shc.silenceengine.graphics.GraphicsEngine;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.math.Transform;
@@ -279,7 +280,7 @@ public class OBJModel extends Model
         OBJFace triangle = faces.get(0);
         triangle.getMaterial().getDiffuseMap().bind();
 
-        RenderContext.useMaterial(triangle.getMaterial());
+        SilenceEngine.graphics.useMaterial(triangle.getMaterial());
 
         if (transform != null)
             batcher.applyTransform(transform);
@@ -300,7 +301,7 @@ public class OBJModel extends Model
 
                     batcher.begin(Primitive.TRIANGLES);
 
-                    RenderContext.useMaterial(face.getMaterial());
+                    SilenceEngine.graphics.useMaterial(face.getMaterial());
                 }
 
                 batcher.flushOnOverflow(3);
@@ -337,7 +338,7 @@ public class OBJModel extends Model
         }
         batcher.end();
 
-        RenderContext.useMaterial(RenderContext.DEFAULT_MATERIAL);
+        SilenceEngine.graphics.useMaterial(GraphicsEngine.DEFAULT_MATERIAL);
     }
 
     @Override

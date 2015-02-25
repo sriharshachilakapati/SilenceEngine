@@ -31,6 +31,7 @@ import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.graphics.programs.DefaultProgram;
 import com.shc.silenceengine.graphics.programs.PointLightProgram;
+import com.shc.silenceengine.models.Material;
 import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -40,12 +41,30 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class GraphicsEngine implements IEngine
 {
+    public static final Material DEFAULT_MATERIAL;
+    private Material currentMaterial;
+
+    static
+    {
+        DEFAULT_MATERIAL = new Material();
+        DEFAULT_MATERIAL.setAmbient(Color.WHITE);
+        DEFAULT_MATERIAL.setSpecular(Color.TRANSPARENT);
+    }
+
+    public Material getCurrentMaterial()
+    {
+        return currentMaterial;
+    }
+
     @Override
     public void init()
     {
         Display.create();
         Display.show();
         Display.centerOnScreen();
+
+        // Use the default material
+        useMaterial(DEFAULT_MATERIAL);
 
         // Load default programs here
         Program.DEFAULT = DefaultProgram.getInstance();
@@ -65,6 +84,11 @@ public class GraphicsEngine implements IEngine
 
         GL3Context.cullFace(GL_FRONT_AND_BACK);
         GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
+    }
+
+    public void useMaterial(Material m)
+    {
+        currentMaterial = m;
     }
 
     @Override

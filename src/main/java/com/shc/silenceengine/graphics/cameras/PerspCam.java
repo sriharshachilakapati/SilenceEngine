@@ -70,8 +70,13 @@ public class PerspCam extends BaseCamera
 
     public PerspCam lookAt(Vector3 point, Vector3 up)
     {
-        rotation = TransformUtils.createLookAt(position, point, up, rotation);
+        rotation = TransformUtils.createLookAtQuaternion(position, point, up, rotation);
         return this;
+    }
+
+    public Vector3 getUp()
+    {
+        return rotation.multiply(Vector3.AXIS_Y, tempVec);
     }
 
     public PerspCam lookAt(Vector3 position, Vector3 point, Vector3 up)
@@ -118,11 +123,6 @@ public class PerspCam extends BaseCamera
     public PerspCam moveUp(float amount)
     {
         return move(getUp(), amount);
-    }
-
-    public Vector3 getUp()
-    {
-        return rotation.multiply(Vector3.AXIS_Y, tempVec);
     }
 
     public PerspCam moveDown(float amount)

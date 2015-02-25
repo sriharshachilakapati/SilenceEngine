@@ -409,12 +409,6 @@ public class Entity2D extends SceneNode
     public Vector2 getVelocity()
     {
         return velocity;
-    }    /**
-     * @return The center position of the entity
-     */
-    public Vector2 getCenter()
-    {
-        return polygon.getCenter();
     }
 
     /**
@@ -425,6 +419,12 @@ public class Entity2D extends SceneNode
     public void setVelocity(Vector2 velocity)
     {
         this.velocity.set(velocity);
+    }    /**
+     * @return The center position of the entity
+     */
+    public Vector2 getCenter()
+    {
+        return polygon.getCenter();
     }
 
     @Override
@@ -448,7 +448,19 @@ public class Entity2D extends SceneNode
                position.equals(entity2D.position) &&
                velocity.equals(entity2D.velocity);
 
-    }    /**
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Entity2D{" +
+               "position=" + position +
+               ", velocity=" + velocity +
+               ", polygon=" + polygon +
+               '}';
+    }
+
+    /**
      * Sets the center position of this entity. Note that the same rotation is also applied to the polygon this entity
      * is using.
      *
@@ -468,15 +480,6 @@ public class Entity2D extends SceneNode
         Vector2.REUSABLE_STACK.push(tempVec2);
     }
 
-    @Override
-    public String toString()
-    {
-        return "Entity2D{" +
-               "position=" + position +
-               ", velocity=" + velocity +
-               ", polygon=" + polygon +
-               '}';
-    }
 
 
 
@@ -487,7 +490,6 @@ public class Entity2D extends SceneNode
     {
         return position;
     }
-
 
 
     /**

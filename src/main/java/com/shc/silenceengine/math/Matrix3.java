@@ -100,19 +100,6 @@ public class Matrix3
         return this;
     }
 
-    public Matrix3 initZero()
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                m[i][j] = 0;
-            }
-        }
-
-        return this;
-    }
-
     public Matrix3 add(Matrix3 m)
     {
         return new Matrix3(this).addSelf(m);
@@ -177,6 +164,26 @@ public class Matrix3
         return this;
     }
 
+    public Matrix3 initZero()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                m[i][j] = 0;
+            }
+        }
+
+        return this;
+    }
+
+    public Matrix3 set(int x, int j, float val)
+    {
+        m[x][j] = val;
+
+        return this;
+    }
+
     public Matrix3 transpose()
     {
         return new Matrix3(this).transposeSelf();
@@ -213,13 +220,6 @@ public class Matrix3
     public Matrix3 copy()
     {
         return new Matrix3(this);
-    }
-
-    public Matrix3 set(int x, int j, float val)
-    {
-        m[x][j] = val;
-
-        return this;
     }
 
     @Override

@@ -119,19 +119,6 @@ public class Matrix4
         return this;
     }
 
-    public Matrix4 initZero()
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                m[i][j] = 0;
-            }
-        }
-
-        return this;
-    }
-
     public Matrix4 add(Matrix4 m)
     {
         return new Matrix4(this).addSelf(m);
@@ -196,6 +183,26 @@ public class Matrix4
         return this;
     }
 
+    public Matrix4 initZero()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                m[i][j] = 0;
+            }
+        }
+
+        return this;
+    }
+
+    public Matrix4 set(int x, int j, float val)
+    {
+        m[x][j] = val;
+
+        return this;
+    }
+
     public Vector3 multiply(Vector3 v)
     {
         return multiply(v, new Vector3());
@@ -230,31 +237,20 @@ public class Matrix4
     }
 
     /**
-     * Multiplies this matrix with a row matrix defined by the vector \( \vec {v} \) from the right side.
-     * The equation is as follows.
+     * Multiplies this matrix with a row matrix defined by the vector \( \vec {v} \) from the right side. The equation
+     * is as follows.
      *
-     * <p>
-     * $$
-     * \begin{bmatrix}
-     * a &amp; b &amp; c &amp; d \\
-     * e &amp; f &amp; g &amp; h \\
-     * i &amp; j &amp; k &amp; l \\
-     * m &amp; n &amp; o &amp; p
-     * \end{bmatrix}
+     * <p> $$ \begin{bmatrix} a &amp; b &amp; c &amp; d \\ e &amp; f &amp; g &amp; h \\ i &amp; j &amp; k &amp; l \\ m
+     * &amp; n &amp; o &amp; p \end{bmatrix}
      *
      * \begin{bmatrix} x \\ y \\ z \\ w \end{bmatrix} =
      *
-     * \begin{bmatrix}
-     * a\cdot x+b\cdot y+c\cdot z+d\cdot w \\
-     * e\cdot x+f\cdot y+g\cdot z+h\cdot w \\
-     * i\cdot x+j\cdot y+k\cdot z+l\cdot w \\
-     * m\cdot x+n\cdot y+o\cdot z+p\cdot w
-     * \end{bmatrix}
-     * $$
-     * </p>
+     * \begin{bmatrix} a\cdot x+b\cdot y+c\cdot z+d\cdot w \\ e\cdot x+f\cdot y+g\cdot z+h\cdot w \\ i\cdot x+j\cdot
+     * y+k\cdot z+l\cdot w \\ m\cdot x+n\cdot y+o\cdot z+p\cdot w \end{bmatrix} $$ </p>
      *
      * @param v    The vector to multiply this matrix with.
      * @param dest The vector to store the result.
+     *
      * @return The destination vector, aka the result.
      */
     public Vector4 multiply(Vector4 v, Vector4 dest)
@@ -308,13 +304,6 @@ public class Matrix4
     public Matrix4 copy()
     {
         return new Matrix4(this);
-    }
-
-    public Matrix4 set(int x, int j, float val)
-    {
-        m[x][j] = val;
-
-        return this;
     }
 
     @Override
