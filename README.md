@@ -8,6 +8,32 @@ A 2D/3D Game Engine written on top of LWJGL3
 
 SilenceEngine is a 2D/3D game engine, that it is meant to take care of all the low level things like Graphics, Input, Asset Loading, Collision Detection for you, meaning that you only need to make your game. It lets you focus on the game play and game design, by doing most of the hard work itself.
 
+## Features
+
+The main feature of SilenceEngine is it's simplicity, the amount of work that you need to do on your own is very less. Though it is meant to take care of everything automatically, it is also completely customizable. Here are a list of features of it.
+
+  - __State Based Games__:
+
+      SilenceEngine supports separating the game logic into different states, like intro state, story state, play state, high score state, game over state, and any other state that you are going to create. This allows you to keep stuff separate and your code base clean and easy to read.
+
+  - __Module Based Engine__:
+
+      SilenceEngine is based on different modules, it is a collection of modules called as _Engines_. There are _Core_ engine, _Audio_ engine, _Graphics_ engine, _Input_ engine, _Collision_ engine, and all these engines make up the SilenceEngine. It is up to you on how you use it, you can use all these as a whole, or you could use each of them separately. Either way, they work.
+
+  - __Completely Customizable__:
+
+      SilenceEngine is designed to be completely customizable. You can change everything from the `ResourceLoader` to the Game Loop, and you can also change the entity parameters. It is totally flexible and also easy to use. It is finally up to you whether you want to extend the components, or to re-implement them in __your__ way.
+
+  - __Automatic Collision Detection__:
+
+      SilenceEngine features with automatic collision detection. All you need to do is give your entities a collision shape, and register the classes in the collider, and the collisions, along with collision response is done for you, in both 2D and 3D. The `CollisionEngine` uses _SAT_ (Separating Axis Theorem) to determine collisions, and hence you get your collision response with good accuracy.
+
+ - __Object Oriented Wrappers for OpenGL and OpenAL__:
+
+     If you think that all the above features are not useful for you, and you want more performance and you love going low level, SilenceEngine provides object oriented wrapper classes for OpenGL and OpenAL. It is up to you how to use them, and other parts of the SilenceEngine cooperates with you.
+
+The above list is only half what SilenceEngine offers to you. It is currently in heavy development, and more features are yet to arrive. In the meanwhile, take a look at the source code, and the example games to get an idea of how to use this engine.
+
 ##Is it only for Games?
 
 Perhaps not, you can create any form of OpenGL application using SilenceEngine. It provides you with OpenGL classes in the `com.shc.silenceengine.graphics.opengl` package, which cleanly wraps the OpenGL functions into Java classes, making them more easy to use. All you have to take care of is that you must call the `dispose()` on those objects when you no longer need them.
@@ -24,3 +50,7 @@ It is also easier to use in Development mode as we will check for OpenGL errors 
 ##Links
 
  - SilenceEngine website ([http://silenceengine.goharsha.com/](http://silenceengine.goharsha.com))
+ - SilenceEngine forum ([http://silenceengine.goharsha.com/forum/](http://silenceengine.goharsha.com/forum/))
+ - SilenceEngine JavaDocs (Less updated) ([http://silenceengine.goharsha.com/javadoc/](http://silenceengine.goharsha.com/javadoc/))
+ - ScorpionHunter (SilenceEngine 2D Demo Game) ([https://github.com/sriharshachilakapati/ScorpionHunter/](https://github.com/sriharshachilakapati/ScorpionHunter/))
+ - Blox (Incomplete, SilenceEngine 3D Demo Game) ([https://github.com/sriharshachilakapati/Blox/](https://github.com/sriharshachilakapati/Blox/))
