@@ -32,8 +32,8 @@ import com.shc.silenceengine.utils.Logger;
 import com.shc.silenceengine.utils.TimeUtils;
 
 /**
- * The basic class for all the games made with SilenceEngine. Every game will simply extend this Game class, and call
- * the start method to play.
+ * <p>The basic class for all the games made with SilenceEngine. Every game will simply extend this Game class, and call
+ * the start method to play.</p>
  *
  * <pre>
  *     public class MyGame extends Game
@@ -60,7 +60,7 @@ import com.shc.silenceengine.utils.TimeUtils;
  *     }
  * </pre>
  *
- * Creating a game in SilenceEngine is as simple as that. This is the skeleton of your game.
+ * <p>Creating a game in SilenceEngine is as simple as that. This is the skeleton of your game.</p>
  *
  * @author Sri Harsha Chilakapati
  */

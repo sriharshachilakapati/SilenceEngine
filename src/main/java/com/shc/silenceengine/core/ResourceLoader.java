@@ -25,11 +25,9 @@
 package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.audio.Sound;
-import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.Graphics2D;
 import com.shc.silenceengine.graphics.TrueTypeFont;
-import com.shc.silenceengine.graphics.opengl.GL3Context;
-import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.models.Model;
 import com.shc.silenceengine.utils.FileUtils;
@@ -39,14 +37,13 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.*;
-
 /**
  * @author Sri Harsha Chilakapati
  */
 public final class ResourceLoader
 {
     private static ResourceLoader instance;
+
     private Map<Integer, Texture> textures;
     private Map<Integer, TrueTypeFont> fonts;
     private Map<Integer, Sound> sounds;
@@ -55,8 +52,10 @@ public final class ResourceLoader
     private Map<String, Integer> fontsToLoad;
     private Map<String, Integer> soundsToLoad;
     private Map<String, Integer> modelsToLoad;
+
     private int numLoaded;
     private Texture logo;
+
     // How much progress that is rendered, used to smooth the
     // transition in the progressbar.
     private float renderedProgress;
@@ -90,6 +89,12 @@ public final class ResourceLoader
     {
         logo.dispose();
         logo = Texture.fromResource(logoName);
+    }
+
+    public void setLogo(Texture logo)
+    {
+        this.logo.dispose();
+        this.logo = logo;
     }
 
     public int defineTexture(String name)
@@ -187,78 +192,56 @@ public final class ResourceLoader
 
         while (renderedProgress < percentage)
         {
-            logo.bind();
+            // Begin an engine frame
+            SilenceEngine.graphics.beginFrame();
+
             renderedProgress = MathUtils.clamp(++renderedProgress, 0, 100);
 
-            // Bring percentage to a scale (-0.8f to +0.8f)
-            float actualPercentage = ((renderedProgress * 1.6f) / 100) - 0.8f;
+            // Bring percentage to a scale of 100 - width - 100
+            float actualPercentage = MathUtils.convertRange(renderedProgress, 0, 100, 100, Display.getWidth() - 100);
 
-            GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
+            // Draw using Graphics2D
+            Graphics2D g2d = Game.getGraphics2D();
 
-            Batcher batcher = Game.getBatcher();
+            // Draw the logo in the center
+            float logoX = Display.getWidth()/2 - logo.getWidth()/2;
+            float logoY = Display.getHeight()/2 - logo.getHeight()/2;
+            float logoW = logo.getWidth();
+            float logoH = logo.getHeight();
 
-            // Draw the logo
-            batcher.begin(Primitive.TRIANGLE_STRIP);
+            // Check if the logo fits in the display. Otherwise, make it fit.
+            if (logoW > Display.getWidth())
             {
-                batcher.vertex(-0.5f, +0.5f);
-                batcher.texCoord(0, 0);
-
-                batcher.vertex(+0.5f, +0.5f);
-                batcher.texCoord(1, 0);
-
-                batcher.vertex(-0.5f, -0.5f);
-                batcher.texCoord(0, 1);
-
-                batcher.vertex(+0.5f, -0.5f);
-                batcher.texCoord(1, 1);
+                logoX = 0;
+                logoW = Display.getWidth();
             }
-            batcher.end();
 
-            Texture.EMPTY.bind();
-
-            // Draw the progressbar
-            batcher.begin(Primitive.LINE_LOOP);
+            if (logoH > Display.getHeight())
             {
-                batcher.vertex(-0.8f, -0.7f);
-                batcher.color(Color.GREEN);
-
-                batcher.vertex(+0.8f, -0.7f);
-                batcher.color(Color.GREEN);
-
-                batcher.vertex(+0.8f, -0.7f);
-                batcher.color(Color.GREEN);
-
-                batcher.vertex(-0.8f, -0.7f);
-                batcher.color(Color.GREEN);
+                logoY = 0;
+                logoH = Display.getHeight();
             }
-            batcher.end();
 
-            batcher.begin(Primitive.TRIANGLE_STRIP);
-            {
-                batcher.vertex(-0.8f, -0.6f);
-                batcher.color(Color.BLUE);
+            // Draw the logo finally
+            g2d.drawTexture(logo, logoX, logoY, logoW, logoH);
 
-                batcher.vertex(actualPercentage, -0.6f);
-                batcher.color(Color.GRAY);
+            // Draw the progress bar
+            g2d.setColor(Color.GREEN);
+            g2d.drawRect(50, Display.getHeight() - 75, Display.getWidth() - 100, 25);
+            g2d.setColor(Color.BLUE.add(Color.GRAY));
+            g2d.fillRect(50, Display.getHeight() - 75, actualPercentage, 25);
 
-                batcher.vertex(-0.8f, -0.7f);
-                batcher.color(Color.BLUE);
-
-                batcher.vertex(actualPercentage, -0.7f);
-                batcher.color(Color.GRAY);
-            }
-            batcher.end();
-
-            Display.update();
             try
             {
-                Thread.sleep(1 / Game.getTargetUPS());
+                Thread.sleep(1);
             }
             catch (Exception e)
             {
-                throw new SilenceException(e.getMessage());
+                SilenceException.reThrow(e);
             }
+
+            // End the frame, updating the screen
+            SilenceEngine.graphics.endFrame();
         }
     }
 
