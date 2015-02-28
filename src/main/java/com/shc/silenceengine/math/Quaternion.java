@@ -24,7 +24,6 @@
 
 package com.shc.silenceengine.math;
 
-import com.shc.silenceengine.utils.MathUtils;
 import com.shc.silenceengine.utils.ReusableStack;
 
 /**
@@ -298,18 +297,10 @@ public class Quaternion
         float scale1, scale2;
 
         if ((1 - dot) > 0.1)
-        {
-            float angle = MathUtils.acos(dot);
-            float sinAngle = 1f / MathUtils.sin(angle);
+            return lerpSelf(target, alpha);
 
-            scale1 = MathUtils.sin((1f - alpha) * angle) * sinAngle;
-            scale2 = MathUtils.sin((alpha * angle)) * sinAngle;
-        }
-        else
-        {
-            scale1 = 1f - alpha;
-            scale2 = alpha;
-        }
+        scale1 = 1f - alpha;
+        scale2 = alpha;
 
         if (dot < 0.f)
             scale2 = -scale2;
