@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.math;
 
+import com.shc.silenceengine.utils.MathUtils;
 import com.shc.silenceengine.utils.ReusableStack;
 
 /**
@@ -262,6 +263,68 @@ public class Quaternion
     public Quaternion conjugateSelf()
     {
         return set(-x, -y, -z, w);
+    }
+
+    public Quaternion lerp(Quaternion target, float alpha)
+    {
+        return copy().lerpSelf(target, alpha);
+    }
+
+    public Quaternion lerpSelf(Quaternion target, float alpha)
+    {
+        Vector4 temp1 = Vector4.REUSABLE_STACK.pop();
+        Vector4 temp2 = Vector4.REUSABLE_STACK.pop();
+
+        Vector4 start = temp1.set(x, y, z, w);
+        Vector4 end   = temp2.set(target.x, target.y, target.z, target.w);
+        Vector4 lerp  = start.lerpSelf(end, alpha).normalizeSelf();
+
+        set(lerp.x, lerp.y, lerp.z, lerp.w);
+
+        Vector4.REUSABLE_STACK.push(temp1);
+        Vector4.REUSABLE_STACK.push(temp2);
+
+        return this;
+    }
+
+    public Quaternion slerp(Quaternion target, float alpha)
+    {
+        return copy().slerpSelf(target, alpha);
+    }
+
+    public Quaternion slerpSelf(Quaternion target, float alpha)
+    {
+        final float dot = dot(target);
+        float scale1, scale2;
+
+        if ((1 - dot) > 0.1)
+        {
+            float angle = MathUtils.acos(dot);
+            float sinAngle = 1f / MathUtils.sin(angle);
+
+            scale1 = MathUtils.sin((1f - alpha) * angle) * sinAngle;
+            scale2 = MathUtils.sin((alpha * angle)) * sinAngle;
+        }
+        else
+        {
+            scale1 = 1f - alpha;
+            scale2 = alpha;
+        }
+
+        if (dot < 0.f)
+            scale2 = -scale2;
+
+        x = (scale1 * x) + (scale2 * target.x);
+        y = (scale1 * y) + (scale2 * target.y);
+        z = (scale1 * z) + (scale2 * target.z);
+        w = (scale1 * w) + (scale2 * target.w);
+
+        return this;
+    }
+
+    public float dot(Quaternion q)
+    {
+        return x * q.x + y * q.y + z * q.z + w * q.w;
     }
 
     public float getX()

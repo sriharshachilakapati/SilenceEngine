@@ -42,9 +42,10 @@ public class PerspCam extends BaseCamera
 
     private Vector3 position;
     private Quaternion rotation;
-    private Quaternion tempQuat;
 
-    private Vector3 tempVec;
+    private Vector3 forward;
+    private Vector3 right;
+    private Vector3 up;
 
     public PerspCam()
     {
@@ -58,9 +59,10 @@ public class PerspCam extends BaseCamera
 
         position = new Vector3(0, 0, 1);
         rotation = new Quaternion();
-        tempQuat = new Quaternion();
 
-        tempVec = new Vector3();
+        forward = new Vector3();
+        right = new Vector3();
+        up = new Vector3();
     }
 
     public PerspCam lookAt(Vector3 point)
@@ -76,7 +78,7 @@ public class PerspCam extends BaseCamera
 
     public Vector3 getUp()
     {
-        return rotation.multiply(Vector3.AXIS_Y, tempVec);
+        return rotation.multiply(Vector3.AXIS_Y, up);
     }
 
     public PerspCam lookAt(Vector3 position, Vector3 point, Vector3 up)
@@ -97,7 +99,7 @@ public class PerspCam extends BaseCamera
 
     public Vector3 getForward()
     {
-        return rotation.multiply(Vector3.AXIS_Z.negate(), tempVec);
+        return rotation.multiply(Vector3.AXIS_Z.negate(), forward);
     }
 
     public PerspCam moveBackward(float amount)
@@ -112,7 +114,7 @@ public class PerspCam extends BaseCamera
 
     public Vector3 getRight()
     {
-        return rotation.multiply(Vector3.AXIS_X, tempVec);
+        return rotation.multiply(Vector3.AXIS_X, right);
     }
 
     public PerspCam moveRight(float amount)
@@ -132,16 +134,40 @@ public class PerspCam extends BaseCamera
 
     public PerspCam rotateX(float angle)
     {
+        Quaternion tempQuat = Quaternion.REUSABLE_STACK.pop();
+
         Quaternion xRot = tempQuat.set(Vector3.AXIS_X, angle);
         rotation.multiplySelf(xRot);
+
+        Quaternion.REUSABLE_STACK.push(tempQuat);
 
         return this;
     }
 
     public PerspCam rotateY(float angle)
     {
+        Quaternion tempQuat = Quaternion.REUSABLE_STACK.pop();
+
         Quaternion yRot = tempQuat.set(Vector3.AXIS_Y, angle);
         rotation.set(yRot.multiplySelf(rotation));
+
+        Quaternion.REUSABLE_STACK.push(tempQuat);
+
+        return this;
+    }
+
+    public PerspCam lerp(PerspCam p, float alpha)
+    {
+        position.lerpSelf(p.position, alpha);
+        rotation.lerpSelf(p.rotation, alpha);
+
+        return this;
+    }
+
+    public PerspCam slerp(PerspCam p, float alpha)
+    {
+        position.lerpSelf(p.position, alpha);
+        rotation.slerpSelf(p.rotation, alpha);
 
         return this;
     }
@@ -199,6 +225,18 @@ public class PerspCam extends BaseCamera
     public PerspCam setPosition(Vector3 position)
     {
         this.position.set(position);
+        return this;
+    }
+
+    public Quaternion getRotation()
+    {
+        return rotation;
+    }
+
+    public PerspCam setRotation(Quaternion rotation)
+    {
+        this.rotation.set(rotation);
+
         return this;
     }
 }

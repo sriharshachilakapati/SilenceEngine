@@ -76,6 +76,7 @@ public class ALBuffer
             alBufferData(id, format.getAlFormat(), (IntBuffer) data, frequency);
 
         else if (data instanceof ShortBuffer)
+            alBufferData(id, format.getAlFormat(), (ShortBuffer) data, frequency);
 
             ALError.check();
     }

@@ -37,6 +37,31 @@ public final class MathUtils
     {
     }
 
+    public static int abs(int value)
+    {
+        return Math.abs(value);
+    }
+
+    public static float abs(float value)
+    {
+        return Math.abs(value);
+    }
+
+    public static short abs(short value)
+    {
+        return (short) Math.abs(value);
+    }
+
+    public static double abs(double value)
+    {
+        return Math.abs(value);
+    }
+
+    public static long abs(long value)
+    {
+        return Math.abs(value);
+    }
+
     public static float cot(float angle)
     {
         return 1f / tan(angle);

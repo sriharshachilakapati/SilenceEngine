@@ -307,6 +307,20 @@ public class Vector4
         return scaleSelf(v.x, v.y, v.z, v.w);
     }
 
+    public Vector4 lerp(Vector4 target, float alpha)
+    {
+        return copy().lerpSelf(target, alpha);
+    }
+
+    public Vector4 lerpSelf(Vector4 target, float alpha)
+    {
+        Vector4 temp = Vector4.REUSABLE_STACK.pop();
+        scaleSelf(1f - alpha).addSelf(temp.set(target).scaleSelf(alpha));
+        Vector4.REUSABLE_STACK.push(temp);
+
+        return this;
+    }
+
     public float getX()
     {
         return x;
@@ -424,6 +438,11 @@ public class Vector4
     public Vector4 set(float x, Vector3 v)
     {
         return set(x, v.x, v.y, v.z);
+    }
+
+    public Vector4 set(Vector4 v)
+    {
+        return set(v.x, v.y, v.z, v.w);
     }
 
     public Vector2 getXX()
