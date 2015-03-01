@@ -24,13 +24,35 @@
 
 #version 330 core
 
+/**
+ * The Material structure stores the details about the material
+ */
+struct Material
+{
+    vec4 ambientColor;
+    vec4 diffuseColor;
+    vec4 specularColor;
+
+    float dissolve;
+    float specularPower;
+    float illumination;
+};
+
+// The light structure
+struct Light
+{
+    float intensity;
+    vec3 position;
+    vec4 color;
+};
+
 uniform mat4 mTransform;
 uniform mat4 camProj;
 uniform mat4 camView;
 
 uniform sampler2D textureID;
-
-uniform vec4 ambient;
+uniform Material material;
+uniform Light light;
 
 in vec4 vColor;
 in vec4 vNormal;
@@ -39,34 +61,52 @@ in vec2 vTexCoords;
 
 layout(location = 0) out vec4 fragColor;
 
-// The light structure
-uniform struct Light
-{
-    vec3 position;
-    vec4 color;
-}
-light;
-
-void main()
+vec4 getBaseColor()
 {
     // Create the texture color
     vec4 texColor = texture(textureID, vTexCoords);
 
-    // Create the baseColor from texture color and vColor
-    vec4 baseColor = vec4(min(texColor.rgb + vColor.rgb, vec3(1.0)), texColor.a * vColor.a);
+    return vec4(min(texColor.rgb + vColor.rgb, vec3(1.0)), texColor.a * vColor.a);
+}
 
-    // Calculate the point light
+vec4 getPointLight()
+{
     mat4 modelMatrix = camProj * camView * mTransform;
     mat4 lightMatrix = camProj * camView;
 
     mat3 normalMatrix = transpose(inverse(mat3(modelMatrix)));
-    vec3 normal = normalMatrix * vec3(vNormal);
+    vec3 normal = normalize(normalMatrix * vec3(vNormal));
 
-    vec3 fragPosition = vec3(modelMatrix * vPosition);
-    vec3 surfaceToLight = vec3(lightMatrix * vec4(light.position, 1)) - fragPosition;
+    vec3 surfacePos = vec3(modelMatrix * vPosition);
+    vec3 surfaceToLight = normalize(vec3(lightMatrix * vec4(light.position, 1)) - surfacePos);
+    vec3 surfaceToEye = reflect(-surfaceToLight, normal);
 
-    float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
-    brightness = clamp(brightness, 0, 1);
+    // The brightness
+    float brightness = clamp(max(0.0, dot(normal, surfaceToLight)), 0.0, 1.0);
 
-    fragColor = brightness * light.color * baseColor;
+    // Ambient light
+    vec4 ambient = material.dissolve * material.ambientColor * light.color;
+
+    // Diffuse light
+    float diffuseCoefficient = material.illumination * brightness;
+    vec4 diffuse = diffuseCoefficient * material.diffuseColor * light.color;
+
+    // Specular light
+    float specularCoefficient = 0.0;
+
+    if(diffuseCoefficient > 0.0)
+        specularCoefficient = pow(max(0.0, dot(surfaceToLight, surfaceToEye)), material.specularPower);
+
+    vec4 specular = specularCoefficient * material.specularColor * light.color;
+
+    // Attenuation
+    float distanceToLight = length(surfaceToLight);
+    float attenuation = 1.0 / (1.0 + material.illumination * pow(distanceToLight, 2));
+
+    return brightness * (ambient + attenuation * light.color * (diffuse + specular));
+}
+
+void main()
+{
+    fragColor = getBaseColor() * getPointLight();
 }

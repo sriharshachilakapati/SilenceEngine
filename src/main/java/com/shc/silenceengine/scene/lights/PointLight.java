@@ -37,6 +37,7 @@ public class PointLight extends SceneComponent
 {
     private Vector3 position;
     private Color color;
+    private float intensity;
 
     public PointLight()
     {
@@ -45,8 +46,14 @@ public class PointLight extends SceneComponent
 
     public PointLight(Vector3 position, Color color)
     {
+        this(position, color, 1);
+    }
+
+    public PointLight(Vector3 position, Color color, float intensity)
+    {
         this.position = position.copy();
         this.color = color.copy();
+        this.intensity = intensity;
     }
 
     public void use()
@@ -56,6 +63,7 @@ public class PointLight extends SceneComponent
 
         program.setUniform("light.position", position);
         program.setUniform("light.color", color);
+        program.setUniform("light.intensity", intensity);
     }
 
     public void release()

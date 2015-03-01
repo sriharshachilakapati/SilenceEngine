@@ -27,6 +27,7 @@ package com.shc.silenceengine.graphics.programs;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.Material;
 import com.shc.silenceengine.graphics.cameras.BaseCamera;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
@@ -77,12 +78,21 @@ public class PointLightProgram extends Program
         GL3Context.enable(GL11.GL_BLEND);
         GL3Context.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        // Uniforms
+        // Standard Uniforms
         setUniform("textureID", Texture.getActiveUnit());
         setUniform("mTransform", batcher.getTransform().getMatrix());
         setUniform("camProj", BaseCamera.CURRENT.getProjection());
         setUniform("camView", BaseCamera.CURRENT.getView());
-        setUniform("ambient", SilenceEngine.graphics.getCurrentMaterial().getAmbient());
+
+        Material material = SilenceEngine.graphics.getCurrentMaterial();
+
+        // Material Uniforms
+        setUniform("material.ambientColor", material.getAmbient());
+        setUniform("material.diffuseColor", material.getDiffuse());
+        setUniform("material.specularColor", material.getSpecular());
+        setUniform("material.dissolve", material.getDissolve());
+        setUniform("material.illumination", material.getIllumination());
+        setUniform("material.specularPower", material.getSpecularPower());
 
         // Batcher locations
         batcher.setVertexLocation(0);
