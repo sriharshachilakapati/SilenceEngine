@@ -33,7 +33,6 @@ import com.shc.silenceengine.graphics.programs.DefaultProgram;
 import com.shc.silenceengine.graphics.programs.PointLightProgram;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL30.*;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -80,8 +79,6 @@ public class GraphicsEngine implements IEngine
         // Initialize OpenGL
         GL3Context.enable(GL_BLEND);
         GL3Context.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        GL3Context.enable(GL_FRAMEBUFFER_SRGB);
 
         GL3Context.cullFace(GL_FRONT_AND_BACK);
         GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());

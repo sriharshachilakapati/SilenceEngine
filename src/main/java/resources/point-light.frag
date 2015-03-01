@@ -103,7 +103,12 @@ vec4 getPointLight()
     float distanceToLight = length(surfaceToLight);
     float attenuation = 1.0 / (1.0 + material.illumination * pow(distanceToLight, 2));
 
-    return brightness * (ambient + attenuation * light.color * (diffuse + specular));
+    // The linear color
+    vec3 linearColor = vec3(ambient + attenuation * light.color * (diffuse + specular));
+
+    // Gamma correction
+    vec3 gamma = vec3(1.0/2.2);
+    return brightness * vec4(pow(linearColor, gamma), getBaseColor().a);
 }
 
 void main()
