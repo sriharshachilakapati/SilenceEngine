@@ -222,7 +222,10 @@ public class Game
             SilenceEngine.getInstance().beginFrame();
 
             if (Display.isCloseRequested() || !isRunning())
+            {
+                Game.end();
                 break;
+            }
 
             if (Display.wasResized())
             {
