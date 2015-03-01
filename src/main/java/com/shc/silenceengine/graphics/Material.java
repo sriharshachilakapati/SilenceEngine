@@ -22,9 +22,8 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.models;
+package com.shc.silenceengine.graphics;
 
-import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.opengl.Texture;
 
 /**

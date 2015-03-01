@@ -31,10 +31,9 @@ import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.graphics.programs.DefaultProgram;
 import com.shc.silenceengine.graphics.programs.PointLightProgram;
-import com.shc.silenceengine.models.Material;
-import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -76,11 +75,13 @@ public class GraphicsEngine implements IEngine
         Texture.EMPTY.bind();
 
         GL3Context.clearColor(Color.BLACK);
-        GL3Context.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Initialize OpenGL
         GL3Context.enable(GL_BLEND);
         GL3Context.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        GL3Context.enable(GL_FRAMEBUFFER_SRGB);
 
         GL3Context.cullFace(GL_FRONT_AND_BACK);
         GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
@@ -94,7 +95,7 @@ public class GraphicsEngine implements IEngine
     @Override
     public void beginFrame()
     {
-        GL3Context.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         Texture.setActiveUnit(0);
     }
 

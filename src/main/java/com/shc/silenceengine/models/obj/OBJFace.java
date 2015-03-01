@@ -25,7 +25,7 @@
 package com.shc.silenceengine.models.obj;
 
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.models.Material;
+import com.shc.silenceengine.graphics.Material;
 
 /**
  * @author Sri Harsha Chilakapati

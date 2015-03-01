@@ -33,7 +33,7 @@ import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.models.Material;
+import com.shc.silenceengine.graphics.Material;
 import com.shc.silenceengine.models.Model;
 import com.shc.silenceengine.utils.FileUtils;
 
