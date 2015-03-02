@@ -88,7 +88,7 @@ vec4 getPointLight()
     vec4 ambient = material.dissolve * material.ambientColor * light.color;
 
     // Diffuse light
-    float diffuseCoefficient = material.illumination * brightness;
+    float diffuseCoefficient = material.illumination / brightness;
     vec4 diffuse = diffuseCoefficient * material.diffuseColor * light.color;
 
     // Specular light

@@ -396,7 +396,7 @@ public class Batcher
 
     public void normal(float x, float y, float z)
     {
-        normal(x, y, z, 1);
+        normal(x, y, z, 0);
     }
 
     public void normal(float x, float y, float z, float w)
@@ -405,12 +405,12 @@ public class Batcher
         normalCount++;
     }
 
-    /* Draw Texture */
-
     public void normal(Vector3 n)
     {
-        normal(n.getX(), n.getY(), n.getZ(), 1);
+        normal(n.getX(), n.getY(), n.getZ(), 0);
     }
+
+    /* Draw Texture */
 
     public void drawTexture2d(Texture texture, Vector2 p)
     {
