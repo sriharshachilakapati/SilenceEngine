@@ -244,6 +244,9 @@ public class Game
 
             while (lag > frameTime && skippedFrames < maxFrameSkips)
             {
+                if (Display.wasDirty())
+                    dirtyDisplay();
+
                 // Input needs to be updated even faster!
                 SilenceEngine.input.beginFrame();
                 {
@@ -361,6 +364,10 @@ public class Game
      * Handle the window-resize event. Used to set the view-port and re-size the camera.
      */
     public void resize()
+    {
+    }
+
+    public void dirtyDisplay()
     {
     }
 }

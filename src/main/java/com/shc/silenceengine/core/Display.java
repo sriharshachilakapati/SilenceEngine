@@ -86,6 +86,7 @@ public final class Display
     private static boolean fullScreen = false;
     private static boolean resizable = true;
     private static boolean vSync = true;
+    private static boolean dirty = false;
 
     // Clear color
     private static Color clearColor = Color.BLACK;
@@ -202,6 +203,8 @@ public final class Display
         glfwSetCursorPosCallback(window, winCurPosCallback = GLFWCursorPosCallback(Mouse::glfwCursorCallback));
         glfwSetScrollCallback(window, winScrollCallback = GLFWScrollCallback(Mouse::glfwScrollCallback));
         glfwSetMouseButtonCallback(window, winMouseButtonCallback = GLFWMouseButtonCallback(Mouse::glfwMouseButtonCallback));
+
+        Display.dirty = true;
 
         return window;
     }
@@ -548,6 +551,11 @@ public final class Display
         }
 
         return false;
+    }
+
+    public static boolean wasDirty()
+    {
+        return dirty && (Display.dirty = false);
     }
 
     /**
