@@ -119,6 +119,8 @@ public class Controller
     private Type type;
     private Map<Integer, Boolean> buttons;
     private Map<Integer, Float> axes;
+    private Map<Integer, Float> axesThisFrame;
+    private Map<Integer, Float> axesLastFrame;
     private Map<Integer, Boolean> buttonsThisFrame;
     private Map<Integer, Boolean> buttonsLastFrame;
 
@@ -132,6 +134,9 @@ public class Controller
 
         buttonsThisFrame = new HashMap<>();
         buttonsLastFrame = new HashMap<>();
+
+        axesThisFrame = new HashMap<>();
+        axesLastFrame = new HashMap<>();
 
         // Calculate the number of buttons of this controller
         ByteBuffer buttons = glfwGetJoystickButtons(id);
@@ -218,6 +223,9 @@ public class Controller
     {
         buttonsThisFrame.clear();
         buttonsThisFrame.putAll(buttons);
+
+        axesThisFrame.clear();
+        axesThisFrame.putAll(axes);
     }
 
     public static void clearEventFrame()
@@ -230,6 +238,9 @@ public class Controller
     {
         buttonsLastFrame.clear();
         buttonsLastFrame.putAll(buttonsThisFrame);
+
+        axesLastFrame.clear();
+        axesLastFrame.putAll(axesThisFrame);
     }
 
     public static Controller[] getConnectedControllers()
@@ -309,6 +320,22 @@ public class Controller
         return axes.get(axe);
     }
 
+    public float getClickAxe(int axe)
+    {
+        if (axesLastFrame.get(axe) != 0)
+            return 0;
+
+        return axesThisFrame.get(axe);
+    }
+
+    public static float getClickAxe(int axe, int controller)
+    {
+        if (controllers == null)
+            create();
+
+        return controller < controllers.length ? controllers[controller].getClickAxe(axe) : 0;
+    }
+
     public void printValues()
     {
         printValues(false);
@@ -326,7 +353,7 @@ public class Controller
 
         axes.keySet().forEach(i ->
         {
-            float value = getAxe(i);
+            float value = repeat ? getAxe(i) : getClickAxe(i);
 
             if (value != 0)
                 System.out.println("Axe " + i + ": " + value);
