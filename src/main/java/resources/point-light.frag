@@ -42,6 +42,7 @@ struct Material
 struct Light
 {
     float intensity;
+    float range;
     vec3 position;
     vec4 color;
 };
@@ -86,6 +87,10 @@ vec4 getPointLight()
 
     // Ambient light
     vec4 ambient = material.dissolve * material.ambientColor * light.color;
+
+    // Check if in range
+    if (light.range < length(vec3(lightMatrix * vec4(light.position, 1)) - surfacePos))
+        return vec4(0.0);
 
     // Diffuse light
     float diffuseCoefficient = material.illumination / brightness;
