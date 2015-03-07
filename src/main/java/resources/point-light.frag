@@ -79,18 +79,20 @@ vec4 getPointLight()
     vec3 normal = normalize(normalMatrix * vec3(vNormal));
 
     vec3 surfacePos = vec3(modelMatrix * vPosition);
-    vec3 surfaceToLight = normalize(vec3(lightMatrix * vec4(light.position, 1)) - surfacePos);
-    vec3 surfaceToEye = reflect(-surfaceToLight, normal);
+    vec3 surfaceToLight = vec3(lightMatrix * vec4(light.position, 1)) - surfacePos;
+    vec3 surfaceToEye = reflect(-normalize(surfaceToLight), normal);
 
     // The brightness
-    float brightness = clamp(max(0.0, dot(normal, surfaceToLight)), 0.0, 1.0);
+    float brightness = light.intensity * clamp(max(0.0, dot(normal, normalize(surfaceToLight))), 0.0, 1.0);
 
     // Ambient light
     vec4 ambient = material.dissolve * material.ambientColor * light.color;
 
     // Check if in range
-    if (light.range < length(vec3(lightMatrix * vec4(light.position, 1)) - surfacePos))
+    if (light.range < length(surfaceToLight))
         return vec4(0.0);
+
+    brightness /= length(surfaceToEye);
 
     // Diffuse light
     float diffuseCoefficient = material.illumination / brightness;
@@ -100,7 +102,7 @@ vec4 getPointLight()
     float specularCoefficient = 0.0;
 
     if(diffuseCoefficient > 0.0)
-        specularCoefficient = pow(max(0.0, dot(surfaceToLight, surfaceToEye)), material.specularPower);
+        specularCoefficient = pow(max(0.0, dot(normalize(surfaceToLight), surfaceToEye)), material.specularPower);
 
     vec4 specular = specularCoefficient * material.specularColor * light.color;
 
