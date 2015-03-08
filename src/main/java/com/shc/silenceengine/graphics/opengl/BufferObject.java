@@ -52,9 +52,9 @@ import static org.lwjgl.opengl.GL31.*;
 public class BufferObject
 {
     private static Map<Integer, BufferObject> current = new HashMap<>();
-    private int id;
-    private int capacity;
-    private Target target;
+    private int     id;
+    private int     capacity;
+    private Target  target;
     private boolean disposed;
 
     /**

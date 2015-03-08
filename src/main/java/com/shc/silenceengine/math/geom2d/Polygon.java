@@ -35,10 +35,10 @@ import java.util.List;
  */
 public class Polygon
 {
-    private Vector2 position;
-    private Vector2 center;
+    private Vector2       position;
+    private Vector2       center;
     private List<Vector2> vertices;
-    private float rotation;
+    private float         rotation;
 
     private float minX;
     private float minY;

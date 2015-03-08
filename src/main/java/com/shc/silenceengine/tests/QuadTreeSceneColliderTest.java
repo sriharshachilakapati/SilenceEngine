@@ -42,9 +42,9 @@ import com.shc.silenceengine.utils.RenderUtils;
  */
 public class QuadTreeSceneColliderTest extends Game
 {
-    private Scene scene;
+    private Scene                 scene;
     private QuadTreeSceneCollider collider;
-    private OrthoCam cam;
+    private OrthoCam              cam;
 
     public static void main(String[] args)
     {

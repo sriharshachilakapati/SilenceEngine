@@ -35,7 +35,7 @@ import static org.lwjgl.openal.AL10.*;
  */
 public class ALSource
 {
-    private int id;
+    private int     id;
     private boolean disposed;
 
     /**

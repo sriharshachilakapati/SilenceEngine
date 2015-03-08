@@ -275,8 +275,8 @@ public class Quaternion
         Vector4 temp2 = Vector4.REUSABLE_STACK.pop();
 
         Vector4 start = temp1.set(x, y, z, w);
-        Vector4 end   = temp2.set(target.x, target.y, target.z, target.w);
-        Vector4 lerp  = start.lerpSelf(end, alpha).normalizeSelf();
+        Vector4 end = temp2.set(target.x, target.y, target.z, target.w);
+        Vector4 lerp = start.lerpSelf(end, alpha).normalizeSelf();
 
         set(lerp.x, lerp.y, lerp.z, lerp.w);
 

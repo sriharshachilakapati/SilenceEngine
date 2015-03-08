@@ -61,12 +61,12 @@ public final class Display
     private static long displayHandle = NULL;
 
     // Width and height of the display
-    private static int width = 640;
+    private static int width  = 640;
     private static int height = 480;
 
     // Width and height of windowed display, used to
     // restore the properties to the newly created one
-    private static int oldWidth = 640;
+    private static int oldWidth  = 640;
     private static int oldHeight = 480;
 
     // Position of the windowed display, restored when
@@ -82,23 +82,23 @@ public final class Display
     private static String title = "SilenceEngine";
 
     // Private flags to maintain the Display
-    private static boolean resized = false;
+    private static boolean resized    = false;
     private static boolean fullScreen = false;
-    private static boolean resizable = true;
-    private static boolean vSync = true;
-    private static boolean dirty = false;
+    private static boolean resizable  = true;
+    private static boolean vSync      = true;
+    private static boolean dirty      = false;
 
     // Clear color
     private static Color clearColor = Color.BLACK;
 
     // Callbacks from GLFW
-    private static GLFWWindowSizeCallback winSizeCallback;
-    private static GLFWKeyCallback winKeyCallback;
-    private static GLFWWindowPosCallback winPosCallback;
-    private static GLFWCursorPosCallback winCurPosCallback;
+    private static GLFWWindowSizeCallback  winSizeCallback;
+    private static GLFWKeyCallback         winKeyCallback;
+    private static GLFWWindowPosCallback   winPosCallback;
+    private static GLFWCursorPosCallback   winCurPosCallback;
     private static GLFWMouseButtonCallback winMouseButtonCallback;
-    private static GLFWScrollCallback winScrollCallback;
-    private static GLFWErrorCallback errorCallback;
+    private static GLFWScrollCallback      winScrollCallback;
+    private static GLFWErrorCallback       errorCallback;
 
     /**
      * Private constructor. Prevent instantiation
@@ -243,7 +243,7 @@ public final class Display
 
         ByteBuffer vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(displayHandle, (GLFWvidmode.width(vidMode) - width) / 2,
-                (GLFWvidmode.height(vidMode) - height) / 2);
+                                (GLFWvidmode.height(vidMode) - height) / 2);
     }
 
     /**

@@ -45,13 +45,13 @@ import static org.lwjgl.opengl.GL30.*;
  */
 public class Texture
 {
-    public static Texture CURRENT;
-    public static Texture EMPTY;
-    private static int activeUnit;
-    private int id;
-    private float width;
-    private float height;
-    private boolean disposed;
+    private static int     activeUnit;
+    public static  Texture CURRENT;
+    public static  Texture EMPTY;
+    private        int     id;
+    private        float   width;
+    private        float   height;
+    private        boolean disposed;
 
     public Texture()
     {

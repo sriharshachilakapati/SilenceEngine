@@ -36,7 +36,7 @@ import static org.lwjgl.opengl.GL30.*;
  */
 public class VertexArray
 {
-    private int id;
+    private int     id;
     private boolean disposed;
 
     /**

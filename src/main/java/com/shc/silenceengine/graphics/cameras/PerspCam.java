@@ -40,7 +40,7 @@ public class PerspCam extends BaseCamera
     private Matrix4 mProj;
     private Matrix4 mView;
 
-    private Vector3 position;
+    private Vector3    position;
     private Quaternion rotation;
 
     private Vector3 forward;

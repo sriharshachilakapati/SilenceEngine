@@ -41,8 +41,8 @@ import java.util.List;
  */
 public class QuadTreeSceneCollider implements ISceneCollider2D
 {
-    private Scene scene;
-    private QuadTree quadTree;
+    private Scene          scene;
+    private QuadTree       quadTree;
     private List<Entity2D> entities;
 
     private int childrenInScene;

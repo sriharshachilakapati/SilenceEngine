@@ -43,7 +43,7 @@ public class GridSceneCollider implements ISceneCollider2D
 {
     // The Scene and the grid
     private Scene scene;
-    private Grid grid;
+    private Grid  grid;
 
     // Number of children in the scene
     private int childrenInScene;

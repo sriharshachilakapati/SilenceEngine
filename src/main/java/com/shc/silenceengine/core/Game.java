@@ -66,27 +66,22 @@ import com.shc.silenceengine.utils.TimeUtils;
  */
 public class Game
 {
+    // Is the game running?
+    private static boolean running = false;
+    // Game logic rate
+    private static int ups       = 60;
+    private static int targetUPS = 60;
+    // Game frame rate
+    private static int fps = 60;
+    private static Batcher   batcher;
+    private static GameState gameState;
+    // The game instance
+    private static Game instance;
     /**
      * Specifies the development status of the game. Before distributing make sure to change this to false, leaving this
      * enabled causes the GLExceptions, if any, to be displayed to the user.
      */
     public static boolean development = true;
-
-    // Is the game running?
-    private static boolean running = false;
-
-    // Game logic rate
-    private static int ups = 60;
-    private static int targetUPS = 60;
-
-    // Game frame rate
-    private static int fps = 60;
-
-    private static Batcher batcher;
-    private static GameState gameState;
-
-    // The game instance
-    private static Game instance;
 
     /**
      * @return number of updates done in last second

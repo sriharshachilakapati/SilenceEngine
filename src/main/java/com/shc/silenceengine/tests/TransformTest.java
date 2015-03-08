@@ -39,7 +39,7 @@ import com.shc.silenceengine.math.Vector2;
 public class TransformTest extends Game
 {
     private Transform transform;
-    private Texture texture;
+    private Texture   texture;
 
     public static void main(String[] args)
     {

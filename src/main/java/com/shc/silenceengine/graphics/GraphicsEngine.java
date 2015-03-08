@@ -40,7 +40,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class GraphicsEngine implements IEngine
 {
     public static final Material DEFAULT_MATERIAL;
-    private Material currentMaterial;
+    private             Material currentMaterial;
 
     static
     {

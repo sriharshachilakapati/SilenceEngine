@@ -49,7 +49,7 @@ public class Ellipse extends Polygon
         for (int i = 0; i < 360; i++)
         {
             addVertex(new Vector2(x + MathUtils.cos(i) * rx,
-                    y + MathUtils.sin(i) * ry));
+                                         y + MathUtils.sin(i) * ry));
         }
     }
 

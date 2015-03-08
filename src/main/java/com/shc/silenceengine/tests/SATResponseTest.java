@@ -42,7 +42,7 @@ import com.shc.silenceengine.utils.RenderUtils;
  */
 public class SATResponseTest extends Game
 {
-    private Circle circle;
+    private Circle    circle;
     private Rectangle rectangle;
 
     private OrthoCam cam;

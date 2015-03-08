@@ -35,7 +35,7 @@ import static org.lwjgl.opengl.GL20.*;
  */
 public class Shader
 {
-    private int id;
+    private int     id;
     private boolean disposed;
 
     /**

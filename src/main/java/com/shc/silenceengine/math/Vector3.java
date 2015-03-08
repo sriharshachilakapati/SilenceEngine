@@ -32,7 +32,7 @@ import com.shc.silenceengine.utils.ReusableStack;
  */
 public class Vector3
 {
-    public static final Vector3 ZERO = new Vector3(0, 0, 0);
+    public static final Vector3 ZERO   = new Vector3(0, 0, 0);
     public static final Vector3 AXIS_X = new Vector3(1, 0, 0);
     public static final Vector3 AXIS_Y = new Vector3(0, 1, 0);
     public static final Vector3 AXIS_Z = new Vector3(0, 0, 1);

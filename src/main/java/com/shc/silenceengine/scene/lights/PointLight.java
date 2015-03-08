@@ -36,9 +36,9 @@ import com.shc.silenceengine.scene.SceneComponent;
 public class PointLight extends SceneComponent
 {
     private Vector3 position;
-    private Color color;
-    private float intensity;
-    private float range;
+    private Color   color;
+    private float   intensity;
+    private float   range;
 
     public PointLight()
     {

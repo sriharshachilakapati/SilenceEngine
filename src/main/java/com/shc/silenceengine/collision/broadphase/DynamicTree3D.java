@@ -39,12 +39,12 @@ import java.util.Map;
  */
 public class DynamicTree3D implements IBroadphaseResolver3D
 {
-    private Node root;
-    private List<Entity3D> retrieveList;
+    private Node               root;
+    private List<Entity3D>     retrieveList;
     private Map<Integer, Node> nodeMap;
     private Map<Integer, AABB> aabbMap;
     private AABB tmpUnion = new AABB();
-    private AABB tmpU = new AABB();
+    private AABB tmpU     = new AABB();
 
     public DynamicTree3D()
     {
@@ -307,7 +307,7 @@ public class DynamicTree3D implements IBroadphaseResolver3D
             Cuboid bounds = entity.getBounds();
 
             return new AABB(entity.getPosition().subtract(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2),
-                    bounds.getWidth(), bounds.getHeight(), bounds.getThickness());
+                                   bounds.getWidth(), bounds.getHeight(), bounds.getThickness());
         }
 
         public static AABB union(AABB aabb1, AABB aabb2, AABB store)
@@ -354,7 +354,7 @@ public class DynamicTree3D implements IBroadphaseResolver3D
         public Node right;
 
         public Entity3D entity;
-        public AABB aabb;
+        public AABB     aabb;
 
         public boolean isLeaf()
         {

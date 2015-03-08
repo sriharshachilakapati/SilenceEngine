@@ -28,12 +28,12 @@ import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.GraphicsEngine;
+import com.shc.silenceengine.graphics.Material;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.graphics.Material;
 import com.shc.silenceengine.models.Model;
 import com.shc.silenceengine.utils.FileUtils;
 
@@ -51,7 +51,7 @@ public class OBJModel extends Model
     private List<Vector3> normals;
     private List<Vector2> texCoords;
 
-    private List<OBJFace> faces;
+    private List<OBJFace>         faces;
     private Map<String, Material> materials;
 
     public OBJModel(String name)

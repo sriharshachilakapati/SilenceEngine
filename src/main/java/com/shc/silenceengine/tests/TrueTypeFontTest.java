@@ -40,8 +40,8 @@ import com.shc.silenceengine.math.Vector2;
 public class TrueTypeFontTest extends Game
 {
     private TrueTypeFont font;
-    private OrthoCam cam;
-    private Texture logo;
+    private OrthoCam     cam;
+    private Texture      logo;
 
     public static void main(String[] args)
     {
@@ -82,7 +82,7 @@ public class TrueTypeFontTest extends Game
         font.drawString(batcher, fpsString, Display.getWidth() - font.getWidth(fpsString) - 10, 10, Color.CORN_FLOWER_BLUE);
 
         batcher.drawTexture2d(logo, new Vector2(Display.getWidth() - logo.getWidth(),
-                Display.getHeight() - logo.getHeight()));
+                                                       Display.getHeight() - logo.getHeight()));
     }
 
     public void resize()

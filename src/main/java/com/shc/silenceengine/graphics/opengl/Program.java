@@ -44,13 +44,13 @@ import static org.lwjgl.opengl.GL20.*;
  */
 public class Program
 {
-    public static Program CURRENT;
-    public static Program DEFAULT;
-    public static Program POINT_LIGHT;
-    private int id;
-    private boolean disposed;
-    private Map<String, Integer> uniformLocations;
-    private Map<String, Integer> attributeLocations;
+    public static Program              CURRENT;
+    public static Program              DEFAULT;
+    public static Program              POINT_LIGHT;
+    private       int                  id;
+    private       boolean              disposed;
+    private       Map<String, Integer> uniformLocations;
+    private       Map<String, Integer> attributeLocations;
 
     public Program()
     {

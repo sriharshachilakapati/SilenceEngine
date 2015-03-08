@@ -41,7 +41,7 @@ import java.util.List;
 public class TrueTypeFont
 {
     public static final int STYLE_NORMAL = Font.PLAIN;
-    public static final int STYLE_BOLD = Font.BOLD;
+    public static final int STYLE_BOLD   = Font.BOLD;
     public static final int STYLE_ITALIC = Font.ITALIC;
 
     private static final int STANDARD_CHARACTERS = 256;
@@ -50,8 +50,8 @@ public class TrueTypeFont
 
     private boolean antiAlias = true;
 
-    private Texture[] fontTexture;
-    private Font awtFont;
+    private Texture[]   fontTexture;
+    private Font        awtFont;
     private FontMetrics fontMetrics;
 
     public TrueTypeFont(String name, int style, int size)

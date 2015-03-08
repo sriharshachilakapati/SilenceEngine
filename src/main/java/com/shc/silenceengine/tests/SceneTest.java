@@ -43,10 +43,10 @@ import com.shc.silenceengine.utils.TimeUtils;
  */
 public class SceneTest extends Game
 {
-    private PerspCam cam;
-    private OrthoCam fontCam;
+    private PerspCam     cam;
+    private OrthoCam     fontCam;
     private TrueTypeFont font;
-    private Scene scene;
+    private Scene        scene;
 
     public static void main(String[] args)
     {
@@ -135,8 +135,8 @@ public class SceneTest extends Game
 
     public static class SceneObject extends SceneNode
     {
-        private Color color;
-        private float rotation;
+        private Color   color;
+        private float   rotation;
         private Vector2 position;
 
         public SceneObject(Vector2 position, Color color)

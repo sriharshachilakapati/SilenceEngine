@@ -227,8 +227,8 @@ public class Matrix4
         // \        /  \   /     \                      /
 
         return dest.set(A * X + B * Y + C * Z + D * W,
-                E * X + F * Y + G * Z + H * W,
-                I * X + J * Y + K * Z + L * W);
+                               E * X + F * Y + G * Z + H * W,
+                               I * X + J * Y + K * Z + L * W);
     }
 
     public Vector4 multiply(Vector4 v)
@@ -273,9 +273,9 @@ public class Matrix4
         // \        /  \   /     \                      /
 
         return dest.set(A * X + B * Y + C * Z + D * W,
-                E * X + F * Y + G * Z + H * W,
-                I * X + J * Y + K * Z + L * W,
-                M * X + N * Y + O * Z + P * W);
+                               E * X + F * Y + G * Z + H * W,
+                               I * X + J * Y + K * Z + L * W,
+                               M * X + N * Y + O * Z + P * W);
     }
 
     public Matrix4 transpose()

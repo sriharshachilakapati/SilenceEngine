@@ -43,15 +43,15 @@ import com.shc.silenceengine.utils.RenderUtils;
  */
 public class Graphics2D
 {
-    private static Graphics2D instance;
-    private OrthoCam camera;
-    private Color color;
-    private TrueTypeFont font;
-    private Transform transform;
+    private static Graphics2D   instance;
+    private        OrthoCam     camera;
+    private        Color        color;
+    private        TrueTypeFont font;
+    private        Transform    transform;
 
     /* Utility Methods */
     private BaseCamera originalCamera;
-    private Texture originalTexture;
+    private Texture    originalTexture;
 
     protected Graphics2D()
     {

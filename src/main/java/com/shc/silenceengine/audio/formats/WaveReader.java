@@ -44,10 +44,10 @@ import java.nio.ByteBuffer;
  * that JavaSound's <code>AudioInputStream</code> class is able to decode. Currently, it can read from .wav, .wave, .au,
  * .aif, .aiff, .mid, .midi formats. </p>
  *
- * <p> Though you are allowed to create instances of this reader on your own, it is recommended that you use the
- * {@link com.shc.silenceengine.audio.ISoundReader} interface to construct readers, as it is more flexible that way.
- * And also, you do not need to call the <code>register()</code> method in this class, as it will be called
- * automatically for you. Even if you do call it explicitly, there is no harm. </p>
+ * <p> Though you are allowed to create instances of this reader on your own, it is recommended that you use the {@link
+ * com.shc.silenceengine.audio.ISoundReader} interface to construct readers, as it is more flexible that way. And also,
+ * you do not need to call the <code>register()</code> method in this class, as it will be called automatically for you.
+ * Even if you do call it explicitly, there is no harm. </p>
  *
  * <p> If you are really in need of using this class, feel free to use it. All it takes is an <code>InputStream</code>
  * to construct the reader, and you can use it in anyway that makes sense for you. </p>
@@ -58,7 +58,7 @@ public class WaveReader implements ISoundReader
 {
     private ByteBuffer data;
 
-    private int sampleRate;
+    private int      sampleRate;
     private ALFormat format;
 
     /**

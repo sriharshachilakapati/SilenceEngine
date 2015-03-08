@@ -36,14 +36,14 @@ import java.util.List;
 public class Animation
 {
     private List<Texture> frames;
-    private List<Float> frameLengths;
+    private List<Float>   frameLengths;
 
-    private IAnimationStartCallback startCallback;
-    private IAnimationPauseCallback pauseCallback;
+    private IAnimationStartCallback  startCallback;
+    private IAnimationPauseCallback  pauseCallback;
     private IAnimationResumeCallback resumeCallback;
-    private IAnimationEndCallback endCallback;
+    private IAnimationEndCallback    endCallback;
 
-    private int currentFrame;
+    private int   currentFrame;
     private float time;
 
     private boolean active;

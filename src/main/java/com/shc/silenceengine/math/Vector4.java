@@ -112,11 +112,6 @@ public class Vector4
         return new Vector4(this);
     }
 
-    public Vector4 addSelf(Vector4 v)
-    {
-        return addSelf(v.x, v.y, v.z, v.w);
-    }
-
     public Vector4 add(Vector3 v, float w)
     {
         return add(v.x, v.y, v.z, w);
@@ -247,16 +242,6 @@ public class Vector4
         return new Vector4(x * sx, y * sy, z * sz, w * sw);
     }
 
-    public Vector4 scaleSelf(float s)
-    {
-        return scaleSelf(s, s, s, s);
-    }
-
-    public Vector4 scaleSelf(float sx, float sy, float sz, float sw)
-    {
-        return set(x * sx, y * sy, z * sz, w * sw);
-    }
-
     public float dot(Vector4 v)
     {
         return x * v.x + y * v.y + z * v.z + w * v.w;
@@ -307,6 +292,11 @@ public class Vector4
         return scaleSelf(v.x, v.y, v.z, v.w);
     }
 
+    public Vector4 scaleSelf(float sx, float sy, float sz, float sw)
+    {
+        return set(x * sx, y * sy, z * sz, w * sw);
+    }
+
     public Vector4 lerp(Vector4 target, float alpha)
     {
         return copy().lerpSelf(target, alpha);
@@ -319,6 +309,21 @@ public class Vector4
         Vector4.REUSABLE_STACK.push(temp);
 
         return this;
+    }
+
+    public Vector4 addSelf(Vector4 v)
+    {
+        return addSelf(v.x, v.y, v.z, v.w);
+    }
+
+    public Vector4 scaleSelf(float s)
+    {
+        return scaleSelf(s, s, s, s);
+    }
+
+    public Vector4 set(Vector4 v)
+    {
+        return set(v.x, v.y, v.z, v.w);
     }
 
     public float getX()
@@ -438,11 +443,6 @@ public class Vector4
     public Vector4 set(float x, Vector3 v)
     {
         return set(x, v.x, v.y, v.z);
-    }
-
-    public Vector4 set(Vector4 v)
-    {
-        return set(v.x, v.y, v.z, v.w);
     }
 
     public Vector2 getXX()

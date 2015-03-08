@@ -44,16 +44,16 @@ public final class ResourceLoader
 {
     private static ResourceLoader instance;
 
-    private Map<Integer, Texture> textures;
+    private Map<Integer, Texture>      textures;
     private Map<Integer, TrueTypeFont> fonts;
-    private Map<Integer, Sound> sounds;
-    private Map<Integer, Model> models;
-    private Map<String, Integer> texturesToLoad;
-    private Map<String, Integer> fontsToLoad;
-    private Map<String, Integer> soundsToLoad;
-    private Map<String, Integer> modelsToLoad;
+    private Map<Integer, Sound>        sounds;
+    private Map<Integer, Model>        models;
+    private Map<String, Integer>       texturesToLoad;
+    private Map<String, Integer>       fontsToLoad;
+    private Map<String, Integer>       soundsToLoad;
+    private Map<String, Integer>       modelsToLoad;
 
-    private int numLoaded;
+    private int     numLoaded;
     private Texture logo;
 
     // How much progress that is rendered, used to smooth the
@@ -204,8 +204,8 @@ public final class ResourceLoader
             Graphics2D g2d = Game.getGraphics2D();
 
             // Draw the logo in the center
-            float logoX = Display.getWidth()/2 - logo.getWidth()/2;
-            float logoY = Display.getHeight()/2 - logo.getHeight()/2;
+            float logoX = Display.getWidth() / 2 - logo.getWidth() / 2;
+            float logoY = Display.getHeight() / 2 - logo.getHeight() / 2;
             float logoW = logo.getWidth();
             float logoH = logo.getHeight();
 

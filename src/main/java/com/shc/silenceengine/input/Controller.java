@@ -40,15 +40,15 @@ import static org.lwjgl.opengl.GL11.*;
 public class Controller
 {
     // Generic Button Constants
-    public static final int GENERIC_BUTTON_1 = 1;
-    public static final int GENERIC_BUTTON_2 = 2;
-    public static final int GENERIC_BUTTON_3 = 3;
-    public static final int GENERIC_BUTTON_4 = 4;
-    public static final int GENERIC_BUTTON_5 = 5;
-    public static final int GENERIC_BUTTON_6 = 6;
-    public static final int GENERIC_BUTTON_7 = 7;
-    public static final int GENERIC_BUTTON_8 = 8;
-    public static final int GENERIC_BUTTON_9 = 9;
+    public static final int GENERIC_BUTTON_1  = 1;
+    public static final int GENERIC_BUTTON_2  = 2;
+    public static final int GENERIC_BUTTON_3  = 3;
+    public static final int GENERIC_BUTTON_4  = 4;
+    public static final int GENERIC_BUTTON_5  = 5;
+    public static final int GENERIC_BUTTON_6  = 6;
+    public static final int GENERIC_BUTTON_7  = 7;
+    public static final int GENERIC_BUTTON_8  = 8;
+    public static final int GENERIC_BUTTON_9  = 9;
     public static final int GENERIC_BUTTON_10 = 10;
     public static final int GENERIC_BUTTON_11 = 11;
     public static final int GENERIC_BUTTON_12 = 12;
@@ -71,56 +71,62 @@ public class Controller
     public static final int GENERIC_BUTTON_29 = 29;
     public static final int GENERIC_BUTTON_30 = 30;
     public static final int GENERIC_BUTTON_31 = 31;
+
     // Named generic buttons
-    public static final int GENERIC_BUTTON_L1 = 5;
-    public static final int GENERIC_BUTTON_L2 = 7;
-    public static final int GENERIC_BUTTON_R1 = 6;
-    public static final int GENERIC_BUTTON_R2 = 8;
+    public static final int GENERIC_BUTTON_L1     = 5;
+    public static final int GENERIC_BUTTON_L2     = 7;
+    public static final int GENERIC_BUTTON_R1     = 6;
+    public static final int GENERIC_BUTTON_R2     = 8;
     public static final int GENERIC_BUTTON_SELECT = 9;
-    public static final int GENERIC_BUTTON_START = 10;
+    public static final int GENERIC_BUTTON_START  = 10;
+
     // Generic D-PAD constants, You need to optimize for other controllers
-    public static final int GENERIC_DPAD_UP = 13;
+    public static final int GENERIC_DPAD_UP    = 13;
     public static final int GENERIC_DPAD_RIGHT = 14;
-    public static final int GENERIC_DPAD_DOWN = 15;
-    public static final int GENERIC_DPAD_LEFT = 16;
+    public static final int GENERIC_DPAD_DOWN  = 15;
+    public static final int GENERIC_DPAD_LEFT  = 16;
+
     // Generic AXE constants
-    public static final int GENERIC_AXE_LEFT_X = 1;
-    public static final int GENERIC_AXE_LEFT_Y = 2;
+    public static final int GENERIC_AXE_LEFT_X  = 1;
+    public static final int GENERIC_AXE_LEFT_Y  = 2;
     public static final int GENERIC_AXE_RIGHT_X = 3;
     public static final int GENERIC_AXE_RIGHT_Y = 4;
+
     // XBOX Button constants
-    public static final int XBOX_BUTTON_A = 1;
-    public static final int XBOX_BUTTON_B = 2;
-    public static final int XBOX_BUTTON_X = 3;
-    public static final int XBOX_BUTTON_Y = 4;
-    public static final int XBOX_BUTTON_LB = 5;
-    public static final int XBOX_BUTTON_RB = 6;
-    public static final int XBOX_BUTTON_BACK = 7;
+    public static final int XBOX_BUTTON_A     = 1;
+    public static final int XBOX_BUTTON_B     = 2;
+    public static final int XBOX_BUTTON_X     = 3;
+    public static final int XBOX_BUTTON_Y     = 4;
+    public static final int XBOX_BUTTON_LB    = 5;
+    public static final int XBOX_BUTTON_RB    = 6;
+    public static final int XBOX_BUTTON_BACK  = 7;
     public static final int XBOX_BUTTON_START = 8;
-    public static final int XBOX_BUTTON_LS = 9;
-    public static final int XBOX_BUTTON_RS = 10;
-    public static final int XBOX_DPAD_UP = 11;
-    public static final int XBOX_DPAD_RIGHT = 12;
-    public static final int XBOX_DPAD_DOWN = 13;
-    public static final int XBOX_DPAD_LEFT = 14;
+    public static final int XBOX_BUTTON_LS    = 9;
+    public static final int XBOX_BUTTON_RS    = 10;
+    public static final int XBOX_DPAD_UP      = 11;
+    public static final int XBOX_DPAD_RIGHT   = 12;
+    public static final int XBOX_DPAD_DOWN    = 13;
+    public static final int XBOX_DPAD_LEFT    = 14;
+
     // XBOX AXE constants
-    public static final int XBOX_LEFT_STICKER_X = 1;
-    public static final int XBOX_LEFT_STICKER_Y = 2;
+    public static final int XBOX_LEFT_STICKER_X   = 1;
+    public static final int XBOX_LEFT_STICKER_Y   = 2;
     public static final int XBOX_SHOULDER_TRIGGER = 3;
-    public static final int XBOX_RIGHT_STICKER_Y = 4;
-    public static final int XBOX_RIGHT_STICKER_X = 5;
+    public static final int XBOX_RIGHT_STICKER_Y  = 4;
+    public static final int XBOX_RIGHT_STICKER_X  = 5;
+
     private static Controller[] controllers;
 
     // TODO: ADD MAPPINGS FOR PS3 AND PS4 CONTROLLERS ALSO
-    private int id;
-    private String name;
-    private int numButtons;
-    private int numAxes;
-    private Type type;
+    private int                   id;
+    private String                name;
+    private int                   numButtons;
+    private int                   numAxes;
+    private Type                  type;
     private Map<Integer, Boolean> buttons;
-    private Map<Integer, Float> axes;
-    private Map<Integer, Float> axesThisFrame;
-    private Map<Integer, Float> axesLastFrame;
+    private Map<Integer, Float>   axes;
+    private Map<Integer, Float>   axesThisFrame;
+    private Map<Integer, Float>   axesLastFrame;
     private Map<Integer, Boolean> buttonsThisFrame;
     private Map<Integer, Boolean> buttonsLastFrame;
 
@@ -320,20 +326,20 @@ public class Controller
         return axes.get(axe);
     }
 
-    public float getClickAxe(int axe)
-    {
-        if (axesLastFrame.get(axe) != 0)
-            return 0;
-
-        return axesThisFrame.get(axe);
-    }
-
     public static float getClickAxe(int axe, int controller)
     {
         if (controllers == null)
             create();
 
         return controller < controllers.length ? controllers[controller].getClickAxe(axe) : 0;
+    }
+
+    public float getClickAxe(int axe)
+    {
+        if (axesLastFrame.get(axe) != 0)
+            return 0;
+
+        return axesThisFrame.get(axe);
     }
 
     public void printValues()

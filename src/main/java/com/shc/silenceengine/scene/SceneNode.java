@@ -41,12 +41,12 @@ import java.util.List;
 public class SceneNode
 {
     private static int idGenerator = 0;
-    private List<SceneNode> children;
+    private List<SceneNode>      children;
     private List<SceneComponent> components;
-    private SceneNode parent;
-    private Transform transform;
-    private boolean destroyed;
-    private int id;
+    private SceneNode            parent;
+    private Transform            transform;
+    private boolean              destroyed;
+    private int                  id;
 
     private Transform combinedTransform;
 

@@ -34,9 +34,9 @@ public class GameTimer
 {
     private static List<GameTimer> timers = new ArrayList<>();
     private TimerCallback callback;
-    private double time;
-    private double elapsed;
-    private boolean active;
+    private double        time;
+    private double        elapsed;
+    private boolean       active;
 
     public GameTimer(double time, TimeUtils.Unit unit)
     {

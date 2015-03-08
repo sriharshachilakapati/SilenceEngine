@@ -42,7 +42,7 @@ import java.util.List;
 public class DynamicSceneCollider3D implements ISceneCollider3D
 {
     // The Scene and the tree
-    private Scene scene;
+    private Scene         scene;
     private DynamicTree3D tree;
 
     // Number of children in the scene

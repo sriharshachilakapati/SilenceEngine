@@ -38,12 +38,12 @@ import java.util.Map;
  */
 public class DynamicTree2D implements IBroadphaseResolver2D
 {
-    private Node root;
-    private List<Entity2D> retrieveList;
+    private Node               root;
+    private List<Entity2D>     retrieveList;
     private Map<Integer, Node> nodeMap;
     private Map<Integer, AABB> aabbMap;
     private AABB tmpUnion = new AABB();
-    private AABB tmpU = new AABB();
+    private AABB tmpU     = new AABB();
 
     public DynamicTree2D()
     {
@@ -346,7 +346,7 @@ public class DynamicTree2D implements IBroadphaseResolver2D
         public Node right;
 
         public Entity2D entity;
-        public AABB aabb;
+        public AABB     aabb;
 
         public boolean isLeaf()
         {

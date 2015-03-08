@@ -66,8 +66,8 @@ import com.shc.silenceengine.scene.SceneNode;
 public class Entity3D extends SceneNode
 {
     // The position, velocity and the polygon
-    private Vector3 position;
-    private Vector3 velocity;
+    private Vector3    position;
+    private Vector3    velocity;
     private Polyhedron polyhedron;
 
     /**

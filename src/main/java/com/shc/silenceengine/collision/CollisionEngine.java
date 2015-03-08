@@ -71,7 +71,7 @@ public final class CollisionEngine implements IEngine
     public boolean testAABBvsAABB(Vector2 p1Min, Vector2 p1Max, Vector2 p2Min, Vector2 p2Max)
     {
         return testAABBvsAABB(p1Min.x, p1Min.y, p1Max.x - p1Min.x, p1Max.y - p1Min.y,
-                p2Min.x, p2Min.y, p2Max.x - p2Min.x, p2Max.y - p2Min.y);
+                                     p2Min.x, p2Min.y, p2Max.x - p2Min.x, p2Max.y - p2Min.y);
     }
 
     public boolean testAABBvsAABB(Vector3 p1, float w1, float h1, float t1,
@@ -91,7 +91,7 @@ public final class CollisionEngine implements IEngine
     public boolean testAABBvsAABB(Vector3 p1Min, Vector3 p1Max, Vector3 p2Min, Vector3 p2Max)
     {
         return testAABBvsAABB(p1Min.x, p1Min.y, p1Min.z, p1Max.x - p1Min.x, p1Max.y - p1Min.y, p1Max.z - p1Min.z,
-                p2Min.x, p2Min.y, p1Min.z, p2Max.x - p2Min.x, p2Max.y - p2Min.y, p2Max.z - p2Min.z);
+                                     p2Min.x, p2Min.y, p1Min.z, p2Max.x - p2Min.x, p2Max.y - p2Min.y, p2Max.z - p2Min.z);
     }
 
     public boolean testCircleCircle(Vector2 p1, float r1, Vector2 p2, float r2)

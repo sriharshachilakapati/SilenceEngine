@@ -40,7 +40,7 @@ import static org.lwjgl.openal.AL10.*;
  */
 public class ALBuffer
 {
-    private int id;
+    private int     id;
     private boolean disposed;
 
     /**
@@ -78,7 +78,7 @@ public class ALBuffer
         else if (data instanceof ShortBuffer)
             alBufferData(id, format.getAlFormat(), (ShortBuffer) data, frequency);
 
-            ALError.check();
+        ALError.check();
     }
 
     /**

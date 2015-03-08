@@ -32,7 +32,7 @@ import com.shc.silenceengine.utils.ReusableStack;
  */
 public class Vector2
 {
-    public static final Vector2 ZERO = new Vector2(0, 0);
+    public static final Vector2 ZERO   = new Vector2(0, 0);
     public static final Vector2 AXIS_X = new Vector2(1, 0);
     public static final Vector2 AXIS_Y = new Vector2(0, 1);
 
@@ -143,7 +143,7 @@ public class Vector2
     {
         angle = (float) Math.toRadians(angle);
         return set(x * (float) Math.cos(angle) - y * (float) Math.sin(angle),
-                x * (float) Math.sin(angle) + y * (float) Math.cos(angle));
+                          x * (float) Math.sin(angle) + y * (float) Math.cos(angle));
     }
 
     public Vector2 negate()

@@ -63,8 +63,8 @@ import com.shc.silenceengine.math.Vector3;
 public final class TransformUtils
 {
     // The temporary matrix, vector and quaternion. Will soon be deprecated.
-    private static Matrix4 tempMat = new Matrix4();
-    private static Vector3 tempVec = new Vector3();
+    private static Matrix4    tempMat  = new Matrix4();
+    private static Vector3    tempVec  = new Vector3();
     private static Quaternion tempQuat = new Quaternion();
 
     /**

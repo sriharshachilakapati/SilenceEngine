@@ -42,8 +42,8 @@ import com.shc.silenceengine.scene.lights.PointLight;
  */
 public class OBJModelTest extends Game
 {
-    private PerspCam cam;
-    private Model model;
+    private PerspCam    cam;
+    private Model       model;
     private ModelEntity entity;
 
     private PointLight cameraLight;

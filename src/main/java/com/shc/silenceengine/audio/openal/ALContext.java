@@ -36,10 +36,10 @@ import org.lwjgl.openal.ALDevice;
 public final class ALContext
 {
     // Singleton pattern
-    private static ALContext instance;
+    private static ALContext                  instance;
     // The Device and the context
-    private ALDevice device;
-    private org.lwjgl.openal.ALContext context;
+    private        ALDevice                   device;
+    private        org.lwjgl.openal.ALContext context;
 
     // Prevent instantiation
     private ALContext()

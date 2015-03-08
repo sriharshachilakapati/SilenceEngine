@@ -64,12 +64,11 @@ public final class SilenceEngine implements IEngine
         // Set target UPS
         Game.setTargetUPS(60);
     }
-
-    public static GraphicsEngine graphics;
-    public static AudioEngine audio;
-    public static CollisionEngine collision;
-    public static InputEngine input;
-    private static SilenceEngine instance;
+    private static SilenceEngine   instance;
+    public static  GraphicsEngine  graphics;
+    public static  AudioEngine     audio;
+    public static  CollisionEngine collision;
+    public static  InputEngine     input;
 
     private SilenceEngine()
     {
