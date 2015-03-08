@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.tests;
 
+import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.input.Controller;
 import com.shc.silenceengine.input.Keyboard;
@@ -67,5 +68,7 @@ public class ControllerTest extends Game
 
         if (Controller.getConnectedControllers().length != 0)
             Controller.getConnectedControllers()[0].printValues();
+
+        Display.setTitle("UPS: " + getUPS() + " | FPS: " + getFPS());
     }
 }

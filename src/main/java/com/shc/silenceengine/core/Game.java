@@ -190,7 +190,8 @@ public class Game
         Logger.log("Game initialized successfully, proceeding to the main loop");
 
         // GameLoop constants
-        final double frameTime = 1.0 / targetUPS;
+        final double second = TimeUtils.convert(1, TimeUtils.Unit.SECONDS, TimeUtils.getDefaultTimeUnit());
+        final double frameTime = second / targetUPS;
         final double maxFrameSkips = 10;
 
         double currentTime;
@@ -259,7 +260,7 @@ public class Game
 
                 skippedFrames++;
 
-                if (currentTime - lastUPSUpdate >= 1000)
+                if (currentTime - lastUPSUpdate >= second)
                 {
                     ups = updatesProcessed;
                     updatesProcessed = 0;
@@ -275,7 +276,7 @@ public class Game
 
             framesProcessed++;
 
-            if (currentTime - lastFPSUpdate >= 1000)
+            if (currentTime - lastFPSUpdate >= second)
             {
                 fps = framesProcessed;
                 framesProcessed = 0;

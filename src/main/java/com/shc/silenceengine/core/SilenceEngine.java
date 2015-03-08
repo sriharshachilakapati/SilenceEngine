@@ -60,9 +60,6 @@ public final class SilenceEngine implements IEngine
                 System.exit(-1);
             }
         });
-
-        // Set target UPS
-        Game.setTargetUPS(60);
     }
     private static SilenceEngine   instance;
     public static  GraphicsEngine  graphics;

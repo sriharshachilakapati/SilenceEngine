@@ -118,11 +118,12 @@ public class Controller
     private static Controller[] controllers;
 
     // TODO: ADD MAPPINGS FOR PS3 AND PS4 CONTROLLERS ALSO
-    private int                   id;
-    private String                name;
-    private int                   numButtons;
-    private int                   numAxes;
-    private Type                  type;
+    private int    id;
+    private String name;
+    private int    numButtons;
+    private int    numAxes;
+    private Type   type;
+
     private Map<Integer, Boolean> buttons;
     private Map<Integer, Float>   axes;
     private Map<Integer, Float>   axesThisFrame;

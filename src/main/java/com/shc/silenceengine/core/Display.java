@@ -61,13 +61,13 @@ public final class Display
     private static long displayHandle = NULL;
 
     // Width and height of the display
-    private static int width  = 640;
-    private static int height = 480;
+    private static int width  = 800;
+    private static int height = 600;
 
     // Width and height of windowed display, used to
     // restore the properties to the newly created one
-    private static int oldWidth  = 640;
-    private static int oldHeight = 480;
+    private static int oldWidth  = 800;
+    private static int oldHeight = 600;
 
     // Position of the windowed display, restored when
     // fullscreen is switched off
@@ -248,7 +248,7 @@ public final class Display
 
     /**
      * @return true if the user has clicked the close button, or pressed platform specific close shortcut keys like
-     * Cmd-Q(Mac) or Alt-F4 (linux &amp; windows)
+     * Cmd-Q(Mac) or Alt-F4 (linux and windows)
      */
     public static boolean isCloseRequested()
     {
