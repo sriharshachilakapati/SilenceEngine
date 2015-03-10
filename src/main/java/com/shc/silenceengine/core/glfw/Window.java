@@ -40,12 +40,67 @@ public class Window
     private Vector2 position;
     private Vector2 size;
 
+    public Window()
+    {
+        this(800, 600);
+    }
+
+    public Window(Monitor monitor)
+    {
+        this(800, 600, monitor);
+    }
+
+    public Window(Window share)
+    {
+        this(800, 600, share);
+    }
+
+    public Window(String title)
+    {
+        this(800, 600, title);
+    }
+
+    public Window(int width, int height)
+    {
+        this(width, height, (Monitor) null, null);
+    }
+
+    public Window(int width, int height, String title)
+    {
+        this(width, height, title, (Monitor) null);
+    }
+
+    public Window(int width, int height, Monitor monitor)
+    {
+        this(width, height, "SilenceEngine Window", monitor);
+    }
+
+    public Window(int width, int height, Window share)
+    {
+        this(width, height, "SilenceEngine window", share);
+    }
+
+    public Window(int width, int height, Monitor monitor, Window share)
+    {
+        this(width, height, "SilenceEngine Window", monitor, share);
+    }
+
+    public Window(int width, int height, String title, Monitor monitor)
+    {
+        this(width, height, title, monitor, null);
+    }
+
     public Window(int width, int height, String title, Window share)
+    {
+        this(width, height, title, null, share);
+    }
+
+    public Window(int width, int height, String title, Monitor monitor, Window share)
     {
         size = new Vector2(width, height);
         position = new Vector2();
 
-        handle = glfwCreateWindow(width, height, title, NULL, share == null ? NULL : share.handle);
+        handle = glfwCreateWindow(width, height, title, monitor == null ? NULL : monitor.getHandle(), share == null ? NULL : share.handle);
     }
 
     public void makeCurrent()
