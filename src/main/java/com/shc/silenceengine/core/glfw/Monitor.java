@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.core.glfw;
 
+import com.shc.silenceengine.math.Vector2;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFWgammaramp;
@@ -71,6 +72,8 @@ public class Monitor
 
             while (buffer.hasRemaining())
                 monitors.add(new Monitor(buffer.get()));
+
+            monitors = Collections.unmodifiableList(monitors);
         }
 
         return monitors;
@@ -153,6 +156,24 @@ public class Monitor
     {
         ByteBuffer ramp = GLFWgammaramp.malloc(gammaRamp.getRed(), gammaRamp.getGreen(), gammaRamp.getBlue(), gammaRamp.getSize());
         glfwSetGammaRamp(handle, ramp);
+    }
+
+    public Vector2 getPhysicalSize()
+    {
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
+        glfwGetMonitorPhysicalSize(handle, width, height);
+
+        return new Vector2(width.get(), height.get());
+    }
+
+    public Vector2 getVirtualPosition()
+    {
+        IntBuffer xPos = BufferUtils.createIntBuffer(1);
+        IntBuffer yPos = BufferUtils.createIntBuffer(1);
+        glfwGetMonitorPos(handle, xPos, yPos);
+
+        return new Vector2(xPos.get(), yPos.get());
     }
 
     @Override

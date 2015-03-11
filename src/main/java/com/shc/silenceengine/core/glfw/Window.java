@@ -24,8 +24,25 @@
 
 package com.shc.silenceengine.core.glfw;
 
+import com.shc.silenceengine.core.glfw.callbacks.IFramebufferSizeCallback;
+import com.shc.silenceengine.core.glfw.callbacks.IWindowCloseCallback;
+import com.shc.silenceengine.core.glfw.callbacks.IWindowFocusCallback;
+import com.shc.silenceengine.core.glfw.callbacks.IWindowIconifyCallback;
+import com.shc.silenceengine.core.glfw.callbacks.IWindowPositionCallback;
+import com.shc.silenceengine.core.glfw.callbacks.IWindowRefreshCallback;
+import com.shc.silenceengine.core.glfw.callbacks.IWindowSizeCallback;
 import com.shc.silenceengine.math.Vector2;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
+import org.lwjgl.glfw.GLFWWindowCloseCallback;
+import org.lwjgl.glfw.GLFWWindowFocusCallback;
+import org.lwjgl.glfw.GLFWWindowIconifyCallback;
+import org.lwjgl.glfw.GLFWWindowPosCallback;
+import org.lwjgl.glfw.GLFWWindowRefreshCallback;
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GLContext;
+
+import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
@@ -39,6 +56,26 @@ public class Window
 
     private Vector2 position;
     private Vector2 size;
+
+    private String title;
+
+    /* Native GLFW Callbacks */
+    private GLFWFramebufferSizeCallback glfwFramebufferSizeCallback;
+    private GLFWWindowCloseCallback     glfwWindowCloseCallback;
+    private GLFWWindowFocusCallback     glfwWindowFocusCallback;
+    private GLFWWindowIconifyCallback   glfwWindowIconifyCallback;
+    private GLFWWindowPosCallback       glfwWindowPosCallback;
+    private GLFWWindowRefreshCallback   glfwWindowRefreshCallback;
+    private GLFWWindowSizeCallback      glfwWindowSizeCallback;
+
+    /* Overridden custom Callbacks for better interfacing with C++ code */
+    private IFramebufferSizeCallback framebufferSizeCallback;
+    private IWindowCloseCallback     windowCloseCallback;
+    private IWindowFocusCallback     windowFocusCallback;
+    private IWindowIconifyCallback   windowIconifyCallback;
+    private IWindowPositionCallback  windowPositionCallback;
+    private IWindowRefreshCallback   windowRefreshCallback;
+    private IWindowSizeCallback      windowSizeCallback;
 
     public Window()
     {
@@ -114,8 +151,9 @@ public class Window
     {
         size = new Vector2(width, height);
         position = new Vector2();
+        this.title = title;
 
-        handle = glfwCreateWindow(width, height, title, monitor == null ? NULL : monitor.getHandle(), share == null ? NULL : share.handle);
+        handle = glfwCreateWindow(width, height, title, monitor == null ? NULL : monitor.getHandle(), share == null ? NULL : share.getHandle());
     }
 
     public void makeCurrent()
@@ -139,6 +177,26 @@ public class Window
         glfwSetWindowShouldClose(handle, value ? 1 : 0);
     }
 
+    public void iconify()
+    {
+        glfwIconifyWindow(handle);
+    }
+
+    public void restore()
+    {
+        glfwRestoreWindow(handle);
+    }
+
+    public void hide()
+    {
+        glfwHideWindow(handle);
+    }
+
+    public void show()
+    {
+        glfwShowWindow(handle);
+    }
+
     public void destroy()
     {
         glfwDestroyWindow(handle);
@@ -146,23 +204,49 @@ public class Window
 
     public Vector2 getPosition()
     {
+        IntBuffer xPos = BufferUtils.createIntBuffer(1);
+        IntBuffer yPos = BufferUtils.createIntBuffer(1);
+        glfwGetWindowPos(handle, xPos, yPos);
 
-        return position;
+        return position.set(xPos.get(), yPos.get());
     }
 
     public void setPosition(Vector2 position)
     {
         this.position.set(position);
+        glfwSetWindowPos(handle, (int) position.x, (int) position.y);
     }
 
     public Vector2 getSize()
     {
-        return size;
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
+        glfwGetWindowSize(handle, width, height);
+
+        return size.set(width.get(), height.get());
     }
 
     public void setSize(Vector2 size)
     {
         this.size.set(size);
+        glfwSetWindowSize(handle, (int) size.x, (int) size.y);
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+
+        glfwSetWindowTitle(handle, title);
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public int getAttribute(int attribute)
+    {
+        return glfwGetWindowAttrib(handle, attribute);
     }
 
     public long getHandle()
@@ -173,5 +257,10 @@ public class Window
     public static void setHint(int hint, int value)
     {
         glfwWindowHint(hint, value);
+    }
+
+    public static void setHint(int hint, boolean value)
+    {
+        setHint(hint, value ? 1 : 0);
     }
 }

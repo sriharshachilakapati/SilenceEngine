@@ -55,6 +55,7 @@ public class GLFWTest
 
         Window.setHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
         Window.setHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
+        Window.setHint(GLFW.GLFW_RESIZABLE, true);
 
         Window window = new Window(800, 600, "Test");
         window.makeCurrent();
@@ -67,6 +68,8 @@ public class GLFWTest
 
             GLFW.glfwPollEvents();
         }
+
+        System.out.println("Window Position: " + window.getPosition() + "  |  Window Size: " + window.getSize());
 
         window.destroy();
         GLFW.glfwTerminate();
