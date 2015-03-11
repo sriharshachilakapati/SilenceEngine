@@ -95,6 +95,21 @@ public class Window
         this(width, height, title, null, share);
     }
 
+    public Window(VideoMode videoMode, String title, Monitor monitor, Window share)
+    {
+        this(videoMode.getWidth(), videoMode.getHeight(), title, monitor, share);
+    }
+
+    public Window(VideoMode videoMode, String title, Monitor monitor)
+    {
+        this(videoMode, title, monitor, null);
+    }
+
+    public Window(VideoMode videoMode, Monitor monitor)
+    {
+        this(videoMode, "SilenceEngine Window", monitor);
+    }
+
     public Window(int width, int height, String title, Monitor monitor, Window share)
     {
         size = new Vector2(width, height);
@@ -112,6 +127,16 @@ public class Window
     public void swapBuffers()
     {
         glfwSwapBuffers(handle);
+    }
+
+    public boolean shouldClose()
+    {
+        return glfwWindowShouldClose(handle) == 1;
+    }
+
+    public void setShouldClose(boolean value)
+    {
+        glfwSetWindowShouldClose(handle, value ? 1 : 0);
     }
 
     public void destroy()
@@ -143,5 +168,10 @@ public class Window
     public long getHandle()
     {
         return handle;
+    }
+
+    public static void setHint(int hint, int value)
+    {
+        glfwWindowHint(hint, value);
     }
 }

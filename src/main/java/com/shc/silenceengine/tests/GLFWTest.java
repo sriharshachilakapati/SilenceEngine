@@ -24,19 +24,25 @@
 
 package com.shc.silenceengine.tests;
 
-import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.glfw.Monitor;
 import com.shc.silenceengine.core.glfw.VideoMode;
+import com.shc.silenceengine.core.glfw.Window;
+import com.shc.silenceengine.utils.NativesLoader;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class GLFWTest extends Game
+public class GLFWTest
 {
-    public void init()
+    public static void main(String[] args)
     {
+        NativesLoader.loadLWJGL();
+        GLFW.glfwInit();
+
         List<Monitor> monitors = Monitor.getMonitors();
 
         for (Monitor monitor : monitors)
@@ -47,11 +53,22 @@ public class GLFWTest extends Game
             modes.forEach(System.out::println);
         }
 
-        Game.end();
-    }
+        Window.setHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
+        Window.setHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
 
-    public static void main(String[] args)
-    {
-        new GLFWTest().start();
+        Window window = new Window(800, 600, "Test");
+        window.makeCurrent();
+
+        System.out.println(GL11.glGetString(GL11.GL_VERSION));
+
+        while (!window.shouldClose())
+        {
+            window.swapBuffers();
+
+            GLFW.glfwPollEvents();
+        }
+
+        window.destroy();
+        GLFW.glfwTerminate();
     }
 }

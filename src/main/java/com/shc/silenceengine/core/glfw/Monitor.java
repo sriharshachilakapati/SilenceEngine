@@ -26,10 +26,12 @@ package com.shc.silenceengine.core.glfw;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.glfw.GLFWgammaramp;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -94,9 +96,25 @@ public class Monitor
 
                 videoModes.add(new VideoMode(width, height, redBits, greenBits, blueBits, refreshRate));
             }
+
+            videoModes = Collections.unmodifiableList(videoModes);
         }
 
         return videoModes;
+    }
+
+    public VideoMode getVideoMode()
+    {
+        ByteBuffer mode = glfwGetVideoMode(handle);
+
+        int width       = mode.getInt();
+        int height      = mode.getInt();
+        int redBits     = mode.getInt();
+        int greenBits   = mode.getInt();
+        int blueBits    = mode.getInt();
+        int refreshRate = mode.getInt();
+
+        return new VideoMode(width, height, redBits, greenBits, blueBits, refreshRate);
     }
 
     public long getHandle()
@@ -114,12 +132,35 @@ public class Monitor
         return glfwGetMonitorName(handle);
     }
 
+    public void setGamma(float gamma)
+    {
+        glfwSetGamma(handle, gamma);
+    }
+
+    public GammaRamp getGammaRamp()
+    {
+        ByteBuffer gammaRamp = glfwGetGammaRamp(handle);
+
+        short red   = gammaRamp.getShort();
+        short green = gammaRamp.getShort();
+        short blue  = gammaRamp.getShort();
+        int   size  = gammaRamp.getInt();
+
+        return new GammaRamp(red, green, blue, size);
+    }
+
+    public void setGammaRamp(GammaRamp gammaRamp)
+    {
+        ByteBuffer ramp = GLFWgammaramp.malloc(gammaRamp.getRed(), gammaRamp.getGreen(), gammaRamp.getBlue(), gammaRamp.getSize());
+        glfwSetGammaRamp(handle, ramp);
+    }
+
     @Override
     public String toString()
     {
         return "Monitor{" +
-               "handle=" + handle + "," +
-               "name=\"" + getName() + "\"," +
+               "handle=" + handle + ", " +
+               "name=\"" + getName() + "\", " +
                "primary=" + isPrimary() +
                '}';
     }
