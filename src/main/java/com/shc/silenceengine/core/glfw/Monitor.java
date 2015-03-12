@@ -24,16 +24,20 @@
 
 package com.shc.silenceengine.core.glfw;
 
+import com.shc.silenceengine.core.glfw.callbacks.IMonitorCallback;
 import com.shc.silenceengine.math.Vector2;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.glfw.GLFWMonitorCallback;
 import org.lwjgl.glfw.GLFWgammaramp;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -42,8 +46,13 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class Monitor
 {
-    private static Monitor primary;
+    private static Map<Long, Monitor> registeredMonitors = new HashMap<>();
+
+    private static Monitor       primary;
     private static List<Monitor> monitors;
+
+    private static GLFWMonitorCallback glfwMonitorCallback;
+    private static IMonitorCallback    monitorCallback;
 
     private long handle;
 
@@ -52,6 +61,7 @@ public class Monitor
     private Monitor(long handle)
     {
         this.handle = handle;
+        registeredMonitors.put(handle, this);
     }
 
     public static Monitor getPrimaryMonitor()
@@ -85,16 +95,16 @@ public class Monitor
         {
             videoModes = new ArrayList<>();
 
-            IntBuffer  count = BufferUtils.createIntBuffer(1);
+            IntBuffer count = BufferUtils.createIntBuffer(1);
             ByteBuffer modes = glfwGetVideoModes(handle, count);
 
             for (int i = 0; i < count.get(0); i++)
             {
-                int width       = modes.getInt();
-                int height      = modes.getInt();
-                int redBits     = modes.getInt();
-                int greenBits   = modes.getInt();
-                int blueBits    = modes.getInt();
+                int width = modes.getInt();
+                int height = modes.getInt();
+                int redBits = modes.getInt();
+                int greenBits = modes.getInt();
+                int blueBits = modes.getInt();
                 int refreshRate = modes.getInt();
 
                 videoModes.add(new VideoMode(width, height, redBits, greenBits, blueBits, refreshRate));
@@ -110,7 +120,7 @@ public class Monitor
     {
         ByteBuffer mode = glfwGetVideoMode(handle);
 
-        int width       = mode.getInt();
+        int width = mode.getInt();
         int height      = mode.getInt();
         int redBits     = mode.getInt();
         int greenBits   = mode.getInt();
@@ -174,6 +184,20 @@ public class Monitor
         glfwGetMonitorPos(handle, xPos, yPos);
 
         return new Vector2(xPos.get(), yPos.get());
+    }
+
+    public static void setCallback(IMonitorCallback callback)
+    {
+        monitorCallback = callback;
+
+        if (glfwMonitorCallback != null)
+            glfwMonitorCallback.release();
+
+        glfwMonitorCallback = GLFWMonitorCallback((monitor, event) ->
+            monitorCallback.invoke(registeredMonitors.get(monitor), event)
+        );
+
+        glfwSetMonitorCallback(glfwMonitorCallback);
     }
 
     @Override

@@ -32,6 +32,7 @@ import com.shc.silenceengine.core.glfw.callbacks.IWindowPositionCallback;
 import com.shc.silenceengine.core.glfw.callbacks.IWindowRefreshCallback;
 import com.shc.silenceengine.core.glfw.callbacks.IWindowSizeCallback;
 import com.shc.silenceengine.math.Vector2;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWWindowCloseCallback;
@@ -43,6 +44,8 @@ import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GLContext;
 
 import java.nio.IntBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
@@ -52,6 +55,8 @@ import static org.lwjgl.system.MemoryUtil.*;
  */
 public class Window
 {
+    private static Map<Long, Window> registeredWindows = new HashMap<>();
+
     private long handle;
 
     private Vector2 position;
@@ -154,6 +159,78 @@ public class Window
         this.title = title;
 
         handle = glfwCreateWindow(width, height, title, monitor == null ? NULL : monitor.getHandle(), share == null ? NULL : share.getHandle());
+
+        registeredWindows.put(handle, this);
+
+        // Initialize the native callbacks
+        initNativeCallbacks();
+    }
+
+    private void initNativeCallbacks()
+    {
+        // Initialize overriden callbacks
+        initCustomCallbacks();
+
+        // Create the callback functions that re-post the events
+        glfwFramebufferSizeCallback = GLFWFramebufferSizeCallback((window, width, height) ->
+            framebufferSizeCallback.invoke(registeredWindows.get(window), width, height)
+        );
+
+        glfwWindowCloseCallback = GLFWWindowCloseCallback((window) ->
+            windowCloseCallback.invoke(registeredWindows.get(window))
+        );
+
+        glfwWindowFocusCallback = GLFWWindowFocusCallback((window, focus) ->
+            windowFocusCallback.invoke(registeredWindows.get(window), focus != 0)
+        );
+
+        glfwWindowIconifyCallback = GLFWWindowIconifyCallback((window, iconify) ->
+            windowIconifyCallback.invoke(registeredWindows.get(window), iconify != 0)
+        );
+
+        glfwWindowPosCallback = GLFWWindowPosCallback((window, xPos, yPos) ->
+            windowPositionCallback.invoke(registeredWindows.get(window), xPos, yPos)
+        );
+
+        glfwWindowRefreshCallback = GLFWWindowRefreshCallback((window) ->
+            windowRefreshCallback.invoke(registeredWindows.get(window))
+        );
+
+        glfwWindowSizeCallback = GLFWWindowSizeCallback((window, width, height) ->
+            windowSizeCallback.invoke(registeredWindows.get(window), width, height)
+        );
+
+        // Register native callbacks
+        glfwSetFramebufferSizeCallback(handle, glfwFramebufferSizeCallback);
+        glfwSetWindowCloseCallback(handle, glfwWindowCloseCallback);
+        glfwSetWindowFocusCallback(handle, glfwWindowFocusCallback);
+        glfwSetWindowIconifyCallback(handle, glfwWindowIconifyCallback);
+        glfwSetWindowPosCallback(handle, glfwWindowPosCallback);
+        glfwSetWindowRefreshCallback(handle, glfwWindowRefreshCallback);
+        glfwSetWindowSizeCallback(handle, glfwWindowSizeCallback);
+    }
+
+    private void initCustomCallbacks()
+    {
+        // The default callbacks does nothing
+        framebufferSizeCallback = (window, width, height) -> {};
+        windowCloseCallback = (window) -> {};
+        windowFocusCallback = (window, focus) -> {};
+        windowIconifyCallback = (window, iconify) -> {};
+        windowPositionCallback = (window, xPos, yPos) -> {};
+        windowRefreshCallback = (window) -> {};
+        windowSizeCallback = (window, width, height) -> {};
+    }
+
+    private void releaseNativeCallbacks()
+    {
+        glfwFramebufferSizeCallback.release();
+        glfwWindowCloseCallback.release();
+        glfwWindowFocusCallback.release();
+        glfwWindowIconifyCallback.release();
+        glfwWindowPosCallback.release();
+        glfwWindowRefreshCallback.release();
+        glfwWindowSizeCallback.release();
     }
 
     public void makeCurrent()
@@ -199,6 +276,7 @@ public class Window
 
     public void destroy()
     {
+        releaseNativeCallbacks();
         glfwDestroyWindow(handle);
     }
 
@@ -249,6 +327,36 @@ public class Window
         return glfwGetWindowAttrib(handle, attribute);
     }
 
+    public void setCloseCallback(IWindowCloseCallback windowCloseCallback)
+    {
+        this.windowCloseCallback = windowCloseCallback;
+    }
+
+    public void setFocusCallback(IWindowFocusCallback windowFocusCallback)
+    {
+        this.windowFocusCallback = windowFocusCallback;
+    }
+
+    public void setIconifyCallback(IWindowIconifyCallback windowIconifyCallback)
+    {
+        this.windowIconifyCallback = windowIconifyCallback;
+    }
+
+    public void setPositionCallback(IWindowPositionCallback windowPositionCallback)
+    {
+        this.windowPositionCallback = windowPositionCallback;
+    }
+
+    public void setRefreshCallback(IWindowRefreshCallback windowRefreshCallback)
+    {
+        this.windowRefreshCallback = windowRefreshCallback;
+    }
+
+    public void setSizeCallback(IWindowSizeCallback windowSizeCallback)
+    {
+        this.windowSizeCallback = windowSizeCallback;
+    }
+
     public long getHandle()
     {
         return handle;
@@ -262,5 +370,10 @@ public class Window
     public static void setHint(int hint, boolean value)
     {
         setHint(hint, value ? 1 : 0);
+    }
+
+    public static Window getCurrentContext()
+    {
+        return registeredWindows.get(glfwGetCurrentContext());
     }
 }

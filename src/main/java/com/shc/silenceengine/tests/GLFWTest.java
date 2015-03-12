@@ -57,10 +57,13 @@ public class GLFWTest
         Window.setHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
         Window.setHint(GLFW.GLFW_RESIZABLE, true);
 
-        Window window = new Window(800, 600, "Test");
+        Window window = new Window(800, 600);
         window.makeCurrent();
 
         System.out.println(GL11.glGetString(GL11.GL_VERSION));
+
+        window.setPositionCallback(GLFWTest::windowPositionCallback);
+        window.setIconifyCallback(GLFWTest::windowIconifyCallback);
 
         while (!window.shouldClose())
         {
@@ -73,5 +76,16 @@ public class GLFWTest
 
         window.destroy();
         GLFW.glfwTerminate();
+    }
+
+    private static void windowPositionCallback(Window window, int xPos, int yPos)
+    {
+        System.out.println("Position changed [" + xPos + ", " + yPos + "]");
+    }
+
+    private static void windowIconifyCallback(Window window, boolean iconify)
+    {
+        if (iconify)
+            window.restore();
     }
 }
