@@ -64,6 +64,8 @@ public class GLFWTest
 
         window.setPositionCallback(GLFWTest::windowPositionCallback);
         window.setIconifyCallback(GLFWTest::windowIconifyCallback);
+        window.setKeyCallback(GLFWTest::windowKeyCallback);
+        window.setDropCallback(GLFWTest::windowDropCallback);
 
         while (!window.shouldClose())
         {
@@ -87,5 +89,19 @@ public class GLFWTest
     {
         if (iconify)
             window.restore();
+    }
+
+    private static void windowKeyCallback(Window window, int key, int scanCode, int action, int mods)
+    {
+        if (key == GLFW.GLFW_KEY_ESCAPE && action != GLFW.GLFW_RELEASE)
+            window.setShouldClose(true);
+
+        System.out.println("Keycode: " + key + " action: " + action);
+    }
+
+    private static void windowDropCallback(Window window, String[] names)
+    {
+        for (String name : names)
+            System.out.println("Dropped: " + name);
     }
 }
