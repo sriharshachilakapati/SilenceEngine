@@ -24,30 +24,18 @@
 
 package com.shc.silenceengine.core;
 
+import com.shc.silenceengine.core.glfw.GLFW3;
+import com.shc.silenceengine.core.glfw.Monitor;
+import com.shc.silenceengine.core.glfw.VideoMode;
+import com.shc.silenceengine.core.glfw.Window;
 import com.shc.silenceengine.graphics.Batcher;
-import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Vector2;
-import org.lwjgl.glfw.Callbacks;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
-import org.lwjgl.glfw.GLFWScrollCallback;
-import org.lwjgl.glfw.GLFWWindowPosCallback;
-import org.lwjgl.glfw.GLFWWindowSizeCallback;
-import org.lwjgl.glfw.GLFWvidmode;
-import org.lwjgl.opengl.GLContext;
-
-import java.nio.ByteBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryUtil.*;
 
 /**
  * The Display class takes care of creating a display and managing it. As a user of SilenceEngine, I don't expect you to
@@ -57,8 +45,8 @@ import static org.lwjgl.system.MemoryUtil.*;
  */
 public final class Display
 {
-    // The display handle
-    private static long displayHandle = NULL;
+    // The display window
+    private static Window displayWindow = null;
 
     // Width and height of the display
     private static int width  = 800;
@@ -88,18 +76,6 @@ public final class Display
     private static boolean vSync      = true;
     private static boolean dirty      = false;
 
-    // Clear color
-    private static Color clearColor = Color.BLACK;
-
-    // Callbacks from GLFW
-    private static GLFWWindowSizeCallback  winSizeCallback;
-    private static GLFWKeyCallback         winKeyCallback;
-    private static GLFWWindowPosCallback   winPosCallback;
-    private static GLFWCursorPosCallback   winCurPosCallback;
-    private static GLFWMouseButtonCallback winMouseButtonCallback;
-    private static GLFWScrollCallback      winScrollCallback;
-    private static GLFWErrorCallback       errorCallback;
-
     /**
      * Private constructor. Prevent instantiation
      */
@@ -113,13 +89,13 @@ public final class Display
     public static void create()
     {
         // Set error callback
-        glfwSetErrorCallback(errorCallback = GLFWErrorCallback((error, description) ->
+        GLFW3.setErrorCallback((error, description) ->
         {
-            throw new SilenceException("" + error + ": " + Callbacks.errorCallbackDescriptionString(description));
-        }));
+            throw new SilenceException("" + error + ": " + description);
+        });
 
         // Create the window
-        displayHandle = createWindow(width, height, title, NULL, NULL, false, resizable);
+        displayWindow = createWindow(width, height, title, null, null, false, resizable);
         centerOnScreen();
     }
 
@@ -137,100 +113,77 @@ public final class Display
      *
      * @return A window handle. (GLFWWindow* as in C++, but this is Java, so a long)
      */
-    private static long createWindow(int width, int height, String title, long monitor, long parent, boolean visible, boolean resizable)
+    private static Window createWindow(int width, int height, String title, Monitor monitor, Window parent, boolean visible, boolean resizable)
     {
         // Dispose existing Batcher because VAOs cannot be shared across context
         if (Game.getBatcher() != null)
             Game.getBatcher().dispose();
 
         // Window Hints for OpenGL context
-        glfwWindowHint(GLFW_SAMPLES, 4);
+        Window.setHint(GLFW_SAMPLES, 4);
 
         if (System.getProperty("os.name").toLowerCase().contains("mac"))
         {
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+            Window.setHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            Window.setHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         }
         else
         {
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+            Window.setHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            Window.setHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         }
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_VISIBLE, visible ? GL_TRUE : GL_FALSE);
-        glfwWindowHint(GLFW_RESIZABLE, resizable ? GL_TRUE : GL_FALSE);
+        Window.setHint(GLFW_OPENGL_FORWARD_COMPAT, true);
+        Window.setHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+        Window.setHint(GLFW_VISIBLE, visible);
+        Window.setHint(GLFW_RESIZABLE, resizable);
 
         if (Game.development)
         {
             System.setProperty("org.lwjgl.util.Debug", "true");
-            glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+            Window.setHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
         }
 
         // Create the window
-        long window = glfwCreateWindow(width, height, title, monitor, parent);
-
-        if (window == NULL)
-            throw new SilenceException("Error creating Display. Your system is unsupported.");
+        Window window = new Window(width, height, title, monitor, parent);
 
         // Take care of OpenGL context
-        glfwMakeContextCurrent(window);
+        window.makeCurrent();
         glfwSwapInterval(vSync ? 1 : 0);
-
-        GLContext.createFromCurrent();
 
         Game.setBatcher(new Batcher());
 
-        // Window callbacks
-        releaseCallbacks();
-
-        glfwSetWindowSizeCallback(window, winSizeCallback = GLFWWindowSizeCallback((win, w, h) ->
+        window.setSizeCallback((win, w, h) ->
         {
             Display.width = w;
             Display.height = h;
 
             resized = true;
-        }));
+        });
 
-        glfwSetKeyCallback(window, winKeyCallback = GLFWKeyCallback(Keyboard::glfwKeyCallback));
+        window.setKeyCallback(Keyboard::glfwKeyCallback);
 
-        glfwSetWindowPosCallback(window, winPosCallback = GLFWWindowPosCallback((win, xPos, yPos) ->
+        window.setPositionCallback((win, xPos, yPos) ->
         {
             Display.posX = xPos;
             Display.posY = yPos;
-        }));
+        });
 
-        glfwSetCursorPosCallback(window, winCurPosCallback = GLFWCursorPosCallback(Mouse::glfwCursorCallback));
-        glfwSetScrollCallback(window, winScrollCallback = GLFWScrollCallback(Mouse::glfwScrollCallback));
-        glfwSetMouseButtonCallback(window, winMouseButtonCallback = GLFWMouseButtonCallback(Mouse::glfwMouseButtonCallback));
+        window.setCursorPositionCallback(Mouse::glfwCursorCallback);
+        window.setScrollCallback(Mouse::glfwScrollCallback);
+        window.setMouseButtonCallback(Mouse::glfwMouseButtonCallback);
 
         Display.dirty = true;
+
+        // Reset the window hints for next window creation
+        Window.setDefaultHints();
 
         return window;
     }
 
-    /**
-     * Used to release GLFW callbacks. This is necessary to prevent segmentation fault errors in native code.
-     */
-    private static void releaseCallbacks()
+    public void makeCurrent()
     {
-        if (winSizeCallback != null)
-            winSizeCallback.release();
-
-        if (winKeyCallback != null)
-            winKeyCallback.release();
-
-        if (winPosCallback != null)
-            winPosCallback.release();
-
-        if (winCurPosCallback != null)
-            winCurPosCallback.release();
-
-        if (winScrollCallback != null)
-            winScrollCallback.release();
-
-        if (winMouseButtonCallback != null)
-            winMouseButtonCallback.release();
+        displayWindow.makeCurrent();
     }
 
     /**
@@ -238,12 +191,11 @@ public final class Display
      */
     public static void centerOnScreen()
     {
-        if (fullScreen || displayHandle == NULL)
+        if (fullScreen || displayWindow == null)
             return;
 
-        ByteBuffer vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowPos(displayHandle, (GLFWvidmode.width(vidMode) - width) / 2,
-                                (GLFWvidmode.height(vidMode) - height) / 2);
+        VideoMode videoMode = Monitor.getPrimaryMonitor().getVideoMode();
+        displayWindow.setPosition((videoMode.getWidth() - width) / 2, (videoMode.getHeight() - height) / 2);
     }
 
     /**
@@ -252,20 +204,7 @@ public final class Display
      */
     public static boolean isCloseRequested()
     {
-        return glfwWindowShouldClose(displayHandle) == GL_TRUE;
-    }
-
-    /**
-     * Sets the viewport of the display.
-     *
-     * @param x      The x-coordinate of the top-left point
-     * @param y      The y-coordinate of the top-left point
-     * @param width  The width of the window
-     * @param height The height of the window
-     */
-    public static void setViewport(int x, int y, int width, int height)
-    {
-        GL3Context.viewport(x, y, width, height);
+        return displayWindow.shouldClose();
     }
 
     /**
@@ -273,7 +212,7 @@ public final class Display
      */
     public static void hide()
     {
-        glfwHideWindow(displayHandle);
+        displayWindow.hide();
     }
 
     /**
@@ -282,19 +221,16 @@ public final class Display
      */
     public static void destroy()
     {
-        releaseCallbacks();
-        errorCallback.release();
-
-        glfwDestroyWindow(displayHandle);
+        displayWindow.destroy();
     }
 
     /**
-     * @return the handle of the current display. Please don't store this handle, and always use this method to get one,
-     * because a stored handle can get invalid at any time.
+     * @return the window of the current display. Please don't store this window, and always use this method to get one,
+     * because a stored window can get invalid at any time.
      */
-    public static long getDisplayHandle()
+    public static Window getWindow()
     {
-        return displayHandle;
+        return displayWindow;
     }
 
     /**
@@ -313,7 +249,7 @@ public final class Display
     public static void setHeight(int height)
     {
         Display.height = height;
-        glfwSetWindowSize(displayHandle, width, height);
+        displayWindow.setSize(width, height);
     }
 
     /**
@@ -332,7 +268,7 @@ public final class Display
     public static void setWidth(int width)
     {
         Display.width = width;
-        glfwSetWindowSize(displayHandle, width, height);
+        displayWindow.setSize(width, height);
     }
 
     /**
@@ -346,7 +282,7 @@ public final class Display
         Display.width = width;
         Display.height = height;
 
-        glfwSetWindowSize(displayHandle, width, height);
+        displayWindow.setSize(width, height);
     }
 
     /**
@@ -363,16 +299,6 @@ public final class Display
     public static float getAspectRatio()
     {
         return ((float) width) / ((float) height);
-    }
-
-    /**
-     * Sets the clear color of the Display, i.e., the background color
-     *
-     * @param c The background color to clear the window
-     */
-    public static void setClearColor(Color c)
-    {
-        clearColor = c;
     }
 
     /**
@@ -397,7 +323,7 @@ public final class Display
 
         if (fullScreen)
         {
-            ByteBuffer vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            VideoMode videoMode = Monitor.getPrimaryMonitor().getVideoMode();
 
             // Save window size
             oldWidth = width;
@@ -407,8 +333,8 @@ public final class Display
             oldPosX = posX;
             oldPosY = posY;
 
-            width = GLFWvidmode.width(vidMode);
-            height = GLFWvidmode.height(vidMode);
+            width = videoMode.getWidth();
+            height = videoMode.getHeight();
         }
         else
         {
@@ -422,9 +348,9 @@ public final class Display
         }
 
         // Create new window
-        long fsDisplayHandle = createWindow(width, height, title, fullScreen ? glfwGetPrimaryMonitor() : NULL, displayHandle, true, resizable);
-        glfwDestroyWindow(displayHandle);
-        displayHandle = fsDisplayHandle;
+        Window fsDisplayWindow = createWindow(width, height, title, fullScreen ? Monitor.getPrimaryMonitor() : null, displayWindow, true, resizable);
+        displayWindow.destroy();
+        displayWindow = fsDisplayWindow;
 
         setPosition(posX, posY);
         show();
@@ -438,7 +364,7 @@ public final class Display
      */
     public static void show()
     {
-        glfwShowWindow(displayHandle);
+        displayWindow.show();
     }
 
     /**
@@ -446,10 +372,8 @@ public final class Display
      */
     public static void update()
     {
-        glfwSwapBuffers(displayHandle);
-        glfwPollEvents();
-
-        GL3Context.clearColor(clearColor);
+        displayWindow.swapBuffers();
+        GLFW3.pollEvents();
 
         // Force binding
         Program.CURRENT = null;
@@ -467,13 +391,13 @@ public final class Display
      */
     public static void setPosition(int x, int y)
     {
-        if (fullScreen || displayHandle == NULL)
+        if (fullScreen || displayWindow == null)
             return;
 
         posX = x;
         posY = y;
 
-        glfwSetWindowPos(displayHandle, x, y);
+        displayWindow.setPosition(x, y);
     }
 
     /**
@@ -496,9 +420,9 @@ public final class Display
 
         Display.resizable = resizable;
 
-        long newDisplay = createWindow(width, height, title, fullScreen ? glfwGetPrimaryMonitor() : NULL, displayHandle, fullScreen, resizable);
-        glfwDestroyWindow(displayHandle);
-        displayHandle = newDisplay;
+        Window newDisplay = createWindow(width, height, title, fullScreen ? Monitor.getPrimaryMonitor() : null, displayWindow, fullScreen, resizable);
+        displayWindow.destroy();
+        displayWindow = newDisplay;
 
         setPosition(posX, posY);
         show();
@@ -535,8 +459,8 @@ public final class Display
     {
         Display.title = title;
 
-        if (displayHandle != NULL)
-            glfwSetWindowTitle(displayHandle, title);
+        if (displayWindow != null)
+            displayWindow.setTitle(title);
     }
 
     /**
@@ -563,7 +487,7 @@ public final class Display
      */
     public static void hideCursor()
     {
-        glfwSetInputMode(displayHandle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        displayWindow.setInputMode(GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
 
     /**
@@ -571,11 +495,11 @@ public final class Display
      */
     public static void showCursor()
     {
-        glfwSetInputMode(displayHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        displayWindow.setInputMode(GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 
     public static void grabCursor()
     {
-        glfwSetInputMode(displayHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        displayWindow.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 }

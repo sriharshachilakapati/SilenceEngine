@@ -26,6 +26,7 @@ package com.shc.silenceengine.input;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.core.glfw.Window;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -80,7 +81,7 @@ public class Mouse
 
     public static boolean isPressed(int button)
     {
-        return glfwGetMouseButton(Display.getDisplayHandle(), button) == GLFW_PRESS || isClicked(button);
+        return Display.getWindow().getMouseButton(button) == GLFW_PRESS || isClicked(button);
     }
 
     public static boolean isClicked(int button)
@@ -126,7 +127,7 @@ public class Mouse
         return scrollY;
     }
 
-    public static void glfwMouseButtonCallback(long window, int button, int action, int mods)
+    public static void glfwMouseButtonCallback(Window window, int button, int action, int mods)
     {
         Mouse.setButton(button, action != GLFW_RELEASE);
     }
@@ -140,7 +141,7 @@ public class Mouse
             events.remove((Integer) button);
     }
 
-    public static void glfwCursorCallback(long window, double x, double y)
+    public static void glfwCursorCallback(Window window, double x, double y)
     {
         Mouse.dx = (float) x - Mouse.x;
         Mouse.dy = (float) y - Mouse.y;
@@ -149,7 +150,7 @@ public class Mouse
         Mouse.y = (float) y;
     }
 
-    public static void glfwScrollCallback(long window, double scrollX, double scrollY)
+    public static void glfwScrollCallback(Window window, double scrollX, double scrollY)
     {
         Mouse.scrollX = (float) scrollX;
         Mouse.scrollY = (float) scrollY;

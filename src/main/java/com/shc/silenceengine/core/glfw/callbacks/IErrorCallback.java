@@ -22,46 +22,13 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.tests;
-
-import com.shc.silenceengine.core.glfw.GLFW3;
-import com.shc.silenceengine.core.glfw.Window;
-import com.shc.silenceengine.utils.NativesLoader;
+package com.shc.silenceengine.core.glfw.callbacks;
 
 /**
- * This is the getting started example on the GLFW website ported to use the GLFW wrapper API.
- *
  * @author Sri Harsha Chilakapati
  */
-public class GLFWTest
+@FunctionalInterface
+public interface IErrorCallback
 {
-    public static void main(String[] args)
-    {
-        // Start with loading the natives
-        NativesLoader.loadLWJGL();
-
-        // Initialize GLFW library
-        if (!GLFW3.init())
-            return;
-
-        // Create a windowed mode window and its OpenGL context
-        Window window = new Window(640, 480, "Hello World");
-
-        // Make the window's context current
-        window.makeCurrent();
-
-        // Loop until the user closes the window
-        while (!window.shouldClose())
-        {
-            // Render here
-
-            // Swap front and back buffers
-            window.swapBuffers();
-
-            // Poll for and process events
-            GLFW3.pollEvents();
-        }
-
-        GLFW3.terminate();
-    }
+    public void invoke(int error, String description);
 }

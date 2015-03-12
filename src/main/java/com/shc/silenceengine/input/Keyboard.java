@@ -26,6 +26,7 @@ package com.shc.silenceengine.input;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.core.glfw.Window;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -177,7 +178,7 @@ public class Keyboard
 
     public static boolean isPressed(int key)
     {
-        return glfwGetKey(Display.getDisplayHandle(), key) == GLFW_PRESS || isClicked(key);
+        return Display.getWindow().getKey(key) == GLFW_PRESS || isClicked(key);
     }
 
     public static boolean isClicked(int key)
@@ -236,7 +237,7 @@ public class Keyboard
         eventsLastFrame.addAll(eventsThisFrame);
     }
 
-    public static void glfwKeyCallback(long window, int key, int scanCode, int action, int mods)
+    public static void glfwKeyCallback(Window window, int key, int scanCode, int action, int mods)
     {
         Keyboard.setKey(key, action != GLFW_RELEASE);
     }

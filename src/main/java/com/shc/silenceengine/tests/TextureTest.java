@@ -28,6 +28,7 @@ import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 
@@ -50,7 +51,7 @@ public class TextureTest extends Game
 
     public void init()
     {
-        Display.setClearColor(Color.CORN_FLOWER_BLUE);
+        GL3Context.clearColor(Color.CORN_FLOWER_BLUE);
 
         texture = Texture.fromResource("resources/logo.png");
     }
@@ -122,6 +123,6 @@ public class TextureTest extends Game
 
     public void resize()
     {
-        Display.setViewport(0, 0, Display.getWidth(), Display.getHeight());
+        GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
     }
 }

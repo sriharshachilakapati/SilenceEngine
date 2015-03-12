@@ -30,6 +30,7 @@ import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
+import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.geom2d.Rectangle;
@@ -60,7 +61,7 @@ public class DynamicTreeSceneColliderTest2D extends Game
     {
         Display.setTitle("DynamicTree Collider Test 2D");
 
-        Display.setClearColor(Color.DARK_SLATE_GRAY);
+        GL3Context.clearColor(Color.DARK_SLATE_GRAY);
 
         cam = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
 

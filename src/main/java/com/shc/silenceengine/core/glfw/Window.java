@@ -24,26 +24,15 @@
 
 package com.shc.silenceengine.core.glfw;
 
-import com.shc.silenceengine.core.glfw.callbacks.ICharacterCallback;
-import com.shc.silenceengine.core.glfw.callbacks.ICursorEnterCallback;
-import com.shc.silenceengine.core.glfw.callbacks.ICursorPositionCallback;
-import com.shc.silenceengine.core.glfw.callbacks.IDropCallback;
-import com.shc.silenceengine.core.glfw.callbacks.IFramebufferSizeCallback;
-import com.shc.silenceengine.core.glfw.callbacks.IKeyCallback;
-import com.shc.silenceengine.core.glfw.callbacks.IMouseButtonCallback;
-import com.shc.silenceengine.core.glfw.callbacks.IScrollCallback;
-import com.shc.silenceengine.core.glfw.callbacks.IWindowCloseCallback;
-import com.shc.silenceengine.core.glfw.callbacks.IWindowFocusCallback;
-import com.shc.silenceengine.core.glfw.callbacks.IWindowIconifyCallback;
-import com.shc.silenceengine.core.glfw.callbacks.IWindowPositionCallback;
-import com.shc.silenceengine.core.glfw.callbacks.IWindowRefreshCallback;
-import com.shc.silenceengine.core.glfw.callbacks.IWindowSizeCallback;
+import com.shc.silenceengine.core.glfw.callbacks.*;
 import com.shc.silenceengine.math.Vector2;
+import com.shc.silenceengine.math.Vector4;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GLContext;
 
+import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,9 +53,11 @@ public class Window
     private Vector2 size;
 
     private String title;
+    private Monitor monitor;
 
     /* Native GLFW Callbacks */
     private GLFWCharCallback            glfwCharCallback;
+    private GLFWCharModsCallback        glfwCharModsCallback;
     private GLFWCursorEnterCallback     glfwCursorEnterCallback;
     private GLFWCursorPosCallback       glfwCursorPosCallback;
     private GLFWDropCallback            glfwDropCallback;
@@ -83,6 +74,7 @@ public class Window
 
     /* Overridden custom Callbacks for better interfacing with C++ code */
     private ICharacterCallback       characterCallback;
+    private ICharacterModsCallback   characterModsCallback;
     private ICursorEnterCallback     cursorEnterCallback;
     private ICursorPositionCallback  cursorPositionCallback;
     private IDropCallback            dropCallback;
@@ -172,8 +164,12 @@ public class Window
         size = new Vector2(width, height);
         position = new Vector2();
         this.title = title;
+        this.monitor = monitor;
 
         handle = glfwCreateWindow(width, height, title, monitor == null ? NULL : monitor.getHandle(), share == null ? NULL : share.getHandle());
+
+        if (handle == NULL)
+            throw new RuntimeException("Cannot create window");
 
         registeredWindows.put(handle, this);
 
@@ -189,6 +185,10 @@ public class Window
         // Create the callback functions that re-post the events
         glfwCharCallback = GLFWCharCallback((window, codePoint) ->
             characterCallback.invoke(registeredWindows.get(window), codePoint)
+        );
+
+        glfwCharModsCallback = GLFWCharModsCallback((window, codePoint, mods) ->
+            characterModsCallback.invoke(registeredWindows.get(window), codePoint, mods)
         );
 
         glfwCursorEnterCallback = GLFWCursorEnterCallback((window, entered) ->
@@ -245,6 +245,7 @@ public class Window
 
         // Register native callbacks
         glfwSetCharCallback(handle, glfwCharCallback);
+        glfwSetCharModsCallback(handle, glfwCharModsCallback);
         glfwSetCursorEnterCallback(handle, glfwCursorEnterCallback);
         glfwSetCursorPosCallback(handle, glfwCursorPosCallback);
         glfwSetDropCallback(handle, glfwDropCallback);
@@ -264,6 +265,7 @@ public class Window
     {
         // The default callbacks does nothing
         characterCallback = (window, codePoint) -> {};
+        characterModsCallback = (window, codePoint, mods) -> {};
         cursorEnterCallback = (window, entered) -> {};
         cursorPositionCallback = (window, xPos, yPos) -> {};
         dropCallback = (window, names) -> {};
@@ -282,6 +284,7 @@ public class Window
     private void releaseNativeCallbacks()
     {
         glfwCharCallback.release();
+        glfwCharModsCallback.release();
         glfwCursorEnterCallback.release();
         glfwCursorPosCallback.release();
         glfwDropCallback.release();
@@ -295,6 +298,40 @@ public class Window
         glfwWindowPosCallback.release();
         glfwWindowRefreshCallback.release();
         glfwWindowSizeCallback.release();
+    }
+
+    public int getKey(int key)
+    {
+        return glfwGetKey(handle, key);
+    }
+
+    public int getMouseButton(int button)
+    {
+        return glfwGetMouseButton(handle, button);
+    }
+
+    public Vector2 getCursorPos()
+    {
+        DoubleBuffer xPos = BufferUtils.createDoubleBuffer(1);
+        DoubleBuffer yPos = BufferUtils.createDoubleBuffer(1);
+        glfwGetCursorPos(handle, xPos, yPos);
+
+        return new Vector2((float) xPos.get(), (float) yPos.get());
+    }
+
+    public void setCursorPos(double xPos, double yPos)
+    {
+        glfwSetCursorPos(handle, xPos, yPos);
+    }
+
+    public void setCursorPos(Vector2 pos)
+    {
+        setCursorPos(pos.x, pos.y);
+    }
+
+    public void setInputMode(int mode, int value)
+    {
+        glfwSetInputMode(handle, mode, value);
     }
 
     public void makeCurrent()
@@ -359,6 +396,11 @@ public class Window
         glfwSetWindowPos(handle, (int) position.x, (int) position.y);
     }
 
+    public void setPosition(float x, float y)
+    {
+        setPosition(position.set(x, y));
+    }
+
     public Vector2 getSize()
     {
         IntBuffer width = BufferUtils.createIntBuffer(1);
@@ -372,6 +414,28 @@ public class Window
     {
         this.size.set(size);
         glfwSetWindowSize(handle, (int) size.x, (int) size.y);
+    }
+
+    public void setSize(float width, float height)
+    {
+        setSize(size.set(width, height));
+    }
+
+    public Vector4 getFrameSize()
+    {
+        IntBuffer left = BufferUtils.createIntBuffer(1);
+        IntBuffer top = BufferUtils.createIntBuffer(1);
+        IntBuffer right = BufferUtils.createIntBuffer(1);
+        IntBuffer bottom = BufferUtils.createIntBuffer(1);
+
+        glfwGetWindowFrameSize(handle, left, top, right, bottom);
+
+        return new Vector4(left.get(), top.get(), right.get(), bottom.get());
+    }
+
+    public Monitor getMonitor()
+    {
+        return monitor;
     }
 
     public void setTitle(String title)
@@ -474,6 +538,11 @@ public class Window
     public static void setHint(int hint, boolean value)
     {
         setHint(hint, value ? 1 : 0);
+    }
+
+    public static void setDefaultHints()
+    {
+        glfwDefaultWindowHints();
     }
 
     public static Window getCurrentContext()

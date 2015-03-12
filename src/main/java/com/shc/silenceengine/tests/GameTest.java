@@ -28,6 +28,7 @@ import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.input.Keyboard;
 
 /**
@@ -88,6 +89,6 @@ public class GameTest extends Game
     @Override
     public void resize()
     {
-        Display.setViewport(0, 0, Display.getWidth(), Display.getHeight());
+        GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
     }
 }
