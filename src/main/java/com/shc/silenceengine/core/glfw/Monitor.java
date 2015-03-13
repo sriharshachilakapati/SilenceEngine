@@ -137,7 +137,7 @@ public class Monitor
 
     public boolean isPrimary()
     {
-        return monitors.get(0).equals(this);
+        return getMonitors().get(0).equals(this);
     }
 
     public String getName()

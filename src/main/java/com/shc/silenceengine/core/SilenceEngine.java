@@ -26,14 +26,12 @@ package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.audio.AudioEngine;
 import com.shc.silenceengine.collision.CollisionEngine;
+import com.shc.silenceengine.core.glfw.GLFW3;
 import com.shc.silenceengine.graphics.GraphicsEngine;
 import com.shc.silenceengine.input.InputEngine;
 import com.shc.silenceengine.utils.Logger;
 import com.shc.silenceengine.utils.NativesLoader;
 import org.lwjgl.Sys;
-
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -100,7 +98,7 @@ public final class SilenceEngine implements IEngine
         Logger.log("LWJGL version " + Sys.getVersion() + " is initialised");
 
         // Initialize GLFW
-        if (glfwInit() != GL_TRUE)
+        if (!GLFW3.init())
             throw new SilenceException("Error initializing GLFW. Your system is unsupported.");
 
         // Create the other engines
@@ -167,7 +165,7 @@ public final class SilenceEngine implements IEngine
         graphics.dispose();
 
         Logger.log("Terminating GLFW library");
-        glfwTerminate();
+        GLFW3.terminate();
 
         Logger.log("SilenceEngine version " + getVersion() + " was successfully terminated");
     }

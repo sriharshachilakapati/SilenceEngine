@@ -34,6 +34,7 @@ import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Vector2;
+import com.shc.silenceengine.utils.MathUtils;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -137,6 +138,10 @@ public final class Display
 
         Window.setHint(GLFW_VISIBLE, visible);
         Window.setHint(GLFW_RESIZABLE, resizable);
+
+        // Size fix
+        width = MathUtils.clamp(width, 2, Integer.MAX_VALUE);
+        height = MathUtils.clamp(height, 2, Integer.MAX_VALUE);
 
         if (Game.development)
         {
@@ -348,11 +353,14 @@ public final class Display
         }
 
         // Create new window
-        Window fsDisplayWindow = createWindow(width, height, title, fullScreen ? Monitor.getPrimaryMonitor() : null, displayWindow, true, resizable);
+        Window fsDisplayWindow = createWindow(width, height, title, fullScreen ? Monitor.getPrimaryMonitor() : null, displayWindow, false, resizable);
         displayWindow.destroy();
         displayWindow = fsDisplayWindow;
 
         setPosition(posX, posY);
+        setSize(width, height);
+
+        hide();
         show();
 
         // Make an update
