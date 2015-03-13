@@ -188,6 +188,9 @@ public class Monitor
 
     public static void setCallback(IMonitorCallback callback)
     {
+        if (callback == null)
+            callback = (monitor, event) -> {};
+
         monitorCallback = callback;
 
         if (glfwMonitorCallback != null)

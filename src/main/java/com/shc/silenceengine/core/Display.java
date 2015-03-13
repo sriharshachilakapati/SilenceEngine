@@ -428,7 +428,7 @@ public final class Display
 
         Display.resizable = resizable;
 
-        Window newDisplay = createWindow(width, height, title, fullScreen ? Monitor.getPrimaryMonitor() : null, displayWindow, fullScreen, resizable);
+        Window newDisplay = createWindow(width, height, title, fullScreen ? Monitor.getPrimaryMonitor() : null, displayWindow, false, resizable);
         displayWindow.destroy();
         displayWindow = newDisplay;
 

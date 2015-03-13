@@ -264,21 +264,21 @@ public class Window
     private void initCustomCallbacks()
     {
         // The default callbacks does nothing
-        characterCallback = (window, codePoint) -> {};
-        characterModsCallback = (window, codePoint, mods) -> {};
-        cursorEnterCallback = (window, entered) -> {};
-        cursorPositionCallback = (window, xPos, yPos) -> {};
-        dropCallback = (window, names) -> {};
-        framebufferSizeCallback = (window, width, height) -> {};
-        keyCallback = (window, key, scanCode, action, mods) -> {};
-        mouseButtonCallback = (window, button, action, mods) -> {};
-        scrollCallback = (window, xOffset, yOffset) -> {};
-        windowCloseCallback = (window) -> {};
-        windowFocusCallback = (window, focus) -> {};
-        windowIconifyCallback = (window, iconify) -> {};
-        windowPositionCallback = (window, xPos, yPos) -> {};
-        windowRefreshCallback = (window) -> {};
-        windowSizeCallback = (window, width, height) -> {};
+        setCharacterCallback(null);
+        setCharacterModsCallback(null);
+        setCursorEnterCallback(null);
+        setCursorPositionCallback(null);
+        setDropCallback(null);
+        setFramebufferSizeCallback(null);
+        setKeyCallback(null);
+        setMouseButtonCallback(null);
+        setScrollCallback(null);
+        setCloseCallback(null);
+        setFocusCallback(null);
+        setIconifyCallback(null);
+        setPositionCallback(null);
+        setRefreshCallback(null);
+        setSizeCallback(null);
     }
 
     private void releaseNativeCallbacks()
@@ -455,74 +455,124 @@ public class Window
         return glfwGetWindowAttrib(handle, attribute);
     }
 
-    public void setCharacterCallback(ICharacterCallback characterCallback)
+    public void setCharacterCallback(ICharacterCallback callback)
     {
-        this.characterCallback = characterCallback;
+        if (callback == null)
+            callback = (window, codePoint) -> {};
+
+        this.characterCallback = callback;
     }
 
-    public void setCursorEnterCallback(ICursorEnterCallback cursorEnterCallback)
+    public void setCharacterModsCallback(ICharacterModsCallback callback)
     {
-        this.cursorEnterCallback = cursorEnterCallback;
+        if (callback == null)
+            callback = (window, cp, mods) -> {};
+
+        this.characterModsCallback = callback;
     }
 
-    public void setCursorPositionCallback(ICursorPositionCallback cursorPositionCallback)
+    public void setCursorEnterCallback(ICursorEnterCallback callback)
     {
-        this.cursorPositionCallback = cursorPositionCallback;
+        if (callback == null)
+            callback = (window, entered) -> {};
+
+        this.cursorEnterCallback = callback;
     }
 
-    public void setDropCallback(IDropCallback dropCallback)
+    public void setCursorPositionCallback(ICursorPositionCallback callback)
     {
-        this.dropCallback = dropCallback;
+        if (callback == null)
+            callback = (window, x, y) -> {};
+
+        this.cursorPositionCallback = callback;
     }
 
-    public void setFramebufferSizeCallback(IFramebufferSizeCallback framebufferSizeCallback)
+    public void setDropCallback(IDropCallback callback)
     {
-        this.framebufferSizeCallback = framebufferSizeCallback;
+        if (callback == null)
+            callback = (window, paths) -> {};
+
+        this.dropCallback = callback;
     }
 
-    public void setKeyCallback(IKeyCallback keyCallback)
+    public void setFramebufferSizeCallback(IFramebufferSizeCallback callback)
     {
-        this.keyCallback = keyCallback;
+        if (callback == null)
+            callback = (window, w, h) -> {};
+
+        this.framebufferSizeCallback = callback;
     }
 
-    public void setMouseButtonCallback(IMouseButtonCallback mouseButtonCallback)
+    public void setKeyCallback(IKeyCallback callback)
     {
-        this.mouseButtonCallback = mouseButtonCallback;
+        if (callback == null)
+            callback = (win, key, sc, act, mods) -> {};
+
+        this.keyCallback = callback;
     }
 
-    public void setScrollCallback(IScrollCallback scrollCallback)
+    public void setMouseButtonCallback(IMouseButtonCallback callback)
     {
-        this.scrollCallback = scrollCallback;
+        if (callback == null)
+            callback = (win, b, act, mods) -> {};
+
+        this.mouseButtonCallback = callback;
     }
 
-    public void setCloseCallback(IWindowCloseCallback windowCloseCallback)
+    public void setScrollCallback(IScrollCallback callback)
     {
-        this.windowCloseCallback = windowCloseCallback;
+        if (callback == null)
+            callback = (win, x, y) -> {};
+
+        this.scrollCallback = callback;
     }
 
-    public void setFocusCallback(IWindowFocusCallback windowFocusCallback)
+    public void setCloseCallback(IWindowCloseCallback callback)
     {
-        this.windowFocusCallback = windowFocusCallback;
+        if (callback == null)
+            callback = (win) -> {};
+
+        this.windowCloseCallback = callback;
     }
 
-    public void setIconifyCallback(IWindowIconifyCallback windowIconifyCallback)
+    public void setFocusCallback(IWindowFocusCallback callback)
     {
-        this.windowIconifyCallback = windowIconifyCallback;
+        if (callback == null)
+            callback = (win, focused) -> {};
+
+        this.windowFocusCallback = callback;
     }
 
-    public void setPositionCallback(IWindowPositionCallback windowPositionCallback)
+    public void setIconifyCallback(IWindowIconifyCallback callback)
     {
-        this.windowPositionCallback = windowPositionCallback;
+        if (callback == null)
+            callback = (win, ic) -> {};
+
+        this.windowIconifyCallback = callback;
     }
 
-    public void setRefreshCallback(IWindowRefreshCallback windowRefreshCallback)
+    public void setPositionCallback(IWindowPositionCallback callback)
     {
-        this.windowRefreshCallback = windowRefreshCallback;
+        if (callback == null)
+            callback = (win, x, y) -> {};
+
+        this.windowPositionCallback = callback;
     }
 
-    public void setSizeCallback(IWindowSizeCallback windowSizeCallback)
+    public void setRefreshCallback(IWindowRefreshCallback callback)
     {
-        this.windowSizeCallback = windowSizeCallback;
+        if (callback == null)
+            callback = (win) -> {};
+
+        this.windowRefreshCallback = callback;
+    }
+
+    public void setSizeCallback(IWindowSizeCallback callback)
+    {
+        if (callback == null)
+            callback = (win, w, h) -> {};
+
+        this.windowSizeCallback = callback;
     }
 
     public long getHandle()
