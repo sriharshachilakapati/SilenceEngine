@@ -102,6 +102,21 @@ public class GraphicsEngine implements IEngine
         Display.update();
     }
 
+    public void setViewport(int x, int y, int width, int height)
+    {
+        GL3Context.viewport(x, y, width, height);
+    }
+
+    public void setClearColor(float r, float g, float b, float a)
+    {
+        GL3Context.clearColor(r, g, b, a);
+    }
+
+    public void setClearColor(Color color)
+    {
+        GL3Context.clearColor(color);
+    }
+
     @Override
     public void dispose()
     {

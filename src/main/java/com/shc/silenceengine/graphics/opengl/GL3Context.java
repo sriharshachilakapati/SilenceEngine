@@ -60,7 +60,12 @@ public final class GL3Context
 
     public static void clearColor(Color color)
     {
-        glClearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        clearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+    }
+
+    public static void clearColor(float r, float g, float b, float a)
+    {
+        glClearColor(r, g, b, a);
         GLError.check();
     }
 
