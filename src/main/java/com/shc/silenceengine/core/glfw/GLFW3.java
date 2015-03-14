@@ -77,6 +77,11 @@ public final class GLFW3
         glfwPostEmptyEvent();
     }
 
+    public static void setSwapInterval(int i)
+    {
+        glfwSwapInterval(i);
+    }
+
     public static Vector3 getVersion()
     {
         IntBuffer major = BufferUtils.createIntBuffer(1);

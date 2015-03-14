@@ -34,7 +34,6 @@ import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Vector2;
-import com.shc.silenceengine.utils.MathUtils;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -46,84 +45,33 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public final class Display
 {
-    // The display window
-    private static Window displayWindow = null;
+    private static Window displayWindow;
 
-    // Width and height of the display
+    private static boolean resizable  = true;
+    private static boolean resized    = true;
+    private static boolean fullScreen = false;
+    private static boolean dirty      = true;
+    private static boolean vSync      = true;
+
     private static int width  = 800;
     private static int height = 600;
 
-    // Width and height of windowed display, used to
-    // restore the properties to the newly created one
-    private static int oldWidth  = 800;
-    private static int oldHeight = 600;
+    private static int oldWidth;
+    private static int oldHeight;
+    private static int oldPosX;
+    private static int oldPosY;
 
-    // Position of the windowed display, restored when
-    // fullscreen is switched off
-    private static int oldPosX = 0;
-    private static int oldPosY = 0;
-
-    // The position of the display in screen coordinates
     private static int posX = 0;
     private static int posY = 0;
 
-    // The title of the Display
-    private static String title = "SilenceEngine";
+    private static Monitor   monitor   = null;
+    private static VideoMode videoMode = null;
 
-    // Private flags to maintain the Display
-    private static boolean resized    = false;
-    private static boolean fullScreen = false;
-    private static boolean resizable  = true;
-    private static boolean vSync      = true;
-    private static boolean dirty      = false;
-
-    /**
-     * Private constructor. Prevent instantiation
-     */
-    private Display()
+    private static void setHints()
     {
-    }
-
-    /**
-     * Creates the default display, in windowed mode, initially hidden.
-     */
-    public static void create()
-    {
-        // Set error callback
-        GLFW3.setErrorCallback((error, description) ->
-        {
-            throw new SilenceException("" + error + ": " + description);
-        });
-
-        // Create the window
-        displayWindow = createWindow(width, height, title, null, null, false, resizable);
-        centerOnScreen();
-    }
-
-    /**
-     * A private method to handle the creation of GLFW windows. Takes care of creating the window with windowing hints,
-     * a size, a title, fullscreen or not, parent window to share the context, and whether initially visible or not.
-     *
-     * @param width     The width of the window
-     * @param height    The height of the window
-     * @param title     The title of the window
-     * @param monitor   The monitor to create the window on
-     * @param parent    The parent window, if the context needs to be shared
-     * @param visible   Is the window visible upon creation?
-     * @param resizable Is the window resizable?
-     *
-     * @return A window handle. (GLFWWindow* as in C++, but this is Java, so a long)
-     */
-    private static Window createWindow(int width, int height, String title, Monitor monitor, Window parent, boolean visible, boolean resizable)
-    {
-        // Dispose existing Batcher because VAOs cannot be shared across context
-        if (Game.getBatcher() != null)
-            Game.getBatcher().dispose();
-
-        // Window Hints for OpenGL context
         Window.setHint(GLFW_SAMPLES, 4);
 
-        if (System.getProperty("os.name").toLowerCase().contains("mac"))
+        if (SilenceEngine.getPlatform() == SilenceEngine.Platform.MACOSX)
         {
             Window.setHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             Window.setHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -133,196 +81,316 @@ public final class Display
             Window.setHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             Window.setHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         }
+
         Window.setHint(GLFW_OPENGL_FORWARD_COMPAT, true);
         Window.setHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        Window.setHint(GLFW_VISIBLE, visible);
+        Window.setHint(GLFW_VISIBLE, false);
         Window.setHint(GLFW_RESIZABLE, resizable);
 
-        // Size fix
-        width = MathUtils.clamp(width, 2, Integer.MAX_VALUE);
-        height = MathUtils.clamp(height, 2, Integer.MAX_VALUE);
+        GLFW3.setSwapInterval(vSync ? 1 : 0);
+    }
 
-        if (Game.development)
-        {
-            System.setProperty("org.lwjgl.util.Debug", "true");
-            Window.setHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-        }
-
-        // Create the window
-        Window window = new Window(width, height, title, monitor, parent);
-
-        // Take care of OpenGL context
-        window.makeCurrent();
-        glfwSwapInterval(vSync ? 1 : 0);
-
-        Game.setBatcher(new Batcher());
-
-        window.setSizeCallback((win, w, h) ->
-        {
-            Display.width = w;
-            Display.height = h;
-
-            resized = true;
-        });
-
+    private static void setCallbacks(Window window)
+    {
+        window.setPositionCallback(Display::glfwPositionCallback);
+        window.setSizeCallback(Display::glfwSizeCallback);
         window.setKeyCallback(Keyboard::glfwKeyCallback);
 
-        window.setPositionCallback((win, xPos, yPos) ->
-        {
-            Display.posX = xPos;
-            Display.posY = yPos;
-        });
-
-        window.setCursorPositionCallback(Mouse::glfwCursorCallback);
-        window.setScrollCallback(Mouse::glfwScrollCallback);
         window.setMouseButtonCallback(Mouse::glfwMouseButtonCallback);
+        window.setScrollCallback(Mouse::glfwScrollCallback);
+        window.setCursorPositionCallback(Mouse::glfwCursorCallback);
+    }
 
-        Display.dirty = true;
-
-        // Reset the window hints for next window creation
+    private static void clearHints()
+    {
         Window.setDefaultHints();
+    }
+
+    private static Window createWindow(int width, int height, String title, Monitor monitor, Window share)
+    {
+        if (Game.getBatcher() != null)
+            Game.getBatcher().dispose();
+
+        setHints();
+        Window window = new Window(width, height, title, monitor, share);
+        window.makeCurrent();
+        setCallbacks(window);
+        clearHints();
+
+        dirty = true;
+
+        Game.setBatcher(new Batcher());
 
         return window;
     }
 
-    public void makeCurrent()
+    public static void create()
     {
+        displayWindow = createWindow(width, height, "SilenceEngine Window", monitor, null);
         displayWindow.makeCurrent();
+        displayWindow.show();
     }
 
-    /**
-     * Centers the display on screen.
-     */
     public static void centerOnScreen()
     {
-        if (fullScreen || displayWindow == null)
+        if (monitor != null)
             return;
 
         VideoMode videoMode = Monitor.getPrimaryMonitor().getVideoMode();
-        displayWindow.setPosition((videoMode.getWidth() - width) / 2, (videoMode.getHeight() - height) / 2);
+        setPosition((videoMode.getWidth() - width) / 2, (videoMode.getHeight() - height) / 2);
     }
 
-    /**
-     * @return true if the user has clicked the close button, or pressed platform specific close shortcut keys like
-     * Cmd-Q(Mac) or Alt-F4 (linux and windows)
-     */
+    public static void makeCurrent()
+    {
+        if (displayWindow != null)
+            displayWindow.makeCurrent();
+    }
+
     public static boolean isCloseRequested()
     {
-        return displayWindow.shouldClose();
+        return displayWindow != null && displayWindow.shouldClose();
     }
 
-    /**
-     * Hides the display from being shown to the user.
-     */
+    public static void show()
+    {
+        if (displayWindow == null)
+            return;
+
+        displayWindow.show();
+    }
+
     public static void hide()
     {
+        if (displayWindow == null)
+            return;
+
         displayWindow.hide();
     }
 
-    /**
-     * Destroy the display, will be unusable until create is called. Please don't call this method in between frames,
-     * unless you are keenly awaiting for a number of runtime exceptions to be thrown.
-     */
+    public static void hideCursor()
+    {
+        if (displayWindow == null)
+            return;
+
+        displayWindow.setInputMode(GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    }
+
+    public static void grabCursor()
+    {
+        if (displayWindow == null)
+            return;
+
+        displayWindow.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
+    public static void showCursor()
+    {
+        if (displayWindow == null)
+            return;
+
+        displayWindow.setInputMode(GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+
+    public static void update()
+    {
+        if (displayWindow == null)
+            return;
+
+        displayWindow.swapBuffers();
+        GLFW3.pollEvents();
+
+        // Force binding
+        Program.CURRENT = null;
+        Texture.CURRENT = null;
+
+        Program.DEFAULT.use();
+        Texture.EMPTY.bind();
+    }
+
     public static void destroy()
     {
+        if (displayWindow == null)
+            return;
+
         displayWindow.destroy();
     }
 
-    /**
-     * @return the window of the current display. Please don't store this window, and always use this method to get one,
-     * because a stored window can get invalid at any time.
-     */
+    public static boolean wasResized()
+    {
+        if (resized)
+        {
+            resized = false;
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean wasDirty()
+    {
+        if (dirty)
+        {
+            dirty = false;
+            return true;
+        }
+
+        return false;
+    }
+
     public static Window getWindow()
     {
         return displayWindow;
     }
 
-    /**
-     * @return the height of the display
-     */
-    public static int getHeight()
-    {
-        return height;
-    }
-
-    /**
-     * Sets the height of the display, measured in screen coordinates.
-     *
-     * @param height The height of the window
-     */
-    public static void setHeight(int height)
-    {
-        Display.height = height;
-        displayWindow.setSize(width, height);
-    }
-
-    /**
-     * @return The width of the display, in screen coordinates.
-     */
     public static int getWidth()
     {
         return width;
     }
 
-    /**
-     * Sets the width of the display, in screen coordinates.
-     *
-     * @param width The width of the window.
-     */
+    public static int getHeight()
+    {
+        return height;
+    }
+
     public static void setWidth(int width)
     {
+        if (displayWindow == null)
+            return;
+
         Display.width = width;
-        displayWindow.setSize(width, height);
+        displayWindow.setSize(width, getHeight());
     }
 
-    /**
-     * Sets the size of the Display window.
-     *
-     * @param width  The width of the Display window
-     * @param height The height of the Display window
-     */
-    public static void setSize(int width, int height)
+    public static void setHeight(int height)
     {
-        Display.width = width;
-        Display.height = height;
+        if (displayWindow == null)
+            return;
 
-        displayWindow.setSize(width, height);
+        Display.height = height;
+        displayWindow.setSize(getWidth(), height);
     }
 
-    /**
-     * @return The size of the current window as a Vector2
-     */
     public static Vector2 getSize()
     {
-        return new Vector2(width, height);
+        if (displayWindow == null)
+            return Vector2.ZERO;
+
+        Vector2 size = displayWindow.getSize();
+
+        Display.width = (int) size.x;
+        Display.height = (int) size.y;
+
+        return size;
     }
 
-    /**
-     * @return The aspect ratio of the Display
-     */
+    public static void setSize(int width, int height)
+    {
+        if (displayWindow == null)
+            return;
+
+        Display.width = width;
+        Display.height = height;
+        displayWindow.setSize(width, height);
+    }
+
+    public static void setSize(Vector2 size)
+    {
+        setSize((int) size.x, (int) size.y);
+    }
+
+    public static Vector2 getPosition()
+    {
+        if (displayWindow == null)
+            return Vector2.ZERO;
+
+        Vector2 position = displayWindow.getPosition();
+
+        Display.posX = (int) position.x;
+        Display.posY = (int) position.y;
+
+        return position;
+    }
+
+    public static void setPosition(int x, int y)
+    {
+        if (displayWindow == null)
+            return;
+
+        Display.posX = x;
+        Display.posY = y;
+
+        displayWindow.setPosition(x, y);
+    }
+
+    public static void setPosition(Vector2 p)
+    {
+        setPosition((int) p.x, (int) p.y);
+    }
+
+    public static boolean isResizable()
+    {
+        return resizable;
+    }
+
+    public static void setResizable(boolean resizable)
+    {
+        if (Display.resizable == resizable)
+            return;
+
+        Window resizableWindow = createWindow(width, height, getTitle(), monitor, displayWindow);
+
+        displayWindow.destroy();
+        displayWindow = resizableWindow;
+        displayWindow.show();
+        displayWindow.makeCurrent();
+
+        Display.resizable = resizable;
+
+        dirty = true;
+    }
+
+    public static boolean getVSync()
+    {
+        return vSync;
+    }
+
+    public static void setVSync(boolean vSync)
+    {
+        Display.vSync = vSync;
+        GLFW3.setSwapInterval(vSync ? 1 : 0);
+    }
+
+    public static String getTitle()
+    {
+        return displayWindow.getTitle();
+    }
+
+    public static void setTitle(String title)
+    {
+        if (displayWindow == null)
+            return;
+
+        displayWindow.setTitle(title);
+    }
+
     public static float getAspectRatio()
     {
-        return ((float) width) / ((float) height);
+        if (displayWindow == null)
+            return 0;
+
+        return (float) getWidth() / (float) getHeight();
     }
 
-    /**
-     * @return whether the Display is fullscreen or not
-     */
     public static boolean isFullScreen()
     {
         return fullScreen;
     }
 
-    /**
-     * Sets the state of fullscreen of the Display.
-     *
-     * @param fullScreen If true, window will be made fullscreen
-     */
     public static void setFullScreen(boolean fullScreen)
     {
         if (Display.fullScreen == fullScreen)
-            return;
+        return;
 
         Display.fullScreen = fullScreen;
 
@@ -340,6 +408,8 @@ public final class Display
 
             width = videoMode.getWidth();
             height = videoMode.getHeight();
+
+            monitor = Monitor.getPrimaryMonitor();
         }
         else
         {
@@ -350,12 +420,15 @@ public final class Display
             // Restore window position
             posX = oldPosX;
             posY = oldPosY;
+
+            monitor = null;
         }
 
         // Create new window
-        Window fsDisplayWindow = createWindow(width, height, title, fullScreen ? Monitor.getPrimaryMonitor() : null, displayWindow, false, resizable);
+        Window fsDisplayWindow = createWindow(width, height, displayWindow.getTitle(), monitor, displayWindow);
         displayWindow.destroy();
         displayWindow = fsDisplayWindow;
+        displayWindow.makeCurrent();
 
         setPosition(posX, posY);
         setSize(width, height);
@@ -365,149 +438,95 @@ public final class Display
 
         // Make an update
         update();
+
+        dirty = true;
     }
 
-    /**
-     * Makes the display visible to the users.
-     */
-    public static void show()
+    public static VideoMode getVideoMode()
     {
-        displayWindow.show();
+        return videoMode;
     }
 
-    /**
-     * Updates the display. Swaps the buffers and polls new events.
-     */
-    public static void update()
+    public static void setVideoMode(VideoMode videoMode)
     {
-        displayWindow.swapBuffers();
-        GLFW3.pollEvents();
-
-        // Force binding
-        Program.CURRENT = null;
-        Texture.CURRENT = null;
-
-        Program.DEFAULT.use();
-        Texture.EMPTY.bind();
-    }
-
-    /**
-     * Sets the window position on the screen
-     *
-     * @param x The x-coordinate of the window (in screen coordinates)
-     * @param y The y-coordinate of the window (in screen coordinates)
-     */
-    public static void setPosition(int x, int y)
-    {
-        if (fullScreen || displayWindow == null)
+        if (Display.videoMode == videoMode)
             return;
 
-        posX = x;
-        posY = y;
-
-        displayWindow.setPosition(x, y);
-    }
-
-    /**
-     * @return Whether the window is resizable or not.
-     */
-    public static boolean isResizable()
-    {
-        return resizable;
-    }
-
-    /**
-     * Changes the Resizable property of the Display window.
-     *
-     * @param resizable The value of the Resizable window property.
-     */
-    public static void setResizable(boolean resizable)
-    {
-        if (Display.resizable == resizable)
-            return;
-
-        Display.resizable = resizable;
-
-        Window newDisplay = createWindow(width, height, title, fullScreen ? Monitor.getPrimaryMonitor() : null, displayWindow, false, resizable);
-        displayWindow.destroy();
-        displayWindow = newDisplay;
-
-        setPosition(posX, posY);
-        show();
-
-        update();
-    }
-
-    public static boolean getVSync()
-    {
-        return Display.vSync;
-    }
-
-    public static void setVSync(boolean vSync)
-    {
-        Display.vSync = vSync;
-        glfwSwapInterval(vSync ? 1 : 0);
-        update();
-    }
-
-    /**
-     * @return The title of the Display
-     */
-    public static String getTitle()
-    {
-        return title;
-    }
-
-    /**
-     * Sets the title of the Display
-     *
-     * @param title The title of the window
-     */
-    public static void setTitle(String title)
-    {
-        Display.title = title;
-
-        if (displayWindow != null)
-            displayWindow.setTitle(title);
-    }
-
-    /**
-     * @return True if the display has been resized
-     */
-    public static boolean wasResized()
-    {
-        if (resized)
+        if (videoMode == null)
         {
-            resized = false;
-            return true;
+            setFullScreen(false);
+            return;
         }
 
-        return false;
+        Display.videoMode = videoMode;
+
+        setFullScreen(true);
+        setSize(videoMode.getWidth(), videoMode.getHeight());
+
+        update();
+        dirty = true;
     }
 
-    public static boolean wasDirty()
+    public static Monitor getMonitor()
     {
-        return dirty && (Display.dirty = false);
+        return monitor;
     }
 
-    /**
-     * Hides the cursor over the Display
+    public static void setMonitor(Monitor monitor)
+    {
+        if (Display.monitor == monitor)
+            return;
+
+        Display.monitor = monitor;
+        Display.fullScreen = true;
+
+        videoMode = Monitor.getPrimaryMonitor().getVideoMode();
+
+        // Save window size
+        oldWidth = width;
+        oldHeight = height;
+
+        // Save window position
+        oldPosX = posX;
+        oldPosY = posY;
+
+        width = videoMode.getWidth();
+        height = videoMode.getHeight();
+
+        // Create new window
+        Window fsDisplayWindow = createWindow(width, height, displayWindow.getTitle(), monitor, displayWindow);
+        displayWindow.destroy();
+        displayWindow = fsDisplayWindow;
+        displayWindow.makeCurrent();
+
+        setPosition(posX, posY);
+        setSize(width, height);
+
+        hide();
+        show();
+
+        // Make an update
+        update();
+
+        dirty = true;
+    }
+
+    /*
+     * This part consists of different public GLFW callbacks, that make the Display
+     * fully functional. If you are overriding the callbacks, please invoke these.
      */
-    public static void hideCursor()
+
+    public static void glfwPositionCallback(Window window, int x, int y)
     {
-        displayWindow.setInputMode(GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        Display.posX = x;
+        Display.posY = y;
     }
 
-    /**
-     * Shows the cursor over the Display
-     */
-    public static void showCursor()
+    public static void glfwSizeCallback(Window window, int w, int h)
     {
-        displayWindow.setInputMode(GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    }
+        Display.width = w;
+        Display.height = h;
 
-    public static void grabCursor()
-    {
-        displayWindow.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        resized = true;
     }
 }
