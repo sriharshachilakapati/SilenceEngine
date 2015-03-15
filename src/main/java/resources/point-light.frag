@@ -86,7 +86,7 @@ vec4 getPointLight()
     float brightness = light.intensity * clamp(max(0.0, dot(normal, normalize(surfaceToLight))), 0.0, 1.0);
 
     // Ambient light
-    vec4 ambient = material.dissolve * material.ambientColor * light.color;
+    vec4 ambient = material.dissolve * material.ambientColor * light.color * light.intensity;
 
     // Check if in range
     if (light.range < length(surfaceToLight))
@@ -115,7 +115,7 @@ vec4 getPointLight()
 
     // Gamma correction
     vec3 gamma = vec3(1.0/2.2);
-    return brightness * vec4(pow(linearColor, gamma), getBaseColor().a);
+    return brightness * min(vec4(1.0), vec4(pow(linearColor, gamma), getBaseColor().a));
 }
 
 void main()
