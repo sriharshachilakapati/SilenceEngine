@@ -118,6 +118,8 @@ public final class Display
         setCallbacks(window);
         clearHints();
 
+        window.setPosition(posX, posY);
+
         dirty = true;
 
         Game.setBatcher(new Batcher());
@@ -338,16 +340,21 @@ public final class Display
         if (Display.resizable == resizable)
             return;
 
+        Display.resizable = resizable;
+
         Window resizableWindow = createWindow(width, height, getTitle(), monitor, displayWindow);
 
         displayWindow.destroy();
         displayWindow = resizableWindow;
-        displayWindow.show();
         displayWindow.makeCurrent();
 
-        Display.resizable = resizable;
-
         dirty = true;
+
+        hide();
+        show();
+
+        // Update the Display
+        update();
     }
 
     public static boolean getVSync()
