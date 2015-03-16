@@ -89,26 +89,26 @@ public class Polygon
 
     public void scale(float sx, float sy)
     {
-        minX = minY = Float.POSITIVE_INFINITY;
-        maxX = maxY = Float.NEGATIVE_INFINITY;
-
-        for (Vector2 v : vertices)
-        {
-            v.scaleSelf(sx, sy);
-
-            minX = Math.min(minX, v.x);
-            minY = Math.min(minY, v.y);
-            maxX = Math.max(maxX, v.x);
-            maxY = Math.max(maxY, v.y);
-        }
-
-        updateBounds();
+        vertices.forEach(v -> v.scaleSelf(sx, sy));
     }
 
     private void updateBounds()
     {
         if (bounds == null)
             bounds = new Rectangle();
+
+        float minX, minY, maxX, maxY;
+
+        minX = minY = Float.POSITIVE_INFINITY;
+        maxX = maxY = Float.NEGATIVE_INFINITY;
+
+        for (Vector2 vertex : vertices)
+        {
+            minX = Math.min(minX, vertex.x);
+            minY = Math.min(minY, vertex.y);
+            maxX = Math.max(maxX, vertex.x);
+            maxY = Math.max(maxY, vertex.y);
+        }
 
         bounds.set(position.getX() + minX, position.getY() + minY, maxX - minX, maxY - minY);
     }
@@ -216,36 +216,31 @@ public class Polygon
 
     public void setRotation(float rotation)
     {
+        if (this.rotation == rotation)
+            return;
+
         rotate(rotation - this.rotation);
     }
 
     public void rotate(float angle)
     {
+        rotate(angle, (maxX - minX) / 2, (maxY - minY) / 2);
+    }
+
+    public void rotate(float angle, float originX, float originY)
+    {
         if (angle == 0 || this instanceof Circle)
             return;
 
-        float width = maxX - minX;
-        float height = maxY - minY;
-
-        float originX = width / 2;
-        float originY = height / 2;
-
-        minX = minY = Float.POSITIVE_INFINITY;
-        maxX = maxY = Float.NEGATIVE_INFINITY;
-
         for (Vector2 vertex : vertices)
-        {
             vertex.subtractSelf(originX, originY).rotateSelf(angle).addSelf(originX, originY);
 
-            minX = Math.min(vertex.x, minX);
-            minY = Math.min(vertex.y, minY);
-
-            maxX = Math.max(vertex.x, maxX);
-            maxY = Math.max(vertex.y, maxY);
-        }
-
         rotation += angle;
-        updateBounds();
+    }
+
+    public void translate(float x, float y)
+    {
+        vertices.forEach(v -> v.addSelf(x, y));
     }
 
     @Override

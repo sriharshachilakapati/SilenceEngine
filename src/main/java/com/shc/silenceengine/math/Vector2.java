@@ -141,9 +141,10 @@ public class Vector2
 
     public Vector2 rotateSelf(float angle)
     {
-        angle = (float) Math.toRadians(angle);
-        return set(x * (float) Math.cos(angle) - y * (float) Math.sin(angle),
-                          x * (float) Math.sin(angle) + y * (float) Math.cos(angle));
+        float cos = MathUtils.cos(angle);
+        float sin = MathUtils.sin(angle);
+
+        return set(x * cos - y * sin, x * sin + y * cos);
     }
 
     public Vector2 negate()
