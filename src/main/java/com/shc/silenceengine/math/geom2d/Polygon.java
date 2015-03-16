@@ -205,9 +205,7 @@ public class Polygon
 
     public Rectangle getBounds()
     {
-        if (bounds == null)
-            bounds = new Rectangle(position.getX(), position.getY(), maxX - minX, maxY - minY);
-
+        updateBounds();
         return bounds;
     }
 
@@ -231,8 +229,6 @@ public class Polygon
 
         float originX = width / 2;
         float originY = height / 2;
-
-        float minX, maxX, minY, maxY;
 
         minX = minY = Float.POSITIVE_INFINITY;
         maxX = maxY = Float.NEGATIVE_INFINITY;
