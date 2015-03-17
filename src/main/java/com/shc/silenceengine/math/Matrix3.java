@@ -222,6 +222,48 @@ public class Matrix3
         return new Matrix3(this);
     }
 
+    public float determinant()
+    {
+        return ((m[0][0] * m[1][1] * m[2][2]) +
+                (m[1][0] * m[2][1] * m[0][2]) +
+                (m[2][0] * m[0][1] * m[1][2])) -
+               ((m[2][0] * m[1][1] * m[0][2]) +
+                (m[0][0] * m[2][1] * m[1][2]) +
+                (m[1][0] * m[0][1] * m[2][2]));
+    }
+
+    public Matrix3 invert()
+    {
+        return copy().invertSelf();
+    }
+
+    public Matrix3 invertSelf()
+    {
+        float s = determinant();
+
+        if (s == 0)
+            return this;
+
+        s = 1f / s;
+
+        Matrix3 dest = Matrix3.REUSABLE_STACK.pop();
+
+        dest.m[0][0] = +((m[1][1] * m[2][2]) - (m[2][1] * m[1][2])) * s;
+        dest.m[0][1] = -((m[0][1] * m[2][2]) - (m[2][1] * m[0][2])) * s;
+        dest.m[0][2] = +((m[0][1] * m[1][2]) - (m[1][1] * m[0][2])) * s;
+        dest.m[1][0] = -((m[1][0] * m[2][2]) - (m[2][0] * m[1][2])) * s;
+        dest.m[1][1] = +((m[0][0] * m[2][2]) - (m[2][0] * m[0][2])) * s;
+        dest.m[1][2] = -((m[0][0] * m[1][2]) - (m[1][0] * m[0][2])) * s;
+        dest.m[2][0] = +((m[1][0] * m[2][1]) - (m[2][0] * m[1][1])) * s;
+        dest.m[2][1] = -((m[0][0] * m[2][1]) - (m[2][0] * m[0][1])) * s;
+        dest.m[2][2] = +((m[0][0] * m[1][1]) - (m[1][0] * m[0][1])) * s;
+
+        set(dest);
+
+        Matrix3.REUSABLE_STACK.push(dest);
+        return this;
+    }
+
     @Override
     public String toString()
     {
