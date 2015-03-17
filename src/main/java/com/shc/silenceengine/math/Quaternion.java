@@ -247,14 +247,12 @@ public class Quaternion
 
     public Quaternion invertSelf()
     {
-        float norm = lengthSquared();
+        float norm = (x * x + y * y + z * z + w * w);
 
-        conjugateSelf();
-
-        x /= norm;
-        y /= norm;
-        z /= norm;
-        w /= norm;
+        x = +x / norm;
+        y = -y / norm;
+        z = -z / norm;
+        w = -w / norm;
 
         return this;
     }
