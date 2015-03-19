@@ -39,13 +39,20 @@ public final class Logger
     {
     }
 
+    static
+    {
+        setPrintTimeStamps(true);
+    }
+
+    private static boolean printTimeStamps;
+
     public static void log(String... messages)
     {
         if (!Game.development)
             return;
 
         for (String message : messages)
-            System.out.println("[INFO " + getTimeStamp() + "] " + message);
+            System.out.println((printTimeStamps ? "[INFO " + getTimeStamp() + "] " : "") + message);
     }
 
     public static String getTimeStamp()
@@ -62,15 +69,20 @@ public final class Logger
             return;
 
         for (String message : messages)
-            System.err.println("[WARNING " + getTimeStamp() + "] " + message);
+            System.err.println((printTimeStamps ? "[WARNING " + getTimeStamp() + "] " : "") + message);
     }
 
     public static void error(String... messages)
     {
         for (String message : messages)
-            System.err.println("[FATAL ERROR " + getTimeStamp() + "] " + message);
+            System.err.println((printTimeStamps ? "[FATAL ERROR " + getTimeStamp() + "] " : "") + message);
 
         System.err.println("Terminating with exception");
         throw new SilenceException("FATAL Error occurred, cannot continue further");
+    }
+
+    public static void setPrintTimeStamps(boolean printTimeStamps)
+    {
+        Logger.printTimeStamps = printTimeStamps;
     }
 }
