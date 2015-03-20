@@ -243,6 +243,37 @@ public class Texture
         return new SubTexture(this, minU, minV, maxU, maxV, width, height);
     }
 
+    public ByteBuffer getImage2D(int format, int type, ByteBuffer data)
+    {
+        glGetTexImage(GL_TEXTURE_2D, 0, format, type, data);
+        GLError.check();
+
+        return data;
+    }
+
+    public ByteBuffer getImage2D(int format, int type)
+    {
+        int size = 4;
+
+        switch (format)
+        {
+            case GL_RGB:
+            case GL_BGR:
+                size = 3;
+                break;
+        }
+
+        size = (int) (size * width * height * 4);
+
+        ByteBuffer data = BufferUtils.createByteBuffer(size);
+        return getImage2D(format, type, data);
+    }
+
+    public ByteBuffer getImage2D(int format)
+    {
+        return getImage2D(format, GL_FLOAT);
+    }
+
     public void dispose()
     {
         EMPTY.bind();

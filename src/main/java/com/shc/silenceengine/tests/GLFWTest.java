@@ -24,8 +24,10 @@
 
 package com.shc.silenceengine.tests;
 
+import com.shc.silenceengine.core.glfw.Cursor;
 import com.shc.silenceengine.core.glfw.GLFW3;
 import com.shc.silenceengine.core.glfw.Window;
+import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.utils.NativesLoader;
 
 /**
@@ -50,6 +52,12 @@ public class GLFWTest
         // Make the window's context current
         window.makeCurrent();
 
+        // Change cursor
+        Texture cursorImage = Texture.fromResource("resources/cursor.png");
+        Cursor cursor = new Cursor(cursorImage);
+
+        window.setCursor(cursor);
+
         // Loop until the user closes the window
         while (!window.shouldClose())
         {
@@ -61,6 +69,9 @@ public class GLFWTest
             // Poll for and process events
             GLFW3.pollEvents();
         }
+
+        window.destroy();
+        cursor.destroy();
 
         GLFW3.terminate();
     }

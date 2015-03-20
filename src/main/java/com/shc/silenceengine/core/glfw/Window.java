@@ -334,6 +334,11 @@ public class Window
         glfwSetInputMode(handle, mode, value);
     }
 
+    public void setCursor(Cursor cursor)
+    {
+        glfwSetCursor(handle, cursor == null ? NULL : cursor.getHandle());
+    }
+
     public void makeCurrent()
     {
         glfwMakeContextCurrent(handle);
