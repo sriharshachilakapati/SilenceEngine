@@ -60,6 +60,11 @@ public class SATResponseTest extends Game
         rectangle = new Rectangle(10, 10, 100, 100);
     }
 
+    public void resize()
+    {
+        cam.initProjection(Display.getWidth(), Display.getHeight());
+    }
+
     public void update(float delta)
     {
         if (Keyboard.isClicked(Keyboard.KEY_ESCAPE))
@@ -85,10 +90,5 @@ public class SATResponseTest extends Game
 
         RenderUtils.tracePolygon(batcher, circle, Color.GREEN);
         RenderUtils.tracePolygon(batcher, rectangle, Color.RED);
-    }
-
-    public void resize()
-    {
-        cam.initProjection(Display.getWidth(), Display.getHeight());
     }
 }

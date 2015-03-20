@@ -47,6 +47,19 @@ public class Matrix4
         initIdentity();
     }
 
+    public Matrix4 set(Matrix3 m)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                this.m[i][j] = m.get(i, j);
+            }
+        }
+
+        return this;
+    }
+
     public Matrix4 initIdentity()
     {
         for (int i = 0; i < 4; i++)
@@ -57,19 +70,6 @@ public class Matrix4
                     m[i][j] = 1;
                 else
                     m[i][j] = 0;
-            }
-        }
-
-        return this;
-    }
-
-    public Matrix4 set(Matrix3 m)
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                this.m[i][j] = m.get(i, j);
             }
         }
 
@@ -301,21 +301,6 @@ public class Matrix4
         return this;
     }
 
-    public Matrix4 copy()
-    {
-        return new Matrix4(this);
-    }
-
-    public float determinant()
-    {
-        return (m[0][0] * m[1][1] - m[0][1] * m[1][0]) * (m[2][2] * m[3][3] - m[2][3] * m[3][2]) -
-               (m[0][0] * m[1][2] - m[0][2] * m[1][0]) * (m[2][1] * m[3][3] - m[2][3] * m[3][1]) +
-               (m[0][0] * m[1][3] - m[0][3] * m[1][0]) * (m[2][1] * m[3][2] - m[2][2] * m[3][1]) +
-               (m[0][1] * m[1][2] - m[0][2] * m[1][1]) * (m[2][0] * m[3][3] - m[2][3] * m[3][0]) -
-               (m[0][1] * m[1][3] - m[0][3] * m[1][1]) * (m[2][0] * m[3][2] - m[2][2] * m[3][0]) +
-               (m[0][2] * m[1][3] - m[0][3] * m[1][2]) * (m[2][0] * m[3][1] - m[2][1] * m[3][0]);
-    }
-
     public Matrix4 invert()
     {
         return copy().invertSelf();
@@ -329,7 +314,7 @@ public class Matrix4
             return this;
 
         s = 1f / s;
-        
+
         Matrix4 dest = Matrix4.REUSABLE_STACK.pop();
 
         dest.m[0][0] = (m[1][1] * (m[2][2] * m[3][3] - m[2][3] * m[3][2]) + m[1][2] * (m[2][3] * m[3][1] - m[2][1] * m[3][3]) + m[1][3] * (m[2][1] * m[3][2] - m[2][2] * m[3][1])) * s;
@@ -353,6 +338,21 @@ public class Matrix4
         Matrix4.REUSABLE_STACK.push(dest);
 
         return this;
+    }
+
+    public Matrix4 copy()
+    {
+        return new Matrix4(this);
+    }
+
+    public float determinant()
+    {
+        return (m[0][0] * m[1][1] - m[0][1] * m[1][0]) * (m[2][2] * m[3][3] - m[2][3] * m[3][2]) -
+               (m[0][0] * m[1][2] - m[0][2] * m[1][0]) * (m[2][1] * m[3][3] - m[2][3] * m[3][1]) +
+               (m[0][0] * m[1][3] - m[0][3] * m[1][0]) * (m[2][1] * m[3][2] - m[2][2] * m[3][1]) +
+               (m[0][1] * m[1][2] - m[0][2] * m[1][1]) * (m[2][0] * m[3][3] - m[2][3] * m[3][0]) -
+               (m[0][1] * m[1][3] - m[0][3] * m[1][1]) * (m[2][0] * m[3][2] - m[2][2] * m[3][0]) +
+               (m[0][2] * m[1][3] - m[0][3] * m[1][2]) * (m[2][0] * m[3][1] - m[2][1] * m[3][0]);
     }
 
     @Override

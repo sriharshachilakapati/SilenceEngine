@@ -67,6 +67,33 @@ public final class Display
     private static Monitor   monitor   = null;
     private static VideoMode videoMode = null;
 
+    public static void create()
+    {
+        displayWindow = createWindow(width, height, "SilenceEngine Window", monitor, null);
+        displayWindow.makeCurrent();
+        displayWindow.show();
+    }
+
+    private static Window createWindow(int width, int height, String title, Monitor monitor, Window share)
+    {
+        if (Game.getBatcher() != null)
+            Game.getBatcher().dispose();
+
+        setHints();
+        Window window = new Window(width, height, title, monitor, share);
+        window.makeCurrent();
+        setCallbacks(window);
+        clearHints();
+
+        window.setPosition(posX, posY);
+
+        dirty = true;
+
+        Game.setBatcher(new Batcher());
+
+        return window;
+    }
+
     private static void setHints()
     {
         Window.setHint(GLFW_SAMPLES, 4);
@@ -107,33 +134,6 @@ public final class Display
         Window.setDefaultHints();
     }
 
-    private static Window createWindow(int width, int height, String title, Monitor monitor, Window share)
-    {
-        if (Game.getBatcher() != null)
-            Game.getBatcher().dispose();
-
-        setHints();
-        Window window = new Window(width, height, title, monitor, share);
-        window.makeCurrent();
-        setCallbacks(window);
-        clearHints();
-
-        window.setPosition(posX, posY);
-
-        dirty = true;
-
-        Game.setBatcher(new Batcher());
-
-        return window;
-    }
-
-    public static void create()
-    {
-        displayWindow = createWindow(width, height, "SilenceEngine Window", monitor, null);
-        displayWindow.makeCurrent();
-        displayWindow.show();
-    }
-
     public static void centerOnScreen()
     {
         if (monitor != null)
@@ -141,6 +141,17 @@ public final class Display
 
         VideoMode videoMode = Monitor.getPrimaryMonitor().getVideoMode();
         setPosition((videoMode.getWidth() - width) / 2, (videoMode.getHeight() - height) / 2);
+    }
+
+    public static void setPosition(int x, int y)
+    {
+        if (displayWindow == null)
+            return;
+
+        Display.posX = x;
+        Display.posY = y;
+
+        displayWindow.setPosition(x, y);
     }
 
     public static void makeCurrent()
@@ -152,22 +163,6 @@ public final class Display
     public static boolean isCloseRequested()
     {
         return displayWindow != null && displayWindow.shouldClose();
-    }
-
-    public static void show()
-    {
-        if (displayWindow == null)
-            return;
-
-        displayWindow.show();
-    }
-
-    public static void hide()
-    {
-        if (displayWindow == null)
-            return;
-
-        displayWindow.hide();
     }
 
     public static void hideCursor()
@@ -192,22 +187,6 @@ public final class Display
             return;
 
         displayWindow.setInputMode(GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    }
-
-    public static void update()
-    {
-        if (displayWindow == null)
-            return;
-
-        displayWindow.swapBuffers();
-        GLFW3.pollEvents();
-
-        // Force binding
-        Program.CURRENT = null;
-        Texture.CURRENT = null;
-
-        Program.DEFAULT.use();
-        Texture.EMPTY.bind();
     }
 
     public static void destroy()
@@ -245,34 +224,6 @@ public final class Display
         return displayWindow;
     }
 
-    public static int getWidth()
-    {
-        return width;
-    }
-
-    public static int getHeight()
-    {
-        return height;
-    }
-
-    public static void setWidth(int width)
-    {
-        if (displayWindow == null)
-            return;
-
-        Display.width = width;
-        displayWindow.setSize(width, getHeight());
-    }
-
-    public static void setHeight(int height)
-    {
-        if (displayWindow == null)
-            return;
-
-        Display.height = height;
-        displayWindow.setSize(getWidth(), height);
-    }
-
     public static Vector2 getSize()
     {
         if (displayWindow == null)
@@ -286,6 +237,11 @@ public final class Display
         return size;
     }
 
+    public static void setSize(Vector2 size)
+    {
+        setSize((int) size.x, (int) size.y);
+    }
+
     public static void setSize(int width, int height)
     {
         if (displayWindow == null)
@@ -294,11 +250,9 @@ public final class Display
         Display.width = width;
         Display.height = height;
         displayWindow.setSize(width, height);
-    }
-
-    public static void setSize(Vector2 size)
+    }    public static int getWidth()
     {
-        setSize((int) size.x, (int) size.y);
+        return width;
     }
 
     public static Vector2 getPosition()
@@ -312,27 +266,33 @@ public final class Display
         Display.posY = (int) position.y;
 
         return position;
-    }
-
-    public static void setPosition(int x, int y)
+    }    public static int getHeight()
     {
-        if (displayWindow == null)
-            return;
-
-        Display.posX = x;
-        Display.posY = y;
-
-        displayWindow.setPosition(x, y);
+        return height;
     }
 
     public static void setPosition(Vector2 p)
     {
         setPosition((int) p.x, (int) p.y);
+    }    public static void setWidth(int width)
+    {
+        if (displayWindow == null)
+            return;
+
+        Display.width = width;
+        displayWindow.setSize(width, getHeight());
     }
 
     public static boolean isResizable()
     {
         return resizable;
+    }    public static void setHeight(int height)
+    {
+        if (displayWindow == null)
+            return;
+
+        Display.height = height;
+        displayWindow.setSize(getWidth(), height);
     }
 
     public static void setResizable(boolean resizable)
@@ -357,6 +317,51 @@ public final class Display
         update();
     }
 
+    public static String getTitle()
+    {
+        return displayWindow.getTitle();
+    }
+
+    public static void hide()
+    {
+        if (displayWindow == null)
+            return;
+
+        displayWindow.hide();
+    }
+
+    public static void show()
+    {
+        if (displayWindow == null)
+            return;
+
+        displayWindow.show();
+    }
+
+    public static void update()
+    {
+        if (displayWindow == null)
+            return;
+
+        displayWindow.swapBuffers();
+        GLFW3.pollEvents();
+
+        // Force binding
+        Program.CURRENT = null;
+        Texture.CURRENT = null;
+
+        Program.DEFAULT.use();
+        Texture.EMPTY.bind();
+    }
+
+    public static void setTitle(String title)
+    {
+        if (displayWindow == null)
+            return;
+
+        displayWindow.setTitle(title);
+    }
+
     public static boolean getVSync()
     {
         return vSync;
@@ -366,19 +371,6 @@ public final class Display
     {
         Display.vSync = vSync;
         GLFW3.setSwapInterval(vSync ? 1 : 0);
-    }
-
-    public static String getTitle()
-    {
-        return displayWindow.getTitle();
-    }
-
-    public static void setTitle(String title)
-    {
-        if (displayWindow == null)
-            return;
-
-        displayWindow.setTitle(title);
     }
 
     public static float getAspectRatio()
@@ -397,7 +389,7 @@ public final class Display
     public static void setFullScreen(boolean fullScreen)
     {
         if (Display.fullScreen == fullScreen)
-        return;
+            return;
 
         Display.fullScreen = fullScreen;
 

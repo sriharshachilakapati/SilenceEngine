@@ -64,6 +64,11 @@ public class Geom2DTest extends Game
         circle2 = new Circle(500, 100, 50);
     }
 
+    public void resize()
+    {
+        cam.initProjection(Display.getWidth(), Display.getHeight());
+    }
+
     public void update(float delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
@@ -120,10 +125,5 @@ public class Geom2DTest extends Game
 
         RenderUtils.tracePolygon(batcher, rectangle2.getBounds(), Color.GREEN);
         RenderUtils.tracePolygon(batcher, circle2.getBounds(), Color.GREEN);
-    }
-
-    public void resize()
-    {
-        cam.initProjection(Display.getWidth(), Display.getHeight());
     }
 }

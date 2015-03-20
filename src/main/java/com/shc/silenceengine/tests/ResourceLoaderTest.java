@@ -52,11 +52,6 @@ public class ResourceLoaderTest extends Game
         new ResourceLoaderTest().start();
     }
 
-    public void dispose()
-    {
-        ResourceLoader.getInstance().dispose();
-    }
-
     public void init()
     {
         ResourceLoader loader = ResourceLoader.getInstance();
@@ -72,6 +67,11 @@ public class ResourceLoaderTest extends Game
         font2 = loader.getFont(fontID2);
 
         cam = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
+    }
+
+    public void resize()
+    {
+        cam.initProjection(Display.getWidth(), Display.getHeight());
     }
 
     public void update(float delta)
@@ -90,8 +90,8 @@ public class ResourceLoaderTest extends Game
         font2.drawString(batcher, "Free Booter Script", 10, 40, Color.GREEN);
     }
 
-    public void resize()
+    public void dispose()
     {
-        cam.initProjection(Display.getWidth(), Display.getHeight());
+        ResourceLoader.getInstance().dispose();
     }
 }

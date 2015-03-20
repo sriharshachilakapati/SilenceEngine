@@ -51,11 +51,6 @@ public class GridSceneColliderTest extends Game
         new GridSceneColliderTest().start();
     }
 
-    public void dispose()
-    {
-        scene.destroy();
-    }
-
     public void init()
     {
         Display.setTitle("GridSceneCollider Test");
@@ -84,6 +79,11 @@ public class GridSceneColliderTest extends Game
         collider.register(Player.class, Box.class);
     }
 
+    public void resize()
+    {
+        cam.initProjection(Display.getWidth(), Display.getHeight());
+    }
+
     public void update(float delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
@@ -100,9 +100,9 @@ public class GridSceneColliderTest extends Game
         scene.render(delta, batcher);
     }
 
-    public void resize()
+    public void dispose()
     {
-        cam.initProjection(Display.getWidth(), Display.getHeight());
+        scene.destroy();
     }
 
     public class Box extends Entity2D

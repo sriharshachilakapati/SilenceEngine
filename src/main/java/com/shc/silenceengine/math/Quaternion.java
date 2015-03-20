@@ -155,14 +155,14 @@ public class Quaternion
         return new Quaternion(x / length, y / length, z / length, w / length);
     }
 
-    public Quaternion copy()
-    {
-        return new Quaternion(x, y, z, w);
-    }
-
     public float length()
     {
         return (float) Math.sqrt(lengthSquared());
+    }
+
+    public Quaternion copy()
+    {
+        return new Quaternion(x, y, z, w);
     }
 
     public float lengthSquared()

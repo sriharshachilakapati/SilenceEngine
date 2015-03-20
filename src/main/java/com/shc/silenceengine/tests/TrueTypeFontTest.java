@@ -48,18 +48,17 @@ public class TrueTypeFontTest extends Game
         new TrueTypeFontTest().start();
     }
 
-    public void dispose()
-    {
-        font.dispose();
-        logo.dispose();
-    }
-
     public void init()
     {
         cam = new OrthoCam();
 
         logo = Texture.fromResource("resources/logo.png");
         font = new TrueTypeFont("Comic Sans MS", TrueTypeFont.STYLE_ITALIC | TrueTypeFont.STYLE_BOLD, 36);
+    }
+
+    public void resize()
+    {
+        cam.initProjection(Display.getWidth(), Display.getHeight());
     }
 
     public void update(float delta)
@@ -85,8 +84,9 @@ public class TrueTypeFontTest extends Game
                                                        Display.getHeight() - logo.getHeight()));
     }
 
-    public void resize()
+    public void dispose()
     {
-        cam.initProjection(Display.getWidth(), Display.getHeight());
+        font.dispose();
+        logo.dispose();
     }
 }

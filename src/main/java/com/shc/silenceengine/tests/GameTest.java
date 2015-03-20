@@ -47,6 +47,12 @@ public class GameTest extends Game
     }
 
     @Override
+    public void resize()
+    {
+        GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
+    }
+
+    @Override
     public void update(float delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
@@ -84,11 +90,5 @@ public class GameTest extends Game
             batcher.vertex(0.5f, 0, 1);
         }
         batcher.end();
-    }
-
-    @Override
-    public void resize()
-    {
-        GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
     }
 }

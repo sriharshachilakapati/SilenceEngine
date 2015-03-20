@@ -56,14 +56,17 @@ import static org.lwjgl.opengl.GL11.*;
 public class Batcher
 {
     // The sizes (no. of components) in vertex, color, texcoord
-    private static final int     SIZE_OF_VERTEX   = 4;
-    private static final int     SIZE_OF_NORMAL   = 4;
-    private static final int     SIZE_OF_COLOR    = 4;
-    private static final int     SIZE_OF_TEXCOORD = 2;
+    private static final int SIZE_OF_VERTEX   = 4;
+    private static final int SIZE_OF_NORMAL   = 4;
+    private static final int SIZE_OF_COLOR    = 4;
+    private static final int SIZE_OF_TEXCOORD = 2;
+
     // The maximum size of the batch is 4 MB
-    private static final int     BATCH_SIZE       = 4 * 1024 * 1024;
+    private static final int BATCH_SIZE = 4 * 1024 * 1024;
+
     // Active state of this batcher
-    private              boolean active           = false;
+    private boolean active = false;
+
     // The buffers to store the collected data
     private ByteBuffer vBuffer;
     private ByteBuffer cBuffer;
@@ -261,35 +264,6 @@ public class Batcher
         }
     }
 
-    /**
-     * Maps the buffers to get their data storage pointers.
-     */
-    private void mapBuffers()
-    {
-        vBuffer = vboVert.map(BufferObject.MapAccess.WRITE_ONLY, vBuffer);
-        vao.pointAttribute(vertexLocation, SIZE_OF_VERTEX, GL_FLOAT, vboVert);
-
-        cBuffer = vboCol.map(BufferObject.MapAccess.WRITE_ONLY, cBuffer);
-        vao.pointAttribute(colorLocation, SIZE_OF_COLOR, GL_FLOAT, vboCol);
-
-        tBuffer = vboTex.map(BufferObject.MapAccess.WRITE_ONLY, tBuffer);
-        vao.pointAttribute(texCoordLocation, SIZE_OF_TEXCOORD, GL_FLOAT, vboTex);
-
-        nBuffer = vboNorm.map(BufferObject.MapAccess.WRITE_ONLY, nBuffer);
-        vao.pointAttribute(normalLocation, SIZE_OF_NORMAL, GL_FLOAT, vboNorm);
-    }
-
-    /**
-     * Unmaps the buffers and invalidates the pointer to their data store.
-     */
-    private void unmapBuffers()
-    {
-        vboVert.unMap();
-        vboCol.unMap();
-        vboTex.unMap();
-        vboNorm.unMap();
-    }
-
     private void fillBuffers()
     {
         // Determine the fill color
@@ -316,6 +290,35 @@ public class Batcher
             nBuffer.putFloat(0).putFloat(0).putFloat(0).putFloat(0);
             normalCount++;
         }
+    }
+
+    /**
+     * Unmaps the buffers and invalidates the pointer to their data store.
+     */
+    private void unmapBuffers()
+    {
+        vboVert.unMap();
+        vboCol.unMap();
+        vboTex.unMap();
+        vboNorm.unMap();
+    }
+
+    /**
+     * Maps the buffers to get their data storage pointers.
+     */
+    private void mapBuffers()
+    {
+        vBuffer = vboVert.map(BufferObject.MapAccess.WRITE_ONLY, vBuffer);
+        vao.pointAttribute(vertexLocation, SIZE_OF_VERTEX, GL_FLOAT, vboVert);
+
+        cBuffer = vboCol.map(BufferObject.MapAccess.WRITE_ONLY, cBuffer);
+        vao.pointAttribute(colorLocation, SIZE_OF_COLOR, GL_FLOAT, vboCol);
+
+        tBuffer = vboTex.map(BufferObject.MapAccess.WRITE_ONLY, tBuffer);
+        vao.pointAttribute(texCoordLocation, SIZE_OF_TEXCOORD, GL_FLOAT, vboTex);
+
+        nBuffer = vboNorm.map(BufferObject.MapAccess.WRITE_ONLY, nBuffer);
+        vao.pointAttribute(normalLocation, SIZE_OF_NORMAL, GL_FLOAT, vboNorm);
     }
 
     public void applyTransform(Matrix4 m)

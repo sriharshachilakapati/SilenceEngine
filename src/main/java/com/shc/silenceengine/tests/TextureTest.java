@@ -44,16 +44,16 @@ public class TextureTest extends Game
         new TextureTest().start();
     }
 
-    public void dispose()
-    {
-        texture.dispose();
-    }
-
     public void init()
     {
         GL3Context.clearColor(Color.CORN_FLOWER_BLUE);
 
         texture = Texture.fromResource("resources/logo.png");
+    }
+
+    public void resize()
+    {
+        GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
     }
 
     public void update(float delta)
@@ -121,8 +121,8 @@ public class TextureTest extends Game
         batcher.end();
     }
 
-    public void resize()
+    public void dispose()
     {
-        GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
+        texture.dispose();
     }
 }

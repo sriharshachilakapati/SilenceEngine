@@ -39,10 +39,13 @@ import java.util.Map;
  */
 public class DynamicTree3D implements IBroadphaseResolver3D
 {
-    private Node               root;
-    private List<Entity3D>     retrieveList;
+    private Node root;
+
+    private List<Entity3D> retrieveList;
+
     private Map<Integer, Node> nodeMap;
     private Map<Integer, AABB> aabbMap;
+
     private AABB tmpUnion = new AABB();
     private AABB tmpU     = new AABB();
 
@@ -71,6 +74,102 @@ public class DynamicTree3D implements IBroadphaseResolver3D
         nodeMap.put(e.getID(), node);
 
         insert(node);
+    }
+
+    @Override
+    public void remove(Entity3D e)
+    {
+        Node node = nodeMap.get(e.getID());
+
+        if (node != null)
+        {
+            remove(node);
+            nodeMap.remove(e.getID());
+            aabbMap.remove(e.getID());
+        }
+    }
+
+    private void remove(Node node)
+    {
+        if (root == null) return;
+
+        if (node == root)
+        {
+            root = null;
+            return;
+        }
+
+        Node parent = node.parent;
+        Node grandParent = parent.parent;
+
+        Node other = (parent.left == node) ? parent.right : parent.left;
+
+        if (grandParent != null)
+        {
+            if (grandParent.left == parent)
+                grandParent.left = other;
+            else
+                grandParent.right = other;
+
+            other.parent = grandParent;
+
+            Node n = grandParent;
+            while (n != null)
+            {
+                Node left = n.left;
+                Node right = n.right;
+
+                n.aabb = AABB.union(left.aabb, right.aabb, n.aabb);
+
+                n = n.parent;
+            }
+        }
+        else
+        {
+            root = other;
+            other.parent = null;
+        }
+    }
+
+    @Override
+    public List<Entity3D> retrieve(Entity3D e)
+    {
+        retrieveList.clear();
+        queryNode(getAABB(e), root);
+        return retrieveList;
+    }
+
+    @Override
+    public List<Entity3D> retrieve(Polyhedron bounds)
+    {
+        retrieveList.clear();
+
+        AABB aabb = new AABB();
+        aabb.min.set(bounds.getPosition()).subtractSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
+        aabb.max.set(bounds.getPosition()).addSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
+
+        queryNode(aabb, root);
+        return retrieveList;
+    }
+
+    private AABB getAABB(Entity3D e)
+    {
+        AABB aabb;
+
+        if (aabbMap.containsKey(e.getID()))
+            aabb = aabbMap.get(e.getID());
+        else
+        {
+            aabb = AABB.create(e);
+            aabbMap.put(e.getID(), aabb);
+        }
+
+        Cuboid bounds = e.getBounds();
+
+        aabb.min.set(e.getPosition()).subtractSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
+        aabb.max.set(e.getPosition()).addSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
+
+        return aabb;
     }
 
     private void insert(Node item)
@@ -170,102 +269,6 @@ public class DynamicTree3D implements IBroadphaseResolver3D
 
             node = node.parent;
         }
-    }
-
-    @Override
-    public void remove(Entity3D e)
-    {
-        Node node = nodeMap.get(e.getID());
-
-        if (node != null)
-        {
-            remove(node);
-            nodeMap.remove(e.getID());
-            aabbMap.remove(e.getID());
-        }
-    }
-
-    private void remove(Node node)
-    {
-        if (root == null) return;
-
-        if (node == root)
-        {
-            root = null;
-            return;
-        }
-
-        Node parent = node.parent;
-        Node grandParent = parent.parent;
-
-        Node other = (parent.left == node) ? parent.right : parent.left;
-
-        if (grandParent != null)
-        {
-            if (grandParent.left == parent)
-                grandParent.left = other;
-            else
-                grandParent.right = other;
-
-            other.parent = grandParent;
-
-            Node n = grandParent;
-            while (n != null)
-            {
-                Node left = n.left;
-                Node right = n.right;
-
-                n.aabb = AABB.union(left.aabb, right.aabb, n.aabb);
-
-                n = n.parent;
-            }
-        }
-        else
-        {
-            root = other;
-            other.parent = null;
-        }
-    }
-
-    @Override
-    public List<Entity3D> retrieve(Entity3D e)
-    {
-        retrieveList.clear();
-        queryNode(getAABB(e), root);
-        return retrieveList;
-    }
-
-    @Override
-    public List<Entity3D> retrieve(Polyhedron bounds)
-    {
-        retrieveList.clear();
-
-        AABB aabb = new AABB();
-        aabb.min.set(bounds.getPosition()).subtractSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
-        aabb.max.set(bounds.getPosition()).addSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
-
-        queryNode(aabb, root);
-        return retrieveList;
-    }
-
-    private AABB getAABB(Entity3D e)
-    {
-        AABB aabb;
-
-        if (aabbMap.containsKey(e.getID()))
-            aabb = aabbMap.get(e.getID());
-        else
-        {
-            aabb = AABB.create(e);
-            aabbMap.put(e.getID(), aabb);
-        }
-
-        Cuboid bounds = e.getBounds();
-
-        aabb.min.set(e.getPosition()).subtractSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
-        aabb.max.set(e.getPosition()).addSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
-
-        return aabb;
     }
 
     private void queryNode(AABB aabb, Node node)

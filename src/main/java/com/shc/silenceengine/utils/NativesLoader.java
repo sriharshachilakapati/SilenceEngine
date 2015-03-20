@@ -110,6 +110,66 @@ public class NativesLoader
     }
 
     /**
+     * Cleans up natives on Windows, without which the temp folder will be flooded with these DLL files, because the
+     * auto delete wont work due to the lock that Windows JVM implementation keeps on the native libraries.
+     */
+    private static void cleanupExtractedNatives()
+    {
+        // This is not at all needed on other platforms except Windows
+        SilenceEngine.Platform platform = SilenceEngine.getPlatform();
+
+        switch (platform)
+        {
+            case WINDOWS_32:
+            case WINDOWS_64:
+                break;
+
+            // Don't perform this cleanup on non windows platforms
+            default:
+                return;
+        }
+
+        // Get the Temp directory
+        File temp = new File(System.getProperty("java.io.tmpdir"));
+        File[] files = temp.listFiles();
+
+        if (files == null)
+            return;
+
+        // Iterate on all files in the temp directory
+        for (File file : files)
+        {
+            if (file.isDirectory())
+            {
+                String path = file.getAbsolutePath();
+
+                // If path is a directory check if it is a SilenceEngine native location
+                if (path.contains("Silence") && path.contains("Engine"))
+                {
+                    boolean success = true;
+
+                    // It is a Directory that is created by SilenceEngine, delete it
+                    File[] natives = file.listFiles();
+
+                    if (natives != null && natives.length != 0)
+                    {
+                        // Delete all the native DLLs first
+                        for (File dll : natives)
+                        {
+                            success = success && dll.delete();
+                        }
+                    }
+
+                    success = success && file.delete();
+
+                    if (!success)
+                        Logger.warn("Deletion of SilenceEngine cache directory " + path + " has failed");
+                }
+            }
+        }
+    }
+
+    /**
      * Extracts a file in JAR with path to a directory in FileSystem
      *
      * @param path The path of the library in JAR to extract
@@ -151,66 +211,6 @@ public class NativesLoader
         {
             // Error again, :( Throw an exception
             SilenceException.reThrow(e);
-        }
-    }
-
-    /**
-     * Cleans up natives on Windows, without which the temp folder will
-     * be flooded with these DLL files, because the auto delete wont
-     * work due to the lock that Windows JVM implementation keeps on
-     * the native libraries.
-     */
-    private static void cleanupExtractedNatives()
-    {
-        // This is not at all needed on other platforms except Windows
-        SilenceEngine.Platform platform = SilenceEngine.getPlatform();
-
-        switch (platform)
-        {
-            case WINDOWS_32:
-            case WINDOWS_64: break;
-
-            // Don't perform this cleanup on non windows platforms
-            default: return;
-        }
-
-        // Get the Temp directory
-        File temp = new File(System.getProperty("java.io.tmpdir"));
-        File[] files = temp.listFiles();
-
-        if (files == null)
-            return;
-
-        // Iterate on all files in the temp directory
-        for (File file : files)
-        {
-            if (file.isDirectory())
-            {
-                String path = file.getAbsolutePath();
-
-                // If path is a directory check if it is a SilenceEngine native location
-                if (path.contains("Silence") && path.contains("Engine"))
-                {
-                    boolean success = true;
-
-                    // It is a Directory that is created by SilenceEngine, delete it
-                    File[] natives = file.listFiles();
-
-                    if (natives != null && natives.length != 0)
-                    {
-                        // Delete all the native DLLs first
-                        for (File dll : natives)
-                        {
-                            success = success && dll.delete();
-                        }
-                    }
-
-                    success = success && file.delete();
-
-                    if (!success)
-                        Logger.warn("Deletion of SilenceEngine cache directory " + path + " has failed");
-                }
-            }
         }
     }
 }

@@ -72,14 +72,14 @@ public class GameTimer
         }
     }
 
-    public void stop()
-    {
-        active = false;
-    }
-
     public boolean isActive()
     {
         return active;
+    }
+
+    public void stop()
+    {
+        active = false;
     }
 
     public void start()

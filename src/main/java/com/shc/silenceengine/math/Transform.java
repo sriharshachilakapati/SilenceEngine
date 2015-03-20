@@ -52,15 +52,15 @@ public class Transform
         return translateSelf(new Vector3(v, 0));
     }
 
+    public Transform copy()
+    {
+        return new Transform().applySelf(tMatrix);
+    }
+
     public Transform translateSelf(Vector3 v)
     {
         tMatrix.multiplySelf(TransformUtils.createTranslation(v));
         return this;
-    }
-
-    public Transform copy()
-    {
-        return new Transform().applySelf(tMatrix);
     }
 
     public Transform applySelf(Matrix4 matrix)
@@ -130,6 +130,11 @@ public class Transform
         return copy().applySelf(matrix);
     }
 
+    public Transform applyInverse(Matrix4 matrix)
+    {
+        return copy().applyInverseSelf(matrix);
+    }
+
     public Transform applyInverseSelf(Matrix4 matrix)
     {
         Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
@@ -139,11 +144,6 @@ public class Transform
         Matrix4.REUSABLE_STACK.push(temp);
 
         return this;
-    }
-
-    public Transform applyInverse(Matrix4 matrix)
-    {
-        return copy().applyInverseSelf(matrix);
     }
 
     public Transform apply(Quaternion q)
@@ -171,9 +171,9 @@ public class Transform
         return reset().applySelf(t);
     }
 
-    public Transform invertSelf()
+    public Transform reset()
     {
-        tMatrix.invertSelf();
+        tMatrix.initIdentity();
         return this;
     }
 
@@ -182,9 +182,9 @@ public class Transform
         return copy().invertSelf();
     }
 
-    public Transform reset()
+    public Transform invertSelf()
     {
-        tMatrix.initIdentity();
+        tMatrix.invertSelf();
         return this;
     }
 }

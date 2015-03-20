@@ -38,10 +38,13 @@ import java.util.Map;
  */
 public class DynamicTree2D implements IBroadphaseResolver2D
 {
-    private Node               root;
-    private List<Entity2D>     retrieveList;
+    private Node root;
+
+    private List<Entity2D> retrieveList;
+
     private Map<Integer, Node> nodeMap;
     private Map<Integer, AABB> aabbMap;
+
     private AABB tmpUnion = new AABB();
     private AABB tmpU     = new AABB();
 
@@ -70,6 +73,95 @@ public class DynamicTree2D implements IBroadphaseResolver2D
         nodeMap.put(e.getID(), node);
 
         insert(node);
+    }
+
+    @Override
+    public void remove(Entity2D e)
+    {
+        Node node = nodeMap.get(e.getID());
+
+        if (node != null)
+        {
+            remove(node);
+            nodeMap.remove(e.getID());
+            aabbMap.remove(e.getID());
+        }
+    }
+
+    private void remove(Node node)
+    {
+        if (root == null) return;
+
+        if (node == root)
+        {
+            root = null;
+            return;
+        }
+
+        Node parent = node.parent;
+        Node grandParent = parent.parent;
+
+        Node other = (parent.left == node) ? parent.right : parent.left;
+
+        if (grandParent != null)
+        {
+            if (grandParent.left == parent)
+                grandParent.left = other;
+            else
+                grandParent.right = other;
+
+            other.parent = grandParent;
+
+            Node n = grandParent;
+            while (n != null)
+            {
+                Node left = n.left;
+                Node right = n.right;
+
+                n.aabb = AABB.union(left.aabb, right.aabb, n.aabb);
+
+                n = n.parent;
+            }
+        }
+        else
+        {
+            root = other;
+            other.parent = null;
+        }
+    }
+
+    @Override
+    public List<Entity2D> retrieve(Entity2D e)
+    {
+        retrieveList.clear();
+        queryNode(getAABB(e), root);
+        return retrieveList;
+    }
+
+    @Override
+    public List<Entity2D> retrieve(Rectangle rect)
+    {
+        retrieveList.clear();
+        queryNode(new AABB(rect.getPosition(), rect.getWidth(), rect.getHeight()), root);
+        return retrieveList;
+    }
+
+    private AABB getAABB(Entity2D e)
+    {
+        AABB aabb;
+
+        if (aabbMap.containsKey(e.getID()))
+            aabb = aabbMap.get(e.getID());
+        else
+        {
+            aabb = new AABB(new Vector2(), new Vector2());
+            aabbMap.put(e.getID(), aabb);
+        }
+
+        aabb.min.set(e.getBounds().getMin());
+        aabb.max.set(e.getBounds().getMax());
+
+        return aabb;
     }
 
     private void insert(Node item)
@@ -169,95 +261,6 @@ public class DynamicTree2D implements IBroadphaseResolver2D
 
             node = node.parent;
         }
-    }
-
-    @Override
-    public void remove(Entity2D e)
-    {
-        Node node = nodeMap.get(e.getID());
-
-        if (node != null)
-        {
-            remove(node);
-            nodeMap.remove(e.getID());
-            aabbMap.remove(e.getID());
-        }
-    }
-
-    private void remove(Node node)
-    {
-        if (root == null) return;
-
-        if (node == root)
-        {
-            root = null;
-            return;
-        }
-
-        Node parent = node.parent;
-        Node grandParent = parent.parent;
-
-        Node other = (parent.left == node) ? parent.right : parent.left;
-
-        if (grandParent != null)
-        {
-            if (grandParent.left == parent)
-                grandParent.left = other;
-            else
-                grandParent.right = other;
-
-            other.parent = grandParent;
-
-            Node n = grandParent;
-            while (n != null)
-            {
-                Node left = n.left;
-                Node right = n.right;
-
-                n.aabb = AABB.union(left.aabb, right.aabb, n.aabb);
-
-                n = n.parent;
-            }
-        }
-        else
-        {
-            root = other;
-            other.parent = null;
-        }
-    }
-
-    @Override
-    public List<Entity2D> retrieve(Entity2D e)
-    {
-        retrieveList.clear();
-        queryNode(getAABB(e), root);
-        return retrieveList;
-    }
-
-    @Override
-    public List<Entity2D> retrieve(Rectangle rect)
-    {
-        retrieveList.clear();
-        queryNode(new AABB(rect.getPosition(), rect.getWidth(), rect.getHeight()), root);
-        return retrieveList;
-    }
-
-    private AABB getAABB(Entity2D e)
-    {
-        AABB aabb;
-
-        if (aabbMap.containsKey(e.getID()))
-            aabb = aabbMap.get(e.getID());
-        else
-        {
-            aabb = new AABB(new Vector2(), new Vector2());
-            aabbMap.put(e.getID(), aabb);
-        }
-
-        aabb.min.set(e.getBounds().getMin());
-        aabb.max.set(e.getBounds().getMax());
-
-        return aabb;
     }
 
     private void queryNode(AABB aabb, Node node)

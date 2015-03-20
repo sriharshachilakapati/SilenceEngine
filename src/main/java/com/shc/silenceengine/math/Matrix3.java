@@ -47,6 +47,19 @@ public class Matrix3
         initIdentity();
     }
 
+    public Matrix3 set(Matrix3 m)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                this.m[i][j] = m.get(i, j);
+            }
+        }
+
+        return this;
+    }
+
     public Matrix3 initIdentity()
     {
         for (int i = 0; i < 3; i++)
@@ -57,19 +70,6 @@ public class Matrix3
                     m[i][j] = 1;
                 else
                     m[i][j] = 0;
-            }
-        }
-
-        return this;
-    }
-
-    public Matrix3 set(Matrix3 m)
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                this.m[i][j] = m.get(i, j);
             }
         }
 
@@ -217,21 +217,6 @@ public class Matrix3
         return dest.set(m[0][0] * v.getX(), m[0][1] * v.getY(), m[0][2] * v.getZ());
     }
 
-    public Matrix3 copy()
-    {
-        return new Matrix3(this);
-    }
-
-    public float determinant()
-    {
-        return ((m[0][0] * m[1][1] * m[2][2]) +
-                (m[1][0] * m[2][1] * m[0][2]) +
-                (m[2][0] * m[0][1] * m[1][2])) -
-               ((m[2][0] * m[1][1] * m[0][2]) +
-                (m[0][0] * m[2][1] * m[1][2]) +
-                (m[1][0] * m[0][1] * m[2][2]));
-    }
-
     public Matrix3 invert()
     {
         return copy().invertSelf();
@@ -262,6 +247,21 @@ public class Matrix3
 
         Matrix3.REUSABLE_STACK.push(dest);
         return this;
+    }
+
+    public Matrix3 copy()
+    {
+        return new Matrix3(this);
+    }
+
+    public float determinant()
+    {
+        return ((m[0][0] * m[1][1] * m[2][2]) +
+                (m[1][0] * m[2][1] * m[0][2]) +
+                (m[2][0] * m[0][1] * m[1][2])) -
+               ((m[2][0] * m[1][1] * m[0][2]) +
+                (m[0][0] * m[2][1] * m[1][2]) +
+                (m[1][0] * m[0][1] * m[2][2]));
     }
 
     @Override

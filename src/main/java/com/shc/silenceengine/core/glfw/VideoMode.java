@@ -107,16 +107,15 @@ public class VideoMode
     }
 
     @Override
-    public String toString()
+    public int hashCode()
     {
-        return "VideoMode{" +
-               "width=" + width +
-               ", height=" + height +
-               ", redBits=" + redBits +
-               ", greenBits=" + greenBits +
-               ", blueBits=" + blueBits +
-               ", refreshRate=" + refreshRate +
-               '}';
+        int result = width;
+        result = 31 * result + height;
+        result = 31 * result + redBits;
+        result = 31 * result + greenBits;
+        result = 31 * result + blueBits;
+        result = 31 * result + refreshRate;
+        return result;
     }
 
     @Override
@@ -127,25 +126,24 @@ public class VideoMode
 
         VideoMode videoMode = (VideoMode) o;
 
-        if (blueBits != videoMode.blueBits) return false;
-        if (greenBits != videoMode.greenBits) return false;
-        if (height != videoMode.height) return false;
-        if (redBits != videoMode.redBits) return false;
-        if (refreshRate != videoMode.refreshRate) return false;
-        if (width != videoMode.width) return false;
-
-        return true;
+        return blueBits == videoMode.blueBits &&
+               greenBits == videoMode.greenBits &&
+               height == videoMode.height &&
+               redBits == videoMode.redBits &&
+               refreshRate == videoMode.refreshRate &&
+               width == videoMode.width;
     }
 
     @Override
-    public int hashCode()
+    public String toString()
     {
-        int result = width;
-        result = 31 * result + height;
-        result = 31 * result + redBits;
-        result = 31 * result + greenBits;
-        result = 31 * result + blueBits;
-        result = 31 * result + refreshRate;
-        return result;
+        return "VideoMode{" +
+               "width=" + width +
+               ", height=" + height +
+               ", redBits=" + redBits +
+               ", greenBits=" + greenBits +
+               ", blueBits=" + blueBits +
+               ", refreshRate=" + refreshRate +
+               '}';
     }
 }

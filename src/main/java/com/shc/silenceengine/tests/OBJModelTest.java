@@ -55,11 +55,6 @@ public class OBJModelTest extends Game
         new OBJModelTest().start();
     }
 
-    public void dispose()
-    {
-        model.dispose();
-    }
-
     public void init()
     {
         cam = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
@@ -79,6 +74,11 @@ public class OBJModelTest extends Game
             scene.addComponent(cameraLight = new PointLight(cam.getPosition(), Color.DARK_KHAKI));
         }
         scene.init();
+    }
+
+    public void resize()
+    {
+        cam.initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
     }
 
     public void update(float delta)
@@ -130,8 +130,8 @@ public class OBJModelTest extends Game
         scene.render(delta, batcher);
     }
 
-    public void resize()
+    public void dispose()
     {
-        cam.initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
+        model.dispose();
     }
 }

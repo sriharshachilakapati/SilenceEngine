@@ -68,13 +68,17 @@ public class Game
 {
     // Is the game running?
     private static boolean running = false;
+
     // Game logic rate
     private static int ups       = 60;
     private static int targetUPS = 60;
+
     // Game frame rate
     private static int fps = 60;
+
     private static Batcher   batcher;
     private static GameState gameState;
+
     // The game instance
     private static Game instance;
     /**
@@ -295,6 +299,21 @@ public class Game
     }
 
     /**
+     * Initialize the Game. Loads the resources, and sets the game states.
+     */
+    public void init()
+    {
+    }
+
+    /**
+     * @return True if running, else false
+     */
+    public static boolean isRunning()
+    {
+        return running;
+    }
+
+    /**
      * Kills the running game!
      */
     public static void end()
@@ -316,24 +335,13 @@ public class Game
     }
 
     /**
-     * Properly disposes all the resources created in init method
+     * Handle the window-resize event. Used to set the view-port and re-size the camera.
      */
-    public void dispose()
+    public void resize()
     {
     }
 
-    /**
-     * @return True if running, else false
-     */
-    public static boolean isRunning()
-    {
-        return running;
-    }
-
-    /**
-     * Initialize the Game. Loads the resources, and sets the game states.
-     */
-    public void init()
+    public void dirtyDisplay()
     {
     }
 
@@ -357,13 +365,9 @@ public class Game
     }
 
     /**
-     * Handle the window-resize event. Used to set the view-port and re-size the camera.
+     * Properly disposes all the resources created in init method
      */
-    public void resize()
-    {
-    }
-
-    public void dirtyDisplay()
+    public void dispose()
     {
     }
 }

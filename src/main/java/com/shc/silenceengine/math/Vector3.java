@@ -349,14 +349,14 @@ public class Vector3
         return scaleSelf(s, s, s);
     }
 
-    public Vector3 scaleSelf(float sx, float sy, float sz)
-    {
-        return set(x * sx, y * sy, z * sz);
-    }
-
     public Vector3 set(Vector3 v)
     {
         return set(v.x, v.y, v.z);
+    }
+
+    public Vector3 scaleSelf(float sx, float sy, float sz)
+    {
+        return set(x * sx, y * sy, z * sz);
     }
 
     public Vector3 multiply(Matrix3 m)

@@ -47,15 +47,15 @@ public class TransformTest extends Game
         new TransformTest().start();
     }
 
-    public void dispose()
-    {
-        texture.dispose();
-    }
-
     public void init()
     {
         transform = new Transform();
         texture = Texture.fromResource("resources/texture2.png");
+    }
+
+    public void resize()
+    {
+        GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
     }
 
     public void update(float delta)
@@ -112,8 +112,8 @@ public class TransformTest extends Game
         batcher.end();
     }
 
-    public void resize()
+    public void dispose()
     {
-        GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
+        texture.dispose();
     }
 }

@@ -92,27 +92,6 @@ public class Polygon
         vertices.forEach(v -> v.scaleSelf(sx, sy));
     }
 
-    private void updateBounds()
-    {
-        if (bounds == null)
-            bounds = new Rectangle();
-
-        float minX, minY, maxX, maxY;
-
-        minX = minY = Float.POSITIVE_INFINITY;
-        maxX = maxY = Float.NEGATIVE_INFINITY;
-
-        for (Vector2 vertex : vertices)
-        {
-            minX = Math.min(minX, vertex.x);
-            minY = Math.min(minY, vertex.y);
-            maxX = Math.max(maxX, vertex.x);
-            maxY = Math.max(maxY, vertex.y);
-        }
-
-        bounds.set(position.getX() + minX, position.getY() + minY, maxX - minX, maxY - minY);
-    }
-
     public boolean intersects(Polygon other)
     {
         return Collision2D.testPolygonCollision(this, other, null);
@@ -207,6 +186,27 @@ public class Polygon
     {
         updateBounds();
         return bounds;
+    }
+
+    private void updateBounds()
+    {
+        if (bounds == null)
+            bounds = new Rectangle();
+
+        float minX, minY, maxX, maxY;
+
+        minX = minY = Float.POSITIVE_INFINITY;
+        maxX = maxY = Float.NEGATIVE_INFINITY;
+
+        for (Vector2 vertex : vertices)
+        {
+            minX = Math.min(minX, vertex.x);
+            minY = Math.min(minY, vertex.y);
+            maxX = Math.max(maxX, vertex.x);
+            maxY = Math.max(maxY, vertex.y);
+        }
+
+        bounds.set(position.getX() + minX, position.getY() + minY, maxX - minX, maxY - minY);
     }
 
     public float getRotation()

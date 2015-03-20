@@ -27,7 +27,6 @@ package com.shc.silenceengine.core.glfw;
 import com.shc.silenceengine.core.glfw.callbacks.*;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector4;
-
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GLContext;
@@ -52,7 +51,7 @@ public class Window
     private Vector2 position;
     private Vector2 size;
 
-    private String title;
+    private String  title;
     private Monitor monitor;
 
     /* Native GLFW Callbacks */
@@ -94,69 +93,14 @@ public class Window
         this(800, 600);
     }
 
-    public Window(Monitor monitor)
-    {
-        this(800, 600, monitor);
-    }
-
-    public Window(Window share)
-    {
-        this(800, 600, share);
-    }
-
-    public Window(String title)
-    {
-        this(800, 600, title);
-    }
-
     public Window(int width, int height)
     {
         this(width, height, (Monitor) null, null);
     }
 
-    public Window(int width, int height, String title)
-    {
-        this(width, height, title, (Monitor) null);
-    }
-
-    public Window(int width, int height, Monitor monitor)
-    {
-        this(width, height, "SilenceEngine Window", monitor);
-    }
-
-    public Window(int width, int height, Window share)
-    {
-        this(width, height, "SilenceEngine window", share);
-    }
-
     public Window(int width, int height, Monitor monitor, Window share)
     {
         this(width, height, "SilenceEngine Window", monitor, share);
-    }
-
-    public Window(int width, int height, String title, Monitor monitor)
-    {
-        this(width, height, title, monitor, null);
-    }
-
-    public Window(int width, int height, String title, Window share)
-    {
-        this(width, height, title, null, share);
-    }
-
-    public Window(VideoMode videoMode, String title, Monitor monitor, Window share)
-    {
-        this(videoMode.getWidth(), videoMode.getHeight(), title, monitor, share);
-    }
-
-    public Window(VideoMode videoMode, String title, Monitor monitor)
-    {
-        this(videoMode, title, monitor, null);
-    }
-
-    public Window(VideoMode videoMode, Monitor monitor)
-    {
-        this(videoMode, "SilenceEngine Window", monitor);
     }
 
     public Window(int width, int height, String title, Monitor monitor, Window share)
@@ -175,6 +119,11 @@ public class Window
 
         // Initialize the native callbacks
         initNativeCallbacks();
+    }
+
+    public long getHandle()
+    {
+        return handle;
     }
 
     private void initNativeCallbacks()
@@ -279,185 +228,6 @@ public class Window
         setPositionCallback(null);
         setRefreshCallback(null);
         setSizeCallback(null);
-    }
-
-    private void releaseNativeCallbacks()
-    {
-        glfwCharCallback.release();
-        glfwCharModsCallback.release();
-        glfwCursorEnterCallback.release();
-        glfwCursorPosCallback.release();
-        glfwDropCallback.release();
-        glfwFramebufferSizeCallback.release();
-        glfwKeyCallback.release();
-        glfwMouseButtonCallback.release();
-        glfwScrollCallback.release();
-        glfwWindowCloseCallback.release();
-        glfwWindowFocusCallback.release();
-        glfwWindowIconifyCallback.release();
-        glfwWindowPosCallback.release();
-        glfwWindowRefreshCallback.release();
-        glfwWindowSizeCallback.release();
-    }
-
-    public int getKey(int key)
-    {
-        return glfwGetKey(handle, key);
-    }
-
-    public int getMouseButton(int button)
-    {
-        return glfwGetMouseButton(handle, button);
-    }
-
-    public Vector2 getCursorPos()
-    {
-        DoubleBuffer xPos = BufferUtils.createDoubleBuffer(1);
-        DoubleBuffer yPos = BufferUtils.createDoubleBuffer(1);
-        glfwGetCursorPos(handle, xPos, yPos);
-
-        return new Vector2((float) xPos.get(), (float) yPos.get());
-    }
-
-    public void setCursorPos(double xPos, double yPos)
-    {
-        glfwSetCursorPos(handle, xPos, yPos);
-    }
-
-    public void setCursorPos(Vector2 pos)
-    {
-        setCursorPos(pos.x, pos.y);
-    }
-
-    public void setInputMode(int mode, int value)
-    {
-        glfwSetInputMode(handle, mode, value);
-    }
-
-    public void setCursor(Cursor cursor)
-    {
-        glfwSetCursor(handle, cursor == null ? NULL : cursor.getHandle());
-    }
-
-    public void makeCurrent()
-    {
-        glfwMakeContextCurrent(handle);
-        GLContext.createFromCurrent();
-    }
-
-    public void swapBuffers()
-    {
-        glfwSwapBuffers(handle);
-    }
-
-    public boolean shouldClose()
-    {
-        return glfwWindowShouldClose(handle) == 1;
-    }
-
-    public void setShouldClose(boolean value)
-    {
-        glfwSetWindowShouldClose(handle, value ? 1 : 0);
-    }
-
-    public void iconify()
-    {
-        glfwIconifyWindow(handle);
-    }
-
-    public void restore()
-    {
-        glfwRestoreWindow(handle);
-    }
-
-    public void hide()
-    {
-        glfwHideWindow(handle);
-    }
-
-    public void show()
-    {
-        glfwShowWindow(handle);
-    }
-
-    public void destroy()
-    {
-        releaseNativeCallbacks();
-        glfwDestroyWindow(handle);
-    }
-
-    public Vector2 getPosition()
-    {
-        IntBuffer xPos = BufferUtils.createIntBuffer(1);
-        IntBuffer yPos = BufferUtils.createIntBuffer(1);
-        glfwGetWindowPos(handle, xPos, yPos);
-
-        return position.set(xPos.get(), yPos.get());
-    }
-
-    public void setPosition(Vector2 position)
-    {
-        this.position.set(position);
-        glfwSetWindowPos(handle, (int) position.x, (int) position.y);
-    }
-
-    public void setPosition(float x, float y)
-    {
-        setPosition(position.set(x, y));
-    }
-
-    public Vector2 getSize()
-    {
-        IntBuffer width = BufferUtils.createIntBuffer(1);
-        IntBuffer height = BufferUtils.createIntBuffer(1);
-        glfwGetWindowSize(handle, width, height);
-
-        return size.set(width.get(), height.get());
-    }
-
-    public void setSize(Vector2 size)
-    {
-        this.size.set(size);
-        glfwSetWindowSize(handle, (int) size.x, (int) size.y);
-    }
-
-    public void setSize(float width, float height)
-    {
-        setSize(size.set(width, height));
-    }
-
-    public Vector4 getFrameSize()
-    {
-        IntBuffer left = BufferUtils.createIntBuffer(1);
-        IntBuffer top = BufferUtils.createIntBuffer(1);
-        IntBuffer right = BufferUtils.createIntBuffer(1);
-        IntBuffer bottom = BufferUtils.createIntBuffer(1);
-
-        glfwGetWindowFrameSize(handle, left, top, right, bottom);
-
-        return new Vector4(left.get(), top.get(), right.get(), bottom.get());
-    }
-
-    public Monitor getMonitor()
-    {
-        return monitor;
-    }
-
-    public void setTitle(String title)
-    {
-        this.title = title;
-
-        glfwSetWindowTitle(handle, title);
-    }
-
-    public String getTitle()
-    {
-        return title;
-    }
-
-    public int getAttribute(int attribute)
-    {
-        return glfwGetWindowAttrib(handle, attribute);
     }
 
     public void setCharacterCallback(ICharacterCallback callback)
@@ -580,19 +350,69 @@ public class Window
         this.windowSizeCallback = callback;
     }
 
-    public long getHandle()
+    public Window(Monitor monitor)
     {
-        return handle;
+        this(800, 600, monitor);
     }
 
-    public static void setHint(int hint, int value)
+    public Window(int width, int height, Monitor monitor)
     {
-        glfwWindowHint(hint, value);
+        this(width, height, "SilenceEngine Window", monitor);
+    }
+
+    public Window(int width, int height, String title, Monitor monitor)
+    {
+        this(width, height, title, monitor, null);
+    }
+
+    public Window(Window share)
+    {
+        this(800, 600, share);
+    }
+
+    public Window(int width, int height, Window share)
+    {
+        this(width, height, "SilenceEngine window", share);
+    }
+
+    public Window(int width, int height, String title, Window share)
+    {
+        this(width, height, title, null, share);
+    }
+
+    public Window(String title)
+    {
+        this(800, 600, title);
+    }
+
+    public Window(int width, int height, String title)
+    {
+        this(width, height, title, (Monitor) null);
+    }
+
+    public Window(VideoMode videoMode, Monitor monitor)
+    {
+        this(videoMode, "SilenceEngine Window", monitor);
+    }
+
+    public Window(VideoMode videoMode, String title, Monitor monitor)
+    {
+        this(videoMode, title, monitor, null);
+    }
+
+    public Window(VideoMode videoMode, String title, Monitor monitor, Window share)
+    {
+        this(videoMode.getWidth(), videoMode.getHeight(), title, monitor, share);
     }
 
     public static void setHint(int hint, boolean value)
     {
         setHint(hint, value ? 1 : 0);
+    }
+
+    public static void setHint(int hint, int value)
+    {
+        glfwWindowHint(hint, value);
     }
 
     public static void setDefaultHints()
@@ -603,5 +423,184 @@ public class Window
     public static Window getCurrentContext()
     {
         return registeredWindows.get(glfwGetCurrentContext());
+    }
+
+    public int getKey(int key)
+    {
+        return glfwGetKey(handle, key);
+    }
+
+    public int getMouseButton(int button)
+    {
+        return glfwGetMouseButton(handle, button);
+    }
+
+    public Vector2 getCursorPos()
+    {
+        DoubleBuffer xPos = BufferUtils.createDoubleBuffer(1);
+        DoubleBuffer yPos = BufferUtils.createDoubleBuffer(1);
+        glfwGetCursorPos(handle, xPos, yPos);
+
+        return new Vector2((float) xPos.get(), (float) yPos.get());
+    }
+
+    public void setCursorPos(Vector2 pos)
+    {
+        setCursorPos(pos.x, pos.y);
+    }
+
+    public void setCursorPos(double xPos, double yPos)
+    {
+        glfwSetCursorPos(handle, xPos, yPos);
+    }
+
+    public void setInputMode(int mode, int value)
+    {
+        glfwSetInputMode(handle, mode, value);
+    }
+
+    public void setCursor(Cursor cursor)
+    {
+        glfwSetCursor(handle, cursor == null ? NULL : cursor.getHandle());
+    }
+
+    public void makeCurrent()
+    {
+        glfwMakeContextCurrent(handle);
+        GLContext.createFromCurrent();
+    }
+
+    public void swapBuffers()
+    {
+        glfwSwapBuffers(handle);
+    }
+
+    public boolean shouldClose()
+    {
+        return glfwWindowShouldClose(handle) == 1;
+    }
+
+    public void setShouldClose(boolean value)
+    {
+        glfwSetWindowShouldClose(handle, value ? 1 : 0);
+    }
+
+    public void iconify()
+    {
+        glfwIconifyWindow(handle);
+    }
+
+    public void restore()
+    {
+        glfwRestoreWindow(handle);
+    }
+
+    public void hide()
+    {
+        glfwHideWindow(handle);
+    }
+
+    public void show()
+    {
+        glfwShowWindow(handle);
+    }
+
+    public void destroy()
+    {
+        releaseNativeCallbacks();
+        glfwDestroyWindow(handle);
+    }
+
+    private void releaseNativeCallbacks()
+    {
+        glfwCharCallback.release();
+        glfwCharModsCallback.release();
+        glfwCursorEnterCallback.release();
+        glfwCursorPosCallback.release();
+        glfwDropCallback.release();
+        glfwFramebufferSizeCallback.release();
+        glfwKeyCallback.release();
+        glfwMouseButtonCallback.release();
+        glfwScrollCallback.release();
+        glfwWindowCloseCallback.release();
+        glfwWindowFocusCallback.release();
+        glfwWindowIconifyCallback.release();
+        glfwWindowPosCallback.release();
+        glfwWindowRefreshCallback.release();
+        glfwWindowSizeCallback.release();
+    }
+
+    public Vector2 getPosition()
+    {
+        IntBuffer xPos = BufferUtils.createIntBuffer(1);
+        IntBuffer yPos = BufferUtils.createIntBuffer(1);
+        glfwGetWindowPos(handle, xPos, yPos);
+
+        return position.set(xPos.get(), yPos.get());
+    }
+
+    public void setPosition(Vector2 position)
+    {
+        this.position.set(position);
+        glfwSetWindowPos(handle, (int) position.x, (int) position.y);
+    }
+
+    public void setPosition(float x, float y)
+    {
+        setPosition(position.set(x, y));
+    }
+
+    public Vector2 getSize()
+    {
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
+        glfwGetWindowSize(handle, width, height);
+
+        return size.set(width.get(), height.get());
+    }
+
+    public void setSize(Vector2 size)
+    {
+        this.size.set(size);
+        glfwSetWindowSize(handle, (int) size.x, (int) size.y);
+    }
+
+    public void setSize(float width, float height)
+    {
+        setSize(size.set(width, height));
+    }
+
+    public Vector4 getFrameSize()
+    {
+        IntBuffer left = BufferUtils.createIntBuffer(1);
+        IntBuffer top = BufferUtils.createIntBuffer(1);
+        IntBuffer right = BufferUtils.createIntBuffer(1);
+        IntBuffer bottom = BufferUtils.createIntBuffer(1);
+
+        glfwGetWindowFrameSize(handle, left, top, right, bottom);
+
+        return new Vector4(left.get(), top.get(), right.get(), bottom.get());
+    }
+
+    public Monitor getMonitor()
+    {
+        return monitor;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+
+        glfwSetWindowTitle(handle, title);
+    }
+
+    public int getAttribute(int attribute)
+    {
+        return glfwGetWindowAttrib(handle, attribute);
     }
 }

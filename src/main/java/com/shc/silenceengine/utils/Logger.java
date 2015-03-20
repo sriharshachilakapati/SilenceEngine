@@ -35,16 +35,15 @@ import java.util.Date;
  */
 public final class Logger
 {
+    private static boolean printTimeStamps;
+
     private Logger()
     {
     }
-
     static
     {
         setPrintTimeStamps(true);
     }
-
-    private static boolean printTimeStamps;
 
     public static void log(String... messages)
     {

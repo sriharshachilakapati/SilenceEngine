@@ -127,6 +127,16 @@ public class Texture
         CURRENT = this;
     }
 
+    public void setFilter(int min, int mag)
+    {
+        bind();
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
+        GLError.check();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
+        GLError.check();
+    }
+
     public void image2d(ByteBuffer data, int type, int format, int width, int height, int internalFormat)
     {
         bind();
@@ -136,16 +146,6 @@ public class Texture
 
         this.width = width;
         this.height = height;
-    }
-
-    public void setFilter(int min, int mag)
-    {
-        bind();
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
-        GLError.check();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
-        GLError.check();
     }
 
     public void generateMipMaps()
@@ -243,12 +243,9 @@ public class Texture
         return new SubTexture(this, minU, minV, maxU, maxV, width, height);
     }
 
-    public ByteBuffer getImage2D(int format, int type, ByteBuffer data)
+    public ByteBuffer getImage2D(int format)
     {
-        glGetTexImage(GL_TEXTURE_2D, 0, format, type, data);
-        GLError.check();
-
-        return data;
+        return getImage2D(format, GL_FLOAT);
     }
 
     public ByteBuffer getImage2D(int format, int type)
@@ -269,9 +266,12 @@ public class Texture
         return getImage2D(format, type, data);
     }
 
-    public ByteBuffer getImage2D(int format)
+    public ByteBuffer getImage2D(int format, int type, ByteBuffer data)
     {
-        return getImage2D(format, GL_FLOAT);
+        glGetTexImage(GL_TEXTURE_2D, 0, format, type, data);
+        GLError.check();
+
+        return data;
     }
 
     public void dispose()

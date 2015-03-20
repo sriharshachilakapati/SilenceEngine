@@ -40,38 +40,16 @@ import static org.lwjgl.system.MemoryUtil.*;
  */
 public class Cursor
 {
-    public static enum Type
-    {
-        ARROW(GLFW_ARROW_CURSOR),
-        IBEAM(GLFW_IBEAM_CURSOR),
-        CROSSHAIR(GLFW_CROSSHAIR_CURSOR),
-        HAND(GLFW_HAND_CURSOR),
-        HRESIZE(GLFW_HRESIZE_CURSOR),
-        VRESIZE(GLFW_VRESIZE_CURSOR);
-
-        private int type;
-
-        private Type(int type)
-        {
-            this.type = type;
-        }
-
-        public int getType()
-        {
-            return type;
-        }
-    }
-
     private long handle;
-
-    public Cursor(BufferedImage image, int xHot, int yHot)
-    {
-        this(Texture.fromBufferedImage(image), xHot, yHot);
-    }
 
     public Cursor(BufferedImage image)
     {
         this(image, 0, 0);
+    }
+
+    public Cursor(BufferedImage image, int xHot, int yHot)
+    {
+        this(Texture.fromBufferedImage(image), xHot, yHot);
     }
 
     public Cursor(Texture image, int xHot, int yHot)
@@ -107,5 +85,27 @@ public class Cursor
     public long getHandle()
     {
         return handle;
+    }
+
+    public static enum Type
+    {
+        ARROW(GLFW_ARROW_CURSOR),
+        IBEAM(GLFW_IBEAM_CURSOR),
+        CROSSHAIR(GLFW_CROSSHAIR_CURSOR),
+        HAND(GLFW_HAND_CURSOR),
+        HRESIZE(GLFW_HRESIZE_CURSOR),
+        VRESIZE(GLFW_VRESIZE_CURSOR);
+
+        private int type;
+
+        private Type(int type)
+        {
+            this.type = type;
+        }
+
+        public int getType()
+        {
+            return type;
+        }
     }
 }

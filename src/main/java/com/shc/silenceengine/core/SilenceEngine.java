@@ -59,6 +59,7 @@ public final class SilenceEngine implements IEngine
             }
         });
     }
+
     private static SilenceEngine   instance;
     public static  GraphicsEngine  graphics;
     public static  AudioEngine     audio;
@@ -116,11 +117,6 @@ public final class SilenceEngine implements IEngine
         Logger.log("SilenceEngine version " + getVersion() + " was initialized successfully");
     }
 
-    public static String getVersion()
-    {
-        return "0.0.3a";
-    }
-
     public static Platform getPlatform()
     {
         final String OS = System.getProperty("os.name").toLowerCase();
@@ -136,6 +132,11 @@ public final class SilenceEngine implements IEngine
         if (isMac) return Platform.MACOSX;
 
         return Platform.UNKNOWN;
+    }
+
+    public static String getVersion()
+    {
+        return "0.0.3a";
     }
 
     @Override

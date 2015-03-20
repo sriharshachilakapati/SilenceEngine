@@ -62,6 +62,14 @@ public final class GLFW3
         return true;
     }
 
+    public static void setErrorCallback(IErrorCallback errorCallback)
+    {
+        if (errorCallback == null)
+            errorCallback = (error, description) -> {};
+
+        GLFW3.errorCallback = errorCallback;
+    }
+
     public static void pollEvents()
     {
         glfwPollEvents();
@@ -86,7 +94,7 @@ public final class GLFW3
     {
         IntBuffer major = BufferUtils.createIntBuffer(1);
         IntBuffer minor = BufferUtils.createIntBuffer(1);
-        IntBuffer rev   = BufferUtils.createIntBuffer(1);
+        IntBuffer rev = BufferUtils.createIntBuffer(1);
 
         glfwGetVersion(major, minor, rev);
 
@@ -104,13 +112,5 @@ public final class GLFW3
             glfwErrorCallback.release();
 
         glfwTerminate();
-    }
-
-    public static void setErrorCallback(IErrorCallback errorCallback)
-    {
-        if (errorCallback == null)
-            errorCallback = (error, description) -> {};
-
-        GLFW3.errorCallback = errorCallback;
     }
 }

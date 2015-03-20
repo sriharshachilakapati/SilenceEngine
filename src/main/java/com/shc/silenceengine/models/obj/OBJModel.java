@@ -50,8 +50,8 @@ public class OBJModel extends Model
     private List<Vector3> vertices;
     private List<Vector3> normals;
     private List<Vector2> texCoords;
+    private List<OBJFace> faces;
 
-    private List<OBJFace>         faces;
     private Map<String, Material> materials;
 
     public OBJModel(String name)
@@ -212,6 +212,20 @@ public class OBJModel extends Model
         materials.put(material.getName(), material);
     }
 
+    private void sortFaces()
+    {
+        // We need to sort the faces so that all the faces with
+        // the same material will be together, reducing the number
+        // of batches to be rendered.
+        faces.sort((f1, f2) ->
+        {
+            if (f1.getMaterial() == f2.getMaterial())
+                return 0;
+            else
+                return 1;
+        });
+    }
+
     private void parseMaterialAmbientColor(String line, Material material)
     {
         String[] values = line.split(" ");
@@ -252,20 +266,6 @@ public class OBJModel extends Model
         texture = texture.trim();
 
         material.setDiffuseMap(Texture.fromResource(texture));
-    }
-
-    private void sortFaces()
-    {
-        // We need to sort the faces so that all the faces with
-        // the same material will be together, reducing the loadLWJGL
-        // on the batcher.
-        faces.sort((f1, f2) ->
-        {
-            if (f1.getMaterial() == f2.getMaterial())
-                return 0;
-            else
-                return 1;
-        });
     }
 
     @Override

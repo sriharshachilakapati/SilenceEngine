@@ -52,11 +52,6 @@ public class QuadTreeSceneColliderTest extends Game
         new QuadTreeSceneColliderTest().start();
     }
 
-    public void dispose()
-    {
-        scene.destroy();
-    }
-
     public void init()
     {
         Display.setTitle("QuadTreeCollider Test");
@@ -88,6 +83,11 @@ public class QuadTreeSceneColliderTest extends Game
         collider.register(Player.class, Box.class);
     }
 
+    public void resize()
+    {
+        cam.initProjection(Display.getWidth(), Display.getHeight());
+    }
+
     public void update(float delta)
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
@@ -106,9 +106,9 @@ public class QuadTreeSceneColliderTest extends Game
         scene.render(delta, batcher);
     }
 
-    public void resize()
+    public void dispose()
     {
-        cam.initProjection(Display.getWidth(), Display.getHeight());
+        scene.destroy();
     }
 
     public class Box extends Entity2D

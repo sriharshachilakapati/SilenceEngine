@@ -102,6 +102,20 @@ public class GraphicsEngine implements IEngine
         Display.update();
     }
 
+    @Override
+    public void dispose()
+    {
+        // Dispose the default Programs
+        Program.DEFAULT.dispose();
+        Program.POINT_LIGHT.dispose();
+
+        // Dispose the empty texture
+        Texture.EMPTY.dispose();
+
+        // Destroy the display
+        Display.destroy();
+    }
+
     public void setViewport(int x, int y, int width, int height)
     {
         GL3Context.viewport(x, y, width, height);
@@ -115,19 +129,5 @@ public class GraphicsEngine implements IEngine
     public void setClearColor(Color color)
     {
         GL3Context.clearColor(color);
-    }
-
-    @Override
-    public void dispose()
-    {
-        // Dispose the default Programs
-        Program.DEFAULT.dispose();
-        Program.POINT_LIGHT.dispose();
-
-        // Dispose the empty texture
-        Texture.EMPTY.dispose();
-
-        // Destroy the display
-        Display.destroy();
     }
 }

@@ -143,6 +143,61 @@ public class Entity2D extends SceneNode
     }
 
     /**
+     * @return The position of this entity
+     */
+    public Vector2 getPosition()
+    {
+        return position;
+    }
+
+    /**
+     * @return The center position of the entity
+     */
+    public Vector2 getCenter()
+    {
+        return polygon.getCenter();
+    }
+
+    /**
+     * Sets the center position of this entity. Note that the same rotation is also applied to the polygon this entity
+     * is using.
+     *
+     * @param center The new center position
+     */
+    public void setCenter(Vector2 center)
+    {
+        polygon.setCenter(center);
+        position.set(polygon.getPosition());
+
+        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
+
+        getLocalTransform().reset().translateSelf(tempVec2.set(getPosition()).subtractSelf(getCenter()))
+                .rotateSelf(Vector3.AXIS_Z, polygon.getRotation())
+                .translateSelf(getCenter());
+
+        Vector2.REUSABLE_STACK.push(tempVec2);
+    }
+
+    /**
+     * Sets the position of this entity
+     *
+     * @param position The new position as a Vector2
+     */
+    public void setPosition(Vector2 position)
+    {
+        this.position.set(position);
+        polygon.setPosition(position);
+
+        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
+
+        getLocalTransform().reset().translateSelf(tempVec2.set(getPosition()).subtractSelf(getCenter()))
+                .rotateSelf(Vector3.AXIS_Z, polygon.getRotation())
+                .translateSelf(getCenter());
+
+        Vector2.REUSABLE_STACK.push(tempVec2);
+    }
+
+    /**
      * Called by the ISceneCollider2D instance to notify that a collision event has occurred.
      *
      * @param other The other entity that collided with this entity.
@@ -442,12 +497,6 @@ public class Entity2D extends SceneNode
                position.equals(entity2D.position) &&
                velocity.equals(entity2D.velocity);
 
-    }    /**
-     * @return The center position of the entity
-     */
-    public Vector2 getCenter()
-    {
-        return polygon.getCenter();
     }
 
     @Override
@@ -458,58 +507,6 @@ public class Entity2D extends SceneNode
                ", velocity=" + velocity +
                ", polygon=" + polygon +
                '}';
-    }
-
-
-
-
-    /**
-     * Sets the center position of this entity. Note that the same rotation is also applied to the polygon this entity
-     * is using.
-     *
-     * @param center The new center position
-     */
-    public void setCenter(Vector2 center)
-    {
-        polygon.setCenter(center);
-        position.set(polygon.getPosition());
-
-        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
-
-        getLocalTransform().reset().translateSelf(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                .rotateSelf(Vector3.AXIS_Z, polygon.getRotation())
-                .translateSelf(getCenter());
-
-        Vector2.REUSABLE_STACK.push(tempVec2);
-    }
-
-
-    /**
-     * @return The position of this entity
-     */
-    public Vector2 getPosition()
-    {
-        return position;
-    }
-
-
-    /**
-     * Sets the position of this entity
-     *
-     * @param position The new position as a Vector2
-     */
-    public void setPosition(Vector2 position)
-    {
-        this.position.set(position);
-        polygon.setPosition(position);
-
-        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
-
-        getLocalTransform().reset().translateSelf(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                .rotateSelf(Vector3.AXIS_Z, polygon.getRotation())
-                .translateSelf(getCenter());
-
-        Vector2.REUSABLE_STACK.push(tempVec2);
     }
 
 

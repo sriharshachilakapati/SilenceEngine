@@ -72,21 +72,21 @@ public class Monitor
         return primary;
     }
 
-    public static List<Monitor> getMonitors()
+    public static void setCallback(IMonitorCallback callback)
     {
-        if (monitors == null)
-        {
-            monitors = new ArrayList<>();
+        if (callback == null)
+            callback = (monitor, event) -> {};
 
-            PointerBuffer buffer = glfwGetMonitors();
+        monitorCallback = callback;
 
-            while (buffer.hasRemaining())
-                monitors.add(new Monitor(buffer.get()));
+        if (glfwMonitorCallback != null)
+            glfwMonitorCallback.release();
 
-            monitors = Collections.unmodifiableList(monitors);
-        }
+        glfwMonitorCallback = GLFWMonitorCallback((monitor, event) ->
+            monitorCallback.invoke(registeredMonitors.get(monitor), event)
+        );
 
-        return monitors;
+        glfwSetMonitorCallback(glfwMonitorCallback);
     }
 
     public List<VideoMode> getVideoModes()
@@ -121,10 +121,10 @@ public class Monitor
         ByteBuffer mode = glfwGetVideoMode(handle);
 
         int width = mode.getInt();
-        int height      = mode.getInt();
-        int redBits     = mode.getInt();
-        int greenBits   = mode.getInt();
-        int blueBits    = mode.getInt();
+        int height = mode.getInt();
+        int redBits = mode.getInt();
+        int greenBits = mode.getInt();
+        int blueBits = mode.getInt();
         int refreshRate = mode.getInt();
 
         return new VideoMode(width, height, redBits, greenBits, blueBits, refreshRate);
@@ -133,16 +133,6 @@ public class Monitor
     public long getHandle()
     {
         return handle;
-    }
-
-    public boolean isPrimary()
-    {
-        return getMonitors().get(0).equals(this);
-    }
-
-    public String getName()
-    {
-        return glfwGetMonitorName(handle);
     }
 
     public void setGamma(float gamma)
@@ -154,10 +144,10 @@ public class Monitor
     {
         ByteBuffer gammaRamp = glfwGetGammaRamp(handle);
 
-        short red   = gammaRamp.getShort();
+        short red = gammaRamp.getShort();
         short green = gammaRamp.getShort();
-        short blue  = gammaRamp.getShort();
-        int   size  = gammaRamp.getInt();
+        short blue = gammaRamp.getShort();
+        int size = gammaRamp.getInt();
 
         return new GammaRamp(red, green, blue, size);
     }
@@ -186,31 +176,10 @@ public class Monitor
         return new Vector2(xPos.get(), yPos.get());
     }
 
-    public static void setCallback(IMonitorCallback callback)
-    {
-        if (callback == null)
-            callback = (monitor, event) -> {};
-
-        monitorCallback = callback;
-
-        if (glfwMonitorCallback != null)
-            glfwMonitorCallback.release();
-
-        glfwMonitorCallback = GLFWMonitorCallback((monitor, event) ->
-            monitorCallback.invoke(registeredMonitors.get(monitor), event)
-        );
-
-        glfwSetMonitorCallback(glfwMonitorCallback);
-    }
-
     @Override
-    public String toString()
+    public int hashCode()
     {
-        return "Monitor{" +
-               "handle=" + handle + ", " +
-               "name=\"" + getName() + "\", " +
-               "primary=" + isPrimary() +
-               '}';
+        return (int) (handle ^ (handle >>> 32));
     }
 
     @Override
@@ -225,8 +194,39 @@ public class Monitor
     }
 
     @Override
-    public int hashCode()
+    public String toString()
     {
-        return (int) (handle ^ (handle >>> 32));
+        return "Monitor{" +
+               "handle=" + handle + ", " +
+               "name=\"" + getName() + "\", " +
+               "primary=" + isPrimary() +
+               '}';
+    }
+
+    public String getName()
+    {
+        return glfwGetMonitorName(handle);
+    }
+
+    public boolean isPrimary()
+    {
+        return getMonitors().get(0).equals(this);
+    }
+
+    public static List<Monitor> getMonitors()
+    {
+        if (monitors == null)
+        {
+            monitors = new ArrayList<>();
+
+            PointerBuffer buffer = glfwGetMonitors();
+
+            while (buffer.hasRemaining())
+                monitors.add(new Monitor(buffer.get()));
+
+            monitors = Collections.unmodifiableList(monitors);
+        }
+
+        return monitors;
     }
 }

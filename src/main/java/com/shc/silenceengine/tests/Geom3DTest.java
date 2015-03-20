@@ -59,11 +59,6 @@ public class Geom3DTest extends Game
         new Geom3DTest().start();
     }
 
-    public void dispose()
-    {
-        ResourceLoader.getInstance().dispose();
-    }
-
     public void init()
     {
         ResourceLoader loader = ResourceLoader.getInstance();
@@ -80,6 +75,12 @@ public class Geom3DTest extends Game
 
         cube = new Cuboid(new Vector3(), 1, 1, 1);
         sphere = new Sphere(new Vector3(), 1);
+    }
+
+    public void resize()
+    {
+        camera.initProjection(70, Display.getAspectRatio(), 0.01f, 1000f);
+        hudCam.initProjection(Display.getWidth(), Display.getHeight());
     }
 
     public void update(float delta)
@@ -174,9 +175,8 @@ public class Geom3DTest extends Game
         hudFont.drawString(batcher, "\n\n\n\n\nMinimum Translation Vector: " + response.getMinimumTranslationVector(), 10, 20);
     }
 
-    public void resize()
+    public void dispose()
     {
-        camera.initProjection(70, Display.getAspectRatio(), 0.01f, 1000f);
-        hudCam.initProjection(Display.getWidth(), Display.getHeight());
+        ResourceLoader.getInstance().dispose();
     }
 }

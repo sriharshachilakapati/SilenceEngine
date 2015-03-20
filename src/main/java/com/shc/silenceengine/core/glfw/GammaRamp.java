@@ -84,14 +84,13 @@ public class GammaRamp
     }
 
     @Override
-    public String toString()
+    public int hashCode()
     {
-        return "GammaRamp{" +
-               "red=" + red +
-               ", green=" + green +
-               ", blue=" + blue +
-               ", size=" + size +
-               '}';
+        int result = (int) red;
+        result = 31 * result + (int) green;
+        result = 31 * result + (int) blue;
+        result = 31 * result + size;
+        return result;
     }
 
     @Override
@@ -102,21 +101,20 @@ public class GammaRamp
 
         GammaRamp gammaRamp = (GammaRamp) o;
 
-        if (blue != gammaRamp.blue) return false;
-        if (green != gammaRamp.green) return false;
-        if (red != gammaRamp.red) return false;
-        if (size != gammaRamp.size) return false;
-
-        return true;
+        return blue == gammaRamp.blue &&
+               green == gammaRamp.green &&
+               red == gammaRamp.red &&
+               size == gammaRamp.size;
     }
 
     @Override
-    public int hashCode()
+    public String toString()
     {
-        int result = (int) red;
-        result = 31 * result + (int) green;
-        result = 31 * result + (int) blue;
-        result = 31 * result + size;
-        return result;
+        return "GammaRamp{" +
+               "red=" + red +
+               ", green=" + green +
+               ", blue=" + blue +
+               ", size=" + size +
+               '}';
     }
 }

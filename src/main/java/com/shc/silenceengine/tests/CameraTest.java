@@ -52,11 +52,6 @@ public class CameraTest extends Game
         new CameraTest().start();
     }
 
-    public void dispose()
-    {
-        texture.dispose();
-    }
-
     public void init()
     {
         transform = new Transform();
@@ -67,6 +62,12 @@ public class CameraTest extends Game
         texture = Texture.fromResource("resources/texture2.png");
 
         Display.hideCursor();
+    }
+
+    public void resize()
+    {
+        orthoCam.initProjection(Display.getWidth(), Display.getHeight());
+        perspCam.initProjection(70, Display.getAspectRatio(), 0.1f, 100);
     }
 
     public void update(float delta)
@@ -154,9 +155,8 @@ public class CameraTest extends Game
         batcher.end();
     }
 
-    public void resize()
+    public void dispose()
     {
-        orthoCam.initProjection(Display.getWidth(), Display.getHeight());
-        perspCam.initProjection(70, Display.getAspectRatio(), 0.1f, 100);
+        texture.dispose();
     }
 }
