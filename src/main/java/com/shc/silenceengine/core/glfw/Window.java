@@ -25,6 +25,8 @@
 package com.shc.silenceengine.core.glfw;
 
 import com.shc.silenceengine.core.glfw.callbacks.*;
+import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector4;
 import org.lwjgl.BufferUtils;
@@ -144,9 +146,13 @@ public class Window
             cursorEnterCallback.invoke(registeredWindows.get(window), entered != 0)
         );
 
-        glfwCursorPosCallback = GLFWCursorPosCallback((window, xPos, yPos) ->
-            cursorPositionCallback.invoke(registeredWindows.get(window), xPos, yPos)
-        );
+        glfwCursorPosCallback = GLFWCursorPosCallback((win, xPos, yPos) ->
+        {
+            Window window = registeredWindows.get(win);
+
+            cursorPositionCallback.invoke(window, xPos, yPos);
+            Mouse.glfwCursorCallback(window, xPos, yPos);
+        });
 
         glfwDropCallback = GLFWDropCallback((window, count, names) ->
             dropCallback.invoke(registeredWindows.get(window), Callbacks.dropCallbackNamesString(count, names))
@@ -156,17 +162,26 @@ public class Window
             framebufferSizeCallback.invoke(registeredWindows.get(window), width, height)
         );
 
-        glfwKeyCallback = GLFWKeyCallback((window, key, scanCode, action, mods) ->
-            keyCallback.invoke(registeredWindows.get(window), key, scanCode, action, mods)
-        );
+        glfwKeyCallback = GLFWKeyCallback((win, key, scanCode, action, mods) ->
+        {
+            Window window = registeredWindows.get(win);
+            keyCallback.invoke(window, key, scanCode, action, mods);
+            Keyboard.glfwKeyCallback(window, key, scanCode, action, mods);
+        });
 
-        glfwMouseButtonCallback = GLFWMouseButtonCallback((window, button, action, mods) ->
-            mouseButtonCallback.invoke(registeredWindows.get(window), button, action, mods)
-        );
+        glfwMouseButtonCallback = GLFWMouseButtonCallback((win, button, action, mods) ->
+        {
+            Window window = registeredWindows.get(win);
+            mouseButtonCallback.invoke(window, button, action, mods);
+            Mouse.glfwMouseButtonCallback(window, button, action, mods);
+        });
 
-        glfwScrollCallback = GLFWScrollCallback((window, xOffset, yOffset) ->
-            scrollCallback.invoke(registeredWindows.get(window), xOffset, yOffset)
-        );
+        glfwScrollCallback = GLFWScrollCallback((win, xOffset, yOffset) ->
+        {
+            Window window = registeredWindows.get(win);
+            scrollCallback.invoke(window, xOffset, yOffset);
+            Mouse.glfwScrollCallback(window, xOffset, yOffset);
+        });
 
         glfwWindowCloseCallback = GLFWWindowCloseCallback((window) ->
             windowCloseCallback.invoke(registeredWindows.get(window))

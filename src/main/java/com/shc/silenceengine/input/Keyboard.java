@@ -24,7 +24,6 @@
 
 package com.shc.silenceengine.input;
 
-import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.core.glfw.Window;
 
@@ -178,7 +177,7 @@ public class Keyboard
 
     public static boolean isPressed(int key)
     {
-        return Display.getWindow().getKey(key) == GLFW_PRESS || isClicked(key);
+        return eventsThisFrame.contains(key);
     }
 
     public static boolean isClicked(int key)

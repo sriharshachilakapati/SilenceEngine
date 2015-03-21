@@ -24,7 +24,6 @@
 
 package com.shc.silenceengine.input;
 
-import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.core.glfw.Window;
 
@@ -81,7 +80,7 @@ public class Mouse
 
     public static boolean isPressed(int button)
     {
-        return Display.getWindow().getMouseButton(button) == GLFW_PRESS || isClicked(button);
+        return eventsThisFrame.contains(button);
     }
 
     public static boolean isClicked(int button)

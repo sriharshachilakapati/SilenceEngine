@@ -245,7 +245,13 @@ public class Game
             while (lag > frameTime && skippedFrames < maxFrameSkips)
             {
                 if (Display.wasDirty())
+                {
                     dirtyDisplay();
+
+                    // End the old frame and start a new frame
+                    SilenceEngine.getInstance().endFrame();
+                    SilenceEngine.getInstance().beginFrame();
+                }
 
                 // Input needs to be updated even faster!
                 SilenceEngine.input.beginFrame();

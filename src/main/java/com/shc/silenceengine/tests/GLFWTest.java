@@ -28,6 +28,7 @@ import com.shc.silenceengine.core.glfw.Cursor;
 import com.shc.silenceengine.core.glfw.GLFW3;
 import com.shc.silenceengine.core.glfw.Window;
 import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.utils.NativesLoader;
 
 /**
@@ -61,13 +62,18 @@ public class GLFWTest
         // Loop until the user closes the window
         while (!window.shouldClose())
         {
+            Keyboard.startEventFrame();
+
             // Render here
+            if (Keyboard.isClicked(Keyboard.KEY_ESCAPE))
+                break;
 
             // Swap front and back buffers
             window.swapBuffers();
 
             // Poll for and process events
             GLFW3.pollEvents();
+            Keyboard.clearEventFrame();
         }
 
         window.destroy();
