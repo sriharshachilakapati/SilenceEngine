@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.tests;
 
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.glfw.Cursor;
 import com.shc.silenceengine.core.glfw.GLFW3;
 import com.shc.silenceengine.core.glfw.Window;
@@ -59,10 +60,14 @@ public class GLFWTest
 
         window.setCursor(cursor);
 
+        // Initialize the input engine
+        SilenceEngine.input.init();
+
         // Loop until the user closes the window
         while (!window.shouldClose())
         {
-            Keyboard.startEventFrame();
+            // Tell the input engine to begin a new frame
+            SilenceEngine.input.beginFrame();
 
             // Render here
             if (Keyboard.isClicked(Keyboard.KEY_ESCAPE))
@@ -73,7 +78,9 @@ public class GLFWTest
 
             // Poll for and process events
             GLFW3.pollEvents();
-            Keyboard.clearEventFrame();
+
+            // Tell the input engine to end the current frame
+            SilenceEngine.input.endFrame();
         }
 
         window.destroy();

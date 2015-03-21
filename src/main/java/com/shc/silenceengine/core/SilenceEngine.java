@@ -60,11 +60,12 @@ public final class SilenceEngine implements IEngine
         });
     }
 
-    private static SilenceEngine   instance;
-    public static  GraphicsEngine  graphics;
-    public static  AudioEngine     audio;
-    public static  CollisionEngine collision;
-    public static  InputEngine     input;
+    private static SilenceEngine instance;
+
+    public static GraphicsEngine  graphics  = new GraphicsEngine();
+    public static AudioEngine     audio     = new AudioEngine();
+    public static CollisionEngine collision = new CollisionEngine();
+    public static InputEngine     input     = new InputEngine();
 
     private SilenceEngine()
     {
@@ -101,12 +102,6 @@ public final class SilenceEngine implements IEngine
         // Initialize GLFW
         if (!GLFW3.init())
             throw new SilenceException("Error initializing GLFW. Your system is unsupported.");
-
-        // Create the other engines
-        graphics = new GraphicsEngine();
-        audio = new AudioEngine();
-        collision = new CollisionEngine();
-        input = new InputEngine();
 
         // Initialize other engines
         graphics.init();
