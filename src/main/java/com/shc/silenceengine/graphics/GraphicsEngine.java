@@ -25,6 +25,7 @@
 package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.core.Display;
+import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.IEngine;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
@@ -129,5 +130,15 @@ public class GraphicsEngine implements IEngine
     public void setClearColor(Color color)
     {
         GL3Context.clearColor(color);
+    }
+
+    public Batcher getBatcher()
+    {
+        return Game.getBatcher();
+    }
+
+    public Graphics2D getGraphics2D()
+    {
+        return Graphics2D.getInstance();
     }
 }

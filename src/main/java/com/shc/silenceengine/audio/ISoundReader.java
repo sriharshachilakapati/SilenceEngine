@@ -38,14 +38,16 @@ import java.util.Map;
 
 /**
  * <p> An interface that specifies how a sound reader should behave. There are a lot of formats for the sound resources,
- * and they should be decoded to the raw byte samples before they can be played by OpenAL. </p> <p> <p> This interface
- * allows you to extend the playback support for other formats by letting you write your own implementation. To play an
- * audio file, you need at least three things about it, namely the format of the samples, it's bit-rate, and the
- * samples. It is the job of the sound reader to decode this information from the resource file. </p> <p> <p> To allow
- * you to easily use such additional readers, this interface provides you with a way to plug those readers by using
- * file-name extensions to determine the file type. The requirement is that every class that implements this interface
- * should contain a constructor that accepts an <code>InputStream</code> as an argument. Then you need to register that
- * class before you begin loading the sound. </p> <p>
+ * and they should be decoded to the raw byte samples before they can be played by OpenAL. This interface allows you to
+ * extend the playback support for other formats by letting you write your own implementation. To play an audio file,
+ * you need at least three things about it, namely the format of the samples, it's bit-rate, and the samples. It is the
+ * job of the sound reader to decode this information from the resource file. </p>
+ *
+ * <p> To allow you to easily use such additional readers, this interface provides you with a way to plug those readers
+ * by using file-name extensions to determine the file type. The requirement is that every class that implements this
+ * interface should contain a constructor that accepts an <code>InputStream</code> as an argument. Then you need to
+ * register that class before you begin loading the sound. </p>
+ *
  * <pre>
  *     public static void register()
  *     {
@@ -53,7 +55,8 @@ import java.util.Map;
  *         ISoundReader.register("myext2", MyextReader.class);
  *     }
  * </pre>
- * <p> <p> This is how you register the readers, so that SilenceEngine can use them to read your sound resource file. To
+ *
+ * <p> This is how you register the readers, so that SilenceEngine can use them to read your sound resource file. To
  * ease it further, add the above method to your class and make a call to it before you start loading the resources.
  * That does mean that you have to register the readers before using {@link com.shc.silenceengine.core.ResourceLoader}
  * class. </p>

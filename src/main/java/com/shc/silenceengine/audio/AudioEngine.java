@@ -34,6 +34,8 @@ import org.lwjgl.openal.ALC10;
 import java.io.InputStream;
 
 /**
+ * TODO: Document this class.
+ *
  * @author Sri Harsha Chilakapati
  */
 public final class AudioEngine implements IEngine
@@ -41,6 +43,7 @@ public final class AudioEngine implements IEngine
     public void init()
     {
         Logger.log("Initializing Audio Engine with OpenAL 1.1");
+
         // Initialize OpenAL context
         ALContext.getInstance().init();
 
