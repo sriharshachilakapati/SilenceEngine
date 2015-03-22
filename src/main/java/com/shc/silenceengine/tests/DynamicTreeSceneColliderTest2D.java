@@ -24,7 +24,8 @@
 
 package com.shc.silenceengine.tests;
 
-import com.shc.silenceengine.collision.colliders.DynamicSceneCollider2D;
+import com.shc.silenceengine.collision.broadphase.DynamicTree2D;
+import com.shc.silenceengine.collision.colliders.SceneCollider2D;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
@@ -43,9 +44,9 @@ import com.shc.silenceengine.utils.RenderUtils;
  */
 public class DynamicTreeSceneColliderTest2D extends Game
 {
-    private Scene                  scene;
-    private DynamicSceneCollider2D collider;
-    private OrthoCam               cam;
+    private Scene           scene;
+    private SceneCollider2D collider;
+    private OrthoCam        cam;
 
     public static void main(String[] args)
     {
@@ -74,7 +75,7 @@ public class DynamicTreeSceneColliderTest2D extends Game
         scene.init();
 
         // Create the SceneCollider and set the scene
-        collider = new DynamicSceneCollider2D();
+        collider = new SceneCollider2D(new DynamicTree2D());
         collider.setScene(scene);
 
         // Register entities for collisions

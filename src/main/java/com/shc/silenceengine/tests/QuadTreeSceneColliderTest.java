@@ -24,7 +24,8 @@
 
 package com.shc.silenceengine.tests;
 
-import com.shc.silenceengine.collision.colliders.QuadTreeSceneCollider;
+import com.shc.silenceengine.collision.broadphase.QuadTree;
+import com.shc.silenceengine.collision.colliders.SceneCollider2D;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
@@ -43,9 +44,9 @@ import com.shc.silenceengine.utils.RenderUtils;
  */
 public class QuadTreeSceneColliderTest extends Game
 {
-    private Scene                 scene;
-    private QuadTreeSceneCollider collider;
-    private OrthoCam              cam;
+    private Scene           scene;
+    private SceneCollider2D collider;
+    private OrthoCam        cam;
 
     public static void main(String[] args)
     {
@@ -76,7 +77,7 @@ public class QuadTreeSceneColliderTest extends Game
         scene.init();
 
         // Create the SceneCollider and set the scene
-        collider = new QuadTreeSceneCollider(Display.getWidth(), Display.getHeight());
+        collider = new SceneCollider2D(new QuadTree(Display.getWidth(), Display.getHeight()));
         collider.setScene(scene);
 
         // Register entities for collisions

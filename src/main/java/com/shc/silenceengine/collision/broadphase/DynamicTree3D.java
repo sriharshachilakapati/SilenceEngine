@@ -37,7 +37,7 @@ import java.util.Map;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class DynamicTree3D implements IBroadphaseResolver3D
+public class DynamicTree3D implements IBroadphase3D
 {
     private Node root;
 

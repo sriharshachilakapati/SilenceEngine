@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @author Sri Harsha Chilakapati
  */
-public class QuadTree implements IBroadphaseResolver2D
+public class QuadTree implements IBroadphase2D
 {
     // The MAX_OBJECTS and LEVEL constants
     private static final int MAX_OBJECTS = 10;

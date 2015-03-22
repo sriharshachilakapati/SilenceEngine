@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public interface IBroadphaseResolver2D
+public interface IBroadphase2D
 {
     public void clear();
 

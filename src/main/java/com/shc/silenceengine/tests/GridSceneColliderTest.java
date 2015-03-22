@@ -24,7 +24,8 @@
 
 package com.shc.silenceengine.tests;
 
-import com.shc.silenceengine.collision.colliders.GridSceneCollider;
+import com.shc.silenceengine.collision.broadphase.Grid;
+import com.shc.silenceengine.collision.colliders.SceneCollider2D;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
@@ -42,9 +43,9 @@ import com.shc.silenceengine.utils.RenderUtils;
  */
 public class GridSceneColliderTest extends Game
 {
-    private Scene             scene;
-    private GridSceneCollider collider;
-    private OrthoCam          cam;
+    private Scene           scene;
+    private SceneCollider2D collider;
+    private OrthoCam        cam;
 
     public static void main(String[] args)
     {
@@ -72,7 +73,7 @@ public class GridSceneColliderTest extends Game
         scene.init();
 
         // Create the SceneCollider and set the scene
-        collider = new GridSceneCollider(Display.getWidth(), Display.getHeight(), 48, 48);
+        collider = new SceneCollider2D(new Grid(Display.getWidth(), Display.getHeight(), 48, 48));
         collider.setScene(scene);
 
         // Register entities for collisions

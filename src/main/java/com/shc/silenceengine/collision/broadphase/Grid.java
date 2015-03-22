@@ -38,7 +38,7 @@ import java.util.List;
  *
  * @author Sri Harsha Chilakapati
  */
-public class Grid implements IBroadphaseResolver2D
+public class Grid implements IBroadphase2D
 {
     // A spatial partitioned structure to hold elements
     private List<List<List<Entity2D>>> grid;
