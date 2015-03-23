@@ -50,7 +50,7 @@ public class TransformTest extends Game
     public void init()
     {
         transform = new Transform();
-        texture = Texture.fromResource("resources/texture2.png");
+        texture = Texture.fromResource("resources/texture.png");
     }
 
     public void resize()

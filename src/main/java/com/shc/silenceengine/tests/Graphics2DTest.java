@@ -50,7 +50,7 @@ public class Graphics2DTest extends Game
         ResourceLoader loader = ResourceLoader.getInstance();
 
         int fontID = loader.defineFont("Arial", TrueTypeFont.STYLE_NORMAL, 16);
-        int texID = loader.defineTexture("resources/texture2.png");
+        int texID = loader.defineTexture("resources/texture.png");
         loader.startLoading();
 
         Graphics2D g2d = getGraphics2D();

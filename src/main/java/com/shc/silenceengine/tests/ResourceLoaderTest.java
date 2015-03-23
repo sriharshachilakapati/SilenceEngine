@@ -58,7 +58,7 @@ public class ResourceLoaderTest extends Game
 
         int fontID1 = loader.defineFont("Times New Roman", TrueTypeFont.STYLE_NORMAL, 24);
         int fontID2 = loader.defineFont("resources/FREEBSC_.ttf", TrueTypeFont.STYLE_ITALIC | TrueTypeFont.STYLE_BOLD, 48);
-        int textureID = loader.defineTexture("resources/texture2.png");
+        int textureID = loader.defineTexture("resources/texture.png");
 
         loader.startLoading();
 

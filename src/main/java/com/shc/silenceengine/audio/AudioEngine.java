@@ -30,16 +30,23 @@ import com.shc.silenceengine.audio.openal.ALContext;
 import com.shc.silenceengine.core.IEngine;
 import com.shc.silenceengine.utils.Logger;
 import org.lwjgl.openal.ALC10;
+import org.lwjgl.openal.ALDevice;
 
 import java.io.InputStream;
 
 /**
- * TODO: Document this class.
+ * The central hub for all the audio related operations in SilenceEngine. You have to initialize this engine if you
+ * want to have audio when you are doing your own game loop. It is invoked automatically if you inherit your game from
+ * the <code>Game</code> class.
  *
  * @author Sri Harsha Chilakapati
  */
 public final class AudioEngine implements IEngine
 {
+    /**
+     * Initializes the AudioEngine. Opens an OpenAL Device and creates an OpenAL 1.1 context. This method also registers
+     * the <code>WaveReader</code> and <code>OggReader</code> to the <code>ISoundReader</code> automatically.
+     */
     public void init()
     {
         Logger.log("Initializing Audio Engine with OpenAL 1.1");
@@ -65,6 +72,7 @@ public final class AudioEngine implements IEngine
     {
     }
 
+    @Override
     public void dispose()
     {
         Logger.log("Disposing the Audio Engine, and any audio resources");
@@ -72,6 +80,12 @@ public final class AudioEngine implements IEngine
         Logger.log("Audio Engine has been successfully disposed");
     }
 
+    /**
+     *
+     *
+     * @param name
+     * @return
+     */
     public Sound getSound(String name)
     {
         return new Sound(name);
@@ -80,5 +94,15 @@ public final class AudioEngine implements IEngine
     public Sound getSound(InputStream is, String extension)
     {
         return new Sound(is, extension);
+    }
+
+    public ALContext getALContext()
+    {
+        return ALContext.getInstance();
+    }
+
+    public ALDevice getALDevice()
+    {
+        return getALContext().getDevice();
     }
 }
