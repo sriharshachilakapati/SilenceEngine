@@ -99,15 +99,15 @@ public class Polyhedron
         maxZ = Math.max(maxZ, v.z);
     }
 
-    public void rotate(float rx, float ry, float rz)
+    private void updateBounds()
     {
+        float minX, minY, minZ, maxX, maxY, maxZ;
+
         minX = minY = minZ = Float.POSITIVE_INFINITY;
         maxX = maxY = maxZ = Float.NEGATIVE_INFINITY;
 
         for (Vector3 v : vertices)
         {
-            tempQuat.set(rx, ry, rz).multiply(v, v);
-
             minX = Math.min(minX, v.x);
             minY = Math.min(minY, v.y);
             minZ = Math.min(minZ, v.z);
@@ -121,6 +121,14 @@ public class Polyhedron
                                        new Vector3(maxX, maxY, maxZ).add(position));
         else
             bounds.set(maxX - minX, maxY - minY, maxZ - minZ, position);
+    }
+
+    public void rotate(float rx, float ry, float rz)
+    {
+        for (Vector3 v : vertices)
+            tempQuat.set(rx, ry, rz).multiply(v, v);
+
+        updateBounds();
 
         rotationX += rx;
         rotationY += ry;
@@ -134,50 +142,18 @@ public class Polyhedron
 
     public void scale(float sx, float sy, float sz)
     {
-        minX = minY = minZ = Float.POSITIVE_INFINITY;
-        maxX = maxY = maxZ = Float.NEGATIVE_INFINITY;
-
         for (Vector3 v : vertices)
-        {
             v.scaleSelf(sx, sy, sz);
 
-            minX = Math.min(minX, v.x);
-            minY = Math.min(minY, v.y);
-            minZ = Math.min(minZ, v.z);
-            maxX = Math.max(maxX, v.x);
-            maxY = Math.max(maxY, v.y);
-            maxZ = Math.max(maxZ, v.z);
-        }
-
-        if (bounds == null)
-            bounds = new Cuboid(new Vector3(minX, minY, minZ).add(position),
-                                       new Vector3(maxX, maxY, maxZ).add(position));
-        else
-            bounds.set(maxX - minX, maxY - minY, maxZ - minZ, position);
+        updateBounds();
     }
 
     public void translate(float x, float y, float z)
     {
-        minX = minY = minZ = Float.POSITIVE_INFINITY;
-        maxX = maxY = maxZ = Float.NEGATIVE_INFINITY;
-
         for (Vector3 v : vertices)
-        {
             v.addSelf(x, y, z);
 
-            minX = Math.min(minX, v.x);
-            minY = Math.min(minY, v.y);
-            minZ = Math.min(minZ, v.z);
-            maxX = Math.max(maxX, v.x);
-            maxY = Math.max(maxY, v.y);
-            maxZ = Math.max(maxZ, v.z);
-        }
-
-        if (bounds == null)
-            bounds = new Cuboid(new Vector3(minX, minY, minZ).add(position),
-                                       new Vector3(maxX, maxY, maxZ).add(position));
-        else
-            bounds.set(maxX - minX, maxY - minY, maxZ - minZ, position);
+        updateBounds();
     }
 
     public boolean intersects(Polyhedron other)
@@ -246,10 +222,7 @@ public class Polyhedron
 
     public Cuboid getBounds()
     {
-        if (bounds == null)
-            bounds = new Cuboid(new Vector3(minX, minY, minZ).add(position),
-                                       new Vector3(maxX, maxY, maxZ).add(position));
-
+        updateBounds();
         return bounds;
     }
 
