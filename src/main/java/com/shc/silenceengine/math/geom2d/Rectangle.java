@@ -102,6 +102,38 @@ public class Rectangle extends Polygon
             return super.intersects(p);
     }
 
+    public float getAABBIntersectionWidth(Rectangle aabb)
+    {
+        if (aabb.getRotation() != 0)
+            aabb = aabb.getBounds();
+
+        Rectangle self = getRotation() == 0 ? this : getBounds();
+
+        float tx1 = self.getX();
+        float rx1 = aabb.getX();
+
+        float tx2 = tx1 + self.getWidth();
+        float rx2 = rx1 + aabb.getWidth();
+
+        return tx2 > rx2 ? rx2 - tx1 : tx2 - rx1;
+    }
+
+    public float getAABBIntersectionHeight(Rectangle aabb)
+    {
+        if (aabb.getRotation() != 0)
+            aabb = aabb.getBounds();
+
+        Rectangle self = getRotation() == 0 ? this : getBounds();
+
+        float ty1 = self.getY();
+        float ry1 = aabb.getY();
+
+        float ty2 = ty1 + self.getHeight();
+        float ry2 = ry1 + aabb.getHeight();
+
+        return ty2 > ry2 ? ry2 - ty1 : ty2 - ry1;
+    }
+
     public float getX()
     {
         return getPosition().getX();
@@ -159,9 +191,7 @@ public class Rectangle extends Polygon
     public String toString()
     {
         return "Rectangle{" +
-               "x=" + getX() +
-               ", y=" + getY() +
-               ", width=" + width +
+               "width=" + width +
                ", height=" + height +
                '}';
     }

@@ -270,25 +270,21 @@ public class Entity2D extends SceneNode
      */
     public void bounce(Entity2D other)
     {
-        int xd = (int) ((other.position.x + other.getWidth() / 2) - (position.x + getWidth() / 2));
-        int yd = (int) ((other.position.y + other.getHeight() / 2) - (position.y + getHeight() / 2));
+        float xd = getBounds().getAABBIntersectionWidth(other.getBounds());
+        float yd = getBounds().getAABBIntersectionHeight(other.getBounds());
 
         float dx = velocity.x;
         float dy = velocity.y;
 
-        if (xd < 0)
-            xd = -xd;
-
-        if (yd < 0)
-            yd = -yd;
-
         if (xd > yd)
-            dx = -dx;
-        else
             dy = -dy;
+        else
+            dx = -dx;
 
         velocity.x = dx;
         velocity.y = dy;
+
+        alignNextTo(other);
     }
 
     /**
