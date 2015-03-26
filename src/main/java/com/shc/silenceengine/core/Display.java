@@ -115,7 +115,7 @@ public final class Display
         Window.setHint(GLFW_VISIBLE, false);
         Window.setHint(GLFW_RESIZABLE, resizable);
 
-        GLFW3.setSwapInterval(vSync ? 1 : 0);
+        setVSync(vSync);
     }
 
     private static void setCallbacks(Window window)

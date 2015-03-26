@@ -132,7 +132,11 @@ public final class ResourceLoader
 
     public void startLoading()
     {
-        Display.setResizable(false);
+        boolean recreateDisplay = Display.isResizable();
+
+        if (recreateDisplay)
+            Display.setResizable(false);
+
         renderProgress();
 
         for (String texName : texturesToLoad.keySet())
@@ -183,7 +187,8 @@ public final class ResourceLoader
             renderProgress();
         }
 
-        Display.setResizable(true);
+        if (recreateDisplay)
+            Display.setResizable(true);
     }
 
     private void renderProgress()
