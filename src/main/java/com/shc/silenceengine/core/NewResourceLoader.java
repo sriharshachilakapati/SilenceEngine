@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2015 Sri Harsha Chilakapati
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
 package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.audio.Sound;
@@ -38,64 +14,62 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Sri Harsha Chilakapati
- * @deprecated As of v0.0.3 Alpha, replaced in favor of {@link NewResourceLoader NewResourceLoader}
+ * @author Gamefreak0
  */
-public final class ResourceLoader
+public class NewResourceLoader
 {
-    private static ResourceLoader instance;
+    private static NewResourceLoader instance;
 
-    private Map<Integer, Texture>      textures;
+    private Map<Integer, Texture> textures;
     private Map<Integer, TrueTypeFont> fonts;
-    private Map<Integer, Sound>        sounds;
-    private Map<Integer, Model>        models;
-    private Map<String, Integer>       texturesToLoad;
-    private Map<String, Integer>       fontsToLoad;
-    private Map<String, Integer>       soundsToLoad;
-    private Map<String, Integer>       modelsToLoad;
+    private Map<Integer, Sound> sounds;
+    private Map<Integer, Model> models;
+    private Map<String, Integer> texturesToLoad;
+    private Map<String, Integer> fontsToLoad;
+    private Map<String, Integer> soundsToLoad;
+    private Map<String, Integer> modelsToLoad;
 
-    private int     numLoaded;
+    private int numLoaded;
     private Texture logo;
 
-    // How much progress that is rendered, used to smooth the
-    // transition in the progressbar.
-    private float renderedProgress;
+    // How much progress that is rendered, used to smooth the transition in
+    // the progressbar.
+    private float renderedProgressTotal;
+    private float renderedProgressType;
 
-    private ResourceLoader()
+    private NewResourceLoader()
     {
         textures = new HashMap<>();
         fonts = new HashMap<>();
         sounds = new HashMap<>();
         models = new HashMap<>();
-
         texturesToLoad = new HashMap<>();
         fontsToLoad = new HashMap<>();
         soundsToLoad = new HashMap<>();
         modelsToLoad = new HashMap<>();
 
         numLoaded = 0;
-
         logo = Texture.fromResource("resources/logo.png");
     }
 
-    public static ResourceLoader getInstance()
+    public static NewResourceLoader getInstance()
     {
-        if (instance == null)
-            instance = new ResourceLoader();
+        if(instance == null) instance = new NewResourceLoader();
 
         return instance;
     }
 
-    public void setLogo(String logoName)
+    public NewResourceLoader setLogo(String logoName)
     {
-        logo.dispose();
-        logo = Texture.fromResource(logoName);
+        setLogo(Texture.fromResource(logoName));
+        return instance;
     }
 
-    public void setLogo(Texture logo)
+    public NewResourceLoader setLogo(Texture logo)
     {
-        this.logo.dispose();
+        logo.dispose();
         this.logo = logo;
+        return instance;
     }
 
     public int defineTexture(String name)
@@ -135,34 +109,31 @@ public final class ResourceLoader
     {
         boolean recreateDisplay = Display.isResizable();
 
-        if (recreateDisplay)
-            Display.setResizable(false);
+        if(recreateDisplay) Display.setResizable(false);
 
         renderProgress();
 
-        for (String texName : texturesToLoad.keySet())
-        {
-            textures.put(texturesToLoad.get(texName), Texture.fromResource(texName));
+        for(String texName : texturesToLoad.keySet()) {
+            textures.put(texturesToLoad.get(texName), Texture.fromResource
+                    (texName));
             numLoaded++;
 
             renderProgress();
         }
 
-        for (String fontName : fontsToLoad.keySet())
-        {
+        renderedProgressType = 0;
+
+        for(String fontName : fontsToLoad.keySet()) {
             String[] parts = fontName.split(",");
             TrueTypeFont font;
             int style = Integer.parseInt(parts[1]);
             int size = Integer.parseInt(parts[2]);
 
-            if (parts[0].endsWith(".ttf"))
-            {
+            if(parts[0].endsWith(".ttf")) {
                 InputStream ttfStream = FileUtils.getResource(parts[0]);
 
                 font = new TrueTypeFont(ttfStream, style, size, true);
-            }
-            else
-            {
+            } else {
                 font = new TrueTypeFont(parts[0], style, size);
             }
             fonts.put(fontsToLoad.get(fontName), font);
@@ -172,39 +143,40 @@ public final class ResourceLoader
             renderProgress();
         }
 
-        for (String soundName : soundsToLoad.keySet())
-        {
+        renderedProgressType = 0;
+
+        for(String soundName : soundsToLoad.keySet()) {
             sounds.put(soundsToLoad.get(soundName), new Sound(soundName));
             numLoaded++;
 
             renderProgress();
         }
 
-        for (String modelName : modelsToLoad.keySet())
-        {
+        renderedProgressType = 0;
+
+        for(String modelName : modelsToLoad.keySet()) {
             models.put(modelsToLoad.get(modelName), Model.load(modelName));
             numLoaded++;
 
             renderProgress();
         }
 
-        if (recreateDisplay)
-            Display.setResizable(true);
+        if(recreateDisplay) Display.setResizable(true);
     }
 
     private void renderProgress()
     {
         float percentage = 100 * numLoaded / (fontsToLoad.size() + texturesToLoad.size() + soundsToLoad.size() + modelsToLoad.size());
 
-        while (renderedProgress < percentage)
+        while (renderedProgressTotal < percentage)
         {
             // Begin an engine frame
             SilenceEngine.graphics.beginFrame();
 
-            renderedProgress = MathUtils.clamp(++renderedProgress, 0, 100);
+            renderedProgressTotal = MathUtils.clamp(++renderedProgressTotal, 0, 100);
 
             // Bring percentage to a scale of 100 - width - 100
-            float actualPercentage = MathUtils.convertRange(renderedProgress, 0, 100, 100, Display.getWidth() - 100);
+            float actualPercentage = MathUtils.convertRange(renderedProgressTotal, 0, 100, 100, Display.getWidth() - 100);
 
             // Draw using Graphics2D
             Graphics2D g2d = Game.getGraphics2D();
@@ -233,7 +205,8 @@ public final class ResourceLoader
 
             // Draw the progress bar
             g2d.setColor(Color.GREEN);
-            g2d.drawRect(50, Display.getHeight() - 75, Display.getWidth() - 100, 25);
+            g2d.drawRect(50, Display.getHeight() - 75, Display.getWidth() -
+                    100, 25);
             g2d.setColor(Color.BLUE.add(Color.GRAY));
             g2d.fillRect(50, Display.getHeight() - 75, actualPercentage, 25);
 
@@ -278,8 +251,7 @@ public final class ResourceLoader
 
     public void clear(boolean dispose)
     {
-        if (dispose)
-            dispose();
+        if(dispose) dispose();
 
         fonts.clear();
         fontsToLoad.clear();
@@ -293,16 +265,16 @@ public final class ResourceLoader
 
     public void dispose()
     {
-        for (int id : textures.keySet())
+        for(int id : textures.keySet())
             textures.get(id).dispose();
 
-        for (int id : fonts.keySet())
+        for(int id : fonts.keySet())
             fonts.get(id).dispose();
 
-        for (int id : sounds.keySet())
+        for(int id : sounds.keySet())
             sounds.get(id).dispose();
 
-        for (int id : models.keySet())
+        for(int id : models.keySet())
             models.get(id).dispose();
     }
 }
