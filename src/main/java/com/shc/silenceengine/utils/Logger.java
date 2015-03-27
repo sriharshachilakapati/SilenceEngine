@@ -31,15 +31,26 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
+ * A simplified logging utility class used by SilenceEngine. Supports logging at three levels, INFO, WARNING and ERROR.
+ *
  * @author Sri Harsha Chilakapati
+ * @author Gamefreak0
  */
 public final class Logger
 {
-    /** Whether time stamps should be printed */
+    /**
+     * Whether time stamps should be printed
+     */
     private static boolean printTimeStamps;
-    /** The format time stamps are printed in */
+
+    /**
+     * The format time stamps are printed in
+     */
     private static SimpleDateFormat timeStampFormat;
 
+    /**
+     * Prevent instantiation
+     */
     private Logger()
     {
     }
@@ -55,14 +66,15 @@ public final class Logger
      * <code>setTimeStampFormat()</code> if <code>setPrintTimeStamps()</code> is <code>true</code>.
      *
      * @param messages An array of <code>Object</code> to be printed.
+     *
      * @see java.lang.System#out
      */
     public static void log(Object... messages)
     {
-        if(!Game.development)
+        if (!Game.development)
             return;
 
-        for(Object message : messages)
+        for (Object message : messages)
             System.out.println((printTimeStamps ? "[INFO " + getTimeStamp() + "] " : "") + message);
     }
 
@@ -71,8 +83,7 @@ public final class Logger
      */
     public static String getTimeStamp()
     {
-        Date date = new Date();
-        return timeStampFormat.format(date);
+        return timeStampFormat.format(new Date());
     }
 
     /**
@@ -84,17 +95,16 @@ public final class Logger
      */
     public static void warn(Object... messages)
     {
-        if(!Game.development)
+        if (!Game.development)
             return;
 
-        for(Object message : messages)
+        for (Object message : messages)
             System.err.println((printTimeStamps ? "[WARNING " + getTimeStamp() + "] " : "") + message);
     }
 
     /**
      * Logs <code>messages</code> to {@link java.lang.System#err} with the current time in the format provided by
-     * <code>setTimeStampFormat()</code> if <code>setPrintTimeStamps()</code> is <code>true</code>. Also throws a
-     * {@link
+     * <code>setTimeStampFormat()</code> if <code>setPrintTimeStamps()</code> is <code>true</code>. Also throws a {@link
      * com.shc.silenceengine.core.SilenceException SilenceException}
      *
      * @param messages An array of <code>Object</code> to be printed.
@@ -102,7 +112,7 @@ public final class Logger
      */
     public static void error(Object... messages)
     {
-        for(Object message : messages)
+        for (Object message : messages)
             System.err.println((printTimeStamps ? "[FATAL ERROR " + getTimeStamp() + "] " : "") + message);
 
         System.err.println("Terminating with exception");
