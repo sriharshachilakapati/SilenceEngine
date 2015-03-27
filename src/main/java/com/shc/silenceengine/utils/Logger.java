@@ -44,7 +44,8 @@ public final class Logger
     {
     }
 
-    static {
+    static
+    {
         setPrintTimeStamps(true);
         setTimeStampFormat(new SimpleDateFormat("MM/dd/yyyy h:mm:ss a"));
     }
