@@ -504,6 +504,4 @@ public class Entity2D extends SceneNode
                ", polygon=" + polygon +
                '}';
     }
-
-
 }
