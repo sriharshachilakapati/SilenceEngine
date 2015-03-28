@@ -247,7 +247,9 @@ public class SceneNode
         if (children == null)
             return;
 
-        child.destroy();
+        if (!child.isDestroyed())
+            child.destroy();
+
         children.remove(child);
         child.setParent(null);
     }
