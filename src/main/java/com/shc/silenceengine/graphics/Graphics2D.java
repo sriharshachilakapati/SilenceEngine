@@ -36,7 +36,6 @@ import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.geom2d.Polygon;
 import com.shc.silenceengine.utils.MathUtils;
-import com.shc.silenceengine.utils.RenderUtils;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -44,10 +43,11 @@ import com.shc.silenceengine.utils.RenderUtils;
 public class Graphics2D
 {
     private static Graphics2D   instance;
-    private        OrthoCam     camera;
-    private        Color        color;
-    private        TrueTypeFont font;
-    private        Transform    transform;
+
+    private OrthoCam     camera;
+    private Paint        paint;
+    private TrueTypeFont font;
+    private Transform    transform;
 
     /* Utility Methods */
     private BaseCamera originalCamera;
@@ -57,7 +57,7 @@ public class Graphics2D
     {
         camera = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
 
-        color = Color.WHITE;
+        paint = new Paint();
         transform = new Transform();
     }
 
@@ -90,19 +90,19 @@ public class Graphics2D
             batcher.begin(primitive);
             {
                 batcher.vertex(x, y);
-                batcher.color(color);
+                batcher.color(paint.getTopLeftColor());
                 batcher.normal(Vector3.AXIS_Z);
 
                 batcher.vertex(x + w, y);
-                batcher.color(color);
+                batcher.color(paint.getTopRightColor());
                 batcher.normal(Vector3.AXIS_Z);
 
                 batcher.vertex(x + w, y + h);
-                batcher.color(color);
+                batcher.color(paint.getBottomRightColor());
                 batcher.normal(Vector3.AXIS_Z);
 
                 batcher.vertex(x, y + h);
-                batcher.color(color);
+                batcher.color(paint.getBottomLeftColor());
                 batcher.normal(Vector3.AXIS_Z);
             }
             batcher.end();
@@ -163,20 +163,31 @@ public class Graphics2D
         Batcher batcher = Game.getBatcher();
         batcher.applyTransform(transform);
 
+        Vector2 vertex = Vector2.REUSABLE_STACK.pop();
+        Color color = Color.REUSABLE_STACK.pop();
+
         startPainting();
         {
+            float width = 2 * rx;
+            float height = 2 * ry;
+
             batcher.begin(primitive);
             {
                 for (int i = 0; i < 360; i++)
                 {
-                    batcher.vertex(x + MathUtils.cos(i) * rx, y + MathUtils.sin(i) * ry);
-                    batcher.color(color);
+                    vertex.set(MathUtils.cos(i) * rx, MathUtils.sin(i) * ry);
+                    batcher.vertex(x + vertex.x, y + vertex.y);
+
+                    batcher.color(paint.getColor((rx + vertex.x) / width, (ry + vertex.y) / height, color));
                     batcher.normal(Vector3.AXIS_Z);
                 }
             }
             batcher.end();
         }
         endPainting();
+
+        Vector2.REUSABLE_STACK.push(vertex);
+        Color.REUSABLE_STACK.push(color);
     }
 
     public void fillOval(Vector2 pos, float rx, float ry)
@@ -221,11 +232,11 @@ public class Graphics2D
             batcher.begin(Primitive.LINES);
             {
                 batcher.vertex(x1, y1);
-                batcher.color(color);
+                batcher.color(paint.getTopLeftColor());
                 batcher.normal(Vector3.AXIS_Z);
 
                 batcher.vertex(x2, y2);
-                batcher.color(color);
+                batcher.color(paint.getTopRightColor());
                 batcher.normal(Vector3.AXIS_Z);
             }
             batcher.end();
@@ -233,28 +244,45 @@ public class Graphics2D
         endPainting();
     }
 
-    public void drawPolygon(Polygon polygon)
+    private void polygon(Polygon polygon, Primitive primitive)
     {
         Batcher batcher = Game.getBatcher();
         batcher.applyTransform(transform);
 
         startPainting();
         {
-            RenderUtils.tracePolygon(batcher, polygon, color);
+            Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
+            Color   color = Color.REUSABLE_STACK.pop();
+
+            float width = polygon.getBounds().getWidth();
+            float height = polygon.getBounds().getHeight();
+
+            batcher.begin(primitive);
+            {
+                for (Vector2 vertex : polygon.getVertices())
+                {
+                    batcher.vertex(tempVec2.set(vertex).addSelf(polygon.getPosition()));
+                    tempVec2.subtractSelf(polygon.getPosition());
+                    batcher.color(paint.getColor(tempVec2.x / width, tempVec2.y / height, color));
+                    batcher.normal(Vector3.AXIS_Z);
+                }
+            }
+            batcher.end();
+
+            Vector2.REUSABLE_STACK.push(tempVec2);
+            Color.REUSABLE_STACK.push(color);
         }
         endPainting();
     }
 
+    public void drawPolygon(Polygon polygon)
+    {
+        polygon(polygon, Primitive.LINE_LOOP);
+    }
+
     public void fillPolygon(Polygon polygon)
     {
-        Batcher batcher = Game.getBatcher();
-        batcher.applyTransform(transform);
-
-        startPainting();
-        {
-            RenderUtils.fillPolygon(batcher, polygon, color);
-        }
-        endPainting();
+        polygon(polygon, Primitive.TRIANGLE_FAN);
     }
 
     public void drawTexture(Texture texture, float x, float y)
@@ -346,11 +374,15 @@ public class Graphics2D
         Batcher batcher = Game.getBatcher();
         batcher.applyTransform(transform);
 
+        Color color = Color.REUSABLE_STACK.pop();
+
         startPainting();
         {
-            font.drawString(batcher, string, x, y, color);
+            font.drawString(batcher, string, x, y, paint.getColor(0.5f, 0.5f, color));
         }
         endPainting();
+
+        Color.REUSABLE_STACK.push(color);
     }
 
     /**
@@ -400,14 +432,26 @@ public class Graphics2D
      * Getters and Setters
      */
 
+    private Color color = new Color();
+
     public Color getColor()
     {
-        return color;
+        return paint.getColor(0.5f, 0.5f, color);
     }
 
     public void setColor(Color color)
     {
-        this.color = color;
+        paint.setColor(color);
+    }
+
+    public Paint getPaint()
+    {
+        return paint;
+    }
+
+    public void setPaint(Paint paint)
+    {
+        this.paint = paint;
     }
 
     public TrueTypeFont getFont()

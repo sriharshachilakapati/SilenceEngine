@@ -29,6 +29,7 @@ import com.shc.silenceengine.core.ResourceLoader;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Graphics2D;
+import com.shc.silenceengine.graphics.Paint;
 import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
@@ -39,6 +40,9 @@ import com.shc.silenceengine.input.Keyboard;
 public class Graphics2DTest extends Game
 {
     private Texture texture;
+
+    private Paint gradientPaint;
+    private Paint originalPaint;
 
     public static void main(String[] args)
     {
@@ -57,6 +61,9 @@ public class Graphics2DTest extends Game
         g2d.setFont(loader.getFont(fontID));
 
         texture = loader.getTexture(texID);
+
+        gradientPaint = new Paint(Color.RED, Color.BLUE, Paint.Gradient.DIAGONAL_LEFT_TO_RIGHT);
+        originalPaint = g2d.getPaint();
     }
 
     public void update(float delta)
@@ -68,6 +75,7 @@ public class Graphics2DTest extends Game
     public void render(float delta, Batcher batcher)
     {
         Graphics2D g2d = getGraphics2D();
+        g2d.setPaint(originalPaint);
 
         g2d.setColor(Color.RED);
         g2d.drawRect(10, 50, 100, 100);
@@ -80,6 +88,10 @@ public class Graphics2DTest extends Game
 
         g2d.drawTexture(texture, 100, 100, 254, 252);
         g2d.drawString("Hello World", 10, 10);
+
+        g2d.setPaint(gradientPaint);
+        g2d.fillRect(200, 200, 200, 200);
+        g2d.fillCircle(500, 100, 50);
     }
 
     public void dispose()
