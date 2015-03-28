@@ -340,6 +340,20 @@ public class Color extends Vector4
         return set(x * r, y * g, z * b, w * a);
     }
 
+    public Color lerpSelf(Color target, float alpha)
+    {
+        Color temp = Color.REUSABLE_STACK.pop();
+        scaleSelf(1f - alpha).addSelf(temp.set(target).scaleSelf(alpha));
+        Color.REUSABLE_STACK.push(temp);
+
+        return this;
+    }
+
+    public Color lerp(Color target, float alpha)
+    {
+        return copy().lerpSelf(target, alpha);
+    }
+
     public float getRed()
     {
         return getR();
