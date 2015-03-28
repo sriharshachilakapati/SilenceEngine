@@ -1,13 +1,11 @@
 package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.audio.Sound;
-import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.Graphics2D;
+import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.models.Model;
 import com.shc.silenceengine.utils.FileUtils;
-import com.shc.silenceengine.utils.MathUtils;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -29,13 +27,12 @@ public class NewResourceLoader
     private Map<String, Integer> soundsToLoad;
     private Map<String, Integer> modelsToLoad;
 
-    private int numLoaded;
-    private Texture logo;
+    private IRenderProgressCallback renderProgressCallback;
 
-    // How much progress that is rendered, used to smooth the transition in
-    // the progressbar.
-    private float renderedProgressTotal;
-    private float renderedProgressType;
+    private int numLoaded;
+    private float progress;
+
+    private Texture logo;
 
     private NewResourceLoader()
     {
@@ -70,6 +67,12 @@ public class NewResourceLoader
         logo.dispose();
         this.logo = logo;
         return instance;
+    }
+
+    public void setRenderProgressCallback(IRenderProgressCallback
+                                                  renderProgressCallback)
+    {
+        this.renderProgressCallback = renderProgressCallback;
     }
 
     public int defineTexture(String name)
@@ -111,17 +114,15 @@ public class NewResourceLoader
 
         if(recreateDisplay) Display.setResizable(false);
 
-        renderProgress();
+        invoke("");
 
         for(String texName : texturesToLoad.keySet()) {
             textures.put(texturesToLoad.get(texName), Texture.fromResource
                     (texName));
             numLoaded++;
 
-            renderProgress();
+            invoke(texName);
         }
-
-        renderedProgressType = 0;
 
         for(String fontName : fontsToLoad.keySet()) {
             String[] parts = fontName.split(",");
@@ -140,88 +141,48 @@ public class NewResourceLoader
 
             numLoaded++;
 
-            renderProgress();
+            invoke(fontName);
         }
-
-        renderedProgressType = 0;
 
         for(String soundName : soundsToLoad.keySet()) {
             sounds.put(soundsToLoad.get(soundName), new Sound(soundName));
             numLoaded++;
 
-            renderProgress();
+            invoke(soundName);
         }
-
-        renderedProgressType = 0;
 
         for(String modelName : modelsToLoad.keySet()) {
             models.put(modelsToLoad.get(modelName), Model.load(modelName));
             numLoaded++;
 
-            renderProgress();
+            invoke(modelName);
         }
+
+        invoke("DONE!");
 
         if(recreateDisplay) Display.setResizable(true);
     }
 
-    private void renderProgress()
+    /**
+     * Invoke the callback with the Game's Batcher and progress using the String
+     * provided.
+     */
+    private void invoke(String info)
     {
-        float percentage = 100 * numLoaded / (fontsToLoad.size() + texturesToLoad.size() + soundsToLoad.size() + modelsToLoad.size());
+        renderProgressCallback.invoke(Game.getBatcher(), updateProgress(),
+                info);
+    }
 
-        while (renderedProgressTotal < percentage)
-        {
-            // Begin an engine frame
-            SilenceEngine.graphics.beginFrame();
-
-            renderedProgressTotal = MathUtils.clamp(++renderedProgressTotal, 0, 100);
-
-            // Bring percentage to a scale of 100 - width - 100
-            float actualPercentage = MathUtils.convertRange(renderedProgressTotal, 0, 100, 100, Display.getWidth() - 100);
-
-            // Draw using Graphics2D
-            Graphics2D g2d = Game.getGraphics2D();
-
-            // Draw the logo in the center
-            float logoX = Display.getWidth() / 2 - logo.getWidth() / 2;
-            float logoY = Display.getHeight() / 2 - logo.getHeight() / 2;
-            float logoW = logo.getWidth();
-            float logoH = logo.getHeight();
-
-            // Check if the logo fits in the display. Otherwise, make it fit.
-            if (logoW > Display.getWidth())
-            {
-                logoX = 0;
-                logoW = Display.getWidth();
-            }
-
-            if (logoH > Display.getHeight())
-            {
-                logoY = 0;
-                logoH = Display.getHeight();
-            }
-
-            // Draw the logo finally
-            g2d.drawTexture(logo, logoX, logoY, logoW, logoH);
-
-            // Draw the progress bar
-            g2d.setColor(Color.GREEN);
-            g2d.drawRect(50, Display.getHeight() - 75, Display.getWidth() -
-                    100, 25);
-            g2d.setColor(Color.BLUE.add(Color.GRAY));
-            g2d.fillRect(50, Display.getHeight() - 75, actualPercentage, 25);
-
-            try
-            {
-                Thread.sleep(1);
-            }
-            catch (Exception e)
-            {
-                SilenceException.reThrow(e);
-            }
-
-            // End the frame, updating the screen
-            SilenceEngine.graphics.endFrame();
-        }
+    /**
+     * Updates the current progress for resource loading and returns the value
+     *
+     * @return Progress on a scale of 0 (inclusive) to  1 (inclusive)
+     */
+    private float updateProgress()
+    {
+        progress = numLoaded / (fontsToLoad.size() + texturesToLoad.size() +
+                soundsToLoad.size() + modelsToLoad.size());
+        return progress;
     }
 
     public Texture getTexture(int id)
@@ -276,5 +237,11 @@ public class NewResourceLoader
 
         for(int id : models.keySet())
             models.get(id).dispose();
+    }
+
+    @FunctionalInterface
+    public interface IRenderProgressCallback
+    {
+        void invoke(Batcher batcher, float percentage, String file);
     }
 }
