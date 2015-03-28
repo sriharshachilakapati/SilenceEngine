@@ -178,7 +178,7 @@ public class Graphics2D
                     vertex.set(MathUtils.cos(i) * rx, MathUtils.sin(i) * ry);
                     batcher.vertex(x + vertex.x, y + vertex.y);
 
-                    batcher.color(paint.getColor(vertex.x / width, vertex.y / height, color));
+                    batcher.color(paint.getColor((rx + vertex.x) / width, (ry + vertex.y) / height, color));
                     batcher.normal(Vector3.AXIS_Z);
                 }
             }
