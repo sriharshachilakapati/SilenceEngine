@@ -152,7 +152,9 @@ public final class ResourceLoader
 
     public ResourceLoader setLogo(Texture logo)
     {
-        logo.dispose();
+        if (this.logo != null)
+            this.logo.dispose();
+
         this.logo = logo;
         return instance;
     }

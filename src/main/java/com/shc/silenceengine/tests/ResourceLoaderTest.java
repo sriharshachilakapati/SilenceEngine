@@ -55,6 +55,7 @@ public class ResourceLoaderTest extends Game
     public void init()
     {
         ResourceLoader loader = ResourceLoader.getInstance();
+        loader.setRenderProgressCallback(this::customProgressRenderCallback);
 
         int fontID1 = loader.defineFont("Times New Roman", TrueTypeFont.STYLE_NORMAL, 24);
         int fontID2 = loader.defineFont("resources/FREEBSC_.ttf", TrueTypeFont.STYLE_ITALIC | TrueTypeFont.STYLE_BOLD, 48);
@@ -67,6 +68,12 @@ public class ResourceLoaderTest extends Game
         font2 = loader.getFont(fontID2);
 
         cam = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
+    }
+
+    private void customProgressRenderCallback(Batcher batcher, float percentage, String filename)
+    {
+        System.out.println((percentage * 100) + "% => Loading file: " + filename + "");
+        ResourceLoader.getInstance().defaultRenderProgressCallback(batcher, percentage, filename);
     }
 
     public void resize()
