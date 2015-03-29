@@ -205,8 +205,7 @@ public final class ResourceLoader
 
         for (String texName : texturesToLoad.keySet())
         {
-            textures.put(texturesToLoad.get(texName), Texture.fromResource
-                                                                      (texName));
+            textures.put(texturesToLoad.get(texName), Texture.fromResource(texName));
             numLoaded++;
 
             invokeRenderProgressCallback(texName);
