@@ -58,23 +58,45 @@ public final class GL3Context
         GLError.check();
     }
 
+    /**
+     * Sets the background color of the window
+     * @param color Background color
+     */
     public static void clearColor(Color color)
     {
         clearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
+    /**
+     * Sets the background color of the window
+     * @param r Red
+     * @param g Green
+     * @param b Blue
+     * @param a Alpha
+     */
     public static void clearColor(float r, float g, float b, float a)
     {
         glClearColor(r, g, b, a);
         GLError.check();
     }
 
+    /**
+     * Calls <code>glClear()</code> on <code>buffers</code>
+     * @param buffers The buffer to be cleared
+     */
     public static void clear(int buffers)
     {
         glClear(buffers);
         GLError.check();
     }
 
+    /**
+     * Binds a {@link VertexArray} and draws it to the screen
+     * @param vao The <code>VertexArray</code> to be drawn
+     * @param mode The GL Primitive to be used for drawing (Primitive.TRIANGLE is recommended)
+     * @param offset The position in the <code>vao</code> to begin drawing (Use 0 for the beginning)
+     * @param vertexCount The amount of vertices in the <code>vao</code>
+     */
     public static void drawArrays(VertexArray vao, Primitive mode, int offset, int vertexCount)
     {
         vao.bind();
@@ -89,6 +111,10 @@ public final class GL3Context
         GLError.check();
     }
 
+    /**
+     * Bind the VertexArray for use in OpenGL.
+     * @param vao The VertexArray to be bound. If null the currently bound VertexArray will be unbound
+     */
     public static void bindVertexArray(VertexArray vao)
     {
         if (vao == null)
@@ -101,6 +127,10 @@ public final class GL3Context
         vao.bind();
     }
 
+    /**
+     * Bind the {@link BufferObject} for use in OpenGL.
+     * @param vbo The BufferObject to be bound. If null the currently bound BufferObject will be unbound
+     */
     public static void bindVertexBuffer(BufferObject vbo)
     {
         if (vbo == null)
@@ -113,17 +143,32 @@ public final class GL3Context
         vbo.bind();
     }
 
+    /**
+     * Set the display to use the viewport specified with <code>rect</code>
+     * @param rect The viewport location and size
+     */
     public static void viewport(Rectangle rect)
     {
         viewport(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
 
+    /**
+     * Set the display to use the viewport specified
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @param width Width
+     * @param height Height
+     */
     public static void viewport(float x, float y, float width, float height)
     {
         glViewport((int) x, (int) y, (int) width, (int) height);
         GLError.check();
     }
 
+    /**
+     * Sets whether or not OpenGL should use a depth mask
+     * @param value Depth mask
+     */
     public static void depthMask(boolean value)
     {
         glDepthMask(value);
