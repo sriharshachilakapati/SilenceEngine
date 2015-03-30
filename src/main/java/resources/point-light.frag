@@ -72,50 +72,44 @@ vec4 getBaseColor()
 
 vec4 getPointLight()
 {
+    // The matrices for transforming into different spaces
     mat4 modelMatrix = camProj * camView * mTransform;
     mat4 lightMatrix = camProj * camView;
-
     mat3 normalMatrix = transpose(inverse(mat3(modelMatrix)));
-    vec3 normal = normalize(normalMatrix * vec3(vNormal));
 
-    vec3 surfacePos = vec3(modelMatrix * vPosition);
-    vec3 surfaceToLight = vec3(lightMatrix * vec4(light.position, 1)) - surfacePos;
-    vec3 surfaceToEye = reflect(-normalize(surfaceToLight), normal);
+    // The necessary information to calculate the point light
+    vec3 normal = normalize(normalMatrix * vNormal.xyz);
+    vec3 surfacePosition = (modelMatrix * vPosition).xyz;
+    vec3 surfaceToLight = vec3(lightMatrix * vec4(light.position, 1)) - surfacePosition;
+    vec3 surfaceToEye = normalize(reflect(-normalize(surfaceToLight), normal));
 
-    // The brightness
-    float brightness = light.intensity * clamp(max(0.0, dot(normal, normalize(surfaceToLight))), 0.0, 1.0);
-
-    // Ambient light
-    vec4 ambient = material.dissolve * material.ambientColor * light.color * light.intensity;
-
-    // Check if in range
-    if (light.range < length(surfaceToLight))
+    if (length(surfaceToLight) > light.range)
         return vec4(0.0);
 
-    brightness /= length(surfaceToEye);
+    // The different components of light
+    vec4 ambientLight = vec4(0.0);
+    vec4 diffuseLight = vec4(0.0);
+    vec4 specularLight = vec4(0.0);
 
-    // Diffuse light
-    float diffuseCoefficient = material.illumination / brightness;
-    vec4 diffuse = diffuseCoefficient * material.diffuseColor * light.color;
+    // Calculate the ambient light first
+    ambientLight = light.color * material.ambientColor;
 
-    // Specular light
-    float specularCoefficient = 0.0;
+    // Calculate the diffuse light
+    float diffuseFactor = clamp(max(0.0, dot(normal, normalize(surfaceToLight))), 0.0, 1.0);
 
-    if(diffuseCoefficient > 0.0)
-        specularCoefficient = pow(max(0.0, dot(normalize(surfaceToLight), surfaceToEye)), material.specularPower);
+    if (diffuseFactor > 0.0)
+    {
+        diffuseLight = light.color * material.diffuseColor;
 
-    vec4 specular = specularCoefficient * material.specularColor * light.color;
+        // Calculate the specular light
+        float specularFactor = pow(max(0.0, dot(normalize(surfaceToLight), surfaceToEye)), material.specularPower);
 
-    // Attenuation
-    float distanceToLight = length(surfaceToLight);
-    float attenuation = 1.0 / (1.0 + material.illumination * pow(distanceToLight, 2));
+        if (specularFactor > 0.0)
+            specularLight = light.color * material.specularColor * specularFactor;
+    }
 
-    // The linear color
-    vec3 linearColor = vec3(ambient + attenuation * light.color * (diffuse + specular));
-
-    // Gamma correction
-    vec3 gamma = vec3(1.0/2.2);
-    return brightness * min(vec4(1.0), vec4(pow(linearColor, gamma), getBaseColor().a));
+    // Calculate the final point light
+    return diffuseFactor * (ambientLight + diffuseLight + specularLight) * light.intensity;
 }
 
 void main()
