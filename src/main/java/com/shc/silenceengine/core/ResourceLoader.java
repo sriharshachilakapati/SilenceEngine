@@ -28,6 +28,7 @@ import com.shc.silenceengine.audio.Sound;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Graphics2D;
+import com.shc.silenceengine.graphics.Paint;
 import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.models.Model;
@@ -80,8 +81,17 @@ public final class ResourceLoader
         setRenderProgressCallback(this::defaultRenderProgressCallback);
     }
 
+    private Paint progressPaint;
+    private Paint progressPaint2;
+
     public void defaultRenderProgressCallback(Batcher batcher, float percentage, String file)
     {
+        if (progressPaint == null)
+        {
+            progressPaint = new Paint(Color.GRAY, Color.BLUE, Paint.Gradient.LINEAR_LEFT_TO_RIGHT);
+            progressPaint2 = new Paint(Color.GREEN);
+        }
+
         while (renderedProgress < percentage * 100)
         {
             // Begin an engine frame
@@ -117,11 +127,15 @@ public final class ResourceLoader
             // Draw the logo finally
             g2d.drawTexture(logo, logoX, logoY, logoW, logoH);
 
+            Paint originalPaint = g2d.getPaint();
+            g2d.setPaint(progressPaint);
+
             // Draw the progress bar
-            g2d.setColor(Color.GREEN);
-            g2d.drawRect(50, Display.getHeight() - 75, Display.getWidth() - 100, 25);
-            g2d.setColor(Color.BLUE.add(Color.GRAY));
             g2d.fillRect(50, Display.getHeight() - 75, actualPercentage, 25);
+            g2d.setPaint(progressPaint2);
+            g2d.drawLine(50, Display.getHeight() - 50, Display.getWidth() - 50, Display.getHeight() - 50);
+
+            g2d.setPaint(originalPaint);
 
             // End the frame, updating the screen
             SilenceEngine.graphics.endFrame();
