@@ -32,5 +32,5 @@ import com.shc.silenceengine.core.glfw.Window;
 @FunctionalInterface
 public interface IFramebufferSizeCallback
 {
-    public void invoke(Window window, int width, int height);
+    void invoke(Window window, int width, int height);
 }
