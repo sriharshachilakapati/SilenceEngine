@@ -83,6 +83,7 @@ vec4 getPointLight()
     vec3 surfaceToLight = vec3(lightMatrix * vec4(light.position, 1)) - surfacePosition;
     vec3 surfaceToEye = normalize(reflect(-normalize(surfaceToLight), normal));
 
+    // Check if the object is out of range
     if (length(surfaceToLight) > light.range)
         return vec4(0.0);
 
@@ -99,7 +100,7 @@ vec4 getPointLight()
 
     if (diffuseFactor > 0.0)
     {
-        diffuseLight = light.color * material.diffuseColor;
+        diffuseLight = light.color * material.diffuseColor * diffuseFactor;
 
         // Calculate the specular light
         float specularFactor = pow(max(0.0, dot(normalize(surfaceToLight), surfaceToEye)), material.specularPower);
@@ -109,7 +110,7 @@ vec4 getPointLight()
     }
 
     // Calculate the final point light
-    return diffuseFactor * (ambientLight + diffuseLight + specularLight) * light.intensity;
+    return (ambientLight + diffuseLight + specularLight) * light.intensity;
 }
 
 void main()
