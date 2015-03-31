@@ -27,6 +27,14 @@ package com.shc.silenceengine.math;
 import com.shc.silenceengine.utils.ReusableStack;
 
 /**
+ * A 3x3 Matrix.
+ * $$
+ * \begin{bmatrix}
+ * a &amp; b &amp; c  \\
+ * d &amp; e &amp; f  \\
+ * g &amp; h &amp; i
+ * \end{bmatrix}
+ * $$
  * @author Sri Harsha Chilakapati
  */
 public class Matrix3
@@ -47,6 +55,13 @@ public class Matrix3
         initIdentity();
     }
 
+    /**
+     * Set this <code>Matrix3</code> to match <code>m</code>.
+     *
+     * @param m The <code>Matrix3</code> to copy.
+     *
+     * @return This <code>Matrix3</code>
+     */
     public Matrix3 set(Matrix3 m)
     {
         for (int i = 0; i < 3; i++)
@@ -60,6 +75,12 @@ public class Matrix3
         return this;
     }
 
+    /**
+     * Sets the Matrix to an Identity Matrix. $$ \begin{bmatrix} 1 &amp; 0 &amp; 0  \\ 0 &amp; 1 &amp; 0  \\ 0 &amp; 0
+     * &amp; 1 \end{bmatrix} $$
+     *
+     * @return This <code>Matrix3</code>
+     */
     public Matrix3 initIdentity()
     {
         for (int i = 0; i < 3; i++)
@@ -76,17 +97,43 @@ public class Matrix3
         return this;
     }
 
+    /**
+     * Get the value in this <code>Matrix3</code> at position <code>(x, y)</code>.
+     *
+     * @param x The x position of this Matrix3 to obtain.
+     * @param y The y position of this Matrix3 to obtain.
+     *
+     * @return The value at <code>(x, y)</code>
+     */
     public float get(int x, int y)
     {
         return m[x][y];
     }
 
+    /**
+     * Create a <code>Matrix3</code> using {@link #set(float)}.
+     *
+     * @param diagonal The value to set Identity positions to
+     * @see #set(float)
+     */
     public Matrix3(float diagonal)
     {
         this();
         set(diagonal);
     }
 
+    /**
+     * Sets all Identity positions to <code>diagonal</code>.
+     * $$
+     * \begin{bmatrix}
+     * d &amp; 0 &amp; 0  \\
+     * 0 &amp; d &amp; 0  \\
+     * 0 &amp; 0 &amp; d
+     * \end{bmatrix}
+     * $$
+     * @param diagonal The value to set Identity positions to (d in the matrix)
+     * @return This <code>Matrix3</code>
+     */
     public Matrix3 set(float diagonal)
     {
         for (int i = 0; i < 3; i++)

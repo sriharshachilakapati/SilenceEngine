@@ -31,22 +31,47 @@ import com.shc.silenceengine.graphics.Batcher;
  */
 public abstract class GameState
 {
+    /**
+     * Called when the game switches to this <code>GameState</code> through <code>setGameState()</code>.
+     *
+     * @see com.shc.silenceengine.core.Game#setGameState(GameState)
+     */
     public void onEnter()
     {
     }
 
+    /**
+     * Update game logic. This is called internally at a default 60 times a second.
+     *
+     * @param delta The frame rate time in seconds
+     */
     public void update(float delta)
     {
     }
 
+    /**
+     * Renders this state. This is called internally at a default 60 times a second.
+     *
+     * @param delta   The frame rate time in seconds
+     * @param batcher The global <code>Batcher</code> being used by the <code>Game</code>.
+     *
+     * @see com.shc.silenceengine.graphics.Batcher
+     */
     public void render(float delta, Batcher batcher)
     {
     }
 
+    /**
+     * Called internally when the game window has been resized
+     */
     public void resize()
     {
     }
 
+    /**
+     * Called internally when the game switches from this state to a different one. Use this for cleaning up any objects
+     * still in use.
+     */
     public void onLeave()
     {
     }
