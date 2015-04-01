@@ -25,6 +25,9 @@
 package com.shc.silenceengine.math;
 
 import com.shc.silenceengine.utils.ReusableStack;
+import org.lwjgl.BufferUtils;
+
+import java.nio.FloatBuffer;
 
 /**
  * A 3x3 Matrix.
@@ -43,6 +46,8 @@ public class Matrix3
 
     private float[][] m;
 
+    private FloatBuffer buffer;
+
     public Matrix3(Matrix3 m)
     {
         this();
@@ -53,6 +58,8 @@ public class Matrix3
     {
         m = new float[3][3];
         initIdentity();
+
+        buffer = BufferUtils.createFloatBuffer(9);
     }
 
     /**
@@ -337,6 +344,23 @@ public class Matrix3
                ((m[2][0] * m[1][1] * m[0][2]) +
                 (m[0][0] * m[2][1] * m[1][2]) +
                 (m[1][0] * m[0][1] * m[2][2]));
+    }
+
+    public FloatBuffer getAsFloatBuffer()
+    {
+        buffer.clear();
+
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                buffer.put(get(i, j));
+            }
+        }
+
+        buffer.flip();
+
+        return buffer;
     }
 
     @Override

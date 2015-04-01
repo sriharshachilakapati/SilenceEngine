@@ -30,9 +30,7 @@ import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.Vector4;
-import org.lwjgl.BufferUtils;
 
-import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -248,19 +246,8 @@ public class Program
     {
         use();
 
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(9);
+        glUniformMatrix3(location, transpose, value.getAsFloatBuffer());
 
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                buffer.put(value.get(i, j));
-            }
-        }
-
-        buffer.flip();
-
-        glUniformMatrix3(location, transpose, buffer);
         GLError.check();
     }
 
@@ -273,19 +260,7 @@ public class Program
     {
         use();
 
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
-
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                buffer.put(value.get(i, j));
-            }
-        }
-
-        buffer.flip();
-
-        glUniformMatrix4(location, transpose, buffer);
+        glUniformMatrix4(location, transpose, value.getAsFloatBuffer());
         GLError.check();
     }
 
