@@ -35,6 +35,7 @@ import com.shc.silenceengine.math.geom3d.Cuboid;
 import com.shc.silenceengine.models.Model;
 import com.shc.silenceengine.scene.Scene;
 import com.shc.silenceengine.scene.entity.ModelEntity;
+import com.shc.silenceengine.scene.lights.DirectionalLight;
 import com.shc.silenceengine.scene.lights.PointLight;
 
 /**
@@ -71,6 +72,7 @@ public class OBJModelTest extends Game
             scene.addComponent(new PointLight(new Vector3(-1, -1, 1), Color.BLUE));
             scene.addComponent(new PointLight(new Vector3(+1, -1, 1), Color.RED));
             scene.addComponent(new PointLight(new Vector3(+1, +1, 1), Color.GREEN));
+            scene.addComponent(new DirectionalLight(new Vector3(1, 0, 0), Color.AZURE));
             scene.addComponent(cameraLight = new PointLight(cam.getPosition(), Color.DARK_KHAKI));
         }
         scene.init();

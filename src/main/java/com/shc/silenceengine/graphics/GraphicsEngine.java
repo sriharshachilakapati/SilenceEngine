@@ -31,6 +31,7 @@ import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.graphics.programs.DefaultProgram;
+import com.shc.silenceengine.graphics.programs.DirectionalLightProgram;
 import com.shc.silenceengine.graphics.programs.PointLightProgram;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -68,6 +69,7 @@ public class GraphicsEngine implements IEngine
         // Load default programs here
         Program.DEFAULT = DefaultProgram.getInstance();
         Program.POINT_LIGHT = PointLightProgram.getInstance();
+        Program.DIRECTIONAL_LIGHT = DirectionalLightProgram.getInstance();
         Program.DEFAULT.use();
 
         // The default null texture
@@ -109,6 +111,7 @@ public class GraphicsEngine implements IEngine
         // Dispose the default Programs
         Program.DEFAULT.dispose();
         Program.POINT_LIGHT.dispose();
+        Program.DIRECTIONAL_LIGHT.dispose();
 
         // Dispose the empty texture
         Texture.EMPTY.dispose();
