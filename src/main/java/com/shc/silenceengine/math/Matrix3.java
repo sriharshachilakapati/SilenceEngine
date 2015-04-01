@@ -30,9 +30,9 @@ import com.shc.silenceengine.utils.ReusableStack;
  * A 3x3 Matrix.
  * $$
  * \begin{bmatrix}
- * a &amp; b &amp; c  \\
- * d &amp; e &amp; f  \\
- * g &amp; h &amp; i
+ * m00 &amp; m10 &amp; m20  \\
+ * m01 &amp; m11 &amp; m21  \\
+ * m02 &amp; m12 &amp; m22
  * \end{bmatrix}
  * $$
  * @author Sri Harsha Chilakapati
@@ -56,11 +56,11 @@ public class Matrix3
     }
 
     /**
-     * Set this <code>Matrix3</code> to match <code>m</code>.
+     * Set this {@code Matrix3} to match {@code m}.
      *
-     * @param m The <code>Matrix3</code> to copy.
+     * @param m The {@code Matrix3} to copy.
      *
-     * @return This <code>Matrix3</code>
+     * @return This {@code Matrix3}
      */
     public Matrix3 set(Matrix3 m)
     {
@@ -76,8 +76,15 @@ public class Matrix3
     }
 
     /**
-     * Sets the Matrix to an Identity Matrix. $$ \begin{bmatrix} 1 &amp; 0 &amp; 0  \\ 0 &amp; 1 &amp; 0  \\ 0 &amp; 0
-     * &amp; 1 \end{bmatrix} $$
+     * Sets the Matrix to an Identity Matrix.
+     *
+     * $$
+     * \begin{bmatrix}
+     * 1 &amp; 0 &amp; 0  \\
+     * 0 &amp; 1 &amp; 0  \\
+     * 0 &amp; 0 &amp; 1
+     * \end{bmatrix}
+     * $$
      *
      * @return This <code>Matrix3</code>
      */
@@ -98,12 +105,12 @@ public class Matrix3
     }
 
     /**
-     * Get the value in this <code>Matrix3</code> at position <code>(x, y)</code>.
+     * Get the value in this {@code Matrix3} at position {@code (x, y)}.
      *
      * @param x The x position of this Matrix3 to obtain.
      * @param y The y position of this Matrix3 to obtain.
      *
-     * @return The value at <code>(x, y)</code>
+     * @return The value at {@code (x, y)}
      */
     public float get(int x, int y)
     {
@@ -111,7 +118,7 @@ public class Matrix3
     }
 
     /**
-     * Create a <code>Matrix3</code> using {@link #set(float)}.
+     * Create a {@code Matrix3} using {@link #set(float)}.
      *
      * @param diagonal The value to set Identity positions to
      * @see #set(float)
@@ -123,7 +130,7 @@ public class Matrix3
     }
 
     /**
-     * Sets all Identity positions to <code>diagonal</code>.
+     * Sets all Identity positions to {@code diagonal}.
      * $$
      * \begin{bmatrix}
      * d &amp; 0 &amp; 0  \\
@@ -132,7 +139,7 @@ public class Matrix3
      * \end{bmatrix}
      * $$
      * @param diagonal The value to set Identity positions to (d in the matrix)
-     * @return This <code>Matrix3</code>
+     * @return This {@code Matrix3}
      */
     public Matrix3 set(float diagonal)
     {
@@ -147,11 +154,21 @@ public class Matrix3
         return this;
     }
 
+    /**
+     * Adds {@code m} to the clone of this {@code Matrix3} and returns the result.
+     * @param m The Matrix to add on to this Matrix
+     * @return The result of the addition.
+     */
     public Matrix3 add(Matrix3 m)
     {
         return new Matrix3(this).addSelf(m);
     }
 
+    /**
+     * Adds {@code m} to this {@code Matrix3} and returns itself.
+     * @param m The {@code Matrix3} to add on to this {@code Matrix3}
+     * @return This {@code Matrix3}
+     */
     public Matrix3 addSelf(Matrix3 m)
     {
         for (int i = 0; i < 3; i++)
@@ -211,6 +228,17 @@ public class Matrix3
         return this;
     }
 
+    /**
+     * Set all positions in this {@code Matrix3} to 0.
+     * $$
+     * \begin{bmatrix}
+     * 0 &amp; 0 &amp; 0  \\
+     * 0 &amp; 0 &amp; 0  \\
+     * 0 &amp; 0 &amp; 0
+     * \end{bmatrix}
+     * $$
+     * @return This {@code Matrix3}
+     */
     public Matrix3 initZero()
     {
         for (int i = 0; i < 3; i++)

@@ -27,6 +27,11 @@ package com.shc.silenceengine.core;
 import com.shc.silenceengine.graphics.Batcher;
 
 /**
+ * A GameState is used to control the different kinds of states the game can be in. These can also be thought of as
+ * modes. Generally a game has at least a Main Menu, Play and Pause state. You should also use different states for when
+ * there will be a major change in game mechanics. Ex. A 2D game changes from a Side-Scroller to a Top-Down
+ * Perspective.
+ *
  * @author Sri Harsha Chilakapati
  */
 public abstract class GameState
