@@ -41,7 +41,9 @@ struct Material
 // The light structure
 struct Light
 {
-
+    vec3 direction;
+    vec4 color;
+    float intensity;
 };
 
 uniform mat4 mTransform;
@@ -69,10 +71,42 @@ vec4 getBaseColor()
 
 vec4 getDirectionalLight()
 {
+    // The matrices for transforming into different spaces
     mat4 modelMatrix = camProj * camView * mTransform;
-    mat4 lightMatrix = camProj * camView;
+    mat3 normalMatrix = transpose(inverse(mat3(modelMatrix)));
 
+    // The transformed normal and position
+    vec3 normal = normalMatrix * vNormal.xyz;
+    vec3 position = vec3(modelMatrix * vPosition);
 
+    // The individual components of light
+    vec4 ambientLight = vec4(0.0);
+    vec4 diffuseLight = vec4(0.0);
+    vec4 specularLight = vec4(0.0);
+
+    // Calculate the ambient light
+    ambientLight = light.color * material.ambientColor;
+
+    // Calculate the diffuse light
+    float diffuseFactor = dot(normalize(normal), -light.direction);
+
+    if (diffuseFactor > 0.0)
+    {
+        diffuseLight = light.color * material.diffuseColor * diffuseFactor;
+
+        // Calculate the specular light
+        vec3 vertexToEye = normalize(vPosition.xyz - position);
+        vec3 lightReflect = normalize(reflect(light.direction, normal));
+
+        float specularFactor = dot(vertexToEye, lightReflect);
+        specularFactor = pow(specularFactor, material.specularPower);
+
+        if (specularFactor > 0)
+            specularLight = light.color * specularFactor;
+    }
+
+    // Calculate the final directional light
+    return (ambientLight + diffuseLight + specularLight) * light.intensity;
 }
 
 void main()
