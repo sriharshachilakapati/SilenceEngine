@@ -72,7 +72,7 @@ vec4 getBaseColor()
 vec4 getDirectionalLight()
 {
     // The matrices for transforming into different spaces
-    mat4 modelMatrix = camProj * camView * mTransform;
+    mat4 modelMatrix = mTransform;
     mat3 normalMatrix = transpose(inverse(mat3(modelMatrix)));
 
     // The transformed normal and position
