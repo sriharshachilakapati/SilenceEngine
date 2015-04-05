@@ -32,5 +32,5 @@ import com.shc.silenceengine.core.glfw.Window;
 @FunctionalInterface
 public interface ICursorPositionCallback
 {
-    public void invoke(Window window, double xPos, double yPos);
+    void invoke(Window window, double xPos, double yPos);
 }

@@ -32,5 +32,5 @@ import com.shc.silenceengine.core.glfw.Window;
 @FunctionalInterface
 public interface IWindowFocusCallback
 {
-    public void invoke(Window window, boolean focus);
+    void invoke(Window window, boolean focus);
 }

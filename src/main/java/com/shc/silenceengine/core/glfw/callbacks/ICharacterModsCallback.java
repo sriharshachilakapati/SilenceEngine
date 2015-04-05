@@ -32,5 +32,5 @@ import com.shc.silenceengine.core.glfw.Window;
 @FunctionalInterface
 public interface ICharacterModsCallback
 {
-    public void invoke(Window window, int codePoint, int mods);
+    void invoke(Window window, int codePoint, int mods);
 }

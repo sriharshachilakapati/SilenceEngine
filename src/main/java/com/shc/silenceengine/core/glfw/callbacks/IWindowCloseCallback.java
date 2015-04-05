@@ -32,5 +32,5 @@ import com.shc.silenceengine.core.glfw.Window;
 @FunctionalInterface
 public interface IWindowCloseCallback
 {
-    public void invoke(Window window);
+    void invoke(Window window);
 }

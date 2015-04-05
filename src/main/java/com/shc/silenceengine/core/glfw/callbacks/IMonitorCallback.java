@@ -32,5 +32,5 @@ import com.shc.silenceengine.core.glfw.Monitor;
 @FunctionalInterface
 public interface IMonitorCallback
 {
-    public void invoke(Monitor monitor, int event);
+    void invoke(Monitor monitor, int event);
 }

@@ -32,5 +32,5 @@ import com.shc.silenceengine.core.glfw.Window;
 @FunctionalInterface
 public interface ICursorEnterCallback
 {
-    public void invoke(Window window, boolean entered);
+    void invoke(Window window, boolean entered);
 }

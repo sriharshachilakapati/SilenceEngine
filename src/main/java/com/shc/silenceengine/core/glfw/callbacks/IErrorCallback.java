@@ -30,5 +30,5 @@ package com.shc.silenceengine.core.glfw.callbacks;
 @FunctionalInterface
 public interface IErrorCallback
 {
-    public void invoke(int error, String description);
+    void invoke(int error, String description);
 }

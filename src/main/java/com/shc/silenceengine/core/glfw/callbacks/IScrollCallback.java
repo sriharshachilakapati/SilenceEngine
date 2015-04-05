@@ -32,5 +32,5 @@ import com.shc.silenceengine.core.glfw.Window;
 @FunctionalInterface
 public interface IScrollCallback
 {
-    public void invoke(Window window, double xOffset, double yOffset);
+    void invoke(Window window, double xOffset, double yOffset);
 }

@@ -32,5 +32,5 @@ import com.shc.silenceengine.core.glfw.Window;
 @FunctionalInterface
 public interface IDropCallback
 {
-    public void invoke(Window window, String[] paths);
+    void invoke(Window window, String[] paths);
 }

@@ -32,5 +32,5 @@ import com.shc.silenceengine.core.glfw.Window;
 @FunctionalInterface
 public interface IWindowIconifyCallback
 {
-    public void invoke(Window window, boolean iconify);
+    void invoke(Window window, boolean iconify);
 }

@@ -32,5 +32,5 @@ import com.shc.silenceengine.core.glfw.Window;
 @FunctionalInterface
 public interface IWindowPositionCallback
 {
-    public void invoke(Window window, int xPos, int yPos);
+    void invoke(Window window, int xPos, int yPos);
 }

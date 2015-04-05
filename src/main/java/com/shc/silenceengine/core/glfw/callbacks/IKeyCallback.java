@@ -32,5 +32,5 @@ import com.shc.silenceengine.core.glfw.Window;
 @FunctionalInterface
 public interface IKeyCallback
 {
-    public void invoke(Window window, int key, int scanCode, int action, int mods);
+    void invoke(Window window, int key, int scanCode, int action, int mods);
 }

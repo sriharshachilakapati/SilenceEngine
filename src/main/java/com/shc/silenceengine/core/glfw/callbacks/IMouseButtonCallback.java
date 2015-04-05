@@ -31,5 +31,5 @@ import com.shc.silenceengine.core.glfw.Window;
  */
 public interface IMouseButtonCallback
 {
-    public void invoke(Window window, int button, int action, int mods);
+    void invoke(Window window, int button, int action, int mods);
 }
