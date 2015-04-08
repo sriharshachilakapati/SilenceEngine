@@ -109,7 +109,7 @@ public final class ALError
     /**
      * The value enumeration of OpenAL error
      */
-    public static enum Value
+    public enum Value
     {
         NO_ERROR, INVALID_NAME, INVALID_ENUM, INVALID_VALUE, INVALID_OPERATION, OUT_OF_MEMORY
     }

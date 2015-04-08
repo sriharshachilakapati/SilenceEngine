@@ -71,7 +71,7 @@ public class ALSource
      */
     public void setParameter(int parameter, int value)
     {
-        if (disposed)
+        if (isDisposed())
             throw new ALException("ALSource is already disposed");
 
         alSourcei(id, parameter, value);
@@ -103,7 +103,7 @@ public class ALSource
      */
     public void setParameter(int parameter, float value)
     {
-        if (disposed)
+        if (isDisposed())
             throw new ALException("ALSource is already disposed");
 
         alSourcef(id, parameter, value);
@@ -137,7 +137,7 @@ public class ALSource
      */
     public void setParameter(int parameter, float value1, float value2, float value3)
     {
-        if (disposed)
+        if (isDisposed())
             throw new ALException("ALSource is already disposed");
 
         alSource3f(id, parameter, value1, value2, value3);
@@ -151,7 +151,7 @@ public class ALSource
      */
     public void play()
     {
-        if (disposed)
+        if (isDisposed())
             throw new ALException("Cannot play a disposed ALSource");
 
         alSourcePlay(id);
@@ -165,7 +165,7 @@ public class ALSource
      */
     public void pause()
     {
-        if (disposed)
+        if (isDisposed())
             throw new ALException("Cannot pause a disposed ALSource");
 
         alSourcePause(id);
@@ -179,7 +179,7 @@ public class ALSource
      */
     public void stop()
     {
-        if (disposed)
+        if (isDisposed())
             throw new ALException("Cannot stop a disposed ALSource");
 
         alSourceStop(id);
@@ -193,7 +193,7 @@ public class ALSource
      */
     public void rewind()
     {
-        if (disposed)
+        if (isDisposed())
             throw new ALException("Cannot rewind a disposed ALSource");
 
         alSourceRewind(id);
@@ -253,11 +253,13 @@ public class ALSource
      */
     public void dispose()
     {
-        if (disposed)
+        if (isDisposed())
             throw new ALException("Cannot Dispose an already disposed OpenAL Source");
 
         alDeleteSources(id);
         ALError.check();
+
+        disposed = true;
     }
 
     /**
@@ -279,7 +281,7 @@ public class ALSource
     /**
      * The State of this source.
      */
-    public static enum State
+    public enum State
     {
         PLAYING, STOPPED, PAUSED, LOOPING
     }

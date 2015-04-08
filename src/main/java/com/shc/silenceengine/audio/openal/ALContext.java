@@ -38,8 +38,7 @@ public final class ALContext
     // Singleton pattern
     private static ALContext instance;
 
-    // The Device and the context
-    private ALDevice                   device;
+    // The ALContext
     private org.lwjgl.openal.ALContext context;
 
     // Prevent instantiation
@@ -70,7 +69,8 @@ public final class ALContext
     {
         // Create the context and the device
         context = org.lwjgl.openal.ALContext.create(null, 48000, 60, false);
-        device = context.getDevice();
+
+        ALDevice device = context.getDevice();
 
         // Check for the context errors
         ALCError.check();
@@ -91,8 +91,8 @@ public final class ALContext
      */
     public void dispose()
     {
-        context.destroy();
-        device.destroy();
+        getContext().destroy();
+        getDevice().destroy();
     }
 
     /**
@@ -108,6 +108,6 @@ public final class ALContext
      */
     public ALDevice getDevice()
     {
-        return device;
+        return getContext().getDevice();
     }
 }

@@ -184,7 +184,7 @@ public final class ALCError
     /**
      * The value enumeration of the OpenAL Context Error
      */
-    public static enum Value
+    public enum Value
     {
         NO_ERROR, INVALID_DEVICE, INVALID_CONTEXT, INVALID_ENUM, INVALID_VALUE, OUT_OF_MEMORY
     }

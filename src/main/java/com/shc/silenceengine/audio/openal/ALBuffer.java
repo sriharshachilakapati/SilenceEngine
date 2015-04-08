@@ -66,7 +66,7 @@ public class ALBuffer
      */
     public void uploadData(Buffer data, ALFormat format, int frequency)
     {
-        if (disposed)
+        if (isDisposed())
             throw new ALException("Unable to upload data to disposed OpenAL buffer");
 
         if (data instanceof ByteBuffer)
@@ -89,11 +89,13 @@ public class ALBuffer
      */
     public void dispose()
     {
-        if (disposed)
+        if (isDisposed())
             throw new ALException("Unable to dispose an already disposed OpenAL buffer");
 
         alDeleteBuffers(id);
         ALError.check();
+
+        disposed = true;
     }
 
     /**

@@ -68,7 +68,7 @@ public interface ISoundReader
     /**
      * A mapping of ISoundReaders based on the extension.
      */
-    static Map<String, Class<? extends ISoundReader>> registeredReaders = new HashMap<>();
+    Map<String, Class<? extends ISoundReader>> registeredReaders = new HashMap<>();
 
     /**
      * Registers an extension to a class that is a sound reader.
@@ -78,7 +78,7 @@ public interface ISoundReader
      *
      * @throws SilenceException If there is no constructor that accepts an InputStream.
      */
-    public static void register(String extension, Class<? extends ISoundReader> readerClass)
+    static void register(String extension, Class<? extends ISoundReader> readerClass)
     {
         try
         {
@@ -106,7 +106,7 @@ public interface ISoundReader
      *
      * @throws SilenceException If there is no registered reader for this file type.
      */
-    public static ISoundReader create(String extension, InputStream resource)
+    static ISoundReader create(String extension, InputStream resource)
     {
         // Get the reader class from the registry
         Class<? extends ISoundReader> readerClass = registeredReaders.get(extension.toLowerCase().trim());
@@ -134,7 +134,7 @@ public interface ISoundReader
      *
      * @return The ByteBuffer containing fixed samples.
      */
-    public static ByteBuffer convertAudioBytes(byte[] samples, boolean stereo)
+    static ByteBuffer convertAudioBytes(byte[] samples, boolean stereo)
     {
         ByteBuffer dest = ByteBuffer.allocateDirect(samples.length);
         dest.order(ByteOrder.nativeOrder());
@@ -163,15 +163,15 @@ public interface ISoundReader
     /**
      * @return The decoded samples buffer.
      */
-    public Buffer getData();
+    Buffer getData();
 
     /**
      * @return The sample rate, or the frequency, of the data samples.
      */
-    public int getSampleRate();
+    int getSampleRate();
 
     /**
      * @return The OpenAL compatible format of the data samples.
      */
-    public ALFormat getFormat();
+    ALFormat getFormat();
 }

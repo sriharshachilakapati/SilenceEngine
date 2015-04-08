@@ -59,7 +59,7 @@ public enum ALFormat
     // The integer constant of the OpenAL format
     private int alFormat;
 
-    private ALFormat(int alFormat)
+    ALFormat(int alFormat)
     {
         this.alFormat = alFormat;
     }

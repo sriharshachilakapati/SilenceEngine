@@ -81,10 +81,10 @@ public final class AudioEngine implements IEngine
     }
 
     /**
+     * Loads a sound from a resource name.
      *
-     *
-     * @param name
-     * @return
+     * @param name The resource name of the sound file to load.
+     * @return The loaded Sound object.
      */
     public Sound getSound(String name)
     {

@@ -26,9 +26,11 @@ package com.shc.silenceengine.audio;
 
 import com.shc.silenceengine.audio.openal.ALBuffer;
 import com.shc.silenceengine.audio.openal.ALSource;
+import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.utils.FileUtils;
 
 import java.io.InputStream;
+import java.nio.Buffer;
 
 import static org.lwjgl.openal.AL10.*;
 
@@ -69,13 +71,24 @@ public class Sound
 
         // Create the reader and upload the data to the buffer
         ISoundReader reader = ISoundReader.create(format.toLowerCase(), is);
-        buffer.uploadData(reader.getData(), reader.getFormat(), reader.getSampleRate());
+
+        if (reader == null)
+            throw new SilenceException("Error creating a reader for format " + format);
+
+        Buffer data = reader.getData();
+
+        if (data == null)
+            throw new SilenceException("Error getting data from reader");
+
+        buffer.uploadData(data, reader.getFormat(), reader.getSampleRate());
 
         // Create the source and attach the buffer
         source = new ALSource();
         source.attachBuffer(buffer);
 
         looping = false;
+
+        setVolume(1f);
     }
 
     /**
