@@ -309,13 +309,13 @@ public class Collision3D
         public String toString()
         {
             return "Response{" +
-                   "a=" + a +
-                   ", b=" + b +
-                   ", overlapV=" + overlapV +
-                   ", overlapN=" + overlapN +
-                   ", overlap=" + overlap +
-                   ", aInB=" + aInB +
-                   ", bInA=" + bInA +
+                   "a=" + getPolygonA() +
+                   ", b=" + getPolygonB() +
+                   ", overlapV=" + getMinimumTranslationVector() +
+                   ", overlapN=" + getOverlapAxis() +
+                   ", overlap=" + getOverlapDistance() +
+                   ", aInB=" + isAInsideB() +
+                   ", bInA=" + isBInsideA() +
                    '}';
         }
     }

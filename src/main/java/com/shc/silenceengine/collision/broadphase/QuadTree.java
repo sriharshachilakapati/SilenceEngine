@@ -91,7 +91,7 @@ public class QuadTree implements IBroadphase2D
      */
     public void setBounds(int x, int y, int width, int height)
     {
-        bounds = new Rectangle(x, y, width, height);
+        bounds.set(x, y, width, height);
         clear();
         split();
     }
@@ -126,7 +126,9 @@ public class QuadTree implements IBroadphase2D
                 return;
             }
         }
+
         objects.add(r);
+
         if (objects.size() > MAX_OBJECTS)
         {
             if (nodes[0] == null)
@@ -236,7 +238,7 @@ public class QuadTree implements IBroadphase2D
     /**
      * Insert an ArrayList of objects into this tree
      */
-    public void insertAll(ArrayList<Entity2D> o)
+    public void insertAll(List<Entity2D> o)
     {
         o.forEach(this::insert);
     }

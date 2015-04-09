@@ -113,6 +113,14 @@ public class SceneCollider2D
      */
     public void checkCollisions()
     {
+        // If there are no children in the scene, simply return
+        if (scene.getChildren() == null || scene.getChildren().size() == 0)
+        {
+            childrenInScene = 0;
+            return;
+        }
+
+        // Update the list of entities from the list of children in the scene
         if (scene.getChildren().size() != childrenInScene)
         {
             entities.clear();
@@ -147,17 +155,22 @@ public class SceneCollider2D
 
         // Iterate and check collisions
         for (Class<? extends Entity2D> class1 : collisionMap.keySet())
-            for (Entity2D entity : entities)
-                if (class1.isInstance(entity))
-                {
-                    List<Entity2D> collidables = broadphase.retrieve(entity);
+            // Check collision
+            entities.stream().filter(class1::isInstance).forEach(entity ->
+            {
+                List<Entity2D> collidables = broadphase.retrieve(entity);
 
-                    for (Entity2D entity2 : collidables)
-                        for (Class<? extends Entity2D> class2 : collisionMap.get(class1))
-                            if (class2.isInstance(entity2) && entity != entity2)
-                                // Check collision
-                                if (entity.getPolygon().intersects(entity2.getPolygon()))
-                                    entity.collision(entity2);
-                }
+                for (Entity2D entity2 : collidables)
+                    // Check collisions
+
+                    // Stream over all the mappings of class1 in the map
+                    collisionMap.get(class1).stream()
+                            // Filter all the entities which belong to class2 and not equal to entity1
+                            .filter(class2 -> class2.isInstance(entity2) && entity != entity2)
+                            // Filter all the entities whose polygons intersects with the polygon of entity1
+                            .filter(class2 -> entity.getPolygon().intersects(entity2.getPolygon()))
+                            // Send collision events to all the colliding entities
+                            .forEach(class2 -> entity.collision(entity2));
+            });
     }
 }

@@ -30,6 +30,7 @@ import com.shc.silenceengine.utils.MathUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A Grid based collision resolver. Reduces the number of collision checks and increases performance. This class
@@ -160,8 +161,7 @@ public class Grid implements IBroadphase2D
             {
                 List<Entity2D> cell = grid.get(x).get(y);
 
-                for (Entity2D retrieved : cell)
-                    retrieveList.add(retrieved);
+                retrieveList.addAll(cell.stream().collect(Collectors.toList()));
             }
         }
 
@@ -175,7 +175,6 @@ public class Grid implements IBroadphase2D
      */
     public void insertAll(List<Entity2D> list)
     {
-        for (Entity2D e : list)
-            insert(e);
+        list.forEach(this::insert);
     }
 }
