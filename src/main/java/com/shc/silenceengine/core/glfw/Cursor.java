@@ -87,7 +87,7 @@ public class Cursor
         return handle;
     }
 
-    public static enum Type
+    public enum Type
     {
         ARROW(GLFW_ARROW_CURSOR),
         IBEAM(GLFW_IBEAM_CURSOR),
@@ -98,7 +98,7 @@ public class Cursor
 
         private int type;
 
-        private Type(int type)
+        Type(int type)
         {
             this.type = type;
         }

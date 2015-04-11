@@ -127,6 +127,26 @@ public final class Display
         window.setMouseButtonCallback(Mouse::glfwMouseButtonCallback);
         window.setScrollCallback(Mouse::glfwScrollCallback);
         window.setCursorPositionCallback(Mouse::glfwCursorCallback);
+
+        // Set all the callbacks of existing display window to the new window
+        if (displayWindow != null)
+        {
+            window.setCharacterCallback(displayWindow.getCharacterCallback());
+            window.setCharacterModsCallback(displayWindow.getCharacterModsCallback());
+            window.setCursorEnterCallback(displayWindow.getCursorEnterCallback());
+            window.setCursorPositionCallback(displayWindow.getCursorPositionCallback());
+            window.setDropCallback(displayWindow.getDropCallback());
+            window.setFramebufferSizeCallback(displayWindow.getFramebufferSizeCallback());
+            window.setKeyCallback(displayWindow.getKeyCallback());
+            window.setScrollCallback(displayWindow.getScrollCallback());
+            window.setMouseButtonCallback(displayWindow.getMouseButtonCallback());
+            window.setCloseCallback(displayWindow.getCloseCallback());
+            window.setFocusCallback(displayWindow.getFocusCallback());
+            window.setIconifyCallback(displayWindow.getIconifyCallback());
+            window.setPositionCallback(displayWindow.getPositionCallback());
+            window.setRefreshCallback(displayWindow.getRefreshCallback());
+            window.setSizeCallback(displayWindow.getSizeCallback());
+        }
     }
 
     private static void clearHints()

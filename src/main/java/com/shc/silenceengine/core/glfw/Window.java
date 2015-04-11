@@ -618,4 +618,79 @@ public class Window
     {
         return glfwGetWindowAttrib(handle, attribute);
     }
+
+    public ICharacterCallback getCharacterCallback()
+    {
+        return characterCallback;
+    }
+
+    public ICharacterModsCallback getCharacterModsCallback()
+    {
+        return characterModsCallback;
+    }
+
+    public ICursorEnterCallback getCursorEnterCallback()
+    {
+        return cursorEnterCallback;
+    }
+
+    public ICursorPositionCallback getCursorPositionCallback()
+    {
+        return cursorPositionCallback;
+    }
+
+    public IDropCallback getDropCallback()
+    {
+        return dropCallback;
+    }
+
+    public IFramebufferSizeCallback getFramebufferSizeCallback()
+    {
+        return framebufferSizeCallback;
+    }
+
+    public IKeyCallback getKeyCallback()
+    {
+        return keyCallback;
+    }
+
+    public IMouseButtonCallback getMouseButtonCallback()
+    {
+        return mouseButtonCallback;
+    }
+
+    public IScrollCallback getScrollCallback()
+    {
+        return scrollCallback;
+    }
+
+    public IWindowCloseCallback getCloseCallback()
+    {
+        return windowCloseCallback;
+    }
+
+    public IWindowFocusCallback getFocusCallback()
+    {
+        return windowFocusCallback;
+    }
+
+    public IWindowIconifyCallback getIconifyCallback()
+    {
+        return windowIconifyCallback;
+    }
+
+    public IWindowPositionCallback getPositionCallback()
+    {
+        return windowPositionCallback;
+    }
+
+    public IWindowRefreshCallback getRefreshCallback()
+    {
+        return windowRefreshCallback;
+    }
+
+    public IWindowSizeCallback getSizeCallback()
+    {
+        return windowSizeCallback;
+    }
 }

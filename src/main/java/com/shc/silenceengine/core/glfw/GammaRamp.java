@@ -37,10 +37,10 @@ public class GammaRamp
 
     public GammaRamp(short red, short green, short blue, int size)
     {
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-        this.size = size;
+        setRed(red);
+        setGreen(green);
+        setBlue(blue);
+        setSize(size);
     }
 
     public short getRed()
