@@ -246,7 +246,7 @@ public class Program
     {
         use();
 
-        glUniformMatrix3(location, transpose, value.getAsFloatBuffer());
+        glUniformMatrix3fv(location, transpose, value.getAsFloatBuffer());
 
         GLError.check();
     }
@@ -260,7 +260,7 @@ public class Program
     {
         use();
 
-        glUniformMatrix4(location, transpose, value.getAsFloatBuffer());
+        glUniformMatrix4fv(location, transpose, value.getAsFloatBuffer());
         GLError.check();
     }
 
