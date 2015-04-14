@@ -91,16 +91,29 @@ public final class AudioEngine implements IEngine
         return new Sound(name);
     }
 
+    /**
+     * Loads a sound from an InputStream
+     *
+     * @param is        The InputStream to read the sound data
+     * @param extension The extension of the file to determine the format of the data
+     * @return The loaded Sound object
+     */
     public Sound getSound(InputStream is, String extension)
     {
         return new Sound(is, extension);
     }
 
+    /**
+     * @return The ALContext instance used to manipulate the OpenAL context
+     */
     public ALContext getALContext()
     {
         return ALContext.getInstance();
     }
 
+    /**
+     * @return The OpenAL device which is playing the audio
+     */
     public ALDevice getALDevice()
     {
         return getALContext().getDevice();
