@@ -27,10 +27,22 @@ package com.shc.silenceengine.core.glfw.callbacks;
 import com.shc.silenceengine.core.glfw.Window;
 
 /**
+ * Functional Interface describing the signature of the <code>GLFWcharmodsfun</code>
+ * in Java 8 environment. To set a character mods callback on a window, use the function
+ * <code>setCharacterModsCallback()</code> on a <code>Window</code> object.
+ *
  * @author Sri Harsha Chilakapati
  */
 @FunctionalInterface
 public interface ICharacterModsCallback
 {
+    /**
+     * The signature of the <code>GLFWcharfun</code> method. This method is
+     * invoked by GLFW to notify the character input event.
+     *
+     * @param window    The Window that received the event.
+     * @param codePoint The Unicode code point of the character.
+     * @param mods      Bit Field describing which modifier keys were held down.
+     */
     void invoke(Window window, int codePoint, int mods);
 }

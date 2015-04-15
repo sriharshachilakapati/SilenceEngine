@@ -27,10 +27,21 @@ package com.shc.silenceengine.core.glfw.callbacks;
 import com.shc.silenceengine.core.glfw.Window;
 
 /**
+ * Functional Interface describing the signature of the <code>GLFWcursorenterfun</code>
+ * in Java 8 environment. To set a character enter callback on a window, use the function
+ * <code>setCursorEnterCallback()</code> on a <code>Window</code> object.
+ *
  * @author Sri Harsha Chilakapati
  */
 @FunctionalInterface
 public interface ICursorEnterCallback
 {
+    /**
+     * The signature of the <code>GLFWcursorenterfun</code> method. This method is
+     * invoked by GLFW to notify the whether the cursor entered or left the window.
+     *
+     * @param window  The Window that received the event.
+     * @param entered True if the cursor entered the window client area, or false if it left it.
+     */
     void invoke(Window window, boolean entered);
 }

@@ -27,10 +27,21 @@ package com.shc.silenceengine.core.glfw.callbacks;
 import com.shc.silenceengine.core.glfw.Window;
 
 /**
+ * Functional Interface describing the signature of the <code>GLFWcharfun</code>
+ * in Java 8 environment. To set a character callback on a window, use the function
+ * <code>setCharacterCallback()</code> on a <code>Window</code> object.
+ *
  * @author Sri Harsha Chilakapati
  */
 @FunctionalInterface
 public interface ICharacterCallback
 {
+    /**
+     * The signature of the <code>GLFWcharfun</code> method. This method is
+     * invoked by GLFW to notify the character input event.
+     *
+     * @param window    The Window that received the event.
+     * @param codePoint The Unicode code point of the character.
+     */
     void invoke(Window window, int codePoint);
 }
