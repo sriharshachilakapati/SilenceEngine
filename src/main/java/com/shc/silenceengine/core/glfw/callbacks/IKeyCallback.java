@@ -27,10 +27,24 @@ package com.shc.silenceengine.core.glfw.callbacks;
 import com.shc.silenceengine.core.glfw.Window;
 
 /**
+ * Functional Interface describing the signature of the <code>GLFWkeyfun</code>
+ * in Java 8 environment. To set a key callback on a window, use the function
+ * <code>setKeyCallback()</code> on a <code>Window</code> object.
+ *
  * @author Sri Harsha Chilakapati
  */
 @FunctionalInterface
 public interface IKeyCallback
 {
+    /**
+     * The signature of the <code>GLFWkeyfun</code> method. This method is
+     * invoked by GLFW to notify you whenever a key input has occurred.
+     *
+     * @param window   The Window that received the event.
+     * @param key      The keycode of the key that was released or pressed.
+     * @param scanCode The system-specific scan code of the key.
+     * @param action   <code>GLFW_PRESS, GLFW_RELEASE</code> or <code>GLFW_REPEAT</code>.
+     * @param mods     Bit field describing which modifier keys were held down.
+     */
     void invoke(Window window, int key, int scanCode, int action, int mods);
 }

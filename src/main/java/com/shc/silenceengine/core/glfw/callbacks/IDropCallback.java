@@ -27,10 +27,22 @@ package com.shc.silenceengine.core.glfw.callbacks;
 import com.shc.silenceengine.core.glfw.Window;
 
 /**
+ * Functional Interface describing the signature of the <code>GLFWdropfun</code>
+ * in Java 8 environment. To set a drop callback on a window, use the function
+ * <code>setDropCallback()</code> on a <code>Window</code> object.
+ *
  * @author Sri Harsha Chilakapati
  */
 @FunctionalInterface
 public interface IDropCallback
 {
+    /**
+     * The signature of the <code>GLFWdropfun</code> method. This method is
+     * invoked by GLFW to notify the paths of files that are dropped onto the
+     * window.
+     *
+     * @param window The Window that received the event.
+     * @param paths  The array of paths of files that are dropped onto the window.
+     */
     void invoke(Window window, String[] paths);
 }

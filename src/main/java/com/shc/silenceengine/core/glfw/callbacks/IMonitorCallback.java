@@ -27,10 +27,21 @@ package com.shc.silenceengine.core.glfw.callbacks;
 import com.shc.silenceengine.core.glfw.Monitor;
 
 /**
+ * Functional Interface describing the signature of the <code>GLFWmonitorfun</code>
+ * in Java 8 environment. To set a monitor callback, use the static function
+ * <code>setCallback()</code> of the <code>Monitor</code> class.
+ *
  * @author Sri Harsha Chilakapati
  */
 @FunctionalInterface
 public interface IMonitorCallback
 {
+    /**
+     * The signature of the <code>GLFWmonitorfun</code> method. This method is
+     * invoked by GLFW to notify whether a monitor is connected or disconnected.
+     *
+     * @param monitor The monitor that was connected or disconnected.
+     * @param event   One of <code>GLFW_CONNECTED</code> or <code>GLFW_DISCONNECTED</code>.
+     */
     void invoke(Monitor monitor, int event);
 }
