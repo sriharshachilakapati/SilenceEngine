@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'eclipse'
 
 // Source sets in the project, specify source directories
 sourceSets {
