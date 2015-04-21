@@ -213,7 +213,15 @@ public final class ResourceLoader
 
     public void startLoading()
     {
-        boolean recreateDisplay = Display.isResizable();
+        // No loading if there are no resources to load
+        if (texturesToLoad.size() + soundsToLoad.size() + fontsToLoad.size() + modelsToLoad.size() == 0)
+            return;
+
+        // Reset the variables to zero
+        renderedProgress = 0;
+        numLoaded = 0;
+
+        boolean recreateDisplay = Display.isResizable() && !Display.isFullScreen();
 
         if (recreateDisplay) Display.setResizable(false);
 
@@ -279,8 +287,8 @@ public final class ResourceLoader
      */
     private void invokeRenderProgressCallback(String info)
     {
-        renderProgressCallback.invoke(Game.getBatcher(), updateProgress(),
-                                             info);
+        renderProgressCallback.invoke(Game.getBatcher(), updateProgress(), info);
+        System.out.println(info);
     }
 
     /**
