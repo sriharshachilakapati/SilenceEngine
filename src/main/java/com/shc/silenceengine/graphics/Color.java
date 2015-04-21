@@ -195,6 +195,21 @@ public class Color extends Vector4
         set(r, g, b, a);
     }
 
+    public Color(int rgba)
+    {
+        set(rgba);
+    }
+
+    public Color(float r, float g, float b)
+    {
+        this(r, g, b, 1);
+    }
+
+    public static Color random()
+    {
+        return new Color().randomSelf();
+    }
+
     public Color set(float r, float g, float b, float a)
     {
         x = MathUtils.clamp(r, 0, 1);
@@ -230,11 +245,6 @@ public class Color extends Vector4
         return addSelf(-r, -g, -b, -a);
     }
 
-    public Color(int rgba)
-    {
-        set(rgba);
-    }
-
     public Color set(int rgba)
     {
         float r = ((rgba & 0x00FF0000) >> 16) / 255f;
@@ -248,16 +258,6 @@ public class Color extends Vector4
         setA(a);
 
         return this;
-    }
-
-    public Color(float r, float g, float b)
-    {
-        this(r, g, b, 1);
-    }
-
-    public static Color random()
-    {
-        return new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), (float) Math.random());
     }
 
     public Color set(float r, float g, float b)

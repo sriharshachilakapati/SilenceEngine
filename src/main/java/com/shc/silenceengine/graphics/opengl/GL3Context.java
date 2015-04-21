@@ -60,6 +60,7 @@ public final class GL3Context
 
     /**
      * Sets the background color of the window
+     *
      * @param color Background color
      */
     public static void clearColor(Color color)
@@ -69,6 +70,7 @@ public final class GL3Context
 
     /**
      * Sets the background color of the window
+     *
      * @param r Red
      * @param g Green
      * @param b Blue
@@ -82,6 +84,7 @@ public final class GL3Context
 
     /**
      * Calls <code>glClear()</code> on <code>buffers</code>
+     *
      * @param buffers The buffer to be cleared
      */
     public static void clear(int buffers)
@@ -92,9 +95,10 @@ public final class GL3Context
 
     /**
      * Binds a {@link VertexArray} and draws it to the screen
-     * @param vao The <code>VertexArray</code> to be drawn
-     * @param mode The GL Primitive to be used for drawing (Primitive.TRIANGLE is recommended)
-     * @param offset The position in the <code>vao</code> to begin drawing (Use 0 for the beginning)
+     *
+     * @param vao         The <code>VertexArray</code> to be drawn
+     * @param mode        The GL Primitive to be used for drawing (Primitive.TRIANGLE is recommended)
+     * @param offset      The position in the <code>vao</code> to begin drawing (Use 0 for the beginning)
      * @param vertexCount The amount of vertices in the <code>vao</code>
      */
     public static void drawArrays(VertexArray vao, Primitive mode, int offset, int vertexCount)
@@ -113,6 +117,7 @@ public final class GL3Context
 
     /**
      * Bind the VertexArray for use in OpenGL.
+     *
      * @param vao The VertexArray to be bound. If null the currently bound VertexArray will be unbound
      */
     public static void bindVertexArray(VertexArray vao)
@@ -129,6 +134,7 @@ public final class GL3Context
 
     /**
      * Bind the {@link BufferObject} for use in OpenGL.
+     *
      * @param vbo The BufferObject to be bound. If null the currently bound BufferObject will be unbound
      */
     public static void bindVertexBuffer(BufferObject vbo)
@@ -145,6 +151,7 @@ public final class GL3Context
 
     /**
      * Set the display to use the viewport specified with <code>rect</code>
+     *
      * @param rect The viewport location and size
      */
     public static void viewport(Rectangle rect)
@@ -154,9 +161,10 @@ public final class GL3Context
 
     /**
      * Set the display to use the viewport specified
-     * @param x X coordinate
-     * @param y Y coordinate
-     * @param width Width
+     *
+     * @param x      X coordinate
+     * @param y      Y coordinate
+     * @param width  Width
      * @param height Height
      */
     public static void viewport(float x, float y, float width, float height)
@@ -167,6 +175,7 @@ public final class GL3Context
 
     /**
      * Sets whether or not OpenGL should use a depth mask
+     *
      * @param value Depth mask
      */
     public static void depthMask(boolean value)

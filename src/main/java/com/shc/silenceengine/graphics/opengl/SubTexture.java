@@ -75,12 +75,13 @@ public class SubTexture extends Texture
         return parent;
     }
 
+    @Override
     public SubTexture getSubTexture(float minU, float minV, float maxU, float maxV)
     {
-        minU = (minU * getWidth()) / parent.getWidth();
-        minV = (minV * getHeight()) / parent.getHeight();
-        maxU = (maxU * getWidth()) / parent.getWidth();
-        maxV = (maxV * getHeight()) / parent.getHeight();
+        minU = (minU * getWidth()) / getParent().getWidth();
+        minV = (minV * getHeight()) / getParent().getHeight();
+        maxU = (maxU * getWidth()) / getParent().getWidth();
+        maxV = (maxV * getHeight()) / getParent().getHeight();
 
         minU += this.minU;
         minV += this.minV;
@@ -90,44 +91,51 @@ public class SubTexture extends Texture
         return new SubTexture(parent, minU, minV, maxU, maxV);
     }
 
+    @Override
     public SubTexture getSubTexture(Vector2 min, Vector2 max)
     {
         return getSubTexture(min.x, min.y, max.x, max.y);
     }
 
-    public float getMinU()
+    @Override
+    public void dispose()
     {
-        return minU;
+        throw new SilenceException("Sub-Textures cannot be disposed! Just ignore them!");
     }
 
-    public float getMaxU()
-    {
-        return maxU;
-    }
-
-    public float getMinV()
-    {
-        return minV;
-    }
-
-    public float getMaxV()
-    {
-        return maxV;
-    }
-
+    @Override
     public float getWidth()
     {
         return width;
     }
 
+    @Override
     public float getHeight()
     {
         return height;
     }
 
-
-    public void dispose()
+    @Override
+    public float getMinU()
     {
-        throw new SilenceException("Sub-Textures cannot be disposed! Just ignore them!");
+        return minU;
+    }
+
+    @Override
+    public float getMaxU()
+    {
+        return maxU;
+    }
+
+    @Override
+    public float getMinV()
+    {
+        return minV;
+    }
+
+    @Override
+    public float getMaxV()
+    {
+        return maxV;
     }
 }

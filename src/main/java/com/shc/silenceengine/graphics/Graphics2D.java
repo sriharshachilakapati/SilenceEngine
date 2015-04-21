@@ -42,7 +42,7 @@ import com.shc.silenceengine.utils.MathUtils;
  */
 public class Graphics2D
 {
-    private static Graphics2D   instance;
+    private static Graphics2D instance;
 
     private OrthoCam     camera;
     private Paint        paint;
@@ -52,6 +52,8 @@ public class Graphics2D
     /* Utility Methods */
     private BaseCamera originalCamera;
     private Texture    originalTexture;
+
+    private Color color = new Color();
 
     protected Graphics2D()
     {
@@ -79,7 +81,6 @@ public class Graphics2D
         rect(x, y, w, h, Primitive.LINE_LOOP);
     }
 
-    /* SHAPE DRAWING METHODS */
     private void rect(float x, float y, float w, float h, Primitive primitive)
     {
         Batcher batcher = Game.getBatcher();
@@ -215,8 +216,6 @@ public class Graphics2D
         fillCircle(pos.x, pos.y, r);
     }
 
-    /* TEXTURE DRAWING METHODS */
-
     public void fillCircle(float x, float y, float r)
     {
         fillOval(x, y, r, r);
@@ -252,7 +251,7 @@ public class Graphics2D
         startPainting();
         {
             Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
-            Color   color = Color.REUSABLE_STACK.pop();
+            Color color = Color.REUSABLE_STACK.pop();
 
             float width = polygon.getBounds().getWidth();
             float height = polygon.getBounds().getHeight();
@@ -366,9 +365,6 @@ public class Graphics2D
         drawString(string, pos.x, pos.y);
     }
 
-    /**
-     * String drawing functions
-     */
     public void drawString(String string, float x, float y)
     {
         Batcher batcher = Game.getBatcher();
@@ -385,9 +381,6 @@ public class Graphics2D
         Color.REUSABLE_STACK.push(color);
     }
 
-    /**
-     * Transform methods
-     */
     public void rotate(float angle)
     {
         transform.rotateSelf(Vector3.AXIS_Z, angle);
@@ -427,12 +420,6 @@ public class Graphics2D
     {
         transform.reset();
     }
-
-    /**
-     * Getters and Setters
-     */
-
-    private Color color = new Color();
 
     public Color getColor()
     {

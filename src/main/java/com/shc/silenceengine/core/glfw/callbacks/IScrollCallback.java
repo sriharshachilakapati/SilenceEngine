@@ -27,9 +27,8 @@ package com.shc.silenceengine.core.glfw.callbacks;
 import com.shc.silenceengine.core.glfw.Window;
 
 /**
- * Functional Interface describing the signature of the <code>GLFWscrollfun</code>
- * in Java 8 environment. To set a scroll callback on a window, use the function
- * <code>setScrollCallback()</code> on a <code>Window</code> object.
+ * Functional Interface describing the signature of the <code>GLFWscrollfun</code> in Java 8 environment. To set a
+ * scroll callback on a window, use the function <code>setScrollCallback()</code> on a <code>Window</code> object.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -37,8 +36,8 @@ import com.shc.silenceengine.core.glfw.Window;
 public interface IScrollCallback
 {
     /**
-     * The signature of the <code>GLFWscrollfun</code> method. This method is
-     * invoked by GLFW to notify you whenever the user scrolled the mouse wheel.
+     * The signature of the <code>GLFWscrollfun</code> method. This method is invoked by GLFW to notify you whenever the
+     * user scrolled the mouse wheel.
      *
      * @param window  The Window that received the event.
      * @param xOffset The scroll offset along the x-axis.

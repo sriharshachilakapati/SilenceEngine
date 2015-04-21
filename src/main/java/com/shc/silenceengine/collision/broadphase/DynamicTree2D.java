@@ -88,6 +88,22 @@ public class DynamicTree2D implements IBroadphase2D
         }
     }
 
+    @Override
+    public List<Entity2D> retrieve(Entity2D e)
+    {
+        retrieveList.clear();
+        queryNode(getAABB(e), root);
+        return retrieveList;
+    }
+
+    @Override
+    public List<Entity2D> retrieve(Rectangle rect)
+    {
+        retrieveList.clear();
+        queryNode(new AABB(rect.getPosition(), rect.getWidth(), rect.getHeight()), root);
+        return retrieveList;
+    }
+
     private void remove(Node node)
     {
         if (root == null) return;
@@ -128,22 +144,6 @@ public class DynamicTree2D implements IBroadphase2D
             root = other;
             other.parent = null;
         }
-    }
-
-    @Override
-    public List<Entity2D> retrieve(Entity2D e)
-    {
-        retrieveList.clear();
-        queryNode(getAABB(e), root);
-        return retrieveList;
-    }
-
-    @Override
-    public List<Entity2D> retrieve(Rectangle rect)
-    {
-        retrieveList.clear();
-        queryNode(new AABB(rect.getPosition(), rect.getWidth(), rect.getHeight()), root);
-        return retrieveList;
     }
 
     private AABB getAABB(Entity2D e)

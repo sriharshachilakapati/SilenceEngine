@@ -64,16 +64,6 @@ public class Rectangle extends Polygon
         updateVertices();
     }
 
-    private void updateVertices()
-    {
-        clearVertices();
-
-        addVertex(v1.set(0, 0));
-        addVertex(v2.set(width, 0));
-        addVertex(v3.set(width, height));
-        addVertex(v4.set(0, height));
-    }
-
     public Rectangle(float width, float height)
     {
         this(0, 0, width, height);
@@ -82,6 +72,16 @@ public class Rectangle extends Polygon
     public Rectangle(Vector2 min, Vector2 max)
     {
         this(min.x, min.y, max.x - min.x, max.y - min.y);
+    }
+
+    private void updateVertices()
+    {
+        clearVertices();
+
+        addVertex(v1.set(0, 0));
+        addVertex(v2.set(width, 0));
+        addVertex(v3.set(width, height));
+        addVertex(v4.set(0, height));
     }
 
     public boolean intersects(Polygon p)
@@ -100,6 +100,45 @@ public class Rectangle extends Polygon
         }
         else
             return super.intersects(p);
+    }
+
+    @Override
+    public Rectangle copy()
+    {
+        return new Rectangle(getX(), getY(), width, height);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = (getX() != +0.0f ? Float.floatToIntBits(getX()) : 0);
+        result = 31 * result + (getY() != +0.0f ? Float.floatToIntBits(getY()) : 0);
+        result = 31 * result + (width != +0.0f ? Float.floatToIntBits(width) : 0);
+        result = 31 * result + (height != +0.0f ? Float.floatToIntBits(height) : 0);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Rectangle rectangle = (Rectangle) o;
+
+        return Float.compare(rectangle.height, height) == 0 &&
+               Float.compare(rectangle.width, width) == 0 &&
+               Float.compare(rectangle.getX(), getX()) == 0 &&
+               Float.compare(rectangle.getY(), getY()) == 0;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Rectangle{" +
+               "width=" + width +
+               ", height=" + height +
+               '}';
     }
 
     public float getAABBIntersectionWidth(Rectangle aabb)
@@ -156,44 +195,6 @@ public class Rectangle extends Polygon
         Vector2 position = getPosition();
         position.setY(y);
         setPosition(position);
-    }
-
-    public Rectangle copy()
-    {
-        return new Rectangle(getX(), getY(), width, height);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = (getX() != +0.0f ? Float.floatToIntBits(getX()) : 0);
-        result = 31 * result + (getY() != +0.0f ? Float.floatToIntBits(getY()) : 0);
-        result = 31 * result + (width != +0.0f ? Float.floatToIntBits(width) : 0);
-        result = 31 * result + (height != +0.0f ? Float.floatToIntBits(height) : 0);
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Rectangle rectangle = (Rectangle) o;
-
-        return Float.compare(rectangle.height, height) == 0 &&
-               Float.compare(rectangle.width, width) == 0 &&
-               Float.compare(rectangle.getX(), getX()) == 0 &&
-               Float.compare(rectangle.getY(), getY()) == 0;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "Rectangle{" +
-               "width=" + width +
-               ", height=" + height +
-               '}';
     }
 
     public float getWidth()

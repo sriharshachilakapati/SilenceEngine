@@ -89,6 +89,27 @@ public class DynamicTree3D implements IBroadphase3D
         }
     }
 
+    @Override
+    public List<Entity3D> retrieve(Entity3D e)
+    {
+        retrieveList.clear();
+        queryNode(getAABB(e), root);
+        return retrieveList;
+    }
+
+    @Override
+    public List<Entity3D> retrieve(Polyhedron bounds)
+    {
+        retrieveList.clear();
+
+        AABB aabb = new AABB();
+        aabb.min.set(bounds.getPosition()).subtractSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
+        aabb.max.set(bounds.getPosition()).addSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
+
+        queryNode(aabb, root);
+        return retrieveList;
+    }
+
     private void remove(Node node)
     {
         if (root == null) return;
@@ -129,27 +150,6 @@ public class DynamicTree3D implements IBroadphase3D
             root = other;
             other.parent = null;
         }
-    }
-
-    @Override
-    public List<Entity3D> retrieve(Entity3D e)
-    {
-        retrieveList.clear();
-        queryNode(getAABB(e), root);
-        return retrieveList;
-    }
-
-    @Override
-    public List<Entity3D> retrieve(Polyhedron bounds)
-    {
-        retrieveList.clear();
-
-        AABB aabb = new AABB();
-        aabb.min.set(bounds.getPosition()).subtractSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
-        aabb.max.set(bounds.getPosition()).addSelf(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
-
-        queryNode(aabb, root);
-        return retrieveList;
     }
 
     private AABB getAABB(Entity3D e)
@@ -310,7 +310,7 @@ public class DynamicTree3D implements IBroadphase3D
             Cuboid bounds = entity.getBounds();
 
             return new AABB(entity.getPosition().subtract(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2),
-                                   bounds.getWidth(), bounds.getHeight(), bounds.getThickness());
+                    bounds.getWidth(), bounds.getHeight(), bounds.getThickness());
         }
 
         public static AABB union(AABB aabb1, AABB aabb2, AABB store)

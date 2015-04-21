@@ -47,16 +47,6 @@ public class Vector4
         set(x, y, z, w);
     }
 
-    public Vector4 set(float x, float y, float z, float w)
-    {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.w = w;
-
-        return this;
-    }
-
     public Vector4(float v)
     {
         this(v, v, v, v);
@@ -90,6 +80,16 @@ public class Vector4
     public Vector4(Vector4 v)
     {
         this(v.x, v.y, v.z, v.w);
+    }
+
+    public Vector4 set(float x, float y, float z, float w)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.w = w;
+
+        return this;
     }
 
     public Vector4 add(Vector4 v)

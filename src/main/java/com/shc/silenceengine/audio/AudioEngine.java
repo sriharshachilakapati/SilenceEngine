@@ -35,9 +35,9 @@ import org.lwjgl.openal.ALDevice;
 import java.io.InputStream;
 
 /**
- * The central hub for all the audio related operations in SilenceEngine. You have to initialize this engine if you
- * want to have audio when you are doing your own game loop. It is invoked automatically if you inherit your game from
- * the <code>Game</code> class.
+ * The central hub for all the audio related operations in SilenceEngine. You have to initialize this engine if you want
+ * to have audio when you are doing your own game loop. It is invoked automatically if you inherit your game from the
+ * <code>Game</code> class.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -59,7 +59,7 @@ public final class AudioEngine implements IEngine
         OggReader.register();
 
         Logger.log("Audio Engine initialized successfully, with device "
-                   + ALC10.alcGetString(ALContext.getInstance().getDevice().getPointer(), ALC10.ALC_DEVICE_SPECIFIER));
+                   + ALC10.alcGetString(getALDevice().getPointer(), ALC10.ALC_DEVICE_SPECIFIER));
     }
 
     @Override
@@ -84,6 +84,7 @@ public final class AudioEngine implements IEngine
      * Loads a sound from a resource name.
      *
      * @param name The resource name of the sound file to load.
+     *
      * @return The loaded Sound object.
      */
     public Sound getSound(String name)
@@ -96,6 +97,7 @@ public final class AudioEngine implements IEngine
      *
      * @param is        The InputStream to read the sound data
      * @param extension The extension of the file to determine the format of the data
+     *
      * @return The loaded Sound object
      */
     public Sound getSound(InputStream is, String extension)

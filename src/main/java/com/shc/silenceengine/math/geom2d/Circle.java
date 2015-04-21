@@ -31,16 +31,14 @@ import com.shc.silenceengine.math.Vector2;
  *
  * @author Sri Harsha Chilakapati
  */
-public class Circle extends Polygon
+public class Circle extends Ellipse
 {
-    private float radius;
-
     /**
      * Constructs a point-circle, with center as origin and radius as 1
      */
     public Circle()
     {
-        this(0, 0, 1);
+        this(1);
     }
 
     /**
@@ -52,66 +50,12 @@ public class Circle extends Polygon
      */
     public Circle(float x, float y, float radius)
     {
-        this.radius = radius;
-
-        updateVertices();
-        setCenter(new Vector2(x, y));
-    }
-
-    /**
-     * Updates the vertices of the circle. Regenerates them.
-     */
-    private void updateVertices()
-    {
-        float numSegments = 10 * radius;
-
-        float theta = (float) (2 * Math.PI / numSegments);
-        float c = (float) Math.cos(theta);
-        float s = (float) Math.sin(theta);
-        float t;
-
-        float x = radius;
-        float y = 0;
-
-        clearVertices();
-        for (int i = 0; i < numSegments; i++)
-        {
-            addVertex(new Vector2(x + radius, y + radius));
-
-            t = x;
-            x = c * x - s * y;
-            y = s * t + c * y;
-        }
+        super(x, y, radius, radius);
     }
 
     public Circle(float radius)
     {
         this(0, 0, radius);
-    }
-
-    /**
-     * Checks for intersection between this circle and another polygon.
-     *
-     * @param p The other Polygon to test for intersection.
-     *
-     * @return True if intersects, else False.
-     */
-    public boolean intersects(Polygon p)
-    {
-        if (p instanceof Circle)
-        {
-            Circle c = (Circle) p;
-
-            float x = getX();
-            float y = getY();
-
-            float cx = c.getX();
-            float cy = c.getY();
-
-            return (((x - cx) * (x - cx)) + ((y - cy) * (y - cy))) < (radius + c.radius) * (radius + c.radius);
-        }
-        else
-            return super.intersects(p);
     }
 
     /**
@@ -121,15 +65,16 @@ public class Circle extends Polygon
      *
      * @return True if inside, else False.
      */
+    @Override
     public boolean contains(Vector2 p)
     {
-        return (((getX() - p.getX()) * (getX() - p.getX())) + ((getY() - p.getY()) * (getY() - p.getY()))) < radius * radius;
+        return (((getX() - p.getX()) * (getX() - p.getX())) + ((getY() - p.getY()) * (getY() - p.getY()))) < getRadius() * getRadius();
     }
 
     @Override
     public int hashCode()
     {
-        int result = (radius != +0.0f ? Float.floatToIntBits(radius) : 0);
+        int result = (getRadius() != +0.0f ? Float.floatToIntBits(getRadius()) : 0);
         result = 31 * result + (getX() != +0.0f ? Float.floatToIntBits(getX()) : 0);
         result = 31 * result + (getY() != +0.0f ? Float.floatToIntBits(getY()) : 0);
         return result;
@@ -143,7 +88,7 @@ public class Circle extends Polygon
 
         Circle circle = (Circle) o;
 
-        return radius == circle.radius && getX() == circle.getX() && getY() == circle.getY();
+        return getRadius() == circle.getRadius() && getX() == circle.getX() && getY() == circle.getY();
     }
 
     @Override
@@ -152,7 +97,7 @@ public class Circle extends Polygon
         return "Circle{" +
                "x=" + getX() +
                ", y=" + getY() +
-               ", r=" + radius +
+               ", r=" + getRadius() +
                '}';
     }
 
@@ -182,12 +127,12 @@ public class Circle extends Polygon
 
     public float getRadius()
     {
-        return radius;
+        return getRadiusX();
     }
 
     public void setRadius(float radius)
     {
-        this.radius = radius;
-        updateVertices();
+        setRadiusX(radius);
+        setRadiusY(radius);
     }
 }

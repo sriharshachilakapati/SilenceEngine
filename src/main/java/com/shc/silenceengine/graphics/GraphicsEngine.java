@@ -44,13 +44,6 @@ public class GraphicsEngine implements IEngine
     public static final Material DEFAULT_MATERIAL;
     private             Material currentMaterial;
 
-    static
-    {
-        DEFAULT_MATERIAL = new Material();
-        DEFAULT_MATERIAL.setAmbient(Color.WHITE);
-        DEFAULT_MATERIAL.setSpecular(Color.TRANSPARENT);
-    }
-
     public Material getCurrentMaterial()
     {
         return currentMaterial;
@@ -87,11 +80,6 @@ public class GraphicsEngine implements IEngine
         GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
     }
 
-    public void useMaterial(Material m)
-    {
-        currentMaterial = m;
-    }
-
     @Override
     public void beginFrame()
     {
@@ -120,6 +108,11 @@ public class GraphicsEngine implements IEngine
         Display.destroy();
     }
 
+    public void useMaterial(Material m)
+    {
+        currentMaterial = m;
+    }
+
     public void setViewport(int x, int y, int width, int height)
     {
         GL3Context.viewport(x, y, width, height);
@@ -143,5 +136,12 @@ public class GraphicsEngine implements IEngine
     public Graphics2D getGraphics2D()
     {
         return Graphics2D.getInstance();
+    }
+
+    static
+    {
+        DEFAULT_MATERIAL = new Material();
+        DEFAULT_MATERIAL.setAmbient(Color.WHITE);
+        DEFAULT_MATERIAL.setSpecular(Color.TRANSPARENT);
     }
 }

@@ -63,6 +63,21 @@ public class Cuboid extends Polyhedron
         updateVertices();
     }
 
+    public Cuboid(Vector3 min, Vector3 max)
+    {
+        this();
+
+        Vector3 size = max.subtract(min);
+
+        width = size.x;
+        height = size.y;
+        thickness = size.z;
+
+        setPosition(min.add(max).scaleSelf(0.5f));
+
+        updateVertices();
+    }
+
     private void updateVertices()
     {
         clearVertices();
@@ -108,31 +123,19 @@ public class Cuboid extends Polyhedron
         addVertex(vertices[25].set(+width / 2, +height / 2, -thickness / 2));
     }
 
-    public Cuboid(Vector3 min, Vector3 max)
-    {
-        this();
-
-        Vector3 size = max.subtract(min);
-
-        width = size.x;
-        height = size.y;
-        thickness = size.z;
-
-        setPosition(min.add(max).scaleSelf(0.5f));
-
-        updateVertices();
-    }
-
+    @Override
     public float getWidth()
     {
         return width;
     }
 
+    @Override
     public float getHeight()
     {
         return height;
     }
 
+    @Override
     public float getThickness()
     {
         return thickness;

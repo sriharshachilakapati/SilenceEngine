@@ -104,6 +104,7 @@ public class Entity2D extends SceneNode
      *
      * @param delta The delta time.
      */
+    @Override
     public void preUpdate(float delta)
     {
         if (isDestroyed())
@@ -134,6 +135,7 @@ public class Entity2D extends SceneNode
      * @param delta   The delta time.
      * @param batcher The Batcher to batch rendering.
      */
+    @Override
     public void preRender(float delta, Batcher batcher)
     {
         if (isDestroyed())
@@ -148,6 +150,25 @@ public class Entity2D extends SceneNode
     public Vector2 getPosition()
     {
         return position;
+    }
+
+    /**
+     * Sets the position of this entity
+     *
+     * @param position The new position as a Vector2
+     */
+    public void setPosition(Vector2 position)
+    {
+        this.position.set(position);
+        polygon.setPosition(position);
+
+        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
+
+        getLocalTransform().reset().translateSelf(tempVec2.set(getPosition()).subtractSelf(getCenter()))
+                .rotateSelf(Vector3.AXIS_Z, polygon.getRotation())
+                .translateSelf(getCenter());
+
+        Vector2.REUSABLE_STACK.push(tempVec2);
     }
 
     /**
@@ -168,25 +189,6 @@ public class Entity2D extends SceneNode
     {
         polygon.setCenter(center);
         position.set(polygon.getPosition());
-
-        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
-
-        getLocalTransform().reset().translateSelf(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                .rotateSelf(Vector3.AXIS_Z, polygon.getRotation())
-                .translateSelf(getCenter());
-
-        Vector2.REUSABLE_STACK.push(tempVec2);
-    }
-
-    /**
-     * Sets the position of this entity
-     *
-     * @param position The new position as a Vector2
-     */
-    public void setPosition(Vector2 position)
-    {
-        this.position.set(position);
-        polygon.setPosition(position);
 
         Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
 
