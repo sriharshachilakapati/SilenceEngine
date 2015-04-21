@@ -178,6 +178,35 @@ public class Game
     }
 
     /**
+     * @return True if running, else false
+     */
+    public static boolean isRunning()
+    {
+        return running;
+    }
+
+    /**
+     * Kills the running game!
+     */
+    public static void end()
+    {
+        if (!running)
+        {
+            Logger.log("Disposing the Game resources");
+
+            batcher.dispose();
+            instance.dispose();
+
+            SilenceEngine.getInstance().dispose();
+
+            Logger.log("This game has been terminated successfully");
+            System.exit(0);
+        }
+
+        running = false;
+    }
+
+    /**
      * Starts the game. Initiates the game life-cycle and starts the main game-loop.
      */
     public void start()
@@ -309,35 +338,6 @@ public class Game
      */
     public void init()
     {
-    }
-
-    /**
-     * @return True if running, else false
-     */
-    public static boolean isRunning()
-    {
-        return running;
-    }
-
-    /**
-     * Kills the running game!
-     */
-    public static void end()
-    {
-        if (!running)
-        {
-            Logger.log("Disposing the Game resources");
-
-            batcher.dispose();
-            instance.dispose();
-
-            SilenceEngine.getInstance().dispose();
-
-            Logger.log("This game has been terminated successfully");
-            System.exit(0);
-        }
-
-        running = false;
     }
 
     /**

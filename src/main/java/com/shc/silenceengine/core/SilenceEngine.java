@@ -38,29 +38,8 @@ import org.lwjgl.Sys;
  */
 public final class SilenceEngine implements IEngine
 {
-    static
-    {
-        // Every exception occurs after SilenceException, even
-        // the uncaught exceptions are thrown as runtime exceptions
-        Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-        {
-            try
-            {
-                // No need to rethrow SilenceException
-                if (e instanceof SilenceException)
-                    throw e;
-
-                SilenceException.reThrow(e);
-            }
-            catch (Throwable ex)
-            {
-                ex.printStackTrace();
-                System.exit(-1);
-            }
-        });
-    }
-
     private static SilenceEngine instance;
+    private static Platform      platform;
 
     public static GraphicsEngine  graphics  = new GraphicsEngine();
     public static AudioEngine     audio     = new AudioEngine();
@@ -77,6 +56,33 @@ public final class SilenceEngine implements IEngine
             instance = new SilenceEngine();
 
         return instance;
+    }
+
+    public static Platform getPlatform()
+    {
+        if (platform == null)
+        {
+            final String OS = System.getProperty("os.name").toLowerCase();
+            final String ARCH = System.getProperty("os.arch").toLowerCase();
+
+            boolean isWindows = OS.contains("windows");
+            boolean isLinux   = OS.contains("linux");
+            boolean isMac     = OS.contains("mac");
+            boolean is64Bit   = ARCH.equals("amd64") || ARCH.equals("x86_64");
+
+            platform = Platform.UNKNOWN;
+
+            if (isWindows) platform = is64Bit ? Platform.WINDOWS_64 : Platform.WINDOWS_32;
+            if (isLinux)   platform = is64Bit ? Platform.LINUX_64 : Platform.LINUX_32;
+            if (isMac)     platform = Platform.MACOSX;
+        }
+
+        return platform;
+    }
+
+    public static String getVersion()
+    {
+        return "0.0.3a";
     }
 
     @Override
@@ -112,28 +118,6 @@ public final class SilenceEngine implements IEngine
         Logger.log("SilenceEngine version " + getVersion() + " was initialized successfully");
     }
 
-    public static Platform getPlatform()
-    {
-        final String OS = System.getProperty("os.name").toLowerCase();
-        final String ARCH = System.getProperty("os.arch").toLowerCase();
-
-        boolean isWindows = OS.contains("windows");
-        boolean isLinux = OS.contains("linux");
-        boolean isMac = OS.contains("mac");
-        boolean is64Bit = ARCH.equals("amd64") || ARCH.equals("x86_64");
-
-        if (isWindows) return is64Bit ? Platform.WINDOWS_64 : Platform.WINDOWS_32;
-        if (isLinux) return is64Bit ? Platform.LINUX_64 : Platform.LINUX_32;
-        if (isMac) return Platform.MACOSX;
-
-        return Platform.UNKNOWN;
-    }
-
-    public static String getVersion()
-    {
-        return "0.0.3a";
-    }
-
     @Override
     public void beginFrame()
     {
@@ -166,8 +150,30 @@ public final class SilenceEngine implements IEngine
         Logger.log("SilenceEngine version " + getVersion() + " was successfully terminated");
     }
 
-    public static enum Platform
+    public enum Platform
     {
         WINDOWS_32, WINDOWS_64, MACOSX, LINUX_32, LINUX_64, UNKNOWN
+    }
+
+    static
+    {
+        // Every exception occurs after SilenceException, even
+        // the uncaught exceptions are thrown as runtime exceptions
+        Thread.setDefaultUncaughtExceptionHandler((t, e) ->
+        {
+            try
+            {
+                // No need to rethrow SilenceException
+                if (e instanceof SilenceException)
+                    throw e;
+
+                SilenceException.reThrow(e);
+            }
+            catch (Throwable ex)
+            {
+                ex.printStackTrace();
+                System.exit(-1);
+            }
+        });
     }
 }

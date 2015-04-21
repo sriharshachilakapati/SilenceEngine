@@ -63,6 +63,8 @@ public final class ResourceLoader
     private float renderedProgress;
 
     private Texture logo;
+    private Paint   progressPaint;
+    private Paint   progressPaint2;
 
     private ResourceLoader()
     {
@@ -81,8 +83,13 @@ public final class ResourceLoader
         setRenderProgressCallback(this::defaultRenderProgressCallback);
     }
 
-    private Paint progressPaint;
-    private Paint progressPaint2;
+    public static ResourceLoader getInstance()
+    {
+        if (instance == null)
+            instance = new ResourceLoader();
+
+        return instance;
+    }
 
     public void defaultRenderProgressCallback(Batcher batcher, float percentage, String file)
     {
@@ -149,13 +156,6 @@ public final class ResourceLoader
                 SilenceException.reThrow(e);
             }
         }
-    }
-
-    public static ResourceLoader getInstance()
-    {
-        if (instance == null) instance = new ResourceLoader();
-
-        return instance;
     }
 
     public ResourceLoader setLogo(String logoName)

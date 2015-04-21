@@ -123,248 +123,6 @@ public class Window
         initNativeCallbacks();
     }
 
-    public long getHandle()
-    {
-        return handle;
-    }
-
-    private void initNativeCallbacks()
-    {
-        // Initialize overriden callbacks
-        initCustomCallbacks();
-
-        // Create the callback functions that re-post the events
-        glfwCharCallback = GLFWCharCallback((window, codePoint) ->
-            characterCallback.invoke(registeredWindows.get(window), codePoint)
-        );
-
-        glfwCharModsCallback = GLFWCharModsCallback((window, codePoint, mods) ->
-            characterModsCallback.invoke(registeredWindows.get(window), codePoint, mods)
-        );
-
-        glfwCursorEnterCallback = GLFWCursorEnterCallback((window, entered) ->
-            cursorEnterCallback.invoke(registeredWindows.get(window), entered != 0)
-        );
-
-        glfwCursorPosCallback = GLFWCursorPosCallback((win, xPos, yPos) ->
-        {
-            Window window = registeredWindows.get(win);
-
-            cursorPositionCallback.invoke(window, xPos, yPos);
-            Mouse.glfwCursorCallback(window, xPos, yPos);
-        });
-
-        glfwDropCallback = GLFWDropCallback((window, count, names) ->
-            dropCallback.invoke(registeredWindows.get(window), Callbacks.dropCallbackNamesString(count, names))
-        );
-
-        glfwFramebufferSizeCallback = GLFWFramebufferSizeCallback((window, width, height) ->
-            framebufferSizeCallback.invoke(registeredWindows.get(window), width, height)
-        );
-
-        glfwKeyCallback = GLFWKeyCallback((win, key, scanCode, action, mods) ->
-        {
-            Window window = registeredWindows.get(win);
-            keyCallback.invoke(window, key, scanCode, action, mods);
-            Keyboard.glfwKeyCallback(window, key, scanCode, action, mods);
-        });
-
-        glfwMouseButtonCallback = GLFWMouseButtonCallback((win, button, action, mods) ->
-        {
-            Window window = registeredWindows.get(win);
-            mouseButtonCallback.invoke(window, button, action, mods);
-            Mouse.glfwMouseButtonCallback(window, button, action, mods);
-        });
-
-        glfwScrollCallback = GLFWScrollCallback((win, xOffset, yOffset) ->
-        {
-            Window window = registeredWindows.get(win);
-            scrollCallback.invoke(window, xOffset, yOffset);
-            Mouse.glfwScrollCallback(window, xOffset, yOffset);
-        });
-
-        glfwWindowCloseCallback = GLFWWindowCloseCallback((window) ->
-            windowCloseCallback.invoke(registeredWindows.get(window))
-        );
-
-        glfwWindowFocusCallback = GLFWWindowFocusCallback((window, focus) ->
-            windowFocusCallback.invoke(registeredWindows.get(window), focus != 0)
-        );
-
-        glfwWindowIconifyCallback = GLFWWindowIconifyCallback((window, iconify) ->
-            windowIconifyCallback.invoke(registeredWindows.get(window), iconify != 0)
-        );
-
-        glfwWindowPosCallback = GLFWWindowPosCallback((window, xPos, yPos) ->
-            windowPositionCallback.invoke(registeredWindows.get(window), xPos, yPos)
-        );
-
-        glfwWindowRefreshCallback = GLFWWindowRefreshCallback((window) ->
-            windowRefreshCallback.invoke(registeredWindows.get(window))
-        );
-
-        glfwWindowSizeCallback = GLFWWindowSizeCallback((window, width, height) ->
-            windowSizeCallback.invoke(registeredWindows.get(window), width, height)
-        );
-
-        // Register native callbacks
-        glfwSetCharCallback(handle, glfwCharCallback);
-        glfwSetCharModsCallback(handle, glfwCharModsCallback);
-        glfwSetCursorEnterCallback(handle, glfwCursorEnterCallback);
-        glfwSetCursorPosCallback(handle, glfwCursorPosCallback);
-        glfwSetDropCallback(handle, glfwDropCallback);
-        glfwSetFramebufferSizeCallback(handle, glfwFramebufferSizeCallback);
-        glfwSetKeyCallback(handle, glfwKeyCallback);
-        glfwSetMouseButtonCallback(handle, glfwMouseButtonCallback);
-        glfwSetScrollCallback(handle, glfwScrollCallback);
-        glfwSetWindowCloseCallback(handle, glfwWindowCloseCallback);
-        glfwSetWindowFocusCallback(handle, glfwWindowFocusCallback);
-        glfwSetWindowIconifyCallback(handle, glfwWindowIconifyCallback);
-        glfwSetWindowPosCallback(handle, glfwWindowPosCallback);
-        glfwSetWindowRefreshCallback(handle, glfwWindowRefreshCallback);
-        glfwSetWindowSizeCallback(handle, glfwWindowSizeCallback);
-    }
-
-    private void initCustomCallbacks()
-    {
-        // The default callbacks does nothing
-        setCharacterCallback(null);
-        setCharacterModsCallback(null);
-        setCursorEnterCallback(null);
-        setCursorPositionCallback(null);
-        setDropCallback(null);
-        setFramebufferSizeCallback(null);
-        setKeyCallback(null);
-        setMouseButtonCallback(null);
-        setScrollCallback(null);
-        setCloseCallback(null);
-        setFocusCallback(null);
-        setIconifyCallback(null);
-        setPositionCallback(null);
-        setRefreshCallback(null);
-        setSizeCallback(null);
-    }
-
-    public void setCharacterCallback(ICharacterCallback callback)
-    {
-        if (callback == null)
-            callback = (window, codePoint) -> {};
-
-        this.characterCallback = callback;
-    }
-
-    public void setCharacterModsCallback(ICharacterModsCallback callback)
-    {
-        if (callback == null)
-            callback = (window, cp, mods) -> {};
-
-        this.characterModsCallback = callback;
-    }
-
-    public void setCursorEnterCallback(ICursorEnterCallback callback)
-    {
-        if (callback == null)
-            callback = (window, entered) -> {};
-
-        this.cursorEnterCallback = callback;
-    }
-
-    public void setCursorPositionCallback(ICursorPositionCallback callback)
-    {
-        if (callback == null)
-            callback = (window, x, y) -> {};
-
-        this.cursorPositionCallback = callback;
-    }
-
-    public void setDropCallback(IDropCallback callback)
-    {
-        if (callback == null)
-            callback = (window, paths) -> {};
-
-        this.dropCallback = callback;
-    }
-
-    public void setFramebufferSizeCallback(IFramebufferSizeCallback callback)
-    {
-        if (callback == null)
-            callback = (window, w, h) -> {};
-
-        this.framebufferSizeCallback = callback;
-    }
-
-    public void setKeyCallback(IKeyCallback callback)
-    {
-        if (callback == null)
-            callback = (win, key, sc, act, mods) -> {};
-
-        this.keyCallback = callback;
-    }
-
-    public void setMouseButtonCallback(IMouseButtonCallback callback)
-    {
-        if (callback == null)
-            callback = (win, b, act, mods) -> {};
-
-        this.mouseButtonCallback = callback;
-    }
-
-    public void setScrollCallback(IScrollCallback callback)
-    {
-        if (callback == null)
-            callback = (win, x, y) -> {};
-
-        this.scrollCallback = callback;
-    }
-
-    public void setCloseCallback(IWindowCloseCallback callback)
-    {
-        if (callback == null)
-            callback = (win) -> {};
-
-        this.windowCloseCallback = callback;
-    }
-
-    public void setFocusCallback(IWindowFocusCallback callback)
-    {
-        if (callback == null)
-            callback = (win, focused) -> {};
-
-        this.windowFocusCallback = callback;
-    }
-
-    public void setIconifyCallback(IWindowIconifyCallback callback)
-    {
-        if (callback == null)
-            callback = (win, ic) -> {};
-
-        this.windowIconifyCallback = callback;
-    }
-
-    public void setPositionCallback(IWindowPositionCallback callback)
-    {
-        if (callback == null)
-            callback = (win, x, y) -> {};
-
-        this.windowPositionCallback = callback;
-    }
-
-    public void setRefreshCallback(IWindowRefreshCallback callback)
-    {
-        if (callback == null)
-            callback = (win) -> {};
-
-        this.windowRefreshCallback = callback;
-    }
-
-    public void setSizeCallback(IWindowSizeCallback callback)
-    {
-        if (callback == null)
-            callback = (win, w, h) -> {};
-
-        this.windowSizeCallback = callback;
-    }
-
     public Window(Monitor monitor)
     {
         this(800, 600, monitor);
@@ -438,6 +196,123 @@ public class Window
     public static Window getCurrentContext()
     {
         return registeredWindows.get(glfwGetCurrentContext());
+    }
+
+    public long getHandle()
+    {
+        return handle;
+    }
+
+    private void initNativeCallbacks()
+    {
+        // Initialize overriden callbacks
+        initCustomCallbacks();
+
+        // Create the callback functions that re-post the events
+        glfwCharCallback = GLFWCharCallback((window, codePoint) ->
+                characterCallback.invoke(registeredWindows.get(window), codePoint));
+
+        glfwCharModsCallback = GLFWCharModsCallback((window, codePoint, mods) ->
+                characterModsCallback.invoke(registeredWindows.get(window), codePoint, mods));
+
+        glfwCursorEnterCallback = GLFWCursorEnterCallback((window, entered) ->
+                cursorEnterCallback.invoke(registeredWindows.get(window), entered != 0));
+
+        glfwCursorPosCallback = GLFWCursorPosCallback((win, xPos, yPos) ->
+        {
+            Window window = registeredWindows.get(win);
+
+            cursorPositionCallback.invoke(window, xPos, yPos);
+            Mouse.glfwCursorCallback(window, xPos, yPos);
+        });
+
+        glfwDropCallback = GLFWDropCallback((window, count, names) ->
+                dropCallback.invoke(registeredWindows.get(window), Callbacks.dropCallbackNamesString(count, names)));
+
+        glfwFramebufferSizeCallback = GLFWFramebufferSizeCallback((window, width, height) ->
+                framebufferSizeCallback.invoke(registeredWindows.get(window), width, height));
+
+        glfwKeyCallback = GLFWKeyCallback((win, key, scanCode, action, mods) ->
+        {
+            Window window = registeredWindows.get(win);
+            keyCallback.invoke(window, key, scanCode, action, mods);
+            Keyboard.glfwKeyCallback(window, key, scanCode, action, mods);
+        });
+
+        glfwMouseButtonCallback = GLFWMouseButtonCallback((win, button, action, mods) ->
+        {
+            Window window = registeredWindows.get(win);
+            mouseButtonCallback.invoke(window, button, action, mods);
+            Mouse.glfwMouseButtonCallback(window, button, action, mods);
+        });
+
+        glfwScrollCallback = GLFWScrollCallback((win, xOffset, yOffset) ->
+        {
+            Window window = registeredWindows.get(win);
+            scrollCallback.invoke(window, xOffset, yOffset);
+            Mouse.glfwScrollCallback(window, xOffset, yOffset);
+        });
+
+        glfwWindowCloseCallback = GLFWWindowCloseCallback((window) ->
+                        windowCloseCallback.invoke(registeredWindows.get(window))
+        );
+
+        glfwWindowFocusCallback = GLFWWindowFocusCallback((window, focus) ->
+                        windowFocusCallback.invoke(registeredWindows.get(window), focus != 0)
+        );
+
+        glfwWindowIconifyCallback = GLFWWindowIconifyCallback((window, iconify) ->
+                        windowIconifyCallback.invoke(registeredWindows.get(window), iconify != 0)
+        );
+
+        glfwWindowPosCallback = GLFWWindowPosCallback((window, xPos, yPos) ->
+                        windowPositionCallback.invoke(registeredWindows.get(window), xPos, yPos)
+        );
+
+        glfwWindowRefreshCallback = GLFWWindowRefreshCallback((window) ->
+                        windowRefreshCallback.invoke(registeredWindows.get(window))
+        );
+
+        glfwWindowSizeCallback = GLFWWindowSizeCallback((window, width, height) ->
+                        windowSizeCallback.invoke(registeredWindows.get(window), width, height)
+        );
+
+        // Register native callbacks
+        glfwSetCharCallback(handle, glfwCharCallback);
+        glfwSetCharModsCallback(handle, glfwCharModsCallback);
+        glfwSetCursorEnterCallback(handle, glfwCursorEnterCallback);
+        glfwSetCursorPosCallback(handle, glfwCursorPosCallback);
+        glfwSetDropCallback(handle, glfwDropCallback);
+        glfwSetFramebufferSizeCallback(handle, glfwFramebufferSizeCallback);
+        glfwSetKeyCallback(handle, glfwKeyCallback);
+        glfwSetMouseButtonCallback(handle, glfwMouseButtonCallback);
+        glfwSetScrollCallback(handle, glfwScrollCallback);
+        glfwSetWindowCloseCallback(handle, glfwWindowCloseCallback);
+        glfwSetWindowFocusCallback(handle, glfwWindowFocusCallback);
+        glfwSetWindowIconifyCallback(handle, glfwWindowIconifyCallback);
+        glfwSetWindowPosCallback(handle, glfwWindowPosCallback);
+        glfwSetWindowRefreshCallback(handle, glfwWindowRefreshCallback);
+        glfwSetWindowSizeCallback(handle, glfwWindowSizeCallback);
+    }
+
+    private void initCustomCallbacks()
+    {
+        // The default callbacks does nothing
+        setCharacterCallback(null);
+        setCharacterModsCallback(null);
+        setCursorEnterCallback(null);
+        setCursorPositionCallback(null);
+        setDropCallback(null);
+        setFramebufferSizeCallback(null);
+        setKeyCallback(null);
+        setMouseButtonCallback(null);
+        setScrollCallback(null);
+        setCloseCallback(null);
+        setFocusCallback(null);
+        setIconifyCallback(null);
+        setPositionCallback(null);
+        setRefreshCallback(null);
+        setSizeCallback(null);
     }
 
     public int getKey(int key)
@@ -624,9 +499,25 @@ public class Window
         return characterCallback;
     }
 
+    public void setCharacterCallback(ICharacterCallback callback)
+    {
+        if (callback == null)
+            callback = (window, codePoint) -> {};
+
+        this.characterCallback = callback;
+    }
+
     public ICharacterModsCallback getCharacterModsCallback()
     {
         return characterModsCallback;
+    }
+
+    public void setCharacterModsCallback(ICharacterModsCallback callback)
+    {
+        if (callback == null)
+            callback = (window, cp, mods) -> {};
+
+        this.characterModsCallback = callback;
     }
 
     public ICursorEnterCallback getCursorEnterCallback()
@@ -634,9 +525,25 @@ public class Window
         return cursorEnterCallback;
     }
 
+    public void setCursorEnterCallback(ICursorEnterCallback callback)
+    {
+        if (callback == null)
+            callback = (window, entered) -> {};
+
+        this.cursorEnterCallback = callback;
+    }
+
     public ICursorPositionCallback getCursorPositionCallback()
     {
         return cursorPositionCallback;
+    }
+
+    public void setCursorPositionCallback(ICursorPositionCallback callback)
+    {
+        if (callback == null)
+            callback = (window, x, y) -> {};
+
+        this.cursorPositionCallback = callback;
     }
 
     public IDropCallback getDropCallback()
@@ -644,9 +551,25 @@ public class Window
         return dropCallback;
     }
 
+    public void setDropCallback(IDropCallback callback)
+    {
+        if (callback == null)
+            callback = (window, paths) -> {};
+
+        this.dropCallback = callback;
+    }
+
     public IFramebufferSizeCallback getFramebufferSizeCallback()
     {
         return framebufferSizeCallback;
+    }
+
+    public void setFramebufferSizeCallback(IFramebufferSizeCallback callback)
+    {
+        if (callback == null)
+            callback = (window, w, h) -> {};
+
+        this.framebufferSizeCallback = callback;
     }
 
     public IKeyCallback getKeyCallback()
@@ -654,9 +577,25 @@ public class Window
         return keyCallback;
     }
 
+    public void setKeyCallback(IKeyCallback callback)
+    {
+        if (callback == null)
+            callback = (win, key, sc, act, mods) -> {};
+
+        this.keyCallback = callback;
+    }
+
     public IMouseButtonCallback getMouseButtonCallback()
     {
         return mouseButtonCallback;
+    }
+
+    public void setMouseButtonCallback(IMouseButtonCallback callback)
+    {
+        if (callback == null)
+            callback = (win, b, act, mods) -> {};
+
+        this.mouseButtonCallback = callback;
     }
 
     public IScrollCallback getScrollCallback()
@@ -664,9 +603,25 @@ public class Window
         return scrollCallback;
     }
 
+    public void setScrollCallback(IScrollCallback callback)
+    {
+        if (callback == null)
+            callback = (win, x, y) -> {};
+
+        this.scrollCallback = callback;
+    }
+
     public IWindowCloseCallback getCloseCallback()
     {
         return windowCloseCallback;
+    }
+
+    public void setCloseCallback(IWindowCloseCallback callback)
+    {
+        if (callback == null)
+            callback = (win) -> {};
+
+        this.windowCloseCallback = callback;
     }
 
     public IWindowFocusCallback getFocusCallback()
@@ -674,9 +629,25 @@ public class Window
         return windowFocusCallback;
     }
 
+    public void setFocusCallback(IWindowFocusCallback callback)
+    {
+        if (callback == null)
+            callback = (win, focused) -> {};
+
+        this.windowFocusCallback = callback;
+    }
+
     public IWindowIconifyCallback getIconifyCallback()
     {
         return windowIconifyCallback;
+    }
+
+    public void setIconifyCallback(IWindowIconifyCallback callback)
+    {
+        if (callback == null)
+            callback = (win, ic) -> {};
+
+        this.windowIconifyCallback = callback;
     }
 
     public IWindowPositionCallback getPositionCallback()
@@ -684,13 +655,37 @@ public class Window
         return windowPositionCallback;
     }
 
+    public void setPositionCallback(IWindowPositionCallback callback)
+    {
+        if (callback == null)
+            callback = (win, x, y) -> {};
+
+        this.windowPositionCallback = callback;
+    }
+
     public IWindowRefreshCallback getRefreshCallback()
     {
         return windowRefreshCallback;
     }
 
+    public void setRefreshCallback(IWindowRefreshCallback callback)
+    {
+        if (callback == null)
+            callback = (win) -> {};
+
+        this.windowRefreshCallback = callback;
+    }
+
     public IWindowSizeCallback getSizeCallback()
     {
         return windowSizeCallback;
+    }
+
+    public void setSizeCallback(IWindowSizeCallback callback)
+    {
+        if (callback == null)
+            callback = (win, w, h) -> {};
+
+        this.windowSizeCallback = callback;
     }
 }

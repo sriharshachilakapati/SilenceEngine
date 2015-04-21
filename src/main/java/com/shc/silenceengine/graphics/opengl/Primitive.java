@@ -27,20 +27,20 @@ package com.shc.silenceengine.graphics.opengl;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
- * Primitives are used for rendering VertexArrays or other objects to the screen. The most common is TRIANGLES. For
- * more information read <a href="https://github.com/sriharshachilakapati/SilenceEngine/wiki/Working-with-the-Batcher#the-primitive">here</a>.
+ * Primitives are used for rendering VertexArrays or other objects to the screen. The most common is TRIANGLES. For more
+ * information read <a href="https://github.com/sriharshachilakapati/SilenceEngine/wiki/Working-with-the-Batcher#the-primitive">here</a>.
  *
  * @author Sri Harsha Chilakapati
  */
 public enum Primitive
 {
-    POINTS(GL_POINTS),
-    LINES(GL_LINES),
-    LINE_LOOP(GL_LINE_LOOP),
-    LINE_STRIP(GL_LINE_STRIP),
-    TRIANGLES(GL_TRIANGLES),
-    TRIANGLE_FAN(GL_TRIANGLE_FAN),
-    TRIANGLE_STRIP(GL_TRIANGLE_STRIP);
+    POINTS         (GL_POINTS),
+    LINES          (GL_LINES),
+    LINE_LOOP      (GL_LINE_LOOP),
+    LINE_STRIP     (GL_LINE_STRIP),
+    TRIANGLES      (GL_TRIANGLES),
+    TRIANGLE_FAN   (GL_TRIANGLE_FAN),
+    TRIANGLE_STRIP (GL_TRIANGLE_STRIP);
 
     private int glPrimitive;
 

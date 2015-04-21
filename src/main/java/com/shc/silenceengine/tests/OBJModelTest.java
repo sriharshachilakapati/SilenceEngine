@@ -50,6 +50,7 @@ public class OBJModelTest extends Game
     private PointLight cameraLight;
 
     private Scene scene;
+    private long usedMemory = 0;
 
     public static void main(String[] args)
     {
@@ -82,8 +83,6 @@ public class OBJModelTest extends Game
     {
         cam.initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
     }
-
-    private long usedMemory = 0;
 
     public void update(float delta)
     {
@@ -126,11 +125,7 @@ public class OBJModelTest extends Game
         scene.update(delta);
 
         // Calculate the new memory used again
-        long newUsedMemory =  (getUsedMemory() / 1048576);
-
-        if (newUsedMemory > usedMemory)
-            System.out.println("Max memory: " + newUsedMemory);
-
+        long newUsedMemory = (getUsedMemory() / 1048576);
         usedMemory = Math.max(usedMemory, newUsedMemory);
 
         Display.setTitle("Total Memory: " + (getTotalMemory() / 1048576) + "MB / Free Memory: " + (getFreeMemory() / 1048576) + "MB / Used Memory: " + newUsedMemory + "MB");

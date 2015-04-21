@@ -81,7 +81,7 @@ public class TrueTypeFontTest extends Game
         font.drawString(batcher, fpsString, Display.getWidth() - font.getWidth(fpsString) - 10, 10, Color.CORN_FLOWER_BLUE);
 
         batcher.drawTexture2d(logo, new Vector2(Display.getWidth() - logo.getWidth(),
-                                                       Display.getHeight() - logo.getHeight()));
+                Display.getHeight() - logo.getHeight()));
     }
 
     public void dispose()

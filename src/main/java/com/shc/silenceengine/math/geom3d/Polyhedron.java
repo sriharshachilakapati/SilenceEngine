@@ -118,7 +118,7 @@ public class Polyhedron
 
         if (bounds == null)
             bounds = new Cuboid(new Vector3(minX, minY, minZ).add(position),
-                                       new Vector3(maxX, maxY, maxZ).add(position));
+                    new Vector3(maxX, maxY, maxZ).add(position));
         else
             bounds.set(maxX - minX, maxY - minY, maxZ - minZ, position);
     }

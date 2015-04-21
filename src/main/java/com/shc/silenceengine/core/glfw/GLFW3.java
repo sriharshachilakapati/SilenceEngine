@@ -53,7 +53,7 @@ public final class GLFW3
         // Error callback that does nothing
         setErrorCallback(null);
         glfwErrorCallback = GLFWErrorCallback((error, description) ->
-            errorCallback.invoke(error, Callbacks.errorCallbackDescriptionString(description))
+                        errorCallback.invoke(error, Callbacks.errorCallbackDescriptionString(description))
         );
 
         // Register the callback
@@ -65,7 +65,8 @@ public final class GLFW3
     public static void setErrorCallback(IErrorCallback errorCallback)
     {
         if (errorCallback == null)
-            errorCallback = (error, description) -> {};
+            errorCallback = (error, description) -> {
+            };
 
         GLFW3.errorCallback = errorCallback;
     }

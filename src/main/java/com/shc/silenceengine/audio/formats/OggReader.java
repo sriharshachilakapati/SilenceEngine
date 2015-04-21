@@ -74,6 +74,15 @@ public class OggReader implements ISoundReader
     }
 
     /**
+     * Registers the extensions that this class is able to handle.
+     */
+    public static void register()
+    {
+        ISoundReader.register("ogg", OggReader.class);
+        ISoundReader.register("oga", OggReader.class);
+    }
+
+    /**
      * Borrowed from DecodeExample.java file of JOrbis examples, but heavily modified. This method reads in the OGG
      * data, and convert it into PCM samples ready to be fed into the mouth of OpenAL ALBuffer class.
      */
@@ -355,15 +364,6 @@ public class OggReader implements ISoundReader
         // Convert the decoded samples into mono / stereo bytes
         byte[] samples = output.toByteArray();
         data = ISoundReader.convertAudioBytes(samples, vi.channels == 2);
-    }
-
-    /**
-     * Registers the extensions that this class is able to handle.
-     */
-    public static void register()
-    {
-        ISoundReader.register("ogg", OggReader.class);
-        ISoundReader.register("oga", OggReader.class);
     }
 
     @Override

@@ -270,9 +270,20 @@ public final class Display
         Display.width = width;
         Display.height = height;
         displayWindow.setSize(width, height);
-    }    public static int getWidth()
+    }
+
+    public static int getWidth()
     {
         return width;
+    }
+
+    public static void setWidth(int width)
+    {
+        if (displayWindow == null)
+            return;
+
+        Display.width = width;
+        displayWindow.setSize(width, getHeight());
     }
 
     public static Vector2 getPosition()
@@ -286,27 +297,19 @@ public final class Display
         Display.posY = (int) position.y;
 
         return position;
-    }    public static int getHeight()
-    {
-        return height;
     }
 
     public static void setPosition(Vector2 p)
     {
         setPosition((int) p.x, (int) p.y);
-    }    public static void setWidth(int width)
-    {
-        if (displayWindow == null)
-            return;
-
-        Display.width = width;
-        displayWindow.setSize(width, getHeight());
     }
 
-    public static boolean isResizable()
+    public static int getHeight()
     {
-        return resizable;
-    }    public static void setHeight(int height)
+        return height;
+    }
+
+    public static void setHeight(int height)
     {
         if (displayWindow == null)
             return;
@@ -315,12 +318,20 @@ public final class Display
         displayWindow.setSize(getWidth(), height);
     }
 
+    public static boolean isResizable()
+    {
+        return resizable && !fullScreen;
+    }
+
     public static void setResizable(boolean resizable)
     {
         if (Display.resizable == resizable)
             return;
 
         Display.resizable = resizable;
+
+        if (fullScreen)
+            return;
 
         Window resizableWindow = createWindow(width, height, getTitle(), monitor, displayWindow);
 
@@ -340,6 +351,14 @@ public final class Display
     public static String getTitle()
     {
         return displayWindow.getTitle();
+    }
+
+    public static void setTitle(String title)
+    {
+        if (displayWindow == null)
+            return;
+
+        displayWindow.setTitle(title);
     }
 
     public static void hide()
@@ -372,14 +391,6 @@ public final class Display
 
         Program.DEFAULT.use();
         Texture.EMPTY.bind();
-    }
-
-    public static void setTitle(String title)
-    {
-        if (displayWindow == null)
-            return;
-
-        displayWindow.setTitle(title);
     }
 
     public static boolean getVSync()

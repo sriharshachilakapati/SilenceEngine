@@ -55,12 +55,6 @@ public final class Logger
     {
     }
 
-    static
-    {
-        setPrintTimeStamps(true);
-        setTimeStampFormat(new SimpleDateFormat("MM/dd/yyyy h:mm:ss a"));
-    }
-
     /**
      * Logs <code>messages</code> to {@link java.lang.System#out} with the current time in the format provided by
      * <code>setTimeStampFormat()</code> if <code>setPrintTimeStamps()</code> is <code>true</code>.
@@ -91,6 +85,7 @@ public final class Logger
      * <code>setTimeStampFormat()</code> if <code>setPrintTimeStamps()</code> is <code>true</code>.
      *
      * @param messages An array of <code>Object</code> to be printed.
+     *
      * @see java.lang.System#err
      */
     public static void warn(Object... messages)
@@ -108,6 +103,7 @@ public final class Logger
      * com.shc.silenceengine.core.SilenceException SilenceException}
      *
      * @param messages An array of <code>Object</code> to be printed.
+     *
      * @see java.lang.System#err
      */
     public static void error(Object... messages)
@@ -140,5 +136,11 @@ public final class Logger
     public static void setPrintTimeStamps(boolean printTimeStamps)
     {
         Logger.printTimeStamps = printTimeStamps;
+    }
+
+    static
+    {
+        setPrintTimeStamps(true);
+        setTimeStampFormat(new SimpleDateFormat("MM/dd/yyyy h:mm:ss a"));
     }
 }

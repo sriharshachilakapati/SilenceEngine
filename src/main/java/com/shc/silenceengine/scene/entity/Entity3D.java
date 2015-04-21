@@ -96,6 +96,7 @@ public class Entity3D extends SceneNode
      *
      * @param delta The delta time.
      */
+    @Override
     public void preUpdate(float delta)
     {
         if (isDestroyed())

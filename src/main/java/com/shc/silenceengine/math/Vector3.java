@@ -73,6 +73,11 @@ public class Vector3
         this(v.getX(), v.getY(), v.getZ());
     }
 
+    public Vector3(Vector4 v)
+    {
+        this(v.x, v.y, v.z);
+    }
+
     public float getX()
     {
         return x;
@@ -106,11 +111,6 @@ public class Vector3
         return this;
     }
 
-    public Vector3(Vector4 v)
-    {
-        this(v.x, v.y, v.z);
-    }
-
     public Vector3 add(Vector3 v)
     {
         return add(v.x, v.y, v.z);
@@ -118,7 +118,7 @@ public class Vector3
 
     public Vector3 add(float x, float y, float z)
     {
-        return new Vector3(this.x + x, this.y + y, this.z + z);
+        return copy().addSelf(x, y, z);
     }
 
     public Vector3 add(Vector2 v, float z)
@@ -202,7 +202,7 @@ public class Vector3
 
     public Vector3 scale(float sx, float sy, float sz)
     {
-        return new Vector3(x * sx, y * sy, z * sz);
+        return copy().scaleSelf(sx, sy, sz);
     }
 
     public Vector3 cross(Vector3 v)
@@ -392,7 +392,6 @@ public class Vector3
         return set(v, v, v);
     }
 
-    /* Swizzling */
     public float getR()
     {
         return x;

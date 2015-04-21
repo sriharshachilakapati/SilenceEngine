@@ -48,10 +48,11 @@ public class Texture
     private static int     activeUnit;
     public static  Texture CURRENT;
     public static  Texture EMPTY;
-    private        int     id;
-    private        float   width;
-    private        float   height;
-    private        boolean disposed;
+
+    private int     id;
+    private float   width;
+    private float   height;
+    private boolean disposed;
 
     public Texture()
     {
@@ -113,48 +114,6 @@ public class Texture
         return texture;
     }
 
-    public void bind()
-    {
-        if (CURRENT == this)
-            return;
-
-        if (disposed)
-            throw new GLException("Cannot bind a disposed texture!");
-
-        glBindTexture(GL_TEXTURE_2D, id);
-        GLError.check();
-
-        CURRENT = this;
-    }
-
-    public void setFilter(int min, int mag)
-    {
-        bind();
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
-        GLError.check();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
-        GLError.check();
-    }
-
-    public void image2d(ByteBuffer data, int type, int format, int width, int height, int internalFormat)
-    {
-        bind();
-
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
-        GLError.check();
-
-        this.width = width;
-        this.height = height;
-    }
-
-    public void generateMipMaps()
-    {
-        bind();
-        glGenerateMipmap(GL_TEXTURE_2D);
-        GLError.check();
-    }
-
     public static Texture fromResource(String name)
     {
         return fromInputStream(FileUtils.getResource(name));
@@ -196,6 +155,48 @@ public class Texture
         buffer.rewind();
 
         return fromByteBuffer(buffer, img.getWidth(), img.getHeight());
+    }
+
+    public void bind()
+    {
+        if (CURRENT == this)
+            return;
+
+        if (disposed)
+            throw new GLException("Cannot bind a disposed texture!");
+
+        glBindTexture(GL_TEXTURE_2D, id);
+        GLError.check();
+
+        CURRENT = this;
+    }
+
+    public void setFilter(int min, int mag)
+    {
+        bind();
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
+        GLError.check();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
+        GLError.check();
+    }
+
+    public void image2d(ByteBuffer data, int type, int format, int width, int height, int internalFormat)
+    {
+        bind();
+
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
+        GLError.check();
+
+        this.width = width;
+        this.height = height;
+    }
+
+    public void generateMipMaps()
+    {
+        bind();
+        glGenerateMipmap(GL_TEXTURE_2D);
+        GLError.check();
     }
 
     public void setWrapping(int s)
@@ -276,6 +277,9 @@ public class Texture
 
     public void dispose()
     {
+        if (isDisposed())
+            throw new SilenceException("This texture is already disposed.");
+
         EMPTY.bind();
         GLError.check();
         glDeleteTextures(id);

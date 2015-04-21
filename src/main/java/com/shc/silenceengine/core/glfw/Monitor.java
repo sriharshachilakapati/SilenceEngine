@@ -75,7 +75,8 @@ public class Monitor
     public static void setCallback(IMonitorCallback callback)
     {
         if (callback == null)
-            callback = (monitor, event) -> {};
+            callback = (monitor, event) -> {
+            };
 
         monitorCallback = callback;
 
@@ -83,10 +84,27 @@ public class Monitor
             glfwMonitorCallback.release();
 
         glfwMonitorCallback = GLFWMonitorCallback((monitor, event) ->
-            monitorCallback.invoke(registeredMonitors.get(monitor), event)
+                        monitorCallback.invoke(registeredMonitors.get(monitor), event)
         );
 
         glfwSetMonitorCallback(glfwMonitorCallback);
+    }
+
+    public static List<Monitor> getMonitors()
+    {
+        if (monitors == null)
+        {
+            monitors = new ArrayList<>();
+
+            PointerBuffer buffer = glfwGetMonitors();
+
+            while (buffer.hasRemaining())
+                monitors.add(new Monitor(buffer.get()));
+
+            monitors = Collections.unmodifiableList(monitors);
+        }
+
+        return monitors;
     }
 
     public List<VideoMode> getVideoModes()
@@ -211,22 +229,5 @@ public class Monitor
     public boolean isPrimary()
     {
         return getMonitors().get(0).equals(this);
-    }
-
-    public static List<Monitor> getMonitors()
-    {
-        if (monitors == null)
-        {
-            monitors = new ArrayList<>();
-
-            PointerBuffer buffer = glfwGetMonitors();
-
-            while (buffer.hasRemaining())
-                monitors.add(new Monitor(buffer.get()));
-
-            monitors = Collections.unmodifiableList(monitors);
-        }
-
-        return monitors;
     }
 }

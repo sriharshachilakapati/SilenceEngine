@@ -70,12 +70,6 @@ public class ResourceLoaderTest extends Game
         cam = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
     }
 
-    private void customProgressRenderCallback(Batcher batcher, float percentage, String filename)
-    {
-        System.out.println((percentage * 100) + "% => Loading file: " + filename + "");
-        ResourceLoader.getInstance().defaultRenderProgressCallback(batcher, percentage, filename);
-    }
-
     public void resize()
     {
         cam.initProjection(Display.getWidth(), Display.getHeight());
@@ -100,5 +94,11 @@ public class ResourceLoaderTest extends Game
     public void dispose()
     {
         ResourceLoader.getInstance().dispose();
+    }
+
+    private void customProgressRenderCallback(Batcher batcher, float percentage, String filename)
+    {
+        System.out.println((percentage * 100) + "% => Loading file: " + filename + "");
+        ResourceLoader.getInstance().defaultRenderProgressCallback(batcher, percentage, filename);
     }
 }

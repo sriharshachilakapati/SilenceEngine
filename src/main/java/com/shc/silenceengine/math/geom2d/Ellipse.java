@@ -32,11 +32,21 @@ import com.shc.silenceengine.utils.MathUtils;
  */
 public class Ellipse extends Polygon
 {
+    public Ellipse(float rx, float ry)
+    {
+        this(0, 0, rx, ry);
+    }
+
+    public Ellipse(float x, float y, float rx, float ry)
+    {
+        this(new Vector2(x, y), rx, ry);
+    }
+
     public Ellipse(Vector2 position, float rx, float ry)
     {
-        setPosition(position);
-
         updateVertices(rx, ry);
+
+        setPosition(position);
     }
 
     private void updateVertices(float rx, float ry)
@@ -47,10 +57,7 @@ public class Ellipse extends Polygon
         float y = getPosition().y;
 
         for (int i = 0; i < 360; i++)
-        {
-            addVertex(new Vector2(x + MathUtils.cos(i) * rx,
-                                         y + MathUtils.sin(i) * ry));
-        }
+            addVertex(new Vector2(x + MathUtils.cos(i) * rx, y + MathUtils.sin(i) * ry));
     }
 
     public float getRadiusX()

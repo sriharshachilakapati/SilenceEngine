@@ -31,6 +31,7 @@ import java.nio.FloatBuffer;
 
 /**
  * A 3x3 Matrix.
+ *
  * $$
  * \begin{bmatrix}
  * m00 &amp; m10 &amp; m20  \\
@@ -38,6 +39,7 @@ import java.nio.FloatBuffer;
  * m02 &amp; m12 &amp; m22
  * \end{bmatrix}
  * $$
+ *
  * @author Sri Harsha Chilakapati
  */
 public class Matrix3
@@ -60,6 +62,19 @@ public class Matrix3
         initIdentity();
 
         buffer = BufferUtils.createFloatBuffer(9);
+    }
+
+    /**
+     * Create a {@code Matrix3} using {@link #set(float)}.
+     *
+     * @param diagonal The value to set Identity positions to
+     *
+     * @see #set(float)
+     */
+    public Matrix3(float diagonal)
+    {
+        this();
+        set(diagonal);
     }
 
     /**
@@ -125,19 +140,8 @@ public class Matrix3
     }
 
     /**
-     * Create a {@code Matrix3} using {@link #set(float)}.
-     *
-     * @param diagonal The value to set Identity positions to
-     * @see #set(float)
-     */
-    public Matrix3(float diagonal)
-    {
-        this();
-        set(diagonal);
-    }
-
-    /**
      * Sets all Identity positions to {@code diagonal}.
+     *
      * $$
      * \begin{bmatrix}
      * d &amp; 0 &amp; 0  \\
@@ -145,7 +149,9 @@ public class Matrix3
      * 0 &amp; 0 &amp; d
      * \end{bmatrix}
      * $$
+     *
      * @param diagonal The value to set Identity positions to (d in the matrix)
+     *
      * @return This {@code Matrix3}
      */
     public Matrix3 set(float diagonal)
@@ -163,7 +169,9 @@ public class Matrix3
 
     /**
      * Adds {@code m} to the clone of this {@code Matrix3} and returns the result.
+     *
      * @param m The Matrix to add on to this Matrix
+     *
      * @return The result of the addition.
      */
     public Matrix3 add(Matrix3 m)
@@ -173,7 +181,9 @@ public class Matrix3
 
     /**
      * Adds {@code m} to this {@code Matrix3} and returns itself.
+     *
      * @param m The {@code Matrix3} to add on to this {@code Matrix3}
+     *
      * @return This {@code Matrix3}
      */
     public Matrix3 addSelf(Matrix3 m)
@@ -237,6 +247,7 @@ public class Matrix3
 
     /**
      * Set all positions in this {@code Matrix3} to 0.
+     *
      * $$
      * \begin{bmatrix}
      * 0 &amp; 0 &amp; 0  \\
@@ -244,6 +255,7 @@ public class Matrix3
      * 0 &amp; 0 &amp; 0
      * \end{bmatrix}
      * $$
+     *
      * @return This {@code Matrix3}
      */
     public Matrix3 initZero()

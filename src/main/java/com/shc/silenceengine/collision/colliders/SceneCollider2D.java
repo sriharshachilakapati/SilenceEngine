@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p> A SceneCollider that checks collisions between 2D entities in a scene. SceneCollider2D is an object that
- * manages the collision detection of all the objects in a scene automatically for you. The SceneCollider2D defines
- * a SceneCollider for 2D entities in the scene, i.e., the objects which extend from the Entity2D class. By default,
+ * <p> A SceneCollider that checks collisions between 2D entities in a scene. SceneCollider2D is an object that manages
+ * the collision detection of all the objects in a scene automatically for you. The SceneCollider2D defines a
+ * SceneCollider for 2D entities in the scene, i.e., the objects which extend from the Entity2D class. By default,
  * collisions will not be checked for the entities that are present. You are required to register the types of entities
  * to test for collisions using the register() method like in this example. </p>
  *
@@ -167,9 +167,9 @@ public class SceneCollider2D
                     collisionMap.get(class1).stream()
                             // Filter all the entities which belong to class2 and not equal to entity1
                             .filter(class2 -> class2.isInstance(entity2) && entity != entity2)
-                            // Filter all the entities whose polygons intersects with the polygon of entity1
+                                    // Filter all the entities whose polygons intersects with the polygon of entity1
                             .filter(class2 -> entity.getPolygon().intersects(entity2.getPolygon()))
-                            // Send collision events to all the colliding entities
+                                    // Send collision events to all the colliding entities
                             .forEach(class2 -> entity.collision(entity2));
             });
     }

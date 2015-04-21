@@ -54,6 +54,18 @@ public class Matrix4
         buffer = BufferUtils.createFloatBuffer(16);
     }
 
+    public Matrix4(Matrix4 m)
+    {
+        this();
+        set(m);
+    }
+
+    public Matrix4(float diagonal)
+    {
+        this();
+        set(diagonal);
+    }
+
     public Matrix4 set(Matrix3 m)
     {
         for (int i = 0; i < 3; i++)
@@ -83,12 +95,6 @@ public class Matrix4
         return this;
     }
 
-    public Matrix4(Matrix4 m)
-    {
-        this();
-        set(m);
-    }
-
     public Matrix4 set(Matrix4 m)
     {
         for (int i = 0; i < 4; i++)
@@ -105,12 +111,6 @@ public class Matrix4
     public float get(int x, int y)
     {
         return m[x][y];
-    }
-
-    public Matrix4(float diagonal)
-    {
-        this();
-        set(diagonal);
     }
 
     public Matrix4 set(float diagonal)
@@ -164,7 +164,7 @@ public class Matrix4
 
     public Matrix4 multiply(Matrix4 m)
     {
-        return new Matrix4(this).multiplySelf(m);
+        return copy().multiplySelf(m);
     }
 
     public Matrix4 multiplySelf(Matrix4 m)
@@ -234,8 +234,8 @@ public class Matrix4
         // \        /  \   /     \                      /
 
         return dest.set(A * X + B * Y + C * Z + D * W,
-                               E * X + F * Y + G * Z + H * W,
-                               I * X + J * Y + K * Z + L * W);
+                        E * X + F * Y + G * Z + H * W,
+                        I * X + J * Y + K * Z + L * W);
     }
 
     public Vector4 multiply(Vector4 v)
@@ -294,14 +294,14 @@ public class Matrix4
         // \        /  \   /     \                      /
 
         return dest.set(A * X + B * Y + C * Z + D * W,
-                               E * X + F * Y + G * Z + H * W,
-                               I * X + J * Y + K * Z + L * W,
-                               M * X + N * Y + O * Z + P * W);
+                        E * X + F * Y + G * Z + H * W,
+                        I * X + J * Y + K * Z + L * W,
+                        M * X + N * Y + O * Z + P * W);
     }
 
     public Matrix4 transpose()
     {
-        return new Matrix4(this).transposeSelf();
+        return copy().transposeSelf();
     }
 
     public Matrix4 transposeSelf()

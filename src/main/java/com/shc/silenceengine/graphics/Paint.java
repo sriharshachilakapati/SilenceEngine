@@ -34,11 +34,6 @@ public class Paint
     private Color bottomLeft;
     private Color bottomRight;
 
-    public enum Gradient
-    {
-        LINEAR_TOP_TO_BOTTOM, LINEAR_LEFT_TO_RIGHT, DIAGONAL_LEFT_TO_RIGHT, DIAGONAL_RIGHT_TO_LEFT
-    }
-
     public Paint(Color topLeft, Color topRight, Color bottomLeft, Color bottomRight)
     {
         this.topLeft = topLeft.copy();
@@ -155,5 +150,10 @@ public class Paint
         setTopRightColor(color);
         setBottomLeftColor(color);
         setBottomRightColor(color);
+    }
+
+    public enum Gradient
+    {
+        LINEAR_TOP_TO_BOTTOM, LINEAR_LEFT_TO_RIGHT, DIAGONAL_LEFT_TO_RIGHT, DIAGONAL_RIGHT_TO_LEFT
     }
 }

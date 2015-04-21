@@ -48,6 +48,16 @@ public class Quaternion
         set(x, y, z, w);
     }
 
+    public Quaternion(Vector3 axis, float angle)
+    {
+        set(axis, angle);
+    }
+
+    public Quaternion(float pitch, float yaw, float roll)
+    {
+        set(pitch, yaw, roll);
+    }
+
     public Quaternion set(float x, float y, float z, float w)
     {
         this.x = x;
@@ -56,11 +66,6 @@ public class Quaternion
         this.w = w;
 
         return this;
-    }
-
-    public Quaternion(Vector3 axis, float angle)
-    {
-        set(axis, angle);
     }
 
     public Quaternion set(Vector3 axis, float angle)
@@ -77,11 +82,6 @@ public class Quaternion
         w = cosAngle;
 
         return this;
-    }
-
-    public Quaternion(float pitch, float yaw, float roll)
-    {
-        set(pitch, yaw, roll);
     }
 
     public Quaternion set(float pitch, float yaw, float roll)
@@ -112,7 +112,7 @@ public class Quaternion
 
     public Quaternion add(float x, float y, float z, float w)
     {
-        return new Quaternion(this.x + x, this.y + y, this.z + z, this.w + w);
+        return copy().addSelf(x, y, z, w);
     }
 
     public Quaternion addSelf(Quaternion q)
@@ -147,12 +147,7 @@ public class Quaternion
 
     public Quaternion normalize()
     {
-        float length = length();
-
-        if (length == 0 || length == 1)
-            return copy();
-
-        return new Quaternion(x / length, y / length, z / length, w / length);
+        return copy().normalizeSelf();
     }
 
     public float length()
@@ -172,17 +167,12 @@ public class Quaternion
 
     public Quaternion conjugate()
     {
-        return new Quaternion(-x, -y, -z, w);
+        return copy().conjugateSelf();
     }
 
     public Quaternion multiply(Quaternion q)
     {
-        float nx = w * q.x + x * q.w + y * q.z - z * q.y;
-        float ny = w * q.y + y * q.w + z * q.x - x * q.z;
-        float nz = w * q.z + z * q.w + x * q.y - y * q.x;
-        float nw = w * q.w - x * q.x - y * q.y - z * q.z;
-
-        return new Quaternion(nx, ny, nz, nw).normalizeSelf();
+        return copy().multiplySelf(q);
     }
 
     public Quaternion normalizeSelf()

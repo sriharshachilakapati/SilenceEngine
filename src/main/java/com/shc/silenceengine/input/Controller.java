@@ -115,9 +115,10 @@ public class Controller
     public static final int XBOX_RIGHT_STICKER_Y  = 4;
     public static final int XBOX_RIGHT_STICKER_X  = 5;
 
+    // TODO: ADD MAPPINGS FOR PS3 AND PS4 CONTROLLERS ALSO
+
     private static Controller[] controllers;
 
-    // TODO: ADD MAPPINGS FOR PS3 AND PS4 CONTROLLERS ALSO
     private int    id;
     private String name;
     private int    numButtons;
@@ -178,6 +179,76 @@ public class Controller
             controller.pollValues();
     }
 
+    public static void startEventFrame()
+    {
+        for (Controller controller : controllers)
+            controller.startFrame();
+    }
+
+    public static void clearEventFrame()
+    {
+        for (Controller controller : controllers)
+            controller.clearFrame();
+    }
+
+    public static Controller[] getConnectedControllers()
+    {
+        return controllers;
+    }
+
+    public static boolean isPressed(int button, int controller)
+    {
+        if (controllers == null)
+            create();
+
+        return controller < controllers.length && controllers[controller].isPressed(button);
+    }
+
+    public static void create()
+    {
+        // Create a list to store the controllers
+        List<Controller> controllerList = new ArrayList<>();
+
+        // Iterate over all the controllers GLFW supports
+        for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; i++)
+        {
+            // If the controller is present, add it to the list
+            if (glfwJoystickPresent(i) == GL_TRUE)
+            {
+                String name = glfwGetJoystickName(i);
+                controllerList.add(new Controller(i, name));
+            }
+        }
+
+        // Turn the list into an array
+        controllers = new Controller[controllerList.size()];
+        controllers = controllerList.toArray(controllers);
+    }
+
+    public static boolean isClicked(int button, int controller)
+    {
+        if (controllers == null)
+            create();
+
+        return controller < controllers.length && controllers[controller].isClicked(button);
+    }
+
+    public static float getAxe(int axe, int controller)
+    {
+        if (controllers == null)
+            create();
+
+        return controller < controllers.length ? controllers[controller].getAxe(axe) : 0;
+    }
+
+    public static float getClickAxe(int axe, int controller)
+    {
+        if (controllers == null)
+            create();
+
+        return controller < controllers.length ? controllers[controller].getClickAxe(axe) : 0;
+    }
+
     private void pollValues()
     {
         // Check if controller is still plugged in
@@ -220,12 +291,6 @@ public class Controller
         return glfwJoystickPresent(id) == GL_TRUE;
     }
 
-    public static void startEventFrame()
-    {
-        for (Controller controller : controllers)
-            controller.startFrame();
-    }
-
     private void startFrame()
     {
         buttonsThisFrame.clear();
@@ -235,12 +300,6 @@ public class Controller
         axesThisFrame.putAll(axes);
     }
 
-    public static void clearEventFrame()
-    {
-        for (Controller controller : controllers)
-            controller.clearFrame();
-    }
-
     private void clearFrame()
     {
         buttonsLastFrame.clear();
@@ -248,40 +307,6 @@ public class Controller
 
         axesLastFrame.clear();
         axesLastFrame.putAll(axesThisFrame);
-    }
-
-    public static Controller[] getConnectedControllers()
-    {
-        return controllers;
-    }
-
-    public static boolean isPressed(int button, int controller)
-    {
-        if (controllers == null)
-            create();
-
-        return controller < controllers.length && controllers[controller].isPressed(button);
-    }
-
-    public static void create()
-    {
-        // Create a list to store the controllers
-        List<Controller> controllerList = new ArrayList<>();
-
-        // Iterate over all the controllers GLFW supports
-        for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; i++)
-        {
-            // If the controller is present, add it to the list
-            if (glfwJoystickPresent(i) == GL_TRUE)
-            {
-                String name = glfwGetJoystickName(i);
-                controllerList.add(new Controller(i, name));
-            }
-        }
-
-        // Turn the list into an array
-        controllers = new Controller[controllerList.size()];
-        controllers = controllerList.toArray(controllers);
     }
 
     public boolean isPressed(int button)
@@ -295,14 +320,6 @@ public class Controller
         return buttonsLastFrame.get(button) || buttonsThisFrame.get(button);
     }
 
-    public static boolean isClicked(int button, int controller)
-    {
-        if (controllers == null)
-            create();
-
-        return controller < controllers.length && controllers[controller].isClicked(button);
-    }
-
     public boolean isClicked(int button)
     {
         if (!buttonsLastFrame.containsKey(button))
@@ -314,25 +331,9 @@ public class Controller
         return buttonsThisFrame.get(button) && !buttonsLastFrame.get(button);
     }
 
-    public static float getAxe(int axe, int controller)
-    {
-        if (controllers == null)
-            create();
-
-        return controller < controllers.length ? controllers[controller].getAxe(axe) : 0;
-    }
-
     public float getAxe(int axe)
     {
         return axes.get(axe);
-    }
-
-    public static float getClickAxe(int axe, int controller)
-    {
-        if (controllers == null)
-            create();
-
-        return controller < controllers.length ? controllers[controller].getClickAxe(axe) : 0;
     }
 
     public float getClickAxe(int axe)
@@ -392,7 +393,7 @@ public class Controller
         return type;
     }
 
-    public static enum Type
+    public enum Type
     {
         PS3, PS4, XBOX, GENERIC
     }
