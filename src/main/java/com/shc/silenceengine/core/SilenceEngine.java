@@ -109,6 +109,9 @@ public final class SilenceEngine implements IEngine
         if (!GLFW3.init())
             throw new SilenceException("Error initializing GLFW. Your system is unsupported.");
 
+        // Set the error callback
+        GLFW3.setErrorCallback(((error, description) -> System.out.println(error + ": " + description)));
+
         // Initialize other engines
         graphics.init();
         audio.init();
