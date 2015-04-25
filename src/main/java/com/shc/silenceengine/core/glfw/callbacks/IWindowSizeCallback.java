@@ -27,10 +27,21 @@ package com.shc.silenceengine.core.glfw.callbacks;
 import com.shc.silenceengine.core.glfw.Window;
 
 /**
+ * Functional Interface describing the signature of the <code>GLFWwindowsizefun</code> in Java 8 environment. To set
+ * a size callback on a window, use the function <code>setSizeCallback()</code> on a <code>Window</code> object.
+ *
  * @author Sri Harsha Chilakapati
  */
 @FunctionalInterface
 public interface IWindowSizeCallback
 {
+    /**
+     * The signature of the <code>GLFWwindowsizefun</code> method. This method is invoked by GLFW to notify you when
+     * the size of the window frame is changed by the user.
+     *
+     * @param window The Window that received the event.
+     * @param width  The width of the window (in screen coordinates).
+     * @param height The height of the window (int screen coordinates).
+     */
     void invoke(Window window, int width, int height);
 }
