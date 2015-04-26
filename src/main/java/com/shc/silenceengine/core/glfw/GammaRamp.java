@@ -25,6 +25,8 @@
 package com.shc.silenceengine.core.glfw;
 
 /**
+ * This class describes the Gamma Ramp
+ *
  * @author Sri Harsha Chilakapati
  */
 public class GammaRamp
