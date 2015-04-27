@@ -165,7 +165,7 @@ public class Monitor
 
         GLFWgammaramp ramp = new GLFWgammaramp(gammaRamp);
 
-        int byteBufferSize = ramp.getSize() * Short.BYTES / Byte.BYTES;
+        int byteBufferSize = ramp.getSize() * Short.BYTES;
 
         ShortBuffer rBuffer = ramp.getRed(byteBufferSize).asShortBuffer();
         ShortBuffer gBuffer = ramp.getGreen(byteBufferSize).asShortBuffer();
@@ -194,9 +194,9 @@ public class Monitor
     {
         GLFWgammaramp ramp = new GLFWgammaramp();
 
-        ByteBuffer rBuffer = BufferUtils.createByteBuffer(gammaRamp.getSize() * Short.BYTES / Byte.BYTES);
-        ByteBuffer gBuffer = BufferUtils.createByteBuffer(gammaRamp.getSize() * Short.BYTES / Byte.BYTES);
-        ByteBuffer bBuffer = BufferUtils.createByteBuffer(gammaRamp.getSize() * Short.BYTES / Byte.BYTES);
+        ByteBuffer rBuffer = BufferUtils.createByteBuffer(gammaRamp.getSize() * Short.BYTES);
+        ByteBuffer gBuffer = BufferUtils.createByteBuffer(gammaRamp.getSize() * Short.BYTES);
+        ByteBuffer bBuffer = BufferUtils.createByteBuffer(gammaRamp.getSize() * Short.BYTES);
 
         rBuffer.asShortBuffer().put(gammaRamp.getRed()).flip();
         gBuffer.asShortBuffer().put(gammaRamp.getGreen()).flip();
