@@ -44,6 +44,8 @@ public class TrueTypeFont
     public static final int STYLE_BOLD   = Font.BOLD;
     public static final int STYLE_ITALIC = Font.ITALIC;
 
+    // The regular expression used for getting all trailing whitespace
+    private static final String TRAILING_WHITESPACE = "\\s+$";
     private static final int STANDARD_CHARACTERS = 256;
 
     private FontChar[] chars = new FontChar[STANDARD_CHARACTERS];
@@ -204,8 +206,8 @@ public class TrueTypeFont
 
     public void drawString(Batcher b, String text, float x, float y, Color col)
     {
-        // Don't draw anything if the string is null or is empty
-        if (text == null || text.equals(""))
+        // Don't draw anything if the string is null or is empty. Also removes all trailing whitespace
+        if (text == null || (text = text.replace(TRAILING_WHITESPACE, "")).equals(""))
             return;
 
         Texture current = Texture.CURRENT;
