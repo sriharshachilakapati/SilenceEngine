@@ -22,24 +22,46 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.core.glfw.callbacks;
+package com.shc.silenceengine.tests;
 
-import com.shc.silenceengine.core.glfw.Window;
+import com.shc.silenceengine.core.Game;
+import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.utils.TimeUtils;
 
 /**
- * Functional Interface describing the signature of the <code>GLFWwindowclosefun</code> in Java 8 environment. To set a
- * close callback on a window, use the function <code>setCloseCallback()</code> on a <code>Window</code> object.
- *
  * @author Sri Harsha Chilakapati
  */
-@FunctionalInterface
-public interface IWindowCloseCallback
+public class KeyboardBugTest extends Game
 {
-    /**
-     * The signature of the <code>GLFWwindowclosefun</code> method. This method is invoked by GLFW to notify you when the user
-     * clicked on the window close button.
-     *
-     * @param window  The Window that received the event.
-     */
-    void invoke(Window window);
+    private int count = 0;
+    private double startTime = -1;
+
+    @Override
+    public void update(float delta)
+    {
+        if (Keyboard.isClicked(Keyboard.KEY_ESCAPE))
+            Game.end();
+
+        if (Keyboard.isClicked(Keyboard.KEY_UP))
+        {
+            if (startTime < 1)
+                startTime = TimeUtils.currentMillis();
+
+            System.out.println(++count);
+
+            if (count >= 10)
+            {
+                double endTime = TimeUtils.currentMillis();
+                System.out.println("It took you " + (endTime - startTime) + " millis to press 10 ticks");
+
+                startTime = TimeUtils.currentMillis();
+                count = 0;
+            }
+        }
+    }
+
+    public static void main(String[] args)
+    {
+        new KeyboardBugTest().start();
+    }
 }

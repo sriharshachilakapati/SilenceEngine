@@ -22,24 +22,14 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.core.glfw.callbacks;
-
-import com.shc.silenceengine.core.glfw.Window;
-
 /**
- * Functional Interface describing the signature of the <code>GLFWwindowclosefun</code> in Java 8 environment. To set a
- * close callback on a window, use the function <code>setCloseCallback()</code> on a <code>Window</code> object.
+ * This package contains the functional interfaces for the GLFW function callback
+ * types. These interfaces are present here because the LWJGL's callback interfaces
+ * confuse the newbies with their usage of <code>long</code> for all pointer types.
+ * These callbacks use the Java classes that wrap the GLFW types instead of using
+ * the primitive <code>long</code> for all the pointers. The conversion happens from
+ * the LWJGL's interfaces happen internally to the GLFW classes.
  *
  * @author Sri Harsha Chilakapati
  */
-@FunctionalInterface
-public interface IWindowCloseCallback
-{
-    /**
-     * The signature of the <code>GLFWwindowclosefun</code> method. This method is invoked by GLFW to notify you when the user
-     * clicked on the window close button.
-     *
-     * @param window  The Window that received the event.
-     */
-    void invoke(Window window);
-}
+package com.shc.silenceengine.core.glfw.callbacks;

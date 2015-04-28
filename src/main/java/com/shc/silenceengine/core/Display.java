@@ -90,6 +90,7 @@ public final class Display
         dirty = true;
 
         Game.setBatcher(new Batcher());
+        setVSync(vSync);
 
         return window;
     }
@@ -114,8 +115,6 @@ public final class Display
 
         Window.setHint(GLFW_VISIBLE, false);
         Window.setHint(GLFW_RESIZABLE, resizable);
-
-        setVSync(vSync);
     }
 
     private static void setCallbacks(Window window)

@@ -27,10 +27,20 @@ package com.shc.silenceengine.core.glfw.callbacks;
 import com.shc.silenceengine.core.glfw.Window;
 
 /**
+ * Functional Interface describing the signature of the <code>GLFWwindowfocusfun</code> in Java 8 environment. To set a
+ * focus callback on a window, use the function <code>setFocusCallback()</code> on a <code>Window</code> object.
+ *
  * @author Sri Harsha Chilakapati
  */
 @FunctionalInterface
 public interface IWindowFocusCallback
 {
+    /**
+     * The signature of the <code>GLFWwindowfocusfun</code> method. This method is invoked by GLFW to notify you when
+     * the focus of a window has been changed.
+     *
+     * @param window The Window that received the event.
+     * @param focus  True if window acquired focus, false if focus was lost.
+     */
     void invoke(Window window, boolean focus);
 }

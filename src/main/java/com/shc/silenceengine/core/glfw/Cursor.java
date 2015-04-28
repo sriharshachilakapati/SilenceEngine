@@ -36,22 +36,46 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 /**
+ * A cursor is the visual representation of the mouse pointer. You can create a cursor using an image, OpenGL texture,
+ * or also choose one from the ones provided by the operating system.
+ *
  * @author Sri Harsha Chilakapati
  */
 public class Cursor
 {
     private long handle;
 
+    /**
+     * Constructs a cursor object using the pixels from a BufferedImage.
+     *
+     * @param image The BufferedImage that contains the cursor image.
+     */
     public Cursor(BufferedImage image)
     {
         this(image, 0, 0);
     }
 
+    /**
+     * Constructs a cursor object using the pixels from a BufferedImage and also the location of the pointer hot point
+     * in the image specified in pixels.
+     *
+     * @param image The BufferedImage that contains the cursor image.
+     * @param xHot  The x-coordinate of the cursor hotspot in pixels.
+     * @param yHot  The y-coordinate of the cursor hotspot in pixels.
+     */
     public Cursor(BufferedImage image, int xHot, int yHot)
     {
         this(Texture.fromBufferedImage(image), xHot, yHot);
     }
 
+    /**
+     * Constructs a cursor object using the pixels from an OpenGL Texture object and also the location of the pointer
+     * hot point in the image pixels retrieved from the OpenGL Texture.
+     *
+     * @param image The OpenGL Texture object to retrieve the image data from.
+     * @param xHot  The x-coordinate of the cursor hotspot in pixels.
+     * @param yHot  The y-coordinate of the cursor hotspot in pixels.
+     */
     public Cursor(Texture image, int xHot, int yHot)
     {
         int width = (int) image.getWidth();
@@ -64,11 +88,21 @@ public class Cursor
             throw new SilenceException("Unable to load cursor from texture");
     }
 
+    /**
+     * Constructs a cursor object using the pixels from an OpenGL Texture object.
+     *
+     * @param image The OpenGL Texture object to retrieve the image data from.
+     */
     public Cursor(Texture image)
     {
         this(image, 0, 0);
     }
 
+    /**
+     * Constructs a cursor object that uses a predefined cursor defined by the operating system.
+     *
+     * @param standardType The type of the default cursor that this cursor object should look like.
+     */
     public Cursor(Type standardType)
     {
         handle = glfwCreateStandardCursor(standardType.getType());
@@ -77,23 +111,55 @@ public class Cursor
             throw new SilenceException("Unable to load cursor from texture");
     }
 
+    /**
+     * Destroys this cursor object.
+     */
     public void destroy()
     {
         glfwDestroyCursor(handle);
     }
 
+    /**
+     * @return The native handle of this cursor object.
+     */
     public long getHandle()
     {
         return handle;
     }
 
+    /**
+     * The type of the OS defined cursors.
+     */
     public enum Type
     {
+        /**
+         * The regular arrow cursor shape.
+         */
         ARROW(GLFW_ARROW_CURSOR),
+
+        /**
+         * The text-input I-Beam cursor shape.
+         */
         IBEAM(GLFW_IBEAM_CURSOR),
+
+        /**
+         * The crosshair cursor shape.
+         */
         CROSSHAIR(GLFW_CROSSHAIR_CURSOR),
+
+        /**
+         * The hand cursor shape.
+         */
         HAND(GLFW_HAND_CURSOR),
+
+        /**
+         * The horizontal resize arrow cursor shape.
+         */
         HRESIZE(GLFW_HRESIZE_CURSOR),
+
+        /**
+         * The vertical resize arrow cursor shape.
+         */
         VRESIZE(GLFW_VRESIZE_CURSOR);
 
         private int type;
@@ -103,6 +169,9 @@ public class Cursor
             this.type = type;
         }
 
+        /**
+         * @return The native value of the enum field.
+         */
         public int getType()
         {
             return type;

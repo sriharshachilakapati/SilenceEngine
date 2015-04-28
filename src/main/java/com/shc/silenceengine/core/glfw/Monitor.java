@@ -33,6 +33,7 @@ import org.lwjgl.glfw.GLFWgammaramp;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -162,18 +163,52 @@ public class Monitor
     {
         ByteBuffer gammaRamp = glfwGetGammaRamp(handle);
 
-        short red = gammaRamp.getShort();
-        short green = gammaRamp.getShort();
-        short blue = gammaRamp.getShort();
-        int size = gammaRamp.getInt();
+        GLFWgammaramp ramp = new GLFWgammaramp(gammaRamp);
 
-        return new GammaRamp(red, green, blue, size);
+        int byteBufferSize = ramp.getSize() * Short.BYTES;
+
+        ShortBuffer rBuffer = ramp.getRed(byteBufferSize).asShortBuffer();
+        ShortBuffer gBuffer = ramp.getGreen(byteBufferSize).asShortBuffer();
+        ShortBuffer bBuffer = ramp.getBlue(byteBufferSize).asShortBuffer();
+
+        short[] red = new short[ramp.getSize()];
+        short[] green = new short[ramp.getSize()];
+        short[] blue = new short[ramp.getSize()];
+
+        int i = 0;
+        while (rBuffer.hasRemaining())
+            red[i++] = rBuffer.get();
+
+        i = 0;
+        while (gBuffer.hasRemaining())
+            green[i++] = gBuffer.get();
+
+        i = 0;
+        while (bBuffer.hasRemaining())
+            blue[i++] = bBuffer.get();
+
+        return new GammaRamp(red, green, blue, ramp.getSize());
     }
 
     public void setGammaRamp(GammaRamp gammaRamp)
     {
-        ByteBuffer ramp = GLFWgammaramp.malloc(gammaRamp.getRed(), gammaRamp.getGreen(), gammaRamp.getBlue(), gammaRamp.getSize());
-        glfwSetGammaRamp(handle, ramp);
+        GLFWgammaramp ramp = new GLFWgammaramp();
+
+        ByteBuffer rBuffer = BufferUtils.createByteBuffer(gammaRamp.getSize() * Short.BYTES);
+        ByteBuffer gBuffer = BufferUtils.createByteBuffer(gammaRamp.getSize() * Short.BYTES);
+        ByteBuffer bBuffer = BufferUtils.createByteBuffer(gammaRamp.getSize() * Short.BYTES);
+
+        rBuffer.asShortBuffer().put(gammaRamp.getRed()).flip();
+        gBuffer.asShortBuffer().put(gammaRamp.getGreen()).flip();
+        bBuffer.asShortBuffer().put(gammaRamp.getBlue()).flip();
+
+        ramp.setRed(rBuffer);
+        ramp.setGreen(gBuffer);
+        ramp.setBlue(bBuffer);
+        ramp.setSize(gammaRamp.getSize());
+
+        ByteBuffer buffer = ramp.buffer();
+        glfwSetGammaRamp(handle, buffer);
     }
 
     public Vector2 getPhysicalSize()

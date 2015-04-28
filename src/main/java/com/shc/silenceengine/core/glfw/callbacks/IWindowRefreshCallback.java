@@ -27,10 +27,19 @@ package com.shc.silenceengine.core.glfw.callbacks;
 import com.shc.silenceengine.core.glfw.Window;
 
 /**
+ * Functional Interface describing the signature of the <code>GLFWwindowrefreshfun</code> in Java 8 environment. To set
+ * a refresh callback on a window, use the function <code>setRefreshCallback()</code> on a <code>Window</code> object.
+ *
  * @author Sri Harsha Chilakapati
  */
 @FunctionalInterface
 public interface IWindowRefreshCallback
 {
+    /**
+     * The signature of the <code>GLFWwindowrefreshfun</code> method. This method is invoked by GLFW to notify you when
+     * the window contents needs to be redrawn.
+     *
+     * @param window The Window that received the event.
+     */
     void invoke(Window window);
 }

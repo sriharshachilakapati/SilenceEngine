@@ -24,18 +24,30 @@
 
 package com.shc.silenceengine.core.glfw;
 
+import java.util.Arrays;
+
 /**
+ * This class describes the Gamma Ramp
+ *
  * @author Sri Harsha Chilakapati
  */
 public class GammaRamp
 {
-    private short red;
-    private short green;
-    private short blue;
+    private short[] red;
+    private short[] green;
+    private short[] blue;
 
     private int size;
 
-    public GammaRamp(short red, short green, short blue, int size)
+    public GammaRamp()
+    {
+        size = 0;
+        red = new short[0];
+        green = new short[0];
+        blue = new short[0];
+    }
+
+    public GammaRamp(short[] red, short[] green, short[] blue, int size)
     {
         setRed(red);
         setGreen(green);
@@ -43,32 +55,32 @@ public class GammaRamp
         setSize(size);
     }
 
-    public short getRed()
+    public short[] getRed()
     {
         return red;
     }
 
-    public void setRed(short red)
+    public void setRed(short... red)
     {
         this.red = red;
     }
 
-    public short getGreen()
+    public short[] getGreen()
     {
         return green;
     }
 
-    public void setGreen(short green)
+    public void setGreen(short... green)
     {
         this.green = green;
     }
 
-    public short getBlue()
+    public short[] getBlue()
     {
         return blue;
     }
 
-    public void setBlue(short blue)
+    public void setBlue(short... blue)
     {
         this.blue = blue;
     }
@@ -84,16 +96,6 @@ public class GammaRamp
     }
 
     @Override
-    public int hashCode()
-    {
-        int result = (int) red;
-        result = 31 * result + (int) green;
-        result = 31 * result + (int) blue;
-        result = 31 * result + size;
-        return result;
-    }
-
-    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -101,20 +103,30 @@ public class GammaRamp
 
         GammaRamp gammaRamp = (GammaRamp) o;
 
-        return blue == gammaRamp.blue &&
-               green == gammaRamp.green &&
-               red == gammaRamp.red &&
-               size == gammaRamp.size;
+        return size == gammaRamp.size &&
+               Arrays.equals(red, gammaRamp.red) &&
+               Arrays.equals(green, gammaRamp.green) &&
+               Arrays.equals(blue, gammaRamp.blue);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = Arrays.hashCode(red);
+        result = 31 * result + Arrays.hashCode(green);
+        result = 31 * result + Arrays.hashCode(blue);
+        result = 31 * result + size;
+        return result;
     }
 
     @Override
     public String toString()
     {
         return "GammaRamp{" +
-               "red=" + red +
-               ", green=" + green +
-               ", blue=" + blue +
-               ", size=" + size +
+               "red=" + Arrays.toString(red) +
+               ",\ngreen=" + Arrays.toString(green) +
+               ",\nblue=" + Arrays.toString(blue) +
+               ",\nsize=" + size +
                '}';
     }
 }

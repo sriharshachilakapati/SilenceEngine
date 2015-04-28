@@ -204,6 +204,10 @@ public class TrueTypeFont
 
     public void drawString(Batcher b, String text, float x, float y, Color col)
     {
+        // Don't draw anything if the string is null or is empty
+        if (text == null || text.equals(""))
+            return;
+
         Texture current = Texture.CURRENT;
 
         b.begin(Primitive.TRIANGLES);
