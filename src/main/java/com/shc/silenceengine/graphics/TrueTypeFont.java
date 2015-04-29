@@ -37,6 +37,7 @@ import java.util.List;
 
 /**
  * @author Sri Harsha Chilakapati
+ * @author Josh "ShadowLordAlpha"
  */
 public class TrueTypeFont
 {
