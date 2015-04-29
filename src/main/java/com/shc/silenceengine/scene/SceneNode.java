@@ -193,6 +193,9 @@ public class SceneNode
     {
         for (int i = 0; i < children.size(); i++)
         {
+            if (isDestroyed())
+                return;
+
             SceneNode child = children.get(i);
             child.preRender(delta, batcher);
 
@@ -211,6 +214,9 @@ public class SceneNode
 
         for (SceneComponent component : components)
         {
+            if (isDestroyed())
+                return;
+
             // Enable forward rendering
             GL3Context.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
             GL3Context.depthMask(false);
