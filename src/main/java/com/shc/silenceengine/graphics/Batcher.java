@@ -513,4 +513,14 @@ public class Batcher
     {
         this.normalLocation = normalLocation;
     }
+
+    public boolean isActive()
+    {
+        return active;
+    }
+
+    public Primitive getBeginMode()
+    {
+        return beginMode;
+    }
 }
