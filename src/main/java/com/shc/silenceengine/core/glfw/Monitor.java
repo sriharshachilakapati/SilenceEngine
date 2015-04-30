@@ -187,7 +187,7 @@ public class Monitor
         while (bBuffer.hasRemaining())
             blue[i++] = bBuffer.get();
 
-        return new GammaRamp(red, green, blue, ramp.getSize());
+        return new GammaRamp(red, green, blue);
     }
 
     public void setGammaRamp(GammaRamp gammaRamp)

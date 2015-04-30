@@ -27,72 +27,115 @@ package com.shc.silenceengine.core.glfw;
 import java.util.Arrays;
 
 /**
- * This class describes the Gamma Ramp
+ * <p> This class describes the Gamma Ramp of a monitor. To set the gamma ramp, you have to use the <code>setGammaRamp</code>
+ * method on the <code>Monitor</code> object.</p>
+ *
+ * <pre>
+ *     short[] red   = new short[256];
+ *     short[] green = new short[256];
+ *     short[] blue  = new short[256];
+ *
+ *     for (int i = 0; i &lt; 256; i++)
+ *     {
+ *         // Fill out the gamma ramp arrays as desired
+ *     }
+ *
+ *     GammaRamp ramp = new GammaRamp(red, green, blue);
+ *     monitor.setGammaRamp(ramp);
+ * </pre>
+ *
+ * <p> It is recommended to use GammaRamps of size 256, as that is the size supported by the graphic cards of all the
+ * platforms, and on windows, the size must be 256.</p>
  *
  * @author Sri Harsha Chilakapati
  */
 public class GammaRamp
 {
+    // The gamma ramp arrays
     private short[] red;
     private short[] green;
     private short[] blue;
 
+    // The size of the gamma ramp, elements in the arrays
     private int size;
 
-    public GammaRamp()
-    {
-        size = 0;
-        red = new short[0];
-        green = new short[0];
-        blue = new short[0];
-    }
-
-    public GammaRamp(short[] red, short[] green, short[] blue, int size)
+    /***
+     * Constructs a GammaRamp for a Monitor object using the gamma values from the red, green and blue channels.
+     *
+     * @param red   The gamma values of the red channel.
+     * @param green The gamma values of the green channel.
+     * @param blue  The gamma values of the blue channel.
+     */
+    public GammaRamp(short[] red, short[] green, short[] blue)
     {
         setRed(red);
         setGreen(green);
         setBlue(blue);
-        setSize(size);
     }
 
+    /**
+     * @return An array of values describing the response of the red channel.
+     */
     public short[] getRed()
     {
         return red;
     }
 
+    /**
+     * Sets the array of gamma values that describe the red channel.
+     *
+     * @param red The array of values describing the response of the red channel.
+     */
     public void setRed(short... red)
     {
-        this.red = red;
+        size = Math.max(size, red.length);
+        this.red = Arrays.copyOf(red, size);
     }
 
+    /**
+     * @return An array of values describing the response of the green channel.
+     */
     public short[] getGreen()
     {
         return green;
     }
 
+    /**
+     * Sets the array of gamma values that describe the green channel.
+     *
+     * @param green The array of values describing the response of the green channel.
+     */
     public void setGreen(short... green)
     {
-        this.green = green;
+        size = Math.max(size, green.length);
+        this.green = Arrays.copyOf(green, size);
     }
 
+    /**
+     * @return An array of values describing the response of the blue channel.
+     */
     public short[] getBlue()
     {
         return blue;
     }
 
+    /**
+     * Sets the array of gamma values that describe the blue channel.
+     *
+     * @param blue The array of values describing the response of the blue channel.
+     */
     public void setBlue(short... blue)
     {
-        this.blue = blue;
+        size = Math.max(size, blue.length);
+        this.blue = Arrays.copyOf(blue, size);
     }
 
+    /**
+     * @return The number of elements in each array.
+     */
     public int getSize()
     {
         return size;
-    }
-
-    public void setSize(int size)
-    {
-        this.size = size;
     }
 
     @Override
