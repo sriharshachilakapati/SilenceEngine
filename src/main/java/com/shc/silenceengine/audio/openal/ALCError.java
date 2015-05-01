@@ -99,7 +99,7 @@ public final class ALCError
      * Checks for the OpenAL context errors with the specified OpenAL device. This method only checks for errors in the
      * development mode.
      *
-     * * @param device The OpenAL Device that should be checked for context errors.
+     * @param device The OpenAL Device that should be checked for context errors.
      */
     public static void check(ALDevice device)
     {

@@ -236,10 +236,12 @@ public class QuadTree implements IBroadphase2D
     }
 
     /**
-     * Insert an ArrayList of objects into this tree
+     * Insert an ArrayList of objects into this tree.
+     *
+     * @param entities The list of entities.
      */
-    public void insertAll(List<Entity2D> o)
+    public void insertAll(List<Entity2D> entities)
     {
-        o.forEach(this::insert);
+        entities.forEach(this::insert);
     }
 }

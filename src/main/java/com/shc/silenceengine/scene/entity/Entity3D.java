@@ -31,8 +31,9 @@ import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.scene.SceneNode;
 
 /**
- * This class represents all the 3D Entities in a Scene. Any entity which is 2D and wants to be in a Scene must extend
- * this class. Here is an example entity. <p>
+ * <p> This class represents all the 3D Entities in a Scene. Any entity which is 2D and wants to be in a Scene must extend
+ * this class. Here is an example entity.</p>
+ *
  * <pre>
  *     public class MyEntity3D extends Entity3D
  *     {
@@ -58,8 +59,9 @@ import com.shc.silenceengine.scene.SceneNode;
  *         }
  *     }
  * </pre>
+ *
  * <p> Note that the collisions will only be notified if you are using a ISceneCollider3D and registered a collision
- * check.
+ * check.</p>
  *
  * @author Sri Harsha Chilakapati
  */

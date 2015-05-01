@@ -33,8 +33,9 @@ import com.shc.silenceengine.math.geom2d.Rectangle;
 import com.shc.silenceengine.scene.SceneNode;
 
 /**
- * This class represents all the 2D Entities in a Scene. Any entity which is 2D and wants to be in a Scene must extend
- * this class. Here is an example entity. <p>
+ * <p> This class represents all the 2D Entities in a Scene. Any entity which is 2D and wants to be in a Scene must extend
+ * this class. Here is an example entity.</p>
+ *
  * <pre>
  *     public class MyEntity2D extends Entity2D
  *     {
@@ -60,8 +61,9 @@ import com.shc.silenceengine.scene.SceneNode;
  *         }
  *     }
  * </pre>
+ *
  * <p> Note that the collisions will only be notified if you are using a ISceneCollider2D and registered a collision
- * check.
+ * check.</p>
  *
  * @author Sri Harsha Chilakapati
  */
@@ -269,6 +271,8 @@ public class Entity2D extends SceneNode
     /**
      * This object bounces back from the other object in a natural way. Please realize that the bounce is not completely
      * accurate because this depends on many properties. But in many situations the effect is good enough.
+     *
+     * @param other The other entity to bounce against.
      */
     public void bounce(Entity2D other)
     {

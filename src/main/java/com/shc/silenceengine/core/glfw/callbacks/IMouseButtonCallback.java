@@ -40,6 +40,7 @@ public interface IMouseButtonCallback
      * whenever a mouse button input has occurred.
      *
      * @param window The Window that received the event.
+     * @param button The code of the mouse button that was used.
      * @param action <code>GLFW_PRESS, GLFW_RELEASE</code> or <code>GLFW_REPEAT</code>.
      * @param mods   Bit field describing which modifier keys were held down.
      */
