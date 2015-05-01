@@ -28,6 +28,7 @@ import com.shc.silenceengine.core.glfw.callbacks.IMonitorCallback;
 import com.shc.silenceengine.math.Vector2;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWMonitorCallback;
 import org.lwjgl.glfw.GLFWgammaramp;
 
@@ -43,6 +44,18 @@ import java.util.Map;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
+ * <p> A monitor object represents a currently connected monitor and is represented as instance of the {@link Monitor}
+ * class. Monitor objects cannot be created or destroyed by the application and retain their addresses until the
+ * monitors they represent are disconnected or until the library is terminated.</p>
+ *
+ * <p> Each monitor has a current video mode, a list of supported video modes, a virtual position, a human-readable
+ * name, an estimated physical size and a gamma ramp. One of the monitors is the primary monitor. The virtual position
+ * of a monitor is in screen coordinates and, together with the current video mode, describes the viewports that the
+ * connected monitors provide into the virtual desktop that spans them.</p>
+ *
+ * @see VideoMode
+ * @see GammaRamp
+ *
  * @author Sri Harsha Chilakapati
  */
 public class Monitor
@@ -59,12 +72,24 @@ public class Monitor
 
     private List<VideoMode> videoModes;
 
+    /**
+     * Constructs a wrapper Monitor object around the native pointer given by the {@link GLFW#glfwGetMonitors()} and
+     * {@link GLFW#glfwGetPrimaryMonitor()} functions.
+     *
+     * @param handle The handle that points to the GLFWMonitor* of the native monitor type.
+     */
     private Monitor(long handle)
     {
         this.handle = handle;
         registeredMonitors.put(handle, this);
     }
 
+    /**
+     * This function returns the primary monitor. This is usually the monitor where elements like the Windows task bar
+     * or the OS X menu bar is located.
+     *
+     * @return The Monitor object which represents the primary monitor of the OS.
+     */
     public static Monitor getPrimaryMonitor()
     {
         if (primary == null)
@@ -73,8 +98,18 @@ public class Monitor
         return primary;
     }
 
-    public static void setCallback(IMonitorCallback callback)
+    /**
+     * This function sets the monitor configuration callback, or removes the currently set callback. This is called when
+     * a monitor is connected to or disconnected from the system.
+     *
+     * @param callback The new callback, or <code>null</code> to remove the currently set callback.
+     * @return The previously set callback, or <code>null</code> if no callback was set or the library had not been
+     *         initialized.
+     */
+    public static IMonitorCallback setCallback(IMonitorCallback callback)
     {
+        IMonitorCallback previousCallback = monitorCallback;
+
         if (callback == null)
             callback = (monitor, event) -> {
             };
@@ -89,8 +124,14 @@ public class Monitor
         );
 
         glfwSetMonitorCallback(glfwMonitorCallback);
+        return previousCallback;
     }
 
+    /**
+     * This function returns a list of Monitor objects for all currently connected monitors. This list is unmodifiable.
+     *
+     * @return The list of all connected Monitor objects.
+     */
     public static List<Monitor> getMonitors()
     {
         if (monitors == null)
@@ -108,6 +149,13 @@ public class Monitor
         return monitors;
     }
 
+    /**
+     * This function returns a list of all video modes supported by the specified monitor. The returned list is sorted
+     * in ascending order, first by color bit depth (the sum of all channel depths) and then by resolution area (the
+     * product of width and height).
+     *
+     * @return The list of {@link VideoMode}s supported by this Monitor object. Note that this list is unmodifiable.
+     */
     public List<VideoMode> getVideoModes()
     {
         if (videoModes == null)
@@ -135,6 +183,12 @@ public class Monitor
         return videoModes;
     }
 
+    /**
+     * This function returns the current video mode of the specified monitor. If you have created a full screen window
+     * for that monitor, the return value will depend on whether that window is iconified.
+     *
+     * @return The current {@link VideoMode} of this monitor.
+     */
     public VideoMode getVideoMode()
     {
         ByteBuffer mode = glfwGetVideoMode(handle);
@@ -149,21 +203,40 @@ public class Monitor
         return new VideoMode(width, height, redBits, greenBits, blueBits, refreshRate);
     }
 
+    /**
+     * This method returns the native GLFWmonitor pointer as a Java long value. This is required by the native GLFW
+     * functions that are wrapped in the {@link GLFW} class that take the pointer of the monitor to function.
+     *
+     * @return The native handle of this Monitor object.
+     */
     public long getHandle()
     {
         return handle;
     }
 
+    /**
+     * This method generates a 256-element gamma ramp from the specified exponent and then calls
+     * {@link Monitor#setGammaRamp(GammaRamp)} with it. The value must be a finite number greater than zero.
+     *
+     * @param gamma The desired exponent.
+     */
     public void setGamma(float gamma)
     {
         glfwSetGamma(handle, gamma);
     }
 
+    /**
+     * This method returns the current gamma ramp of the specified monitor.
+     *
+     * @return The current GammaRamp, or <code>null</code> if an error occurred.
+     */
     public GammaRamp getGammaRamp()
     {
         ByteBuffer gammaRamp = glfwGetGammaRamp(handle);
-
         GLFWgammaramp ramp = new GLFWgammaramp(gammaRamp);
+
+        if (ramp.getPointer() == 0)
+            return null;
 
         int byteBufferSize = ramp.getSize() * Short.BYTES;
 
@@ -190,6 +263,12 @@ public class Monitor
         return new GammaRamp(red, green, blue);
     }
 
+    /**
+     * This method sets the current gamma ramp for the specified monitor. The original gamma ramp for that monitor is
+     * saved by GLFW the first time this function is called and is restored by {@link GLFW3#terminate()}.
+     *
+     * @param gammaRamp The {@link GammaRamp} to use.
+     */
     public void setGammaRamp(GammaRamp gammaRamp)
     {
         GLFWgammaramp ramp = new GLFWgammaramp();
@@ -211,6 +290,17 @@ public class Monitor
         glfwSetGammaRamp(handle, buffer);
     }
 
+    /**
+     * <p> This method returns the size, in millimetres, of the display area of the specified monitor.</p>
+     *
+     * <p> Some systems do not provide accurate monitor size information, either because the monitor EDID data is incorrect
+     * or because the driver does not report it accurately.</p>
+     *
+     * <p> If an error occurs, the size components will be set to zero.</p>
+     *
+     * @return The physical size of this monitor in millimeters as a Vector2. The x-component is the width and the
+     *         y-component is the height of the monitor.
+     */
     public Vector2 getPhysicalSize()
     {
         IntBuffer width = BufferUtils.createIntBuffer(1);
@@ -220,6 +310,12 @@ public class Monitor
         return new Vector2(width.get(), height.get());
     }
 
+    /**
+     * This method returns the position, in screen coordinates, of the upper-left corner of the specified monitor. If
+     * there is any error, the position is set to zero, or the origin.
+     *
+     * @return The virtual position of this monitor.
+     */
     public Vector2 getVirtualPosition()
     {
         IntBuffer xPos = BufferUtils.createIntBuffer(1);
@@ -256,11 +352,22 @@ public class Monitor
                '}';
     }
 
+    /**
+     * This method returns a human-readable name, encoded as UTF-8, of the specified monitor. The name typically
+     * reflects the make and model of the monitor and is not guaranteed to be unique among the connected monitors.
+     *
+     * @return The name of this monitor object.
+     */
     public String getName()
     {
         return glfwGetMonitorName(handle);
     }
 
+    /**
+     * This method is used to check if this monitor object is the primary monitor of the OS or not.
+     *
+     * @return True if this monitor is primary, else False.
+     */
     public boolean isPrimary()
     {
         return getMonitors().get(0).equals(this);
