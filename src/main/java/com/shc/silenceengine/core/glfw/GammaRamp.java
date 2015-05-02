@@ -21,32 +21,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.shc.silenceengine.core.glfw;
 
 import java.util.Arrays;
 
 /**
- * This class describes the Gamma Ramp
+ * An object based wrapper of the GLFWgammaramp structure that describes the Gamma Ramp
  *
  * @author Sri Harsha Chilakapati
+ * @author Josh "ShadowLordAlpha"
  */
 public class GammaRamp
 {
+	
+	/**
+	 * An array of value describing the response of the red channel.
+	 */
     private short[] red;
+    
+    /**
+     * An array of value describing the response of the green channel.
+     */
     private short[] green;
+    
+    /**
+     * An array of value describing the response of the blue channel.
+     */
     private short[] blue;
 
+    /**
+     * The number of elements in each array.
+     */
     private int size;
 
+    /**
+     * Create a new GammaRamp with size 0 and all arrays set to 0.
+     */
     public GammaRamp()
     {
-        size = 0;
-        red = new short[0];
-        green = new short[0];
-        blue = new short[0];
+    	this(new short[0], new short[0], new short[0], 0);
     }
 
+    /**
+     * Create a new GammaRamp with the given arguments.
+     * 
+     * @param red An array of value describing the response of the red channel.
+     * @param green An array of value describing the response of the blue channel.
+     * @param blue An array of value describing the response of the blue channel.
+     * @param size The number of elements in each array.
+     */
     public GammaRamp(short[] red, short[] green, short[] blue, int size)
     {
         setRed(red);
@@ -55,41 +78,73 @@ public class GammaRamp
         setSize(size);
     }
 
+    /**
+     * Get the array of values describing the response of the red channel.
+     * @return The array of values describing the response of the red channel.
+     */
     public short[] getRed()
     {
         return red;
     }
 
+    /**
+     * Set the array of values describing the response of the red channel.
+     * @param red The array of values describing the response of the red channel.
+     */
     public void setRed(short... red)
     {
         this.red = red;
     }
 
+    /**
+     * Get the array of values describing the response of the green channel.
+     * @return The array of values describing the response of the green channel.
+     */
     public short[] getGreen()
     {
         return green;
     }
 
+    /**
+     * Set the array of values describing the response of the green channel.
+     * @param red The array of values describing the response of the green channel.
+     */
     public void setGreen(short... green)
     {
         this.green = green;
     }
 
+    /**
+     * Get the array of values describing the response of the blue channel.
+     * @return The array of values describing the response of the blue channel.
+     */
     public short[] getBlue()
     {
         return blue;
     }
 
+    /**
+     * Set the array of values describing the response of the blue channel.
+     * @param red The array of values describing the response of the blue channel.
+     */
     public void setBlue(short... blue)
     {
         this.blue = blue;
     }
 
+    /**
+     * Get the number of elements in each array.
+     * @return The number of elements in each array.
+     */
     public int getSize()
     {
         return size;
     }
 
+    /**
+     * Set the number of elements in each array.
+     * @param size The number of elements in each array.
+     */
     public void setSize(int size)
     {
         this.size = size;
