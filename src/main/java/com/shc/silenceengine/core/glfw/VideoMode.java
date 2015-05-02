@@ -25,7 +25,10 @@
 package com.shc.silenceengine.core.glfw;
 
 /**
+ * An object based wrapper of the GLFWvidmode structure that describes a single video mode.
+ *
  * @author Sri Harsha Chilakapati
+ * @author Josh "ShadowLordAlpha"
  */
 public class VideoMode
 {
@@ -36,7 +39,17 @@ public class VideoMode
     private int blueBits;
     private int refreshRate;
 
-    public VideoMode(int width, int height, int redBits, int greenBits, int blueBits, int refreshRate)
+    /**
+     * Create a new VideoMode with the given arguments.
+     *
+     * @param width       The width, in screen coordinates, of the video mode.
+     * @param height      The height, in screen coordinates, of the video mode.
+     * @param redBits     The bit depth of the red channel of the video mode.
+     * @param greenBits   The bit depth of the green channel of the video mode.
+     * @param blueBits    The bit depth of the blue channel of the video mode.
+     * @param refreshRate The refresh rate, in Hz, of the video mode.
+     */
+    VideoMode(int width, int height, int redBits, int greenBits, int blueBits, int refreshRate)
     {
         this.width = width;
         this.height = height;
@@ -46,64 +59,64 @@ public class VideoMode
         this.refreshRate = refreshRate;
     }
 
+    /**
+     * Get the width, in screen coordinates, of the video mode.
+     *
+     * @return The width, in screen coordinates, of the video mode.
+     */
     public int getWidth()
     {
         return width;
     }
 
-    public void setWidth(int width)
-    {
-        this.width = width;
-    }
-
+    /**
+     * Get the height, in screen coordinates, of the video mode.
+     *
+     * @return The height, in screen coordinates, of the video mode.
+     */
     public int getHeight()
     {
         return height;
     }
 
-    public void setHeight(int height)
-    {
-        this.height = height;
-    }
-
+    /**
+     * Get the bit depth of the red channel of the video mode.
+     *
+     * @return The bit depth of the red channel of the video mode.
+     */
     public int getRedBits()
     {
         return redBits;
     }
 
-    public void setRedBits(int redBits)
-    {
-        this.redBits = redBits;
-    }
-
+    /**
+     * Get the bit depth of the green channel of the video mode.
+     *
+     * @return The bit depth of the green channel of the video mode.
+     */
     public int getGreenBits()
     {
         return greenBits;
     }
 
-    public void setGreenBits(int greenBits)
-    {
-        this.greenBits = greenBits;
-    }
-
+    /**
+     * Get the bit depth of the blue channel of the video mode.
+     *
+     * @return The bit depth of the blue channel of the video mode.
+     */
     public int getBlueBits()
     {
         return blueBits;
     }
 
-    public void setBlueBits(int blueBits)
-    {
-        this.blueBits = blueBits;
-    }
-
+    /**
+     * Get the refresh rate, in Hz, of the video mode.
+     *
+     * @return The refresh rate, in Hz, of the video mode.
+     */
     public int getRefreshRate()
     {
         return refreshRate;
-    }
-
-    public void setRefreshRate(int refreshRate)
-    {
-        this.refreshRate = refreshRate;
     }
 
     @Override
