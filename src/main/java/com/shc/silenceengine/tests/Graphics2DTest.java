@@ -24,8 +24,10 @@
 
 package com.shc.silenceengine.tests;
 
+import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.ResourceLoader;
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Graphics2D;
@@ -70,6 +72,8 @@ public class Graphics2DTest extends Game
     {
         if (Keyboard.isClicked(Keyboard.KEY_ESCAPE))
             end();
+
+        Display.setTitle("FPS: " + Game.getFPS() + " | UPS: " + Game.getUPS() + " | RC: " + SilenceEngine.graphics.renderCallsPerFrame);
     }
 
     public void render(float delta, Batcher batcher)

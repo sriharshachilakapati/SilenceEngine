@@ -26,6 +26,7 @@ package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
@@ -86,6 +87,8 @@ public class Geom2DTest extends Game
         // Rotating the geometry
         rectangle.rotate(1);
         rectangle2.rotate(-1);
+
+        Display.setTitle("FPS: " + Game.getFPS() + " | UPS: " + Game.getUPS() + " | RC: " + SilenceEngine.graphics.renderCallsPerFrame);
     }
 
     public void render(float delta, Batcher batcher)

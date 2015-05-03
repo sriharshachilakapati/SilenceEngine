@@ -44,6 +44,10 @@ public class GraphicsEngine implements IEngine
     public static final Material DEFAULT_MATERIAL;
     private             Material currentMaterial;
 
+    public float renderCalls = 0;
+    public float renderCallsPerFrame = 0;
+    public float totalRenderCalls = 0;
+
     public Material getCurrentMaterial()
     {
         return currentMaterial;
@@ -91,6 +95,10 @@ public class GraphicsEngine implements IEngine
     public void endFrame()
     {
         Display.update();
+
+        totalRenderCalls += renderCalls;
+        renderCallsPerFrame = renderCalls;
+        renderCalls = 0;
     }
 
     @Override

@@ -28,6 +28,7 @@ import com.shc.silenceengine.collision.broadphase.DynamicTree2D;
 import com.shc.silenceengine.collision.colliders.SceneCollider2D;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
@@ -80,6 +81,8 @@ public class DynamicTreeSceneColliderTest2D extends Game
 
         // Register entities for collisions
         collider.register(Player.class, Box.class);
+
+        System.out.println(scene.getChildren().size());
     }
 
     public void resize()
@@ -96,7 +99,10 @@ public class DynamicTreeSceneColliderTest2D extends Game
         scene.update(delta);
         collider.checkCollisions();
 
-        Display.setTitle("Total Memory: " + (getTotalMemory() / 1048576) + "MB / Free Memory: " + (getFreeMemory() / 1048576) + "MB / Used Memory: " + (getUsedMemory() / 1048576) + "MB");
+        Display.setTitle("Total Memory: " + (getTotalMemory() / 1048576) +
+                         "MB / Free Memory: " + (getFreeMemory() / 1048576) +
+                         "MB / Used Memory: " + (getUsedMemory() / 1048576) + "MB" +
+                         "/ RC: " + SilenceEngine.graphics.renderCallsPerFrame);
     }
 
     public void render(float delta, Batcher batcher)

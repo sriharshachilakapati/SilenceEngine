@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.graphics.opengl;
 
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.math.geom2d.Rectangle;
 
@@ -106,6 +107,8 @@ public final class GL3Context
         vao.bind();
         glDrawArrays(mode.getGlPrimitive(), offset, vertexCount);
         GLError.check();
+
+        SilenceEngine.graphics.renderCalls++;
     }
 
     public static void drawElements(VertexArray vao, Primitive mode, int offset, int vertexCount, int type)
@@ -113,6 +116,8 @@ public final class GL3Context
         vao.bind();
         glDrawElements(mode.getGlPrimitive(), vertexCount, type, offset);
         GLError.check();
+
+        SilenceEngine.graphics.renderCalls++;
     }
 
     /**
