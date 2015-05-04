@@ -32,6 +32,9 @@ import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.utils.TransformUtils;
 import org.lwjgl.opengl.GL11;
 
+/**
+ * @author Sri Harsha Chilakapati
+ */
 public class FPSCamera extends BaseCamera
 {
     private Matrix4 mProj;
@@ -39,6 +42,14 @@ public class FPSCamera extends BaseCamera
 
     private Vector3    position;
     private Quaternion rotation;
+
+    private Vector3 forward;
+    private Vector3 right;
+    private Vector3 up;
+
+    // To limit the angle on the x axis
+    private static final float ANGLE_LIMIT_X = 60;
+    private float angleX;
 
     public FPSCamera()
     {
@@ -52,6 +63,31 @@ public class FPSCamera extends BaseCamera
 
         position = new Vector3(0, 0, 1);
         rotation = new Quaternion();
+
+        forward = new Vector3();
+        right = new Vector3();
+        up = new Vector3();
+    }
+
+    public FPSCamera lookAt(Vector3 point)
+    {
+        return lookAt(point, getUp().normalizeSelf());
+    }
+
+    public FPSCamera lookAt(Vector3 point, Vector3 up)
+    {
+        rotation = TransformUtils.createLookAtQuaternion(position, point, up, rotation);
+        return this;
+    }
+
+    public Vector3 getUp()
+    {
+        return rotation.multiply(Vector3.AXIS_Y, up);
+    }
+
+    public FPSCamera lookAt(Vector3 position, Vector3 point, Vector3 up)
+    {
+        return setPosition(position).lookAt(point, up);
     }
 
     public FPSCamera moveForward(float amount)
@@ -61,19 +97,13 @@ public class FPSCamera extends BaseCamera
 
     public FPSCamera move(Vector3 dir, float amount)
     {
-        Vector3 deltaMove = position.add(dir.normalizeSelf().scaleSelf(amount));
-
-        // Restrict y-component
-        deltaMove.y = 0;
-
-        position = position.add(deltaMove);
-
+        position.addSelf(dir.normalize().scale(amount));
         return this;
     }
 
     public Vector3 getForward()
     {
-        return rotation.multiply(Vector3.AXIS_Z.negate());
+        return rotation.multiply(Vector3.AXIS_Z.negate(), forward);
     }
 
     public FPSCamera moveBackward(float amount)
@@ -88,7 +118,7 @@ public class FPSCamera extends BaseCamera
 
     public Vector3 getRight()
     {
-        return rotation.multiply(Vector3.AXIS_X);
+        return rotation.multiply(Vector3.AXIS_X, right);
     }
 
     public FPSCamera moveRight(float amount)
@@ -101,28 +131,56 @@ public class FPSCamera extends BaseCamera
         return move(getUp(), amount);
     }
 
-    public Vector3 getUp()
-    {
-        return rotation.multiply(Vector3.AXIS_Y);
-    }
-
     public FPSCamera moveDown(float amount)
     {
-        return move(getUp().negate(), amount);
+        return move(getUp().negateSelf(), amount);
     }
 
     public FPSCamera rotateX(float angle)
     {
-        Quaternion xRot = new Quaternion(Vector3.AXIS_X, angle);
-        rotation = rotation.multiply(xRot);
+        angleX += angle;
+
+        // Limit rotation on the X-axis to make it work like an FPSCamera
+        if (angleX < -ANGLE_LIMIT_X || angleX > ANGLE_LIMIT_X)
+        {
+            angleX -= angle;
+            return this;
+        }
+
+        Quaternion tempQuat = Quaternion.REUSABLE_STACK.pop();
+
+        Quaternion xRot = tempQuat.set(Vector3.AXIS_X, angle);
+        rotation.multiplySelf(xRot);
+
+        Quaternion.REUSABLE_STACK.push(tempQuat);
 
         return this;
     }
 
     public FPSCamera rotateY(float angle)
     {
-        Quaternion yRot = new Quaternion(Vector3.AXIS_Y, angle);
-        rotation = yRot.multiply(rotation);
+        Quaternion tempQuat = Quaternion.REUSABLE_STACK.pop();
+
+        Quaternion yRot = tempQuat.set(Vector3.AXIS_Y, angle);
+        rotation.set(yRot.multiplySelf(rotation));
+
+        Quaternion.REUSABLE_STACK.push(tempQuat);
+
+        return this;
+    }
+
+    public FPSCamera lerp(FPSCamera p, float alpha)
+    {
+        position.lerpSelf(p.position, alpha);
+        rotation.lerpSelf(p.rotation, alpha);
+
+        return this;
+    }
+
+    public FPSCamera slerp(FPSCamera p, float alpha)
+    {
+        position.lerpSelf(p.position, alpha);
+        rotation.slerpSelf(p.rotation, alpha);
 
         return this;
     }
@@ -148,13 +206,13 @@ public class FPSCamera extends BaseCamera
     {
         super.apply();
 
-        Vector3 temp = Vector3.REUSABLE_STACK.pop();
+        Vector3 tempVec3 = Vector3.REUSABLE_STACK.pop();
 
         mView.initIdentity()
-                .multiplySelf(TransformUtils.createTranslation(temp.set(position).negateSelf()))
+                .multiplySelf(TransformUtils.createTranslation(tempVec3.set(position).negateSelf()))
                 .multiplySelf(TransformUtils.createRotation(rotation));
 
-        Vector3.REUSABLE_STACK.push(temp);
+        Vector3.REUSABLE_STACK.push(tempVec3);
 
         // Enable Depth Testing
         GL3Context.enable(GL11.GL_DEPTH_TEST);
@@ -177,8 +235,21 @@ public class FPSCamera extends BaseCamera
         return position;
     }
 
-    public void setPosition(Vector3 position)
+    public FPSCamera setPosition(Vector3 position)
     {
         this.position.set(position);
+        return this;
+    }
+
+    public Quaternion getRotation()
+    {
+        return rotation;
+    }
+
+    public FPSCamera setRotation(Quaternion rotation)
+    {
+        this.rotation.set(rotation);
+
+        return this;
     }
 }
