@@ -266,46 +266,113 @@ public class Window
         this(width, height, "SilenceEngine Window", monitor);
     }
 
+    /**
+     * Creates a full screen window over a specified monitor with a title. The width and height are the resolution of
+     * the monitor. The title is used on the taskbar entry if the user minimised to the desktop.
+     *
+     * @param width   The desired width, in screen coordinates, of the window. This must be greater than zero.
+     * @param height  The desired height, in screen coordinates, of the window. This must be greater than zero.
+     * @param title   The desired title string of the Window. This can also contain UTF-8 characters.
+     * @param monitor The monitor to use for full screen mode, or <code>null</code> to use windowed mode.
+     */
     public Window(int width, int height, String title, Monitor monitor)
     {
         this(width, height, title, monitor, null);
     }
 
+    /**
+     * Creates a windowed mode window that is 800 by 600 in size and shares it's context with another window. Everything
+     * except the VAOs (Vertex Array Objects) are shared across the contexts.
+     *
+     * @param share The window who's context should be shared by the new window.
+     */
     public Window(Window share)
     {
         this(800, 600, share);
     }
 
+    /**
+     * Creates a windowed mode window that has a given dimensions, and shares it's context with another window. The
+     * title is the default title, "SilenceEngine window". Everything except the VAOs (Vertex Array Objects) are shared
+     * across the context.
+     *
+     * @param width  The desired width, in screen coordinates, of the window. This must be greater than zero.
+     * @param height The desired height, in screen coordinates, of the window. This must be greater than zero.
+     * @param share  The window who's context should be shared by the new window.
+     */
     public Window(int width, int height, Window share)
     {
         this(width, height, "SilenceEngine window", share);
     }
 
+    /**
+     * Creates a windowed mode window that has a given dimensions, a title, and shares it's context with another window.
+     * Everything except the VAOs (Vertex Array Objects) are shared across the context.
+     *
+     * @param width  The desired width, in screen coordinates, of the window. This must be greater than zero.
+     * @param height The desired height, in screen coordinates, of the window. This must be greater than zero.
+     * @param title  The desired title string of the Window. This can also contain UTF-8 characters.
+     * @param share  The window who's context should be shared by the new window.
+     */
     public Window(int width, int height, String title, Window share)
     {
         this(width, height, title, null, share);
     }
 
+    /**
+     * Creates a windowed mode window that has a specified title. The dimensions are the default dimensions, 800 by 600.
+     *
+     * @param title The desired title string of the Window. This can also contain UTF-8 characters.
+     */
     public Window(String title)
     {
         this(800, 600, title);
     }
 
+    /**
+     * Creates a windowed mode window with the given dimensions and the title.
+     *
+     * @param width  The desired width, in screen coordinates, of the window. This must be greater than zero.
+     * @param height The desired height, in screen coordinates, of the window. This must be greater than zero.
+     * @param title  The desired title string of the Window. This can also contain UTF-8 characters.
+     */
     public Window(int width, int height, String title)
     {
         this(width, height, title, (Monitor) null);
     }
 
+    /**
+     * Creates a fullscreen window on a monitor with a specific {@link VideoMode}.
+     *
+     * @param videoMode The VideoMode to use for the monitor.
+     * @param monitor   The monitor that should be used for fullscreen.
+     */
     public Window(VideoMode videoMode, Monitor monitor)
     {
         this(videoMode, "SilenceEngine Window", monitor);
     }
 
+    /**
+     * Creates a fullscreen window on a monitor with a specific {@link VideoMode} and a title.
+     *
+     * @param videoMode The VideoMode to use for the monitor.
+     * @param title     The desired title string of the Window. This can also contain UTF-8 characters.
+     * @param monitor   The monitor that should be used for fullscreen.
+     */
     public Window(VideoMode videoMode, String title, Monitor monitor)
     {
         this(videoMode, title, monitor, null);
     }
 
+    /**
+     * Creates a fullscreen window on a monitor with a specific {@link VideoMode}, a title, and also shares it's context
+     * with an existing window. Everything except VAOs (Vertex Array Objects) are shared across contexts.
+     *
+     * @param videoMode The VideoMode to use for the monitor.
+     * @param title     The desired title string of the Window. This can also contain UTF-8 characters.
+     * @param monitor   The monitor that should be used for fullscreen.
+     * @param share     The window who's context should be shared with the new window.
+     */
     public Window(VideoMode videoMode, String title, Monitor monitor, Window share)
     {
         this(videoMode.getWidth(), videoMode.getHeight(), title, monitor, share);
