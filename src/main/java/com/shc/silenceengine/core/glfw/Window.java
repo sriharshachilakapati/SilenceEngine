@@ -378,21 +378,45 @@ public class Window
         this(videoMode.getWidth(), videoMode.getHeight(), title, monitor, share);
     }
 
+    /**
+     * This method sets the window hints that would affect the next newly created window. The hints, once set, retain
+     * their values until changed by a call to {@link Window#setHint(int, int)} or {@link Window#setDefaultHints()} or
+     * this method. These are also cleared by terminating the GLFW library with {@link GLFW3#terminate()}.
+     *
+     * @param hint  The window hint to be set. These hints are integer constants provided in the {@link GLFW} class.
+     * @param value The new value of the window hint.
+     */
     public static void setHint(int hint, boolean value)
     {
         setHint(hint, value ? 1 : 0);
     }
 
+    /**
+     * This method sets the window hints that would affect the next newly created window. The hints, once set, retain
+     * their values until changed by a call to {@link Window#setHint(int, boolean)} or {@link Window#setDefaultHints()}
+     * or this method. These are also cleared by terminating the GLFW library with {@link GLFW3#terminate()}.
+     *
+     * @param hint  The window hint to be set. These hints are integer constants provided in the {@link GLFW} class.
+     * @param value The new value of the window hint.
+     */
     public static void setHint(int hint, int value)
     {
         glfwWindowHint(hint, value);
     }
 
+    /**
+     * This method resets all the window hints to their default values.
+     */
     public static void setDefaultHints()
     {
         glfwDefaultWindowHints();
     }
 
+    /**
+     * This method returns the Window whose context is current on the thread that called this method.
+     *
+     * @return The window whose context is current in the current thread.
+     */
     public static Window getCurrentContext()
     {
         return registeredWindows.get(glfwGetCurrentContext());
