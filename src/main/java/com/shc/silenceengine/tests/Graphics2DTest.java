@@ -84,6 +84,8 @@ public class Graphics2DTest extends Game
         if (Keyboard.isClicked(Keyboard.KEY_ESCAPE))
             end();
 
+        rectangle.rotate(90 * delta);
+
         Display.setTitle("FPS: " + Game.getFPS() + " | UPS: " + Game.getUPS() + " | RC: " + SilenceEngine.graphics.renderCallsPerFrame);
     }
 
