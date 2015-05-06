@@ -293,23 +293,29 @@ public class Graphics2D
         startPainting();
         {
             Vector2 vertex = Vector2.REUSABLE_STACK.pop();
+            Vector2 originalVertex = Vector2.REUSABLE_STACK.pop();
             Vector2 texCoord = Vector2.REUSABLE_STACK.pop();
 
             texture.bind();
 
             batcher.begin(Primitive.TRIANGLE_FAN);
             {
+                float polygonWidth  = polygon.getBounds().getWidth();
+                float polygonHeight = polygon.getBounds().getHeight();
+
                 polygon.getVertices().forEach(v ->
                 {
                     vertex.set(v).addSelf(polygon.getPosition());
                     batcher.vertex(vertex);
 
-                    texCoord.set(v.x, v.y);
+                    originalVertex.set(v).rotateSelf(-polygon.getRotation());
+
+                    texCoord.set(originalVertex);
 
                     if (polygon instanceof Ellipse)
                         texCoord.addSelf(((Ellipse) polygon).getRadiusX(), ((Ellipse) polygon).getRadiusY());
 
-                    texCoord.scaleSelf(1 / texture.getWidth(), 1 / texture.getHeight());
+                    texCoord.scaleSelf(1 / polygonWidth, 1 / polygonHeight);
 
                     batcher.texCoord(texCoord);
                 });
@@ -317,6 +323,7 @@ public class Graphics2D
             batcher.end();
 
             Vector2.REUSABLE_STACK.push(vertex);
+            Vector2.REUSABLE_STACK.push(originalVertex);
             Vector2.REUSABLE_STACK.push(texCoord);
         }
         endPainting();
