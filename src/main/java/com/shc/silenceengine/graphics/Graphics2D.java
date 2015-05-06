@@ -293,29 +293,33 @@ public class Graphics2D
         startPainting();
         {
             Vector2 vertex = Vector2.REUSABLE_STACK.pop();
-            Vector2 originalVertex = Vector2.REUSABLE_STACK.pop();
             Vector2 texCoord = Vector2.REUSABLE_STACK.pop();
 
             texture.bind();
 
             batcher.begin(Primitive.TRIANGLE_FAN);
             {
-                float polygonWidth  = polygon.getBounds().getWidth();
-                float polygonHeight = polygon.getBounds().getHeight();
+                float polygonWidth  = polygon.getMaxX() - polygon.getMinX();
+                float polygonHeight = polygon.getMaxY() - polygon.getMinY();
 
                 polygon.getVertices().forEach(v ->
                 {
                     vertex.set(v).addSelf(polygon.getPosition());
                     batcher.vertex(vertex);
 
-                    originalVertex.set(v).rotateSelf(-polygon.getRotation());
+                    // Unrotate the original vertex to calculate the correct texture coordinates
+                    texCoord.set(v)
+                            .subtractSelf(polygonWidth / 2, polygonHeight / 2)
+                            .rotateSelf(-polygon.getRotation())
+                            .addSelf(polygonWidth / 2, polygonHeight / 2);
 
-                    texCoord.set(originalVertex);
-
+                    // Add the radius to the vertex in case of Ellipse, because the position of
+                    // an ellipse is it's center. This also covers Circle, because Circle inherits
+                    // from Ellipse class.
                     if (polygon instanceof Ellipse)
                         texCoord.addSelf(((Ellipse) polygon).getRadiusX(), ((Ellipse) polygon).getRadiusY());
 
-                    texCoord.scaleSelf(1 / polygonWidth, 1 / polygonHeight);
+                    texCoord.scaleSelf(texture.getMaxU() / polygonWidth, texture.getMaxV() / polygonHeight);
 
                     batcher.texCoord(texCoord);
                 });
@@ -323,7 +327,6 @@ public class Graphics2D
             batcher.end();
 
             Vector2.REUSABLE_STACK.push(vertex);
-            Vector2.REUSABLE_STACK.push(originalVertex);
             Vector2.REUSABLE_STACK.push(texCoord);
         }
         endPainting();

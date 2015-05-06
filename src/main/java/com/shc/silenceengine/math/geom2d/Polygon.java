@@ -258,6 +258,26 @@ public class Polygon
         return result;
     }
 
+    public float getMinX()
+    {
+        return minX;
+    }
+
+    public float getMinY()
+    {
+        return minY;
+    }
+
+    public float getMaxX()
+    {
+        return maxX;
+    }
+
+    public float getMaxY()
+    {
+        return maxY;
+    }
+
     @Override
     public boolean equals(Object o)
     {
