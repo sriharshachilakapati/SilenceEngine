@@ -35,6 +35,9 @@ import com.shc.silenceengine.graphics.Paint;
 import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.math.geom2d.Circle;
+import com.shc.silenceengine.math.geom2d.Ellipse;
+import com.shc.silenceengine.math.geom2d.Rectangle;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -45,6 +48,10 @@ public class Graphics2DTest extends Game
 
     private Paint gradientPaint;
     private Paint originalPaint;
+
+    private Rectangle rectangle;
+    private Circle    circle;
+    private Ellipse   ellipse;
 
     public static void main(String[] args)
     {
@@ -66,6 +73,10 @@ public class Graphics2DTest extends Game
 
         gradientPaint = new Paint(Color.RED, Color.BLUE, Paint.Gradient.DIAGONAL_LEFT_TO_RIGHT);
         originalPaint = g2d.getPaint();
+
+        rectangle = new Rectangle(530, 190, 100, 100);
+        circle = new Circle(500, 350, 50);
+        ellipse = new Ellipse(650, 400, 50, 100);
     }
 
     public void update(float delta)
@@ -92,6 +103,10 @@ public class Graphics2DTest extends Game
 
         g2d.drawTexture(texture, 100, 100, 254, 252);
         g2d.drawString("Hello World", 10, 10);
+
+        g2d.drawTexturedPolygon(texture, rectangle);
+        g2d.drawTexturedPolygon(texture, circle);
+        g2d.drawTexturedPolygon(texture, ellipse);
 
         g2d.setPaint(gradientPaint);
         g2d.fillRect(200, 200, 200, 200);

@@ -34,6 +34,7 @@ import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.math.geom2d.Ellipse;
 import com.shc.silenceengine.math.geom2d.Polygon;
 import com.shc.silenceengine.utils.MathUtils;
 
@@ -282,6 +283,43 @@ public class Graphics2D
     public void fillPolygon(Polygon polygon)
     {
         polygon(polygon, Primitive.TRIANGLE_FAN);
+    }
+
+    public void drawTexturedPolygon(Texture texture, Polygon polygon)
+    {
+        Batcher batcher = Game.getBatcher();
+        batcher.applyTransform(transform);
+
+        startPainting();
+        {
+            Vector2 vertex = Vector2.REUSABLE_STACK.pop();
+            Vector2 texCoord = Vector2.REUSABLE_STACK.pop();
+
+            texture.bind();
+
+            batcher.begin(Primitive.TRIANGLE_FAN);
+            {
+                polygon.getVertices().forEach(v ->
+                {
+                    vertex.set(v).addSelf(polygon.getPosition());
+                    batcher.vertex(vertex);
+
+                    texCoord.set(v.x, v.y);
+
+                    if (polygon instanceof Ellipse)
+                        texCoord.addSelf(((Ellipse) polygon).getRadiusX(), ((Ellipse) polygon).getRadiusY());
+
+                    texCoord.scaleSelf(1 / texture.getWidth(), 1 / texture.getHeight());
+
+                    batcher.texCoord(texCoord);
+                });
+            }
+            batcher.end();
+
+            Vector2.REUSABLE_STACK.push(vertex);
+            Vector2.REUSABLE_STACK.push(texCoord);
+        }
+        endPainting();
     }
 
     public void drawTexture(Texture texture, float x, float y)
