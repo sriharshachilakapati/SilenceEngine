@@ -70,7 +70,7 @@ public class SATResponseTest extends Game
         if (Keyboard.isClicked(Keyboard.KEY_ESCAPE))
             end();
 
-        circle.setCenter(new Vector2(Mouse.getX(), Mouse.getY()));
+        circle.setPosition(new Vector2(Mouse.getX(), Mouse.getY()));
 
         rectangle.rotate(90 * delta);
 
