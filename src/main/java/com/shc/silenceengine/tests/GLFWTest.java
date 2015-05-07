@@ -28,19 +28,15 @@ import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.glfw.Cursor;
 import com.shc.silenceengine.core.glfw.GLFW3;
 import com.shc.silenceengine.core.glfw.Window;
-import com.shc.silenceengine.graphics.opengl.BufferObject;
-import com.shc.silenceengine.graphics.opengl.GL3Context;
-import com.shc.silenceengine.graphics.opengl.Primitive;
+import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Shader;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.graphics.opengl.VertexArray;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.utils.NativesLoader;
 import com.shc.silenceengine.utils.TimeUtils;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 /**
@@ -77,8 +73,11 @@ public class GLFWTest
 
         window.setCursor(cursor);
 
-        VertexArray vao = new VertexArray();
-        vao.bind();
+        Batcher batcher = new Batcher();
+        batcher.setVertexLocation(0);
+        batcher.setColorLocation(1);
+        batcher.setNormalLocation(2);
+        batcher.setTexCoordLocation(3);
 
         Shader vs = new Shader(GL20.GL_VERTEX_SHADER);
         Shader fs = new Shader(GL20.GL_FRAGMENT_SHADER);
@@ -86,15 +85,18 @@ public class GLFWTest
         vs.source(
                 "#version 330 core                               \n" +
 
-                "layout (location = 0) in vec2 position;         \n" +
-                "layout (location = 1) in vec3 color;            \n" +
+                // Just declare others for the sake of Batcher
+                "layout (location = 0) in vec4 position;         \n" +
+                "layout (location = 1) in vec4 color;            \n" +
+                "layout (location = 2) in vec4 normal;           \n" +
+                "layout (location = 3) in vec2 texCoords;        \n" +
 
                 "out vec4 fsColor;                               \n" +
 
                 "void main()                                     \n" +
                 "{                                               \n" +
-                "    gl_Position = vec4(position, 0.0, 1.0);     \n" +
-                "    fsColor = vec4(color, 1.0);                 \n" +
+                "    gl_Position = position;                     \n" +
+                "    fsColor = color;                            \n" +
                 "}"
         );
 
@@ -124,25 +126,6 @@ public class GLFWTest
 
         shaderProgram.use();
 
-        BufferObject vbo = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
-        vbo.bind();
-
-        float[] data = new float[]
-        {
-            +0.0f, +0.8f, 1, 0, 0,
-            +0.8f, -0.8f, 0, 1, 0,
-            -0.8f, -0.8f, 0, 0, 1
-        };
-
-        vbo.bind();
-        vbo.uploadData(BufferUtils.createFloatBuffer(data.length).put(data).flip(), BufferObject.Usage.STATIC_DRAW);
-
-        vao.enableAttributeArray(0);
-        vao.enableAttributeArray(1);
-
-        vao.pointAttribute(0, 2, GL11.GL_FLOAT, false, 5 * Float.BYTES, 0, vbo);
-        vao.pointAttribute(1, 3, GL11.GL_FLOAT, false, 5 * Float.BYTES, 2 * Float.BYTES, vbo);
-
         // Initialize the input engine
         SilenceEngine.input.init();
 
@@ -164,7 +147,18 @@ public class GLFWTest
                 break;
 
             // Render here
-            GL3Context.drawArrays(vao, Primitive.TRIANGLES, 0, 3);
+            batcher.begin();
+            {
+                batcher.vertex(+0.0f, +0.8f);
+                batcher.color(Color.RED);
+
+                batcher.vertex(+0.8f, -0.8f);
+                batcher.color(Color.GREEN);
+
+                batcher.vertex(-0.8f, -0.8f);
+                batcher.color(Color.BLUE);
+            }
+            batcher.end();
 
             // Swap front and back buffers
             window.swapBuffers();
@@ -189,9 +183,7 @@ public class GLFWTest
             }
         }
 
-        vao.dispose();
-        vbo.dispose();
-
+        batcher.dispose();
         shaderProgram.dispose();
 
         window.destroy();
