@@ -323,7 +323,6 @@ public class Game
             }
 
             SilenceEngine.getInstance().endFrame();
-            Display.update();
 
             skippedFrames = 0;
 
