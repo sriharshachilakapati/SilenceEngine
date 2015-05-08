@@ -115,6 +115,7 @@ public class Window
 
     private Vector2 position;
     private Vector2 size;
+    private Vector2 framebufferSize;
 
     private String  title;
     private Monitor monitor;
@@ -226,6 +227,8 @@ public class Window
     public Window(int width, int height, String title, Monitor monitor, Window share)
     {
         size = new Vector2(width, height);
+        framebufferSize = new Vector2();
+
         position = new Vector2();
         this.title = title;
         this.monitor = monitor;
@@ -422,11 +425,21 @@ public class Window
         return registeredWindows.get(glfwGetCurrentContext());
     }
 
+    /**
+     * Returns the native pointer of the window. This value can be casted to a <code>GLFWwindow*</code> in the native
+     * code. This is useful if you want to use the native glfw functions from the {@link GLFW} class.
+     *
+     * @return The native handle that corresponds to this window.
+     */
     public long getHandle()
     {
         return handle;
     }
 
+    /**
+     * This method initialises the native callbacks, which just translate the events into the custom written callback
+     * interfaces. This is done to allow ease of development and more object oriented classes instead of long pointers.
+     */
     private void initNativeCallbacks()
     {
         // Initialize overriden callbacks
@@ -519,6 +532,10 @@ public class Window
         glfwSetWindowSizeCallback(handle, glfwWindowSizeCallback);
     }
 
+    /**
+     * This method initialises the custom callbacks, which just sit here and doesn't do anything. This is nothing but
+     * simply setting them to null.
+     */
     private void initCustomCallbacks()
     {
         // The default callbacks does nothing
@@ -539,16 +556,56 @@ public class Window
         setSizeCallback(null);
     }
 
+    /**
+     * <p> This method returns the last state reported for the specified key to the specified window. The returned state
+     * is one of <code>GLFW_PRESS</code> or <code>GLFW_RELEASE</code>. The higher-level action <code>GLFW_REPEAT</code>
+     * is only reported to the key callback.</p>
+     *
+     * <p> If the <code>GLFW_STICKY_KEYS</code> input mode is enabled, this function returns <code>GLFW_PRESS</code> the
+     * first time you call it for a key that was pressed, even if that key has already been released.</p>
+     *
+     * <p> The key methods deal with physical keys, with key tokens named after their use on the standard US keyboard
+     * layout. If you want to input text, use the Unicode character callback instead.</p>
+     *
+     * <p> The modifier key bit masks are not key tokens and cannot be used with this method.</p>
+     *
+     * @param key The desired keyboard key. <code>GLFW_KEY_UNKNOWN</code> is not a valid key for this method.
+     *
+     * @return One of <code>GLFW_PRESS</code> or <code>GLFW_RELEASE</code>.
+     */
     public int getKey(int key)
     {
         return glfwGetKey(handle, key);
     }
 
+    /**
+     * <p> This method returns the last state reported for the specified mouse button to the specified window. The
+     * returned state is one of <code>GLFW_PRESS</code> or <code>GLFW_RELEASE</code>.</p>
+     *
+     * <p> If the <code>GLFW_STICKY_MOUSE_BUTTONS</code> input mode is enabled, this method <code>GLFW_PRESS</code> the
+     * first time you call it for a mouse button that was pressed, even if that mouse button has already been released.
+     * </p>
+     *
+     * @param button The desired mouse button.
+     *
+     * @return One of <code>GLFW_PRESS</code> or <code>GLFW_RELEASE</code>.
+     *
+     * @see Window#setInputMode(int, int)
+     */
     public int getMouseButton(int button)
     {
         return glfwGetMouseButton(handle, button);
     }
 
+    /**
+     * <p> This method returns the position of the cursor, in screen coordinates, relative to the upper-left corner of
+     * the client area of the specified window.</p>
+     *
+     * <p> If the cursor is disabled (with <code>GLFW_CURSOR_DISABLED</code>) then the cursor position is unbounded and
+     * limited only by the minimum and maximum values of a double.</p>
+     *
+     * @return The current position of the mouse cursor in screen coordinates, as a {@link Vector2} object.
+     */
     public Vector2 getCursorPos()
     {
         DoubleBuffer xPos = BufferUtils.createDoubleBuffer(1);
@@ -682,6 +739,38 @@ public class Window
     public void setSize(float width, float height)
     {
         setSize(size.set(width, height));
+    }
+
+    public Vector2 getFramebufferSize()
+    {
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
+        glfwGetFramebufferSize(handle, width, height);
+
+        return framebufferSize.set(width.get(), height.get());
+    }
+
+    public void setFramebufferSize(Vector2 fbSize)
+    {
+        Vector2 temp = Vector2.REUSABLE_STACK.pop();
+        Vector2 framebufferSize = getFramebufferSize();
+        Vector2 size = getSize();
+
+        temp.set(size).scaleSelf(1/framebufferSize.x, 1/framebufferSize.y);
+
+        this.framebufferSize.set(fbSize);
+        size.set(fbSize).scaleSelf(temp.x, temp.y);
+
+        setSize(size);
+
+        Vector2.REUSABLE_STACK.push(temp);
+    }
+
+    public void setFramebufferSize(float width, float height)
+    {
+        Vector2 temp = Vector2.REUSABLE_STACK.pop();
+        setFramebufferSize(temp.set(width, height));
+        Vector2.REUSABLE_STACK.push(temp);
     }
 
     public Vector4 getFrameSize()
