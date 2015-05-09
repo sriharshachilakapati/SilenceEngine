@@ -62,7 +62,7 @@ public class OBJModelTest extends Game
         cam = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
         cam.setPosition(new Vector3(0, 0, 2.5f));
 
-        model = Model.load("resources/monkey.obj");
+        model = Model.load("resources/monkey model suzanne.obj");
 
         scene = new Scene();
         {

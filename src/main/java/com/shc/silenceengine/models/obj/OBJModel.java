@@ -174,7 +174,7 @@ public class OBJModel extends Model
     private void parseMaterialLib(String objFile, String mtlLine)
     {
         String objDir = objFile.substring(0, objFile.lastIndexOf('/'));
-        String mtlLib = objDir + "/" + mtlLine.split(" ")[1].trim();
+        String mtlLib = objDir + "/" + mtlLine.split(" ", 2)[1].trim();
         mtlLib = mtlLib.trim();
 
         String[] lines = FileUtils.readLinesToStringArray(FileUtils.getResource(mtlLib));
