@@ -615,73 +615,195 @@ public class Window
         return new Vector2((float) xPos.get(), (float) yPos.get());
     }
 
+    /**
+     * <p> This method sets the position, in screen coordinates, of the cursor relative to the upper-left corner of the
+     * client area of the window. The window must have input focus. If the window does not have input focus when this
+     * method is called, it fails silently.</p>
+     *
+     * <p> <b>Do not use this method</b> to implement things like camera controls. GLFW already provides the
+     * <code>GLFW_CURSOR_DISABLED</code> cursor mode that hides the cursor, transparently re-centers it and provides
+     * unconstrained cursor motion. See {@link Window#setInputMode(int, int)} for more information.</p>
+     *
+     * <p> If the cursor mode is <code>GLFW_CURSOR_DISABLED</code> then the cursor position is unconstrained and limited
+     * only by the minimum and maximum values of a double.</p>
+     *
+     * @param pos The desired position of the cursor as a Vector2 object.
+     */
     public void setCursorPos(Vector2 pos)
     {
         setCursorPos(pos.x, pos.y);
     }
 
+    /**
+     * <p> This method sets the position, in screen coordinates, of the cursor relative to the upper-left corner of the
+     * client area of the window. The window must have input focus. If the window does not have input focus when this
+     * method is called, it fails silently.</p>
+     *
+     * <p> <b>Do not use this method</b> to implement things like camera controls. GLFW already provides the
+     * <code>GLFW_CURSOR_DISABLED</code> cursor mode that hides the cursor, transparently re-centers it and provides
+     * unconstrained cursor motion. See {@link Window#setInputMode(int, int)} for more information.</p>
+     *
+     * <p> If the cursor mode is <code>GLFW_CURSOR_DISABLED</code> then the cursor position is unconstrained and limited
+     * only by the minimum and maximum values of a double.</p>
+     *
+     * @param xPos The desired x-coordinate, relative to the left edge of the client area.
+     * @param yPos The desired y-coordinate, relative to the top edge of the client area.
+     */
     public void setCursorPos(double xPos, double yPos)
     {
         glfwSetCursorPos(handle, xPos, yPos);
     }
 
+    /**
+     * <p> This method sets an input mode option for this window. The mode must be one of <code>GLFW_CURSOR</code>,
+     * <code>GLFW_STICKY_KEYS</code> or <code>GLFW_STICKY_MOUSE_BUTTONS</code>.</p>
+     *
+     * <p> If the mode is GLFW_CURSOR, the value must be one of the following cursor modes:</p>
+     *
+     * <ul>
+     *     <li><code>GLFW_CURSOR_NORMAL</code> makes the cursor visible and behaving normally.</li>
+     *     <li><code>GLFW_CURSOR_HIDDEN</code> makes the cursor invisible when it is over the client area of the window
+     *     but does not restrict the cursor from leaving.</li>
+     *     <li><code>GLFW_CURSOR_DISABLED</code> hides and grabs the cursor, providing virtual and unlimited cursor
+     *     movement. This is useful for implementing for example 3D camera controls.</li>
+     * </ul>
+     *
+     * <p> If the mode is <code>GLFW_STICKY_KEYS</code>, the value must be either <code>GL_TRUE</code> to enable sticky
+     * keys, or <code>GL_FALSE</code> to disable it. If sticky keys are enabled, a key press will ensure that
+     * {@link Window#getKey(int)} returns <code>GLFW_PRESS</code> the next time it is called even if the key had been
+     * released before the call. This is useful when you are only interested in whether keys have been pressed but not
+     * when or in which order.</p>
+     *
+     * <p> If the mode is <code>GLFW_STICKY_MOUSE_BUTTONS</code>, the value must be either <code>GL_TRUE</code> to
+     * enable sticky mouse buttons, or <code>GL_FALSE</code> to disable it. If sticky mouse buttons are enabled, a mouse
+     * button press will ensure that {@link Window#getMouseButton(int)} returns <code>GLFW_PRESS</code> the next time it
+     * is called even if the mouse button had been released before the call. This is useful when you are only interested
+     * in whether mouse buttons have been pressed but not when or in which order.</p>
+     *
+     * @param mode  One of <code>GLFW_CURSOR</code>, <code>GLFW_STICKY_KEYS</code> or
+     *              <code>GLFW_STICKY_MOUSE_BUTTONS</code>.
+     * @param value The new value of the specified input mode.
+     */
     public void setInputMode(int mode, int value)
     {
         glfwSetInputMode(handle, mode, value);
     }
 
+    /**
+     * <p> This method sets the cursor image to be used when the cursor is over the client area of the specified window.
+     * The set cursor will only be visible when the cursor mode of the window is <code>GLFW_CURSOR_NORMAL</code>.</p>
+     *
+     * <p> On some platforms, the set cursor may not be visible unless the window also has input focus.</p>
+     *
+     * @param cursor The cursor to set, or <code>null</code> to switch back to the default arrow cursor.
+     */
     public void setCursor(Cursor cursor)
     {
         glfwSetCursor(handle, cursor == null ? NULL : cursor.getHandle());
     }
 
+    /**
+     * <p> This method makes the OpenGL context of this window current on the calling thread. A context can only be made
+     * current on a single thread at a time and each thread can have only a single current context at a time.</p>
+     *
+     * <p> By default, making a context non-current implicitly forces a pipeline flush. On machines that support
+     * <code>GL_KHR_context_flush_control</code>, you can control whether a context performs this flush by setting the
+     * <code>GLFW_CONTEXT_RELEASE_BEHAVIOR</code> window hint.</p>
+     */
     public void makeCurrent()
     {
         glfwMakeContextCurrent(handle);
         GLContext.createFromCurrent();
     }
 
+    /**
+     * This method swaps the front and back buffers of the specified window. If the swap interval is greater than
+     * zero, the GPU driver waits the specified number of screen updates before swapping the buffers.
+     */
     public void swapBuffers()
     {
         glfwSwapBuffers(handle);
     }
 
+    /**
+     * This method returns the value of the close flag of this window.
+     *
+     * @return The close flag of this window.
+     */
     public boolean shouldClose()
     {
         return glfwWindowShouldClose(handle) == 1;
     }
 
+    /**
+     * This method sets the value of the close flag of this window. This can be used to override the user's attempt to
+     * close the window, or to signal that it should be closed.
+     *
+     * @param value The new value.
+     */
     public void setShouldClose(boolean value)
     {
         glfwSetWindowShouldClose(handle, value ? 1 : 0);
     }
 
+    /**
+     * <p> This method iconifies (minimizes) this window if it was previously restored. If the window is already
+     * iconified, this method does nothing.</p>
+     *
+     * <p> If this window is a full screen window, the original monitor resolution is restored until the window is
+     * restored again.</p>
+     */
     public void iconify()
     {
         glfwIconifyWindow(handle);
     }
 
+    /**
+     * <p> This method restores this window if it was previously iconified (minimized). If the window is already
+     * restored, this method does nothing.</p>
+     *
+     * <p> If this window is a full screen window, the resolution chosen for the window is restored on the selected
+     * monitor.</p>
+     */
     public void restore()
     {
         glfwRestoreWindow(handle);
     }
 
+    /**
+     * This method hides this window if it was previously visible. If the window is already hidden or is in full screen
+     * mode, this method does nothing.
+     */
     public void hide()
     {
         glfwHideWindow(handle);
     }
 
+    /**
+     * This method makes this window visible if it was previously hidden. If the window is already visible or is in full
+     * screen mode, this method does nothing.
+     */
     public void show()
     {
         glfwShowWindow(handle);
     }
 
+    /**
+     * This method destroys this window and its context. On calling this method, no further callbacks will be called for
+     * this window. If the context of this window is current on the main thread, it is detached before being destroyed.
+     * The context of this window must not be current on any other thread when this function is called.
+     */
     public void destroy()
     {
         releaseNativeCallbacks();
         glfwDestroyWindow(handle);
     }
 
+    /**
+     * This method releases the native callbacks, preventing the occurrence of segmentation fault errors from the JNI
+     * code, which usually occurs due to the function address not being cleared from the native code. Releasing these
+     * callbacks erases the function address, so it can't be called again.
+     */
     private void releaseNativeCallbacks()
     {
         glfwCharCallback.release();
@@ -701,6 +823,12 @@ public class Window
         glfwWindowSizeCallback.release();
     }
 
+    /**
+     * This method retrieves the position, in screen coordinates, of the upper-left corner of the client area of this
+     * window. If any error occurs, the position is set to zero.
+     *
+     * @return The position of the upper-left corner of the client area of this window, as a Vector2.
+     */
     public Vector2 getPosition()
     {
         IntBuffer xPos = BufferUtils.createIntBuffer(1);
@@ -710,17 +838,48 @@ public class Window
         return position.set(xPos.get(), yPos.get());
     }
 
+    /**
+     * <p> This method sets the position, in screen coordinates, of the upper-left corner of the client area of this
+     * windowed mode window. If the window is a full screen window, this function does nothing.</p>
+     *
+     * <p> <b>Do not use this method</b> to move an already visible window unless you have very good reasons for doing
+     * so, as it will confuse and annoy the user.</p>
+     *
+     * <p> The window manager may put limits on what positions are allowed. GLFW cannot and should not override these
+     * limits.</p>
+     *
+     * @param position The new position of this window.
+     */
     public void setPosition(Vector2 position)
     {
         this.position.set(position);
         glfwSetWindowPos(handle, (int) position.x, (int) position.y);
     }
 
+    /**
+     * <p> This method sets the position, in screen coordinates, of the upper-left corner of the client area of this
+     * windowed mode window. If the window is a full screen window, this function does nothing.</p>
+     *
+     * <p> <b>Do not use this method</b> to move an already visible window unless you have very good reasons for doing
+     * so, as it will confuse and annoy the user.</p>
+     *
+     * <p> The window manager may put limits on what positions are allowed. GLFW cannot and should not override these
+     * limits.</p>
+     *
+     * @param x The x-coordinate of the upper-left corner of the client area.
+     * @param y The y-coordinate of the upper-left corner of the client area.
+     */
     public void setPosition(float x, float y)
     {
         setPosition(position.set(x, y));
     }
 
+    /**
+     * This method retrieves the size, in screen coordinates, of the client area of this window. If you wish to retrieve
+     * the size of the framebuffer of the window in pixels, see {@link Window#getFramebufferSize()}.
+     *
+     * @return The size of the client area of this window, in screen coordinates, as a Vector2.
+     */
     public Vector2 getSize()
     {
         IntBuffer width = BufferUtils.createIntBuffer(1);
@@ -730,17 +889,48 @@ public class Window
         return size.set(width.get(), height.get());
     }
 
+    /**
+     * <p> This method sets the size, in screen coordinates, of the client area of this window.</p>
+     *
+     * <p> For full screen windows, this method selects and switches to the resolution closest to the specified size,
+     * without affecting the window's context. As the context is unaffected, the bit depths of the framebuffer remain
+     * unchanged.</p>
+     *
+     * <p> The window manager may put limits on what sizes are allowed. GLFW cannot and should not override these
+     * limits.</p>
+     *
+     * @param size The new size of the client area of this window, in screen coordinates, as a Vector2.
+     */
     public void setSize(Vector2 size)
     {
         this.size.set(size);
         glfwSetWindowSize(handle, (int) size.x, (int) size.y);
     }
 
+    /**
+     * <p> This method sets the size, in screen coordinates, of the client area of this window.</p>
+     *
+     * <p> For full screen windows, this method selects and switches to the resolution closest to the specified size,
+     * without affecting the window's context. As the context is unaffected, the bit depths of the framebuffer remain
+     * unchanged.</p>
+     *
+     * <p> The window manager may put limits on what sizes are allowed. GLFW cannot and should not override these
+     * limits.</p>
+     *
+     * @param width  The desired width of the specified window.
+     * @param height The desired height of the specified window.
+     */
     public void setSize(float width, float height)
     {
         setSize(size.set(width, height));
     }
 
+    /**
+     * This method retrieves the size, in pixels, of the framebuffer of this window. If you wish to retrieve the size of
+     * the window in screen coordinates, see {@link Window#getSize()}.
+     *
+     * @return The size of the window framebuffer, in pixels, as a Vector2.
+     */
     public Vector2 getFramebufferSize()
     {
         IntBuffer width = BufferUtils.createIntBuffer(1);
