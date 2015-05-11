@@ -35,7 +35,10 @@ import java.util.List;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
+ * A class for handling polled Mouse input.
+ * 
  * @author Sri Harsha Chilakapati
+ * @author Josh "ShadowLordAlpha"
  */
 public class Mouse
 {
@@ -61,43 +64,79 @@ public class Mouse
     private static float x, y, dx, dy;
     private static float scrollX, scrollY;
 
+    /**
+     * Remove all events from the current event frame and add all events from the event buffer
+     * into the current event frame
+     */
     public static void startEventFrame()
     {
         eventsThisFrame.clear();
         eventsThisFrame.addAll(events);
     }
 
+    /**
+     * Remove all events from the last frame and move all events from the current event frame
+     * into the last frame list.
+     */
     public static void clearEventFrame()
     {
         eventsLastFrame.clear();
         eventsLastFrame.addAll(eventsThisFrame);
     }
 
+    /**
+     * Gets if the button has not been pressed this event frame
+     * @param button The button
+     * @return true if the button has not been pressed this event frame
+     */
     public static boolean isReleased(int button)
     {
         return !isPressed(button);
     }
 
+    /**
+     * Gets if the button has been pressed this event frame
+     * @param button The button
+     * @return true if the button has been pressed this event frame
+     */
     public static boolean isPressed(int button)
     {
         return eventsThisFrame.contains(button);
     }
 
+    /**
+     * Gets if the button has been pressed in this event frame and not the frame before
+     * @param button The button
+     * @return true if the button has been pressed in this frame and not the frame before
+     */
     public static boolean isClicked(int button)
     {
         return eventsThisFrame.contains(button) && !eventsLastFrame.contains(button);
     }
 
+    /**
+     * Gets the Mouses x position
+     * @return The mouses x position
+     */
     public static float getX()
     {
         return x;
     }
 
+    /**
+     * Gets the Mouses y position
+     * @return The mouses y position
+     */
     public static float getY()
     {
         return y;
     }
 
+    /**
+     * Gets the Mouses change in x position. This will reset after the value has been
+     * fetched
+     * @return The mouses change in x position
+     */
     public static float getDX()
     {
         float dx = Mouse.dx;
@@ -105,6 +144,11 @@ public class Mouse
         return dx;
     }
 
+    /**
+     * Gets the Mouses change in y position. This will reset after the value has been
+     * fetched
+     * @return The mouses change in y position
+     */
     public static float getDY()
     {
         float dy = Mouse.dy;
@@ -112,6 +156,11 @@ public class Mouse
         return dy;
     }
 
+    /**
+     * Gets the Mouses scroll distance in x direction. This will reset after the value has been
+     * fetched
+     * @return The Mouses scroll distance in x direction
+     */
     public static float getScrollX()
     {
         float scrollX = Mouse.scrollX;
@@ -119,6 +168,11 @@ public class Mouse
         return scrollX;
     }
 
+    /**
+     * Gets the Mouses scroll distance in y direction. This will reset after the value has been
+     * fetched
+     * @return The Mouses scroll distance in y direction
+     */
     public static float getScrollY()
     {
         float scrollY = Mouse.scrollY;
@@ -126,11 +180,19 @@ public class Mouse
         return scrollY;
     }
 
+    /**
+     * Method used to pass GLFW Mouse Button events into the buffer
+     */
     public static void glfwMouseButtonCallback(Window window, int button, int action, int mods)
     {
         Mouse.setButton(button, action != GLFW_RELEASE);
     }
 
+    /**
+     * Add or remove a button from the event buffer
+     * @param button The button
+     * @param pressed add the button to the buffer if true remove it if false
+     */
     public static void setButton(int button, boolean pressed)
     {
         if (pressed && !events.contains(button))
@@ -140,6 +202,9 @@ public class Mouse
             events.remove((Integer) button);
     }
 
+    /**
+     * Method used to pass GLFW cursor move events into the buffer
+     */
     public static void glfwCursorCallback(Window window, double x, double y)
     {
         Mouse.dx = (float) x - Mouse.x;
@@ -149,12 +214,20 @@ public class Mouse
         Mouse.y = (float) y;
     }
 
+    /**
+     * Method used to pass GLFW scroll events into the buffer
+     */
     public static void glfwScrollCallback(Window window, double scrollX, double scrollY)
     {
         Mouse.scrollX = (float) scrollX;
         Mouse.scrollY = (float) scrollY;
     }
 
+    /**
+     * Gets a String with the buttons's human readable name in it
+     * @param button The button
+     * @return A String with the buttons's human readable name in it
+     */
     public static String getButtonName(int button)
     {
         for (Field field : Mouse.class.getDeclaredFields())
