@@ -940,6 +940,13 @@ public class Window
         return framebufferSize.set(width.get(), height.get());
     }
 
+    /**
+     * This method resizes the window such that the framebuffer is fixed to the size specified. The difference to the
+     * <code>setSize()</code> methods is that this method accepts the input in pixels, while those methods accept the
+     * input in screen coordinates.
+     *
+     * @param fbSize The size of the framebuffer in pixels.
+     */
     public void setFramebufferSize(Vector2 fbSize)
     {
         Vector2 temp = Vector2.REUSABLE_STACK.pop();
@@ -956,6 +963,14 @@ public class Window
         Vector2.REUSABLE_STACK.push(temp);
     }
 
+    /**
+     * This method resizes the window such that the framebuffer is fixed to the size specified. The difference to the
+     * <code>setSize()</code> methods is that this method accepts the input in pixels, while those methods accept the
+     * input in screen coordinates.
+     *
+     * @param width  The width of the window framebuffer, in pixels.
+     * @param height The height of the window framebuffer, in pixels.
+     */
     public void setFramebufferSize(float width, float height)
     {
         Vector2 temp = Vector2.REUSABLE_STACK.pop();
@@ -963,6 +978,17 @@ public class Window
         Vector2.REUSABLE_STACK.push(temp);
     }
 
+    /**
+     * <p> This method retrieves the size, in screen coordinates, of each edge of the frame of this window. This size
+     * includes the title bar, if the window has one. The size of the frame may vary depending on the window-related
+     * hints used to create it.</p>
+     *
+     * <p> Because this method retrieves the size of each window frame edge and not the offset along a particular
+     * coordinate axis, the retrieved values will always be zero or positive.</p>
+     *
+     * @return The size of the frame as a Vector4. The x-component is the size of the left edge, y-component is the top
+     *         edge, z-component is the right edge and the last w-component is the size of the bottom edge.
+     */
     public Vector4 getFrameSize()
     {
         IntBuffer left = BufferUtils.createIntBuffer(1);
@@ -975,16 +1001,32 @@ public class Window
         return new Vector4(left.get(), top.get(), right.get(), bottom.get());
     }
 
+    /**
+     * This methods returns the monitor that this window is fullscreen upon. If this window is in windowed mode, then
+     * the monitor will be <code>null</code>.
+     *
+     * @return The monitor used by this window.
+     */
     public Monitor getMonitor()
     {
         return monitor;
     }
 
+    /**
+     * This method returns the title of this window.
+     *
+     * @return The title of this window, encoded as UTF-8 string.
+     */
     public String getTitle()
     {
         return title;
     }
 
+    /**
+     * This method sets the title of the window, which is a string encoding in UTF-8.
+     *
+     * @param title The new title of this window.
+     */
     public void setTitle(String title)
     {
         this.title = title;
@@ -992,6 +1034,13 @@ public class Window
         glfwSetWindowTitle(handle, title);
     }
 
+    /**
+     * This method returns the value of an attribute of the specified window or its OpenGL context.
+     *
+     * @param attribute The window attribute whose value to return.
+     *
+     * @return The value of the attribute, or zero if an error occurred.
+     */
     public int getAttribute(int attribute)
     {
         return glfwGetWindowAttrib(handle, attribute);
@@ -1002,12 +1051,16 @@ public class Window
         return characterCallback;
     }
 
-    public void setCharacterCallback(ICharacterCallback callback)
+    public ICharacterCallback setCharacterCallback(ICharacterCallback callback)
     {
+        ICharacterCallback previousCallback = characterCallback;
+
         if (callback == null)
             callback = (window, codePoint) -> {};
 
         this.characterCallback = callback;
+
+        return previousCallback;
     }
 
     public ICharacterModsCallback getCharacterModsCallback()
@@ -1015,12 +1068,16 @@ public class Window
         return characterModsCallback;
     }
 
-    public void setCharacterModsCallback(ICharacterModsCallback callback)
+    public ICharacterModsCallback setCharacterModsCallback(ICharacterModsCallback callback)
     {
+        ICharacterModsCallback previousCallback = characterModsCallback;
+
         if (callback == null)
             callback = (window, cp, mods) -> {};
 
         this.characterModsCallback = callback;
+
+        return previousCallback;
     }
 
     public ICursorEnterCallback getCursorEnterCallback()
@@ -1028,12 +1085,16 @@ public class Window
         return cursorEnterCallback;
     }
 
-    public void setCursorEnterCallback(ICursorEnterCallback callback)
+    public ICursorEnterCallback setCursorEnterCallback(ICursorEnterCallback callback)
     {
+        ICursorEnterCallback previousCallback = cursorEnterCallback;
+
         if (callback == null)
             callback = (window, entered) -> {};
 
         this.cursorEnterCallback = callback;
+
+        return previousCallback;
     }
 
     public ICursorPositionCallback getCursorPositionCallback()
@@ -1041,12 +1102,16 @@ public class Window
         return cursorPositionCallback;
     }
 
-    public void setCursorPositionCallback(ICursorPositionCallback callback)
+    public ICursorPositionCallback setCursorPositionCallback(ICursorPositionCallback callback)
     {
+        ICursorPositionCallback previousCallback = cursorPositionCallback;
+
         if (callback == null)
             callback = (window, x, y) -> {};
 
         this.cursorPositionCallback = callback;
+
+        return previousCallback;
     }
 
     public IDropCallback getDropCallback()
@@ -1054,12 +1119,16 @@ public class Window
         return dropCallback;
     }
 
-    public void setDropCallback(IDropCallback callback)
+    public IDropCallback setDropCallback(IDropCallback callback)
     {
+        IDropCallback previousCallback = dropCallback;
+
         if (callback == null)
             callback = (window, paths) -> {};
 
         this.dropCallback = callback;
+
+        return previousCallback;
     }
 
     public IFramebufferSizeCallback getFramebufferSizeCallback()
@@ -1067,12 +1136,16 @@ public class Window
         return framebufferSizeCallback;
     }
 
-    public void setFramebufferSizeCallback(IFramebufferSizeCallback callback)
+    public IFramebufferSizeCallback setFramebufferSizeCallback(IFramebufferSizeCallback callback)
     {
+        IFramebufferSizeCallback previousCallback = framebufferSizeCallback;
+
         if (callback == null)
             callback = (window, w, h) -> {};
 
         this.framebufferSizeCallback = callback;
+
+        return previousCallback;
     }
 
     public IKeyCallback getKeyCallback()
@@ -1080,12 +1153,16 @@ public class Window
         return keyCallback;
     }
 
-    public void setKeyCallback(IKeyCallback callback)
+    public IKeyCallback setKeyCallback(IKeyCallback callback)
     {
+        IKeyCallback previousCallback = keyCallback;
+
         if (callback == null)
             callback = (win, key, sc, act, mods) -> {};
 
         this.keyCallback = callback;
+
+        return previousCallback;
     }
 
     public IMouseButtonCallback getMouseButtonCallback()
@@ -1093,12 +1170,16 @@ public class Window
         return mouseButtonCallback;
     }
 
-    public void setMouseButtonCallback(IMouseButtonCallback callback)
+    public IMouseButtonCallback setMouseButtonCallback(IMouseButtonCallback callback)
     {
+        IMouseButtonCallback previousCallback = mouseButtonCallback;
+
         if (callback == null)
             callback = (win, b, act, mods) -> {};
 
         this.mouseButtonCallback = callback;
+
+        return previousCallback;
     }
 
     public IScrollCallback getScrollCallback()
@@ -1106,12 +1187,16 @@ public class Window
         return scrollCallback;
     }
 
-    public void setScrollCallback(IScrollCallback callback)
+    public IScrollCallback setScrollCallback(IScrollCallback callback)
     {
+        IScrollCallback previousCallback = scrollCallback;
+
         if (callback == null)
             callback = (win, x, y) -> {};
 
         this.scrollCallback = callback;
+
+        return previousCallback;
     }
 
     public IWindowCloseCallback getCloseCallback()
@@ -1119,12 +1204,16 @@ public class Window
         return windowCloseCallback;
     }
 
-    public void setCloseCallback(IWindowCloseCallback callback)
+    public IWindowCloseCallback setCloseCallback(IWindowCloseCallback callback)
     {
+        IWindowCloseCallback previousCallback = windowCloseCallback;
+
         if (callback == null)
             callback = (win) -> {};
 
         this.windowCloseCallback = callback;
+
+        return previousCallback;
     }
 
     public IWindowFocusCallback getFocusCallback()
@@ -1132,12 +1221,16 @@ public class Window
         return windowFocusCallback;
     }
 
-    public void setFocusCallback(IWindowFocusCallback callback)
+    public IWindowFocusCallback setFocusCallback(IWindowFocusCallback callback)
     {
+        IWindowFocusCallback previousCallback = windowFocusCallback;
+
         if (callback == null)
             callback = (win, focused) -> {};
 
         this.windowFocusCallback = callback;
+
+        return previousCallback;
     }
 
     public IWindowIconifyCallback getIconifyCallback()
@@ -1145,12 +1238,16 @@ public class Window
         return windowIconifyCallback;
     }
 
-    public void setIconifyCallback(IWindowIconifyCallback callback)
+    public IWindowIconifyCallback setIconifyCallback(IWindowIconifyCallback callback)
     {
+        IWindowIconifyCallback previousCallback = windowIconifyCallback;
+
         if (callback == null)
             callback = (win, ic) -> {};
 
         this.windowIconifyCallback = callback;
+
+        return previousCallback;
     }
 
     public IWindowPositionCallback getPositionCallback()
@@ -1158,12 +1255,16 @@ public class Window
         return windowPositionCallback;
     }
 
-    public void setPositionCallback(IWindowPositionCallback callback)
+    public IWindowPositionCallback setPositionCallback(IWindowPositionCallback callback)
     {
+        IWindowPositionCallback previousCallback = windowPositionCallback;
+
         if (callback == null)
             callback = (win, x, y) -> {};
 
         this.windowPositionCallback = callback;
+
+        return previousCallback;
     }
 
     public IWindowRefreshCallback getRefreshCallback()
@@ -1171,12 +1272,16 @@ public class Window
         return windowRefreshCallback;
     }
 
-    public void setRefreshCallback(IWindowRefreshCallback callback)
+    public IWindowRefreshCallback setRefreshCallback(IWindowRefreshCallback callback)
     {
+        IWindowRefreshCallback previousCallback = windowRefreshCallback;
+
         if (callback == null)
             callback = (win) -> {};
 
         this.windowRefreshCallback = callback;
+
+        return previousCallback;
     }
 
     public IWindowSizeCallback getSizeCallback()
@@ -1184,11 +1289,15 @@ public class Window
         return windowSizeCallback;
     }
 
-    public void setSizeCallback(IWindowSizeCallback callback)
+    public IWindowSizeCallback setSizeCallback(IWindowSizeCallback callback)
     {
+        IWindowSizeCallback previousCallback = windowSizeCallback;
+
         if (callback == null)
             callback = (win, w, h) -> {};
 
         this.windowSizeCallback = callback;
+
+        return previousCallback;
     }
 }
