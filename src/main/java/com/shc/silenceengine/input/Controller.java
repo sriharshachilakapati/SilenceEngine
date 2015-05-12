@@ -35,7 +35,10 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
+ * A class for handling polled Controller input.
+ * 
  * @author Sri Harsha Chilakapati
+ * @author Josh "ShadowLordAlpha"
  */
 public class Controller
 {
@@ -173,29 +176,48 @@ public class Controller
             type = Type.GENERIC;
     }
 
+    /**
+     * poll all controllers for input
+     */
     public static void poll()
     {
         for (Controller controller : controllers)
             controller.pollValues();
     }
 
+    /**
+     * Call <code>startFrame();</code> on all known connected controllers
+     */
     public static void startEventFrame()
     {
         for (Controller controller : controllers)
             controller.startFrame();
     }
 
+    /**
+     * Call <code>clearFrame();</code> on all known connected controllers
+     */
     public static void clearEventFrame()
     {
         for (Controller controller : controllers)
             controller.clearFrame();
     }
 
+    /**
+     * Gets a list of all known connected controllers
+     * @return A list of all known connected controllers
+     */
     public static Controller[] getConnectedControllers()
     {
         return controllers;
     }
 
+    /**
+     * Gets if the button has been pressed this event frame on the controller
+     * @param button The button
+     * @param controller The controller
+     * @return true if the button has been pressed this event frame on the controller
+     */
     public static boolean isPressed(int button, int controller)
     {
         if (controllers == null)
@@ -204,6 +226,9 @@ public class Controller
         return controller < controllers.length && controllers[controller].isPressed(button);
     }
 
+    /**
+     * Generate a list of controllers that are able to be used
+     */
     public static void create()
     {
         // Create a list to store the controllers
@@ -225,6 +250,12 @@ public class Controller
         controllers = controllerList.toArray(controllers);
     }
 
+    /**
+     * Gets if the button has been pressed in this event frame and not the frame before on the controller
+     * @param button The button
+     * @param controller The controller
+     * @return true if the button has been pressed in this event frame and not the frame before on the controller
+     */
     public static boolean isClicked(int button, int controller)
     {
         if (controllers == null)
@@ -233,6 +264,12 @@ public class Controller
         return controller < controllers.length && controllers[controller].isClicked(button);
     }
 
+    /**
+     * TODO
+     * @param axe The axis
+     * @param controller The controller
+     * @return 
+     */
     public static float getAxe(int axe, int controller)
     {
         if (controllers == null)
@@ -241,6 +278,12 @@ public class Controller
         return controller < controllers.length ? controllers[controller].getAxe(axe) : 0;
     }
 
+    /**
+     * TODO
+     * @param axe The axis
+     * @param controller The controller
+     * @return
+     */
     public static float getClickAxe(int axe, int controller)
     {
         if (controllers == null)
@@ -249,6 +292,9 @@ public class Controller
         return controller < controllers.length ? controllers[controller].getClickAxe(axe) : 0;
     }
 
+    /**
+     * Polls the controller for input as well as checks to see if the controller is still active
+     */
     private void pollValues()
     {
         // Check if controller is still plugged in
@@ -286,11 +332,19 @@ public class Controller
         }
     }
 
+    /**
+     * Gets if the controller is still connected
+     * @return true if the controller is still connected
+     */
     public boolean isPresent()
     {
         return glfwJoystickPresent(id) == GL_TRUE;
     }
 
+    /**
+     * Remove all events from the current event frame and add all events from the event buffer
+     * into the current event frame
+     */
     private void startFrame()
     {
         buttonsThisFrame.clear();
@@ -300,6 +354,10 @@ public class Controller
         axesThisFrame.putAll(axes);
     }
 
+    /**
+     * Remove all events from the last frame and move all events from the current event frame
+     * into the last frame list.
+     */
     private void clearFrame()
     {
         buttonsLastFrame.clear();
@@ -309,6 +367,11 @@ public class Controller
         axesLastFrame.putAll(axesThisFrame);
     }
 
+    /**
+     * Gets if the button has been pressed this event frame
+     * @param button The button
+     * @return true if the button has been pressed this event frame
+     */
     public boolean isPressed(int button)
     {
         if (!buttonsLastFrame.containsKey(button))
@@ -320,6 +383,11 @@ public class Controller
         return buttonsLastFrame.get(button) || buttonsThisFrame.get(button);
     }
 
+    /**
+     * Gets if the button has been pressed in this event frame and not the frame before
+     * @param button The button
+     * @return true if the button has been pressed in this event frame and not the frame before
+     */
     public boolean isClicked(int button)
     {
         if (!buttonsLastFrame.containsKey(button))
@@ -331,11 +399,21 @@ public class Controller
         return buttonsThisFrame.get(button) && !buttonsLastFrame.get(button);
     }
 
+    /**
+     * TODO
+     * @param axe The axis
+     * @return
+     */
     public float getAxe(int axe)
     {
         return axes.get(axe);
     }
 
+    /**
+     * TODO
+     * @param axe The axis
+     * @return
+     */
     public float getClickAxe(int axe)
     {
         if (axesLastFrame.get(axe) != 0)
@@ -344,11 +422,19 @@ public class Controller
         return axesThisFrame.get(axe);
     }
 
+    /**
+     * Debug method to see button and axis presses on a controller
+     * this is the same as calling <code>printValues(false);</code>
+     */
     public void printValues()
     {
         printValues(false);
     }
 
+    /**
+     * Debug method to see button and axis presses on a controller
+     * @param repeat
+     */
     public void printValues(boolean repeat)
     {
         buttons.keySet().forEach(i ->
@@ -368,31 +454,54 @@ public class Controller
         });
     }
 
+    /**
+     * Gets the ID of the controller
+     * @return The ID of the controller
+     */
     public int getId()
     {
         return id;
     }
 
+    /**
+     * Gets the name of the controller
+     * @return The name of the controller
+     */
     public String getName()
     {
         return name;
     }
 
+    /**
+     * Gets the number of buttons on the controller
+     * @return The number of button on the controller
+     */
     public int getNumButtons()
     {
         return numButtons;
     }
 
+    /**
+     * Gets the number of axes the controller has
+     * @return The number of axes the controller has
+     */
     public int getNumAxes()
     {
         return numAxes;
     }
 
+    /**
+     * Gets the type of controller
+     * @return The type of controller
+     */
     public Type getType()
     {
         return type;
     }
 
+    /**
+     * Enum denoting the different types of controllers
+     */
     public enum Type
     {
         PS3, PS4, XBOX, GENERIC
