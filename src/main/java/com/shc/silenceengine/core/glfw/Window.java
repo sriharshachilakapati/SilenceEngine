@@ -1046,11 +1046,24 @@ public class Window
         return glfwGetWindowAttrib(handle, attribute);
     }
 
+    /**
+     * Returns the currently set {@link ICharacterCallback} of this window object.
+     *
+     * @return The currently set character callback, or <code>null</code> if there is none.
+     */
     public ICharacterCallback getCharacterCallback()
     {
         return characterCallback;
     }
 
+    /**
+     * This method sets a {@link ICharacterCallback} with this window, allowing you to listen to character input events
+     * that happened on this window.
+     *
+     * @param callback The callback instance which will be invoked when a character input event occurs.
+     *
+     * @return The previously set callback, or <code>null</code> if there is no previously set callback.
+     */
     public ICharacterCallback setCharacterCallback(ICharacterCallback callback)
     {
         ICharacterCallback previousCallback = characterCallback;
@@ -1063,11 +1076,25 @@ public class Window
         return previousCallback;
     }
 
+    /**
+     * This method returns the currently set {@link ICharacterModsCallback} for this window. If there is no callback
+     * registered, this method returns <code>null</code>.
+     *
+     * @return The currently set character mods callback on this window.
+     */
     public ICharacterModsCallback getCharacterModsCallback()
     {
         return characterModsCallback;
     }
 
+    /***
+     * This method sets the {@link ICharacterModsCallback} used by this window to notify input events. This method also
+     * returns the previously set callback for you.
+     *
+     * @param callback The new {@link ICharacterModsCallback} to be used.
+     *
+     * @return The previously used callback, or <code>null</code> if there is none.
+     */
     public ICharacterModsCallback setCharacterModsCallback(ICharacterModsCallback callback)
     {
         ICharacterModsCallback previousCallback = characterModsCallback;
@@ -1080,11 +1107,24 @@ public class Window
         return previousCallback;
     }
 
+    /**
+     * This method returns the currently set {@link ICursorEnterCallback} on this window. If there is no callback, then
+     * this method returns <code>null</code>.
+     *
+     * @return The currently set {@link ICursorEnterCallback}, or <code>null</code> if there is none.
+     */
     public ICursorEnterCallback getCursorEnterCallback()
     {
         return cursorEnterCallback;
     }
 
+    /**
+     * This method sets the {@link ICursorEnterCallback} on this window. Also, it returns the previously set callback.
+     *
+     * @param callback The new {@link ICursorEnterCallback} to be used, or <code>null</code> to clear it.
+     *
+     * @return The previously used callback, or <code>null</code> if there is none.
+     */
     public ICursorEnterCallback setCursorEnterCallback(ICursorEnterCallback callback)
     {
         ICursorEnterCallback previousCallback = cursorEnterCallback;
@@ -1097,11 +1137,24 @@ public class Window
         return previousCallback;
     }
 
+    /**
+     * This method returns the currently set {@link ICursorPositionCallback} on this window.
+     *
+     * @return The currently set callback, or <code>null</code> if there is none set.
+     */
     public ICursorPositionCallback getCursorPositionCallback()
     {
         return cursorPositionCallback;
     }
 
+    /**
+     * This method sets the {@link ICursorPositionCallback} to be used by this window. If you want to clear the existing
+     * callback, pass <code>null</code> as the argument.
+     *
+     * @param callback The new {@link ICursorPositionCallback} to be used.
+     *
+     * @return The previously set callback, or <code>null</code> if there is none set.
+     */
     public ICursorPositionCallback setCursorPositionCallback(ICursorPositionCallback callback)
     {
         ICursorPositionCallback previousCallback = cursorPositionCallback;
@@ -1114,11 +1167,25 @@ public class Window
         return previousCallback;
     }
 
+    /**
+     * This method returns the currently set {@link IDropCallback} on this window. If there is no callback set, then
+     * <code>null</code> is returned to you.
+     *
+     * @return The currently set callback, or <code>null</code> if there is none set.
+     */
     public IDropCallback getDropCallback()
     {
         return dropCallback;
     }
 
+    /**
+     * This method sets a {@link IDropCallback} to be used by this Window. To clear the current callback, just pass
+     * <code>null</code> to the argument.
+     *
+     * @param callback The new callback to be used by this window, or <code>null</code> to clear the existing one.
+     *
+     * @return The previously used callback, or <code>null</code> if there is none set.
+     */
     public IDropCallback setDropCallback(IDropCallback callback)
     {
         IDropCallback previousCallback = dropCallback;
@@ -1131,11 +1198,25 @@ public class Window
         return previousCallback;
     }
 
+    /**
+     * This method returns the currently used {@link IFramebufferSizeCallback} by this window. If there is no existing
+     * callback, then this method returns <code>null</code> to you.
+     *
+     * @return The current callback, or <code>null</code> if none is set previously.
+     */
     public IFramebufferSizeCallback getFramebufferSizeCallback()
     {
         return framebufferSizeCallback;
     }
 
+    /**
+     * This method sets the {@link IFramebufferSizeCallback} used by this window. If you want to clear the existing
+     * callback, simply pass <code>null</code> as the value for the argument.
+     *
+     * @param callback The new callback to be used, or <code>null</code> to clear the existing one.
+     *
+     * @return The previously used callback, or <code>null</code> if none exists before.
+     */
     public IFramebufferSizeCallback setFramebufferSizeCallback(IFramebufferSizeCallback callback)
     {
         IFramebufferSizeCallback previousCallback = framebufferSizeCallback;
@@ -1148,11 +1229,25 @@ public class Window
         return previousCallback;
     }
 
+    /**
+     * This method returns the currently used {@link IKeyCallback} of this window. If there is no callback set before,
+     * this method returns <code>null</code> to you.
+     *
+     * @return The currently used key callback of this window.
+     */
     public IKeyCallback getKeyCallback()
     {
         return keyCallback;
     }
 
+    /**
+     * This method sets the {@link IKeyCallback} used by this window object. If you want to clear the existing one, just
+     * pass <code>null</code> as the value of the argument.
+     *
+     * @param callback The new callback to be used, or <code>null</code> to clear the existing one.
+     *
+     * @return The previously used key callback, or <code>null</code> if there is nothing previously set.
+     */
     public IKeyCallback setKeyCallback(IKeyCallback callback)
     {
         IKeyCallback previousCallback = keyCallback;
@@ -1165,11 +1260,25 @@ public class Window
         return previousCallback;
     }
 
+    /**
+     * This method returns the currently set {@link IMouseButtonCallback} of this Window object. If there is nothing set
+     * before, then this method returns <code>null</code> to you.
+     *
+     * @return The currently set mouse button callback, or <code>null</code> if there is nothing set previously.
+     */
     public IMouseButtonCallback getMouseButtonCallback()
     {
         return mouseButtonCallback;
     }
 
+    /**
+     * This method sets the {@link IMouseButtonCallback} used by this window object. If you want to clear the existing
+     * callback, simply pass <code>null</code> as the value of the argument.
+     *
+     * @param callback The new callback to be used, or <code>null</code> if you want to clear it.
+     *
+     * @return The previously set mouse button callback, or <code>null</code> if there is nothing set previously.
+     */
     public IMouseButtonCallback setMouseButtonCallback(IMouseButtonCallback callback)
     {
         IMouseButtonCallback previousCallback = mouseButtonCallback;
@@ -1182,11 +1291,25 @@ public class Window
         return previousCallback;
     }
 
+    /**
+     * This method returns the {@link IScrollCallback} used by this window object. If there is no callback registered,
+     * then this method returns <code>null</code>.
+     *
+     * @return The current scroll callback, or <code>null</code> if there is nothing set previously.
+     */
     public IScrollCallback getScrollCallback()
     {
         return scrollCallback;
     }
 
+    /**
+     * This method sets the {@link IScrollCallback} used by this window object. If you want to clear the existing
+     * callback, simply pass <code>null</code> to the argument.
+     *
+     * @param callback The new callback to be used, or <code>null</code> if you want to clear existing callback.
+     *
+     * @return The previously used scroll callback, or <code>null</code> if there isn't any.
+     */
     public IScrollCallback setScrollCallback(IScrollCallback callback)
     {
         IScrollCallback previousCallback = scrollCallback;
@@ -1199,11 +1322,25 @@ public class Window
         return previousCallback;
     }
 
+    /**
+     * This method returns the current {@link IWindowCloseCallback} of this window object. If there is no existing
+     * callback, this method returns <code>null</code> as the return value.
+     *
+     * @return The current window close callback, or <code>null</code> if there is nothing previously.
+     */
     public IWindowCloseCallback getCloseCallback()
     {
         return windowCloseCallback;
     }
 
+    /**
+     * This method sets the {@link IWindowCloseCallback} used by this window object. If you want to clear the existing
+     * callback, then simply pass <code>null</code> to the value of the argument.
+     *
+     * @param callback The new callback to be used, or <code>null</code> if you want to clear the existing one.
+     *
+     * @return The previously set close callback, or <code>null</code> if nothing is set previously.
+     */
     public IWindowCloseCallback setCloseCallback(IWindowCloseCallback callback)
     {
         IWindowCloseCallback previousCallback = windowCloseCallback;
@@ -1216,11 +1353,25 @@ public class Window
         return previousCallback;
     }
 
+    /**
+     * This method returns the currently set {@link IWindowFocusCallback} of this window object. If there is no existing
+     * callback, then <code>null</code> is returned to you.
+     *
+     * @return The currently set focus callback, or <code>null</code> if there is nothing set previously.
+     */
     public IWindowFocusCallback getFocusCallback()
     {
         return windowFocusCallback;
     }
 
+    /**
+     * This method sets the {@link IWindowFocusCallback} used by this window object. If you want to clear out the
+     * existing callback, then simply pass <code>null</code> as the value of the argument.
+     *
+     * @param callback The new callback to be used, or <code>null</code> to clear the existing one.
+     *
+     * @return The previously used focus callback, or <code>null</code> if there is nothing set previously.
+     */
     public IWindowFocusCallback setFocusCallback(IWindowFocusCallback callback)
     {
         IWindowFocusCallback previousCallback = windowFocusCallback;
@@ -1233,11 +1384,25 @@ public class Window
         return previousCallback;
     }
 
+    /**
+     * This method returns the {@link IWindowIconifyCallback} used by this window object. If there is no existing
+     * callback, then <code>null</code> is returned.
+     *
+     * @return The currently used iconify callback, or <code>null</code> if there is none set previously.
+     */
     public IWindowIconifyCallback getIconifyCallback()
     {
         return windowIconifyCallback;
     }
 
+    /**
+     * This method sets the {@link IWindowIconifyCallback} used by this window object. If you want to clear the existing
+     * callback, simply pass <code>null</code> as the value of the argument.
+     *
+     * @param callback The new callback to be used, or <code>null</code> to clear the existing callback.
+     *
+     * @return The previously used iconify callback, or <code>null</code> if there is none set previously.
+     */
     public IWindowIconifyCallback setIconifyCallback(IWindowIconifyCallback callback)
     {
         IWindowIconifyCallback previousCallback = windowIconifyCallback;
@@ -1250,11 +1415,25 @@ public class Window
         return previousCallback;
     }
 
+    /**
+     * This method returns the currently set {@link IWindowPositionCallback} of this window object. If there is nothing
+     * set previously, then this method returns <code>null</code>.
+     *
+     * @return The current window position callback, or <code>null</code> if there is nothing previously set.
+     */
     public IWindowPositionCallback getPositionCallback()
     {
         return windowPositionCallback;
     }
 
+    /**
+     * This method sets the {@link IWindowPositionCallback} of this window object. If you want to clear the existing
+     * callback, then simply pass <code>null</code> to the value of the argument.
+     *
+     * @param callback The new callback to be used, or <code>null</code> to clear the existing one.
+     *
+     * @return The previously used callback, or <code>null</code> if there is nothing previously set.
+     */
     public IWindowPositionCallback setPositionCallback(IWindowPositionCallback callback)
     {
         IWindowPositionCallback previousCallback = windowPositionCallback;
@@ -1267,11 +1446,25 @@ public class Window
         return previousCallback;
     }
 
+    /**
+     * This method returns the currently set {@link IWindowRefreshCallback} on this window object. If there is no
+     * callback previously set, this method will return <code>null</code> to you.
+     *
+     * @return The currently set window refresh callback, or <code>null</code> if there is nothing set previously.
+     */
     public IWindowRefreshCallback getRefreshCallback()
     {
         return windowRefreshCallback;
     }
 
+    /**
+     * This method sets the {@link IWindowRefreshCallback} on this window object. If you want to clear out the existing
+     * callback, then simply pass <code>null</code> as the value to the argument.
+     *
+     * @param callback The new callback to be used, or <code>null</code> to clear the existing callback.
+     *
+     * @return The previously used callback, or <code>null</code> if there is nothing set previously.
+     */
     public IWindowRefreshCallback setRefreshCallback(IWindowRefreshCallback callback)
     {
         IWindowRefreshCallback previousCallback = windowRefreshCallback;
@@ -1284,11 +1477,25 @@ public class Window
         return previousCallback;
     }
 
+    /**
+     * This method returns the currently used {@link IWindowSizeCallback} of this window object. If there is no existing
+     * callback, this method returns <code>null</code>.
+     *
+     * @return The currently set window size callback, or <code>null</code> if there is nothing set previously.
+     */
     public IWindowSizeCallback getSizeCallback()
     {
         return windowSizeCallback;
     }
 
+    /**
+     * This method sets the {@link IWindowSizeCallback} used by this window object. If you want to clear the existing
+     * callback, simply pass <code>null</code> as the argument.
+     *
+     * @param callback The new callback to be used, or <code>null</code> to clear the existing one.
+     *
+     * @return The previously used callback, or <code>null</code> if there is nothing set previously.
+     */
     public IWindowSizeCallback setSizeCallback(IWindowSizeCallback callback)
     {
         IWindowSizeCallback previousCallback = windowSizeCallback;
