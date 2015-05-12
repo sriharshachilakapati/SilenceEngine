@@ -38,6 +38,7 @@ import static org.lwjgl.glfw.GLFW.*;
  * A class for handling polled keyboard input.
  *
  * @author Sri Harsha Chilakapati
+ * @author Josh "ShadowLordAlpha"
  */
 public class Keyboard
 {
@@ -170,41 +171,81 @@ public class Keyboard
     private static List<Integer> eventsThisFrame = new ArrayList<>();
     private static List<Integer> eventsLastFrame = new ArrayList<>();
 
+    /**
+     * Gets if the key has not been pressed this event frame
+     * @param key The key
+     * @return true if the key has not been pressed
+     */
     public static boolean isReleased(int key)
     {
         return !isPressed(key);
     }
 
+    /**
+     * Gets if the key has been pressed this event frame
+     * @param key The key
+     * @return true if the key has been pressed in this frame
+     */
     public static boolean isPressed(int key)
     {
         return eventsThisFrame.contains(key);
     }
 
+    /**
+     * Gets if the key has been pressed in this event frame and not the frame before
+     * @param key The key
+     * @return true if the key has been pressed in this frame and not the frame before
+     */
     public static boolean isClicked(int key)
     {
         return eventsThisFrame.contains(key) && !eventsLastFrame.contains(key);
     }
 
+    /**
+     * Gets if the character has not been pressed this event frame
+     * @param key The character
+     * @return true if the character has not been pressed
+     */
     public static boolean isReleased(char key)
     {
         return !isPressed(key);
     }
 
+    /**
+     * Gets if the character has been pressed this event frame
+     * @param key The character
+     * @return true if the character has been pressed in this frame
+     */
     public static boolean isPressed(char key)
     {
         return isPressed((int) Character.toUpperCase(key));
     }
 
+    /**
+     * Gets if the character has been pressed in this event frame and not the frame before
+     * @param key The character
+     * @return true if the character has been pressed in this frame and not the frame before
+     */
     public static boolean isClicked(char key)
     {
         return isClicked((int) Character.toUpperCase(key));
     }
 
+    /**
+     * Add or remove a key from the event buffer
+     * @param key The character
+     * @param pressed add the key to the buffer if true remove it if false
+     */
     public static void setKey(char key, boolean pressed)
     {
         setKey((int) Character.toUpperCase(key), pressed);
     }
 
+    /**
+     * Add or remove a key from the event buffer
+     * @param key The key
+     * @param pressed add the key to the buffer if true remove it if false
+     */
     public static void setKey(int key, boolean pressed)
     {
         if (pressed && !events.contains(key))
@@ -214,38 +255,67 @@ public class Keyboard
             events.remove((Integer) key);
     }
 
+    /**
+     * Get if any key was pressed
+     * @return true if any key was pressed
+     */
     public static boolean isAnyKeyPressed()
     {
         return getNumKeysPressed() > 0;
     }
 
+    /**
+     * Gets the number of keyboard events
+     * @return The number of keyboard events
+     */
     public static int getNumKeysPressed()
     {
         return events.size();
     }
 
+    /**
+     * Remove all events from the current event frame and add all events from the event buffer
+     * into the current event frame
+     */
     public static void startEventFrame()
     {
         eventsThisFrame.clear();
         eventsThisFrame.addAll(events);
     }
 
+    /**
+     * Remove all events from the last frame and move all events from the current event frame
+     * into the last frame list.
+     */
     public static void clearEventFrame()
     {
         eventsLastFrame.clear();
         eventsLastFrame.addAll(eventsThisFrame);
     }
 
+    /**
+     * Method used to pass GLFW events into the buffer
+     */
     public static void glfwKeyCallback(Window window, int key, int scanCode, int action, int mods)
     {
         Keyboard.setKey(key, action != GLFW_RELEASE);
     }
 
+    /**
+     * Gets a character's corresponding key code name
+     * @param key The character
+     * @return A String with the key's human readable name in it
+     */
     public static String getKeyName(char key)
     {
         return getKeyName((int) Character.toUpperCase(key));
     }
 
+    /**
+     * Gets a key's name
+     * @param key The key
+     * @return A String with the key's human readable name in it
+     */
     public static String getKeyName(int key)
     {
         for (Field field : Keyboard.class.getDeclaredFields())
@@ -262,6 +332,11 @@ public class Keyboard
         return "Unknown key code";
     }
 
+    /**
+     * Gets a character's corresponding key code
+     * @param key The character
+     * @return The key code
+     */
     public static int getKeyCode(char key)
     {
         return (int) Character.toUpperCase(key);
