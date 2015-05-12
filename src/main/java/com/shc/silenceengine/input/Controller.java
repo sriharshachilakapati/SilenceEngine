@@ -265,10 +265,9 @@ public class Controller
     }
 
     /**
-     * TODO
+     * Gets the current value on the axis for the controller
      * @param axe The axis
-     * @param controller The controller
-     * @return 
+     * @return The current value on the axis for the controller
      */
     public static float getAxe(int axe, int controller)
     {
@@ -279,10 +278,9 @@ public class Controller
     }
 
     /**
-     * TODO
+     * Whether the axis is on or not for the controller
      * @param axe The axis
-     * @param controller The controller
-     * @return
+     * @return Whether the axis is on or not for the controller
      */
     public static float getClickAxe(int axe, int controller)
     {
@@ -400,9 +398,9 @@ public class Controller
     }
 
     /**
-     * TODO
+     * Gets the current value on the axis
      * @param axe The axis
-     * @return
+     * @return The current value on the axis
      */
     public float getAxe(int axe)
     {
@@ -410,9 +408,9 @@ public class Controller
     }
 
     /**
-     * TODO
+     * Whether the axis is on or not
      * @param axe The axis
-     * @return
+     * @return Whether the axis is on or not
      */
     public float getClickAxe(int axe)
     {
