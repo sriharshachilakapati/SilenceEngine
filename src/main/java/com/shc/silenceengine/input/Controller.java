@@ -135,6 +135,14 @@ public class Controller
     private Map<Integer, Boolean> buttonsThisFrame;
     private Map<Integer, Boolean> buttonsLastFrame;
 
+    /**
+     * Constructs a controller object that represents a single joystick that is connected to the system. A controller
+     * has a unique ID (GLFWjoystick*) and a name. There is no guarantee GLFW makes that this name is unique, because it
+     * is the name of the driver that the OS uses to interface with the controller.
+     *
+     * @param id   The unique ID of the joystick. It is the number of the joystick, starting from 0.
+     * @param name The name of the driver that is used to interface with the controller hardware.
+     */
     private Controller(int id, String name)
     {
         this.id = id;
@@ -205,6 +213,7 @@ public class Controller
 
     /**
      * Gets a list of all known connected controllers
+     *
      * @return A list of all known connected controllers
      */
     public static Controller[] getConnectedControllers()
@@ -214,9 +223,11 @@ public class Controller
 
     /**
      * Gets if the button has been pressed this event frame on the controller
-     * @param button The button
+     *
+     * @param button     The button
      * @param controller The controller
-     * @return true if the button has been pressed this event frame on the controller
+     *
+     * @return True if the button has been pressed this event frame on the controller
      */
     public static boolean isPressed(int button, int controller)
     {
@@ -252,8 +263,10 @@ public class Controller
 
     /**
      * Gets if the button has been pressed in this event frame and not the frame before on the controller
-     * @param button The button
+     *
+     * @param button     The button
      * @param controller The controller
+     *
      * @return true if the button has been pressed in this event frame and not the frame before on the controller
      */
     public static boolean isClicked(int button, int controller)
@@ -266,7 +279,10 @@ public class Controller
 
     /**
      * Gets the current value on the axis for the controller
-     * @param axe The axis
+     *
+     * @param axe        The axis
+     * @param controller The ID of the controller, starting from 0.
+     *
      * @return The current value on the axis for the controller
      */
     public static float getAxe(int axe, int controller)
@@ -279,7 +295,10 @@ public class Controller
 
     /**
      * Whether the axis is on or not for the controller
-     * @param axe The axis
+     *
+     * @param axe        The axis
+     * @param controller The ID of the controller, starting from 0.
+     *
      * @return Whether the axis is on or not for the controller
      */
     public static float getClickAxe(int axe, int controller)
@@ -332,6 +351,7 @@ public class Controller
 
     /**
      * Gets if the controller is still connected
+     *
      * @return true if the controller is still connected
      */
     public boolean isPresent()
@@ -367,7 +387,9 @@ public class Controller
 
     /**
      * Gets if the button has been pressed this event frame
+     *
      * @param button The button
+     *
      * @return true if the button has been pressed this event frame
      */
     public boolean isPressed(int button)
@@ -383,7 +405,9 @@ public class Controller
 
     /**
      * Gets if the button has been pressed in this event frame and not the frame before
+     *
      * @param button The button
+     *
      * @return true if the button has been pressed in this event frame and not the frame before
      */
     public boolean isClicked(int button)
@@ -399,7 +423,9 @@ public class Controller
 
     /**
      * Gets the current value on the axis
+     *
      * @param axe The axis
+     *
      * @return The current value on the axis
      */
     public float getAxe(int axe)
@@ -409,7 +435,9 @@ public class Controller
 
     /**
      * Whether the axis is on or not
+     *
      * @param axe The axis
+     *
      * @return Whether the axis is on or not
      */
     public float getClickAxe(int axe)
@@ -431,7 +459,8 @@ public class Controller
 
     /**
      * Debug method to see button and axis presses on a controller
-     * @param repeat
+     *
+     * @param repeat If true, the values are printed even if the button or axis is pressed and held down.
      */
     public void printValues(boolean repeat)
     {
