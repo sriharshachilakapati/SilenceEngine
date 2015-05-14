@@ -173,7 +173,9 @@ public class Keyboard
 
     /**
      * Gets if the key has not been pressed this event frame
+     *
      * @param key The key
+     *
      * @return true if the key has not been pressed
      */
     public static boolean isReleased(int key)
@@ -183,7 +185,9 @@ public class Keyboard
 
     /**
      * Gets if the key has been pressed this event frame
+     *
      * @param key The key
+     *
      * @return true if the key has been pressed in this frame
      */
     public static boolean isPressed(int key)
@@ -193,7 +197,9 @@ public class Keyboard
 
     /**
      * Gets if the key has been pressed in this event frame and not the frame before
+     *
      * @param key The key
+     *
      * @return true if the key has been pressed in this frame and not the frame before
      */
     public static boolean isClicked(int key)
@@ -203,7 +209,9 @@ public class Keyboard
 
     /**
      * Gets if the character has not been pressed this event frame
+     *
      * @param key The character
+     *
      * @return true if the character has not been pressed
      */
     public static boolean isReleased(char key)
@@ -213,7 +221,9 @@ public class Keyboard
 
     /**
      * Gets if the character has been pressed this event frame
+     *
      * @param key The character
+     *
      * @return true if the character has been pressed in this frame
      */
     public static boolean isPressed(char key)
@@ -223,7 +233,9 @@ public class Keyboard
 
     /**
      * Gets if the character has been pressed in this event frame and not the frame before
+     *
      * @param key The character
+     *
      * @return true if the character has been pressed in this frame and not the frame before
      */
     public static boolean isClicked(char key)
@@ -233,7 +245,9 @@ public class Keyboard
 
     /**
      * Add or remove a key from the event buffer
+     *
      * @param key The character
+     *
      * @param pressed add the key to the buffer if true remove it if false
      */
     public static void setKey(char key, boolean pressed)
@@ -243,7 +257,8 @@ public class Keyboard
 
     /**
      * Add or remove a key from the event buffer
-     * @param key The key
+     *
+     * @param key     The key
      * @param pressed add the key to the buffer if true remove it if false
      */
     public static void setKey(int key, boolean pressed)
@@ -257,6 +272,7 @@ public class Keyboard
 
     /**
      * Get if any key was pressed
+     *
      * @return true if any key was pressed
      */
     public static boolean isAnyKeyPressed()
@@ -266,6 +282,7 @@ public class Keyboard
 
     /**
      * Gets the number of keyboard events
+     *
      * @return The number of keyboard events
      */
     public static int getNumKeysPressed()
@@ -294,7 +311,13 @@ public class Keyboard
     }
 
     /**
-     * Method used to pass GLFW events into the buffer
+     * Method used to pass GLFW events into the buffer.
+     *
+     * @param window   The window that received the input
+     * @param key      The key code of the event
+     * @param scanCode The OS specific scan code of the key
+     * @param action   The action taken on the key, one of press, repeat or release
+     * @param mods     The bit field of the modifier keys pressed
      */
     public static void glfwKeyCallback(Window window, int key, int scanCode, int action, int mods)
     {
@@ -303,7 +326,9 @@ public class Keyboard
 
     /**
      * Gets a character's corresponding key code name
+     *
      * @param key The character
+     *
      * @return A String with the key's human readable name in it
      */
     public static String getKeyName(char key)
@@ -313,7 +338,9 @@ public class Keyboard
 
     /**
      * Gets a key's name
+     *
      * @param key The key
+     *
      * @return A String with the key's human readable name in it
      */
     public static String getKeyName(int key)
