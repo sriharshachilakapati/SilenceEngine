@@ -24,7 +24,13 @@
 
 package com.shc.silenceengine.input;
 
+import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.IEngine;
+import com.shc.silenceengine.core.glfw.Window;
+import com.shc.silenceengine.core.glfw.callbacks.ICursorPositionCallback;
+import com.shc.silenceengine.core.glfw.callbacks.IKeyCallback;
+import com.shc.silenceengine.core.glfw.callbacks.IMouseButtonCallback;
+import com.shc.silenceengine.core.glfw.callbacks.IScrollCallback;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -61,5 +67,65 @@ public class InputEngine implements IEngine
     @Override
     public void dispose()
     {
+    }
+
+    private IKeyCallback            keyCallback            = Keyboard::glfwKeyCallback;
+    private IMouseButtonCallback    mouseButtonCallback    = Mouse::glfwMouseButtonCallback;
+    private ICursorPositionCallback cursorPositionCallback = Mouse::glfwCursorCallback;
+    private IScrollCallback         scrollCallback         = Mouse::glfwScrollCallback;
+
+    public void postKeyEvent(Window window, int key, int scanCode, int action, int mods)
+    {
+        keyCallback.invoke(window, key, scanCode, action, mods);
+    }
+
+    public void postKeyEvent(int key, int scanCode, int action, int mods)
+    {
+        postKeyEvent(Display.getWindow(), key, scanCode, action, mods);
+    }
+
+    public void postKeyEvent(int key, int action, int mods)
+    {
+        postKeyEvent(key, -1, action, mods);
+    }
+
+    public void postKeyEvent(int key, int action)
+    {
+        postKeyEvent(key, action, 0);
+    }
+
+    public void postMouseButtonEvent(Window window, int button, int action, int mods)
+    {
+        mouseButtonCallback.invoke(window, button, action, mods);
+    }
+
+    public void postMouseButtonEvent(int button, int action, int mods)
+    {
+        postMouseButtonEvent(Display.getWindow(), button, action, mods);
+    }
+
+    public void postMouseButtonEvent(int button, int action)
+    {
+        postMouseButtonEvent(button, action, 0);
+    }
+
+    public void postMouseScrollEvent(Window window, double dx, double dy)
+    {
+        scrollCallback.invoke(window, dx, dy);
+    }
+
+    public void postMouseScrollEvent(double dx, double dy)
+    {
+        postMouseScrollEvent(Display.getWindow(), dx, dy);
+    }
+
+    public void postMouseCursorPositionEvent(Window window, double x, double y)
+    {
+        cursorPositionCallback.invoke(window, x, y);
+    }
+
+    public void postMouseCursorPositionEvent(double x, double y)
+    {
+        postMouseCursorPositionEvent(Display.getWindow(), x, y);
     }
 }

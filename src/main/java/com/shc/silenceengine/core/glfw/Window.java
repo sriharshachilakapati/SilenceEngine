@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.core.glfw;
 
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.glfw.callbacks.*;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
@@ -460,7 +461,7 @@ public class Window
             Window window = registeredWindows.get(win);
 
             cursorPositionCallback.invoke(window, xPos, yPos);
-            Mouse.glfwCursorCallback(window, xPos, yPos);
+            SilenceEngine.input.postMouseCursorPositionEvent(window, xPos, yPos);
         });
 
         glfwDropCallback = GLFWDropCallback((window, count, names) ->
@@ -473,21 +474,21 @@ public class Window
         {
             Window window = registeredWindows.get(win);
             keyCallback.invoke(window, key, scanCode, action, mods);
-            Keyboard.glfwKeyCallback(window, key, scanCode, action, mods);
+            SilenceEngine.input.postKeyEvent(window, key, scanCode, action, mods);
         });
 
         glfwMouseButtonCallback = GLFWMouseButtonCallback((win, button, action, mods) ->
         {
             Window window = registeredWindows.get(win);
             mouseButtonCallback.invoke(window, button, action, mods);
-            Mouse.glfwMouseButtonCallback(window, button, action, mods);
+            SilenceEngine.input.postMouseButtonEvent(window, button, action, mods);
         });
 
         glfwScrollCallback = GLFWScrollCallback((win, xOffset, yOffset) ->
         {
             Window window = registeredWindows.get(win);
             scrollCallback.invoke(window, xOffset, yOffset);
-            Mouse.glfwScrollCallback(window, xOffset, yOffset);
+            SilenceEngine.input.postMouseScrollEvent(window, xOffset, yOffset);
         });
 
         glfwWindowCloseCallback = GLFWWindowCloseCallback((window) ->

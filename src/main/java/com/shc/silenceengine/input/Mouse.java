@@ -61,6 +61,7 @@ public class Mouse
     private static List<Integer> events          = new ArrayList<>();
     private static List<Integer> eventsThisFrame = new ArrayList<>();
     private static List<Integer> eventsLastFrame = new ArrayList<>();
+
     private static float x, y, dx, dy;
     private static float scrollX, scrollY;
 
