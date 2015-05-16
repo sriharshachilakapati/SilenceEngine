@@ -87,7 +87,9 @@ public class Mouse
 
     /**
      * Gets if the button has not been pressed this event frame
+     *
      * @param button The button
+     *
      * @return true if the button has not been pressed this event frame
      */
     public static boolean isReleased(int button)
@@ -97,7 +99,9 @@ public class Mouse
 
     /**
      * Gets if the button has been pressed this event frame
+     *
      * @param button The button
+     *
      * @return true if the button has been pressed this event frame
      */
     public static boolean isPressed(int button)
@@ -107,7 +111,9 @@ public class Mouse
 
     /**
      * Gets if the button has been pressed in this event frame and not the frame before
+     *
      * @param button The button
+     *
      * @return true if the button has been pressed in this frame and not the frame before
      */
     public static boolean isClicked(int button)
@@ -117,6 +123,7 @@ public class Mouse
 
     /**
      * Gets the Mouses x position
+     *
      * @return The mouses x position
      */
     public static float getX()
@@ -126,6 +133,7 @@ public class Mouse
 
     /**
      * Gets the Mouses y position
+     *
      * @return The mouses y position
      */
     public static float getY()
@@ -136,6 +144,7 @@ public class Mouse
     /**
      * Gets the Mouses change in x position. This will reset after the value has been
      * fetched
+     *
      * @return The mouses change in x position
      */
     public static float getDX()
@@ -148,6 +157,7 @@ public class Mouse
     /**
      * Gets the Mouses change in y position. This will reset after the value has been
      * fetched
+     *
      * @return The mouses change in y position
      */
     public static float getDY()
@@ -160,6 +170,7 @@ public class Mouse
     /**
      * Gets the Mouses scroll distance in x direction. This will reset after the value has been
      * fetched
+     *
      * @return The Mouses scroll distance in x direction
      */
     public static float getScrollX()
@@ -172,6 +183,7 @@ public class Mouse
     /**
      * Gets the Mouses scroll distance in y direction. This will reset after the value has been
      * fetched
+     *
      * @return The Mouses scroll distance in y direction
      */
     public static float getScrollY()
@@ -183,6 +195,11 @@ public class Mouse
 
     /**
      * Method used to pass GLFW Mouse Button events into the buffer
+     *
+     * @param window The window that recieved the event.
+     * @param button The button that was in the event.
+     * @param action The action that was performed with the button.
+     * @param mods   The modifiers that were pressed.
      */
     public static void glfwMouseButtonCallback(Window window, int button, int action, int mods)
     {
@@ -191,7 +208,8 @@ public class Mouse
 
     /**
      * Add or remove a button from the event buffer
-     * @param button The button
+     *
+     * @param button  The button
      * @param pressed add the button to the buffer if true remove it if false
      */
     public static void setButton(int button, boolean pressed)
@@ -205,6 +223,10 @@ public class Mouse
 
     /**
      * Method used to pass GLFW cursor move events into the buffer
+     *
+     * @param window The window that received the event.
+     * @param x      The x-coordinate of the mouse cursor.
+     * @param y      THe y-coordinate of the mouse cursor.
      */
     public static void glfwCursorCallback(Window window, double x, double y)
     {
@@ -217,6 +239,10 @@ public class Mouse
 
     /**
      * Method used to pass GLFW scroll events into the buffer
+     *
+     * @param window  The window that received the event
+     * @param scrollX The amount scrolled on the x-axis
+     * @param scrollY The amount scrolled on the y-axis
      */
     public static void glfwScrollCallback(Window window, double scrollX, double scrollY)
     {
@@ -226,7 +252,9 @@ public class Mouse
 
     /**
      * Gets a String with the buttons's human readable name in it
+     *
      * @param button The button
+     *
      * @return A String with the buttons's human readable name in it
      */
     public static String getButtonName(int button)
