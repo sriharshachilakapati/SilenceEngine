@@ -299,7 +299,7 @@ public class Graphics2D
 
             batcher.begin(Primitive.TRIANGLE_FAN);
             {
-                float polygonWidth  = polygon.getMaxX() - polygon.getMinX();
+                float polygonWidth = polygon.getMaxX() - polygon.getMinX();
                 float polygonHeight = polygon.getMaxY() - polygon.getMinY();
 
                 polygon.getVertices().forEach(v ->

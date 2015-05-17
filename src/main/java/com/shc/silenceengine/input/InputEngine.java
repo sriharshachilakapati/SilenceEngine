@@ -26,6 +26,7 @@ package com.shc.silenceengine.input;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.IEngine;
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.glfw.Window;
 import com.shc.silenceengine.core.glfw.callbacks.ICursorPositionCallback;
 import com.shc.silenceengine.core.glfw.callbacks.IKeyCallback;
@@ -33,16 +34,28 @@ import com.shc.silenceengine.core.glfw.callbacks.IMouseButtonCallback;
 import com.shc.silenceengine.core.glfw.callbacks.IScrollCallback;
 
 /**
+ * The InputEngine makes handling easy, and is the central hub of all the input package. This class can be used along
+ * with the {@link SilenceEngine} or on it's own. It also allows to post fake input events programmatically.
+ *
  * @author Sri Harsha Chilakapati
  */
 public class InputEngine implements IEngine
 {
+    // The callbacks that post to the individual input classes
+    private IKeyCallback            keyCallback            = Keyboard::glfwKeyCallback;
+    private IMouseButtonCallback    mouseButtonCallback    = Mouse::glfwMouseButtonCallback;
+    private ICursorPositionCallback cursorPositionCallback = Mouse::glfwCursorCallback;
+    private IScrollCallback         scrollCallback         = Mouse::glfwScrollCallback;
+
     @Override
     public void init()
     {
         Controller.create();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void beginFrame()
     {
@@ -55,6 +68,9 @@ public class InputEngine implements IEngine
         Controller.startEventFrame();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void endFrame()
     {
@@ -64,15 +80,13 @@ public class InputEngine implements IEngine
         Controller.clearEventFrame();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void dispose()
     {
     }
-
-    private IKeyCallback            keyCallback            = Keyboard::glfwKeyCallback;
-    private IMouseButtonCallback    mouseButtonCallback    = Mouse::glfwMouseButtonCallback;
-    private ICursorPositionCallback cursorPositionCallback = Mouse::glfwCursorCallback;
-    private IScrollCallback         scrollCallback         = Mouse::glfwScrollCallback;
 
     public void postKeyEvent(Window window, int key, int scanCode, int action, int mods)
     {

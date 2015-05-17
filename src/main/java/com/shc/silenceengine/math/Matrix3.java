@@ -32,13 +32,7 @@ import java.nio.FloatBuffer;
 /**
  * A 3x3 Matrix.
  *
- * $$
- * \begin{bmatrix}
- * m00 &amp; m10 &amp; m20  \\
- * m01 &amp; m11 &amp; m21  \\
- * m02 &amp; m12 &amp; m22
- * \end{bmatrix}
- * $$
+ * $$ \begin{bmatrix} m00 &amp; m10 &amp; m20  \\ m01 &amp; m11 &amp; m21  \\ m02 &amp; m12 &amp; m22 \end{bmatrix} $$
  *
  * @author Sri Harsha Chilakapati
  */
@@ -100,13 +94,7 @@ public class Matrix3
     /**
      * Sets the Matrix to an Identity Matrix.
      *
-     * $$
-     * \begin{bmatrix}
-     * 1 &amp; 0 &amp; 0  \\
-     * 0 &amp; 1 &amp; 0  \\
-     * 0 &amp; 0 &amp; 1
-     * \end{bmatrix}
-     * $$
+     * $$ \begin{bmatrix} 1 &amp; 0 &amp; 0  \\ 0 &amp; 1 &amp; 0  \\ 0 &amp; 0 &amp; 1 \end{bmatrix} $$
      *
      * @return This <code>Matrix3</code>
      */
@@ -142,13 +130,7 @@ public class Matrix3
     /**
      * Sets all Identity positions to {@code diagonal}.
      *
-     * $$
-     * \begin{bmatrix}
-     * d &amp; 0 &amp; 0  \\
-     * 0 &amp; d &amp; 0  \\
-     * 0 &amp; 0 &amp; d
-     * \end{bmatrix}
-     * $$
+     * $$ \begin{bmatrix} d &amp; 0 &amp; 0  \\ 0 &amp; d &amp; 0  \\ 0 &amp; 0 &amp; d \end{bmatrix} $$
      *
      * @param diagonal The value to set Identity positions to (d in the matrix)
      *
@@ -248,13 +230,7 @@ public class Matrix3
     /**
      * Set all positions in this {@code Matrix3} to 0.
      *
-     * $$
-     * \begin{bmatrix}
-     * 0 &amp; 0 &amp; 0  \\
-     * 0 &amp; 0 &amp; 0  \\
-     * 0 &amp; 0 &amp; 0
-     * \end{bmatrix}
-     * $$
+     * $$ \begin{bmatrix} 0 &amp; 0 &amp; 0  \\ 0 &amp; 0 &amp; 0  \\ 0 &amp; 0 &amp; 0 \end{bmatrix} $$
      *
      * @return This {@code Matrix3}
      */

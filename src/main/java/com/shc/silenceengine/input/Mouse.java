@@ -36,7 +36,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * A class for handling polled Mouse input.
- * 
+ *
  * @author Sri Harsha Chilakapati
  * @author Josh "ShadowLordAlpha"
  */
@@ -66,8 +66,8 @@ public class Mouse
     private static float scrollX, scrollY;
 
     /**
-     * Remove all events from the current event frame and add all events from the event buffer
-     * into the current event frame
+     * Remove all events from the current event frame and add all events from the event buffer into the current event
+     * frame
      */
     public static void startEventFrame()
     {
@@ -76,8 +76,7 @@ public class Mouse
     }
 
     /**
-     * Remove all events from the last frame and move all events from the current event frame
-     * into the last frame list.
+     * Remove all events from the last frame and move all events from the current event frame into the last frame list.
      */
     public static void clearEventFrame()
     {
@@ -142,8 +141,7 @@ public class Mouse
     }
 
     /**
-     * Gets the Mouses change in x position. This will reset after the value has been
-     * fetched
+     * Gets the Mouses change in x position. This will reset after the value has been fetched
      *
      * @return The mouses change in x position
      */
@@ -155,8 +153,7 @@ public class Mouse
     }
 
     /**
-     * Gets the Mouses change in y position. This will reset after the value has been
-     * fetched
+     * Gets the Mouses change in y position. This will reset after the value has been fetched
      *
      * @return The mouses change in y position
      */
@@ -168,8 +165,7 @@ public class Mouse
     }
 
     /**
-     * Gets the Mouses scroll distance in x direction. This will reset after the value has been
-     * fetched
+     * Gets the Mouses scroll distance in x direction. This will reset after the value has been fetched
      *
      * @return The Mouses scroll distance in x direction
      */
@@ -181,8 +177,7 @@ public class Mouse
     }
 
     /**
-     * Gets the Mouses scroll distance in y direction. This will reset after the value has been
-     * fetched
+     * Gets the Mouses scroll distance in y direction. This will reset after the value has been fetched
      *
      * @return The Mouses scroll distance in y direction
      */

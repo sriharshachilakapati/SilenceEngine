@@ -156,8 +156,8 @@ public final class GLFW3
      *
      * <p> Contexts that support either of the <code>WGL_EXT_swap_control_tear</code> and
      * <code>GLX_EXT_swap_control_tear</code> extensions also accept negative swap intervals, which allow the driver to
-     * swap even if a frame arrives a little bit late. You can check for the presence of these extensions using
-     * {@link GLFW#glfwExtensionSupported(CharSequence)}. For more information about swap tearing, see the extension
+     * swap even if a frame arrives a little bit late. You can check for the presence of these extensions using {@link
+     * GLFW#glfwExtensionSupported(CharSequence)}. For more information about swap tearing, see the extension
      * specifications.</p>
      *
      * <p> A context must be current on the calling thread. Calling this function without a current context will cause a

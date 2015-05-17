@@ -26,8 +26,6 @@ package com.shc.silenceengine.core.glfw;
 
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.glfw.callbacks.*;
-import com.shc.silenceengine.input.Keyboard;
-import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector4;
 import org.lwjgl.BufferUtils;
@@ -57,8 +55,8 @@ import static org.lwjgl.system.MemoryUtil.*;
  * <h2>Full screen windows</h2>
  *
  * <p> To create a full screen window, you need to specify which monitor the window should use. In most cases, the
- * user's primary monitor is a good choice. For more information about retrieving monitors, see
- * {@link Monitor#getMonitors()}.</p>
+ * user's primary monitor is a good choice. For more information about retrieving monitors, see {@link
+ * Monitor#getMonitors()}.</p>
  *
  * <pre>
  *     Window window = new Window(640, 480, Monitor.getPrimaryMonitor());
@@ -71,8 +69,8 @@ import static org.lwjgl.system.MemoryUtil.*;
  *
  * <p> There are a number of hints that can be set before the creation of a window and context. Some affect the window
  * itself, others affect the framebuffer or context. These hints are set to their default values each time the library
- * is initialized with {@link GLFW3#init()}, can be set individually with {@link Window#setHint(int, boolean)} or
- * {@link Window#setHint(int, int)}, and reset all at once to their defaults with {@link Window#setDefaultHints()}.</p>
+ * is initialized with {@link GLFW3#init()}, can be set individually with {@link Window#setHint(int, boolean)} or {@link
+ * Window#setHint(int, int)}, and reset all at once to their defaults with {@link Window#setDefaultHints()}.</p>
  *
  * <pre>
  *     Window.setHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -99,11 +97,10 @@ import static org.lwjgl.system.MemoryUtil.*;
  * choose which types of objects are shared, GLFW requests that all types are shared. A common exception to this is VAO
  * objects, they have to be recreated for every context.</p>
  *
+ * @author Sri Harsha Chilakapati
  * @see Monitor
  * @see VideoMode
  * @see Cursor
- *
- * @author Sri Harsha Chilakapati
  */
 public class Window
 {
@@ -246,9 +243,9 @@ public class Window
     }
 
     /**
-     * This constructor creates a fullscreen mode window that fills the monitor. The resolution will be set to the default
-     * resolution of the monitor supplied. If the monitor is supplied as <code>null</code>, then a windowed mode window
-     * is created instead which is 800 by 600 in size.
+     * This constructor creates a fullscreen mode window that fills the monitor. The resolution will be set to the
+     * default resolution of the monitor supplied. If the monitor is supplied as <code>null</code>, then a windowed mode
+     * window is created instead which is 800 by 600 in size.
      *
      * @param monitor The monitor to use for full screen mode, or <code>null</code> to use windowed mode.
      */
@@ -324,7 +321,8 @@ public class Window
     }
 
     /**
-     * Creates a windowed mode window that has a specified title. The dimensions are the default dimensions, 800 by 600.
+     * Creates a windowed mode window that has a specified title. The dimensions are the default dimensions, 800 by
+     * 600.
      *
      * @param title The desired title string of the Window. This can also contain UTF-8 characters.
      */
@@ -661,19 +659,17 @@ public class Window
      *
      * <p> If the mode is GLFW_CURSOR, the value must be one of the following cursor modes:</p>
      *
-     * <ul>
-     *     <li><code>GLFW_CURSOR_NORMAL</code> makes the cursor visible and behaving normally.</li>
-     *     <li><code>GLFW_CURSOR_HIDDEN</code> makes the cursor invisible when it is over the client area of the window
-     *     but does not restrict the cursor from leaving.</li>
-     *     <li><code>GLFW_CURSOR_DISABLED</code> hides and grabs the cursor, providing virtual and unlimited cursor
-     *     movement. This is useful for implementing for example 3D camera controls.</li>
-     * </ul>
+     * <ul> <li><code>GLFW_CURSOR_NORMAL</code> makes the cursor visible and behaving normally.</li>
+     * <li><code>GLFW_CURSOR_HIDDEN</code> makes the cursor invisible when it is over the client area of the window but
+     * does not restrict the cursor from leaving.</li> <li><code>GLFW_CURSOR_DISABLED</code> hides and grabs the cursor,
+     * providing virtual and unlimited cursor movement. This is useful for implementing for example 3D camera
+     * controls.</li> </ul>
      *
      * <p> If the mode is <code>GLFW_STICKY_KEYS</code>, the value must be either <code>GL_TRUE</code> to enable sticky
-     * keys, or <code>GL_FALSE</code> to disable it. If sticky keys are enabled, a key press will ensure that
-     * {@link Window#getKey(int)} returns <code>GLFW_PRESS</code> the next time it is called even if the key had been
-     * released before the call. This is useful when you are only interested in whether keys have been pressed but not
-     * when or in which order.</p>
+     * keys, or <code>GL_FALSE</code> to disable it. If sticky keys are enabled, a key press will ensure that {@link
+     * Window#getKey(int)} returns <code>GLFW_PRESS</code> the next time it is called even if the key had been released
+     * before the call. This is useful when you are only interested in whether keys have been pressed but not when or in
+     * which order.</p>
      *
      * <p> If the mode is <code>GLFW_STICKY_MOUSE_BUTTONS</code>, the value must be either <code>GL_TRUE</code> to
      * enable sticky mouse buttons, or <code>GL_FALSE</code> to disable it. If sticky mouse buttons are enabled, a mouse
@@ -681,8 +677,7 @@ public class Window
      * is called even if the mouse button had been released before the call. This is useful when you are only interested
      * in whether mouse buttons have been pressed but not when or in which order.</p>
      *
-     * @param mode  One of <code>GLFW_CURSOR</code>, <code>GLFW_STICKY_KEYS</code> or
-     *              <code>GLFW_STICKY_MOUSE_BUTTONS</code>.
+     * @param mode  One of <code>GLFW_CURSOR</code>, <code>GLFW_STICKY_KEYS</code> or <code>GLFW_STICKY_MOUSE_BUTTONS</code>.
      * @param value The new value of the specified input mode.
      */
     public void setInputMode(int mode, int value)
@@ -718,8 +713,8 @@ public class Window
     }
 
     /**
-     * This method swaps the front and back buffers of the specified window. If the swap interval is greater than
-     * zero, the GPU driver waits the specified number of screen updates before swapping the buffers.
+     * This method swaps the front and back buffers of the specified window. If the swap interval is greater than zero,
+     * the GPU driver waits the specified number of screen updates before swapping the buffers.
      */
     public void swapBuffers()
     {
@@ -954,7 +949,7 @@ public class Window
         Vector2 framebufferSize = getFramebufferSize();
         Vector2 size = getSize();
 
-        temp.set(size).scaleSelf(1/framebufferSize.x, 1/framebufferSize.y);
+        temp.set(size).scaleSelf(1 / framebufferSize.x, 1 / framebufferSize.y);
 
         this.framebufferSize.set(fbSize);
         size.set(fbSize).scaleSelf(temp.x, temp.y);
@@ -988,7 +983,7 @@ public class Window
      * coordinate axis, the retrieved values will always be zero or positive.</p>
      *
      * @return The size of the frame as a Vector4. The x-component is the size of the left edge, y-component is the top
-     *         edge, z-component is the right edge and the last w-component is the size of the bottom edge.
+     * edge, z-component is the right edge and the last w-component is the size of the bottom edge.
      */
     public Vector4 getFrameSize()
     {
@@ -1070,7 +1065,8 @@ public class Window
         ICharacterCallback previousCallback = characterCallback;
 
         if (callback == null)
-            callback = (window, codePoint) -> {};
+            callback = (window, codePoint) -> {
+            };
 
         this.characterCallback = callback;
 
@@ -1088,7 +1084,7 @@ public class Window
         return characterModsCallback;
     }
 
-    /***
+    /**
      * This method sets the {@link ICharacterModsCallback} used by this window to notify input events. This method also
      * returns the previously set callback for you.
      *
@@ -1101,7 +1097,8 @@ public class Window
         ICharacterModsCallback previousCallback = characterModsCallback;
 
         if (callback == null)
-            callback = (window, cp, mods) -> {};
+            callback = (window, cp, mods) -> {
+            };
 
         this.characterModsCallback = callback;
 
@@ -1131,7 +1128,8 @@ public class Window
         ICursorEnterCallback previousCallback = cursorEnterCallback;
 
         if (callback == null)
-            callback = (window, entered) -> {};
+            callback = (window, entered) -> {
+            };
 
         this.cursorEnterCallback = callback;
 
@@ -1161,7 +1159,8 @@ public class Window
         ICursorPositionCallback previousCallback = cursorPositionCallback;
 
         if (callback == null)
-            callback = (window, x, y) -> {};
+            callback = (window, x, y) -> {
+            };
 
         this.cursorPositionCallback = callback;
 
@@ -1192,7 +1191,8 @@ public class Window
         IDropCallback previousCallback = dropCallback;
 
         if (callback == null)
-            callback = (window, paths) -> {};
+            callback = (window, paths) -> {
+            };
 
         this.dropCallback = callback;
 
@@ -1223,7 +1223,8 @@ public class Window
         IFramebufferSizeCallback previousCallback = framebufferSizeCallback;
 
         if (callback == null)
-            callback = (window, w, h) -> {};
+            callback = (window, w, h) -> {
+            };
 
         this.framebufferSizeCallback = callback;
 
@@ -1254,7 +1255,8 @@ public class Window
         IKeyCallback previousCallback = keyCallback;
 
         if (callback == null)
-            callback = (win, key, sc, act, mods) -> {};
+            callback = (win, key, sc, act, mods) -> {
+            };
 
         this.keyCallback = callback;
 
@@ -1285,7 +1287,8 @@ public class Window
         IMouseButtonCallback previousCallback = mouseButtonCallback;
 
         if (callback == null)
-            callback = (win, b, act, mods) -> {};
+            callback = (win, b, act, mods) -> {
+            };
 
         this.mouseButtonCallback = callback;
 
@@ -1316,7 +1319,8 @@ public class Window
         IScrollCallback previousCallback = scrollCallback;
 
         if (callback == null)
-            callback = (win, x, y) -> {};
+            callback = (win, x, y) -> {
+            };
 
         this.scrollCallback = callback;
 
@@ -1347,7 +1351,8 @@ public class Window
         IWindowCloseCallback previousCallback = windowCloseCallback;
 
         if (callback == null)
-            callback = (win) -> {};
+            callback = (win) -> {
+            };
 
         this.windowCloseCallback = callback;
 
@@ -1378,7 +1383,8 @@ public class Window
         IWindowFocusCallback previousCallback = windowFocusCallback;
 
         if (callback == null)
-            callback = (win, focused) -> {};
+            callback = (win, focused) -> {
+            };
 
         this.windowFocusCallback = callback;
 
@@ -1409,7 +1415,8 @@ public class Window
         IWindowIconifyCallback previousCallback = windowIconifyCallback;
 
         if (callback == null)
-            callback = (win, ic) -> {};
+            callback = (win, ic) -> {
+            };
 
         this.windowIconifyCallback = callback;
 
@@ -1440,7 +1447,8 @@ public class Window
         IWindowPositionCallback previousCallback = windowPositionCallback;
 
         if (callback == null)
-            callback = (win, x, y) -> {};
+            callback = (win, x, y) -> {
+            };
 
         this.windowPositionCallback = callback;
 
@@ -1471,7 +1479,8 @@ public class Window
         IWindowRefreshCallback previousCallback = windowRefreshCallback;
 
         if (callback == null)
-            callback = (win) -> {};
+            callback = (win) -> {
+            };
 
         this.windowRefreshCallback = callback;
 
@@ -1502,7 +1511,8 @@ public class Window
         IWindowSizeCallback previousCallback = windowSizeCallback;
 
         if (callback == null)
-            callback = (win, w, h) -> {};
+            callback = (win, w, h) -> {
+            };
 
         this.windowSizeCallback = callback;
 

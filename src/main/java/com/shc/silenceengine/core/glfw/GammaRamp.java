@@ -27,8 +27,8 @@ package com.shc.silenceengine.core.glfw;
 import java.util.Arrays;
 
 /**
- * <p> This class describes the Gamma Ramp of a monitor. To set the gamma ramp, you have to use the <code>setGammaRamp</code>
- * method on the <code>Monitor</code> object.</p>
+ * <p> This class describes the Gamma Ramp of a monitor. To set the gamma ramp, you have to use the
+ * <code>setGammaRamp</code> method on the <code>Monitor</code> object.</p>
  *
  * <pre>
  *     short[] red   = new short[256];
@@ -59,7 +59,7 @@ public class GammaRamp
     // The size of the gamma ramp, elements in the arrays
     private int size;
 
-    /***
+    /**
      * Constructs a GammaRamp for a Monitor object using the gamma values from the red, green and blue channels.
      *
      * @param red   The gamma values of the red channel.
@@ -139,6 +139,16 @@ public class GammaRamp
     }
 
     @Override
+    public int hashCode()
+    {
+        int result = Arrays.hashCode(red);
+        result = 31 * result + Arrays.hashCode(green);
+        result = 31 * result + Arrays.hashCode(blue);
+        result = 31 * result + size;
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -150,16 +160,6 @@ public class GammaRamp
                Arrays.equals(red, gammaRamp.red) &&
                Arrays.equals(green, gammaRamp.green) &&
                Arrays.equals(blue, gammaRamp.blue);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = Arrays.hashCode(red);
-        result = 31 * result + Arrays.hashCode(green);
-        result = 31 * result + Arrays.hashCode(blue);
-        result = 31 * result + size;
-        return result;
     }
 
     @Override

@@ -53,10 +53,9 @@ import static org.lwjgl.glfw.GLFW.*;
  * of a monitor is in screen coordinates and, together with the current video mode, describes the viewports that the
  * connected monitors provide into the virtual desktop that spans them.</p>
  *
+ * @author Sri Harsha Chilakapati
  * @see VideoMode
  * @see GammaRamp
- *
- * @author Sri Harsha Chilakapati
  */
 public class Monitor
 {
@@ -103,8 +102,9 @@ public class Monitor
      * a monitor is connected to or disconnected from the system.
      *
      * @param callback The new callback, or <code>null</code> to remove the currently set callback.
+     *
      * @return The previously set callback, or <code>null</code> if no callback was set or the library had not been
-     *         initialized.
+     * initialized.
      */
     public static IMonitorCallback setCallback(IMonitorCallback callback)
     {
@@ -215,8 +215,8 @@ public class Monitor
     }
 
     /**
-     * This method generates a 256-element gamma ramp from the specified exponent and then calls
-     * {@link Monitor#setGammaRamp(GammaRamp)} with it. The value must be a finite number greater than zero.
+     * This method generates a 256-element gamma ramp from the specified exponent and then calls {@link
+     * Monitor#setGammaRamp(GammaRamp)} with it. The value must be a finite number greater than zero.
      *
      * @param gamma The desired exponent.
      */
@@ -293,13 +293,13 @@ public class Monitor
     /**
      * <p> This method returns the size, in millimetres, of the display area of the specified monitor.</p>
      *
-     * <p> Some systems do not provide accurate monitor size information, either because the monitor EDID data is incorrect
-     * or because the driver does not report it accurately.</p>
+     * <p> Some systems do not provide accurate monitor size information, either because the monitor EDID data is
+     * incorrect or because the driver does not report it accurately.</p>
      *
      * <p> If an error occurs, the size components will be set to zero.</p>
      *
      * @return The physical size of this monitor in millimeters as a Vector2. The x-component is the width and the
-     *         y-component is the height of the monitor.
+     * y-component is the height of the monitor.
      */
     public Vector2 getPhysicalSize()
     {

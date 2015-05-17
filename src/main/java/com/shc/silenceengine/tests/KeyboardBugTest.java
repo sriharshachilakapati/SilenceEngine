@@ -33,8 +33,13 @@ import com.shc.silenceengine.utils.TimeUtils;
  */
 public class KeyboardBugTest extends Game
 {
-    private int count = 0;
+    private int    count     = 0;
     private double startTime = -1;
+
+    public static void main(String[] args)
+    {
+        new KeyboardBugTest().start();
+    }
 
     @Override
     public void update(float delta)
@@ -58,10 +63,5 @@ public class KeyboardBugTest extends Game
                 count = 0;
             }
         }
-    }
-
-    public static void main(String[] args)
-    {
-        new KeyboardBugTest().start();
     }
 }

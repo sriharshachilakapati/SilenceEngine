@@ -36,10 +36,10 @@ import com.shc.silenceengine.core.glfw.Window;
 public interface IWindowCloseCallback
 {
     /**
-     * The signature of the <code>GLFWwindowclosefun</code> method. This method is invoked by GLFW to notify you when the user
-     * clicked on the window close button.
+     * The signature of the <code>GLFWwindowclosefun</code> method. This method is invoked by GLFW to notify you when
+     * the user clicked on the window close button.
      *
-     * @param window  The Window that received the event.
+     * @param window The Window that received the event.
      */
     void invoke(Window window);
 }

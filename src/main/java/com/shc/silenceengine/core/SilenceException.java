@@ -46,8 +46,8 @@ public class SilenceException extends RuntimeException
     }
 
     /**
-     * Rethrows a Throwable as a SilenceException. This method is useful if you want to turn any exception into a runtime
-     * SilenceException. Use this method if you want to quit the game with a fatal error.
+     * Rethrows a Throwable as a SilenceException. This method is useful if you want to turn any exception into a
+     * runtime SilenceException. Use this method if you want to quit the game with a fatal error.
      *
      * @param throwable The thrown object containing the stacktrace.
      */

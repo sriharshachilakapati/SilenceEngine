@@ -31,8 +31,8 @@ import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.scene.SceneNode;
 
 /**
- * <p> This class represents all the 3D Entities in a Scene. Any entity which is 2D and wants to be in a Scene must extend
- * this class. Here is an example entity.</p>
+ * <p> This class represents all the 3D Entities in a Scene. Any entity which is 2D and wants to be in a Scene must
+ * extend this class. Here is an example entity.</p>
  *
  * <pre>
  *     public class MyEntity3D extends Entity3D

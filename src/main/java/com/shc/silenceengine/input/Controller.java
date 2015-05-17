@@ -36,7 +36,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 /**
  * A class for handling polled Controller input.
- * 
+ *
  * @author Sri Harsha Chilakapati
  * @author Josh "ShadowLordAlpha"
  */
@@ -360,8 +360,8 @@ public class Controller
     }
 
     /**
-     * Remove all events from the current event frame and add all events from the event buffer
-     * into the current event frame
+     * Remove all events from the current event frame and add all events from the event buffer into the current event
+     * frame
      */
     private void startFrame()
     {
@@ -373,8 +373,7 @@ public class Controller
     }
 
     /**
-     * Remove all events from the last frame and move all events from the current event frame
-     * into the last frame list.
+     * Remove all events from the last frame and move all events from the current event frame into the last frame list.
      */
     private void clearFrame()
     {
@@ -449,8 +448,8 @@ public class Controller
     }
 
     /**
-     * Debug method to see button and axis presses on a controller
-     * this is the same as calling <code>printValues(false);</code>
+     * Debug method to see button and axis presses on a controller this is the same as calling
+     * <code>printValues(false);</code>
      */
     public void printValues()
     {
@@ -483,6 +482,7 @@ public class Controller
 
     /**
      * Gets the ID of the controller
+     *
      * @return The ID of the controller
      */
     public int getId()
@@ -492,6 +492,7 @@ public class Controller
 
     /**
      * Gets the name of the controller
+     *
      * @return The name of the controller
      */
     public String getName()
@@ -501,6 +502,7 @@ public class Controller
 
     /**
      * Gets the number of buttons on the controller
+     *
      * @return The number of button on the controller
      */
     public int getNumButtons()
@@ -510,6 +512,7 @@ public class Controller
 
     /**
      * Gets the number of axes the controller has
+     *
      * @return The number of axes the controller has
      */
     public int getNumAxes()
@@ -519,6 +522,7 @@ public class Controller
 
     /**
      * Gets the type of controller
+     *
      * @return The type of controller
      */
     public Type getType()

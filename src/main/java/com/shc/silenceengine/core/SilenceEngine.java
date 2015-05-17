@@ -66,15 +66,15 @@ public final class SilenceEngine implements IEngine
             final String ARCH = System.getProperty("os.arch").toLowerCase();
 
             boolean isWindows = OS.contains("windows");
-            boolean isLinux   = OS.contains("linux");
-            boolean isMac     = OS.contains("mac");
-            boolean is64Bit   = ARCH.equals("amd64") || ARCH.equals("x86_64");
+            boolean isLinux = OS.contains("linux");
+            boolean isMac = OS.contains("mac");
+            boolean is64Bit = ARCH.equals("amd64") || ARCH.equals("x86_64");
 
             platform = Platform.UNKNOWN;
 
             if (isWindows) platform = is64Bit ? Platform.WINDOWS_64 : Platform.WINDOWS_32;
-            if (isLinux)   platform = is64Bit ? Platform.LINUX_64 : Platform.LINUX_32;
-            if (isMac)     platform = Platform.MACOSX;
+            if (isLinux) platform = is64Bit ? Platform.LINUX_64 : Platform.LINUX_32;
+            if (isMac) platform = Platform.MACOSX;
         }
 
         return platform;

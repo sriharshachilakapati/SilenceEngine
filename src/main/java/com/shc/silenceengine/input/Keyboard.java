@@ -246,8 +246,7 @@ public class Keyboard
     /**
      * Add or remove a key from the event buffer
      *
-     * @param key The character
-     *
+     * @param key     The character
      * @param pressed add the key to the buffer if true remove it if false
      */
     public static void setKey(char key, boolean pressed)
@@ -291,8 +290,8 @@ public class Keyboard
     }
 
     /**
-     * Remove all events from the current event frame and add all events from the event buffer
-     * into the current event frame
+     * Remove all events from the current event frame and add all events from the event buffer into the current event
+     * frame
      */
     public static void startEventFrame()
     {
@@ -301,8 +300,7 @@ public class Keyboard
     }
 
     /**
-     * Remove all events from the last frame and move all events from the current event frame
-     * into the last frame list.
+     * Remove all events from the last frame and move all events from the current event frame into the last frame list.
      */
     public static void clearEventFrame()
     {
@@ -361,7 +359,9 @@ public class Keyboard
 
     /**
      * Gets a character's corresponding key code
+     *
      * @param key The character
+     *
      * @return The key code
      */
     public static int getKeyCode(char key)

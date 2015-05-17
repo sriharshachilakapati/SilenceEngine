@@ -47,7 +47,7 @@ public class TrueTypeFont
 
     // The regular expression used for getting all trailing whitespace
     private static final String TRAILING_WHITESPACE = "\\s+$";
-    private static final int STANDARD_CHARACTERS = 256;
+    private static final int    STANDARD_CHARACTERS = 256;
 
     private FontChar[] chars = new FontChar[STANDARD_CHARACTERS];
 

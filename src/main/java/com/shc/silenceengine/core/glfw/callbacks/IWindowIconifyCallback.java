@@ -36,8 +36,8 @@ import com.shc.silenceengine.core.glfw.Window;
 public interface IWindowIconifyCallback
 {
     /**
-     * The signature of the <code>GLFWwindowiconifyfun</code> method. This method is invoked by GLFW to notify you when the
-     * window is either iconified (minimized) or restored.
+     * The signature of the <code>GLFWwindowiconifyfun</code> method. This method is invoked by GLFW to notify you when
+     * the window is either iconified (minimized) or restored.
      *
      * @param window  The Window that received the event.
      * @param iconify True if window is iconified (minimized). Else false.
