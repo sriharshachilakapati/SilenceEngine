@@ -26,6 +26,7 @@ package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.cameras.BaseCamera;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.opengl.Primitive;
@@ -84,7 +85,7 @@ public class Graphics2D
 
     private void rect(float x, float y, float w, float h, Primitive primitive)
     {
-        Batcher batcher = Game.getBatcher();
+        Batcher batcher = SilenceEngine.graphics.getBatcher();
         batcher.applyTransform(transform);
 
         startPainting();
@@ -162,7 +163,7 @@ public class Graphics2D
 
     private void oval(float x, float y, float rx, float ry, Primitive primitive)
     {
-        Batcher batcher = Game.getBatcher();
+        Batcher batcher = SilenceEngine.graphics.getBatcher();
         batcher.applyTransform(transform);
 
         Vector2 vertex = Vector2.REUSABLE_STACK.pop();
@@ -224,7 +225,7 @@ public class Graphics2D
 
     public void drawLine(float x1, float y1, float x2, float y2)
     {
-        Batcher batcher = Game.getBatcher();
+        Batcher batcher = SilenceEngine.graphics.getBatcher();
         batcher.applyTransform(transform);
 
         startPainting();
@@ -246,7 +247,7 @@ public class Graphics2D
 
     private void polygon(Polygon polygon, Primitive primitive)
     {
-        Batcher batcher = Game.getBatcher();
+        Batcher batcher = SilenceEngine.graphics.getBatcher();
         batcher.applyTransform(transform);
 
         startPainting();
@@ -287,7 +288,7 @@ public class Graphics2D
 
     public void drawTexturedPolygon(Texture texture, Polygon polygon)
     {
-        Batcher batcher = Game.getBatcher();
+        Batcher batcher = SilenceEngine.graphics.getBatcher();
         batcher.applyTransform(transform);
 
         startPainting();
@@ -344,7 +345,7 @@ public class Graphics2D
 
     public void drawTexture(Texture texture, float x, float y, float w, float h, boolean flipX, boolean flipY, Color tint)
     {
-        Batcher batcher = Game.getBatcher();
+        Batcher batcher = SilenceEngine.graphics.getBatcher();
         batcher.applyTransform(transform);
 
         startPainting();
@@ -415,7 +416,7 @@ public class Graphics2D
 
     public void drawString(String string, float x, float y)
     {
-        Batcher batcher = Game.getBatcher();
+        Batcher batcher = SilenceEngine.graphics.getBatcher();
         batcher.applyTransform(transform);
 
         Color color = Color.REUSABLE_STACK.pop();

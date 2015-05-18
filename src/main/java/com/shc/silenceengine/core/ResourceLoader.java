@@ -287,7 +287,7 @@ public final class ResourceLoader
      */
     private void invokeRenderProgressCallback(String info)
     {
-        renderProgressCallback.invoke(Game.getBatcher(), updateProgress(), info);
+        renderProgressCallback.invoke(SilenceEngine.graphics.getBatcher(), updateProgress(), info);
     }
 
     /**

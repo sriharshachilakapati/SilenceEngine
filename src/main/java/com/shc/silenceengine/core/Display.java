@@ -76,8 +76,8 @@ public final class Display
 
     private static Window createWindow(int width, int height, String title, Monitor monitor, Window share)
     {
-        if (Game.getBatcher() != null)
-            Game.getBatcher().dispose();
+        if (SilenceEngine.graphics.getBatcher() != null)
+            SilenceEngine.graphics.getBatcher().dispose();
 
         setHints();
         Window window = new Window(width, height, title, monitor, share);
@@ -89,7 +89,7 @@ public final class Display
 
         dirty = true;
 
-        Game.setBatcher(new Batcher());
+        SilenceEngine.graphics.setBatcher(new Batcher());
         setVSync(vSync);
 
         return window;

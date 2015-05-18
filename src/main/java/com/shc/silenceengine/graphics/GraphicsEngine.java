@@ -42,14 +42,22 @@ import static org.lwjgl.opengl.GL11.*;
 public class GraphicsEngine implements IEngine
 {
     public static final Material DEFAULT_MATERIAL;
+
     public float renderCalls         = 0;
     public float renderCallsPerFrame = 0;
     public float totalRenderCalls    = 0;
-    private             Material currentMaterial;
+
+    private Material currentMaterial;
+    private Batcher  batcher;
 
     public Material getCurrentMaterial()
     {
         return currentMaterial;
+    }
+
+    public void setBatcher(Batcher batcher)
+    {
+        this.batcher = batcher;
     }
 
     @Override
@@ -103,6 +111,9 @@ public class GraphicsEngine implements IEngine
     @Override
     public void dispose()
     {
+        // Dispose the batcher
+        batcher.dispose();
+
         // Dispose the default Programs
         Program.DEFAULT.dispose();
         Program.POINT_LIGHT.dispose();
@@ -137,7 +148,7 @@ public class GraphicsEngine implements IEngine
 
     public Batcher getBatcher()
     {
-        return Game.getBatcher();
+        return batcher;
     }
 
     public Graphics2D getGraphics2D()

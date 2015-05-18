@@ -76,7 +76,6 @@ public class Game
     // Game frame rate
     private static int fps = 60;
 
-    private static Batcher   batcher;
     private static GameState gameState;
 
     // The game instance
@@ -119,24 +118,6 @@ public class Game
     public static void setTargetUPS(int targetUPS)
     {
         Game.targetUPS = targetUPS;
-    }
-
-    /**
-     * @return The Global Batcher of the Game
-     */
-    public static Batcher getBatcher()
-    {
-        return batcher;
-    }
-
-    /**
-     * Sets the batcher to be passed to the render() method
-     *
-     * @param batcher The Batcher instance to use
-     */
-    public static void setBatcher(Batcher batcher)
-    {
-        Game.batcher = batcher;
     }
 
     public static GameState getGameState()
@@ -194,7 +175,6 @@ public class Game
         {
             Logger.log("Disposing the Game resources");
 
-            batcher.dispose();
             instance.dispose();
 
             SilenceEngine.getInstance().dispose();
@@ -308,10 +288,10 @@ public class Game
             }
 
             float lagOffset = (float) (lag / frameTime);
-            render(lagOffset, batcher);
+            render(lagOffset, SilenceEngine.graphics.getBatcher());
 
             if (gameState != null)
-                gameState.render(lagOffset, batcher);
+                gameState.render(lagOffset, SilenceEngine.graphics.getBatcher());
 
             framesProcessed++;
 

@@ -71,7 +71,7 @@ public class PointLightProgram extends Program
 
     public void prepareFrame()
     {
-        Batcher batcher = Game.getBatcher();
+        Batcher batcher = SilenceEngine.graphics.getBatcher();
 
         // Standard Uniforms
         setUniform("textureID", Texture.getActiveUnit());

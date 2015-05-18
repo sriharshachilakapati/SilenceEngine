@@ -75,7 +75,7 @@ public class DefaultProgram extends Program
 
     public void prepareFrame()
     {
-        Batcher batcher = Game.getBatcher();
+        Batcher batcher = SilenceEngine.graphics.getBatcher();
 
         GL3Context.enable(GL11.GL_BLEND);
         GL3Context.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
