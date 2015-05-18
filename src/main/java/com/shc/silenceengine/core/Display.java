@@ -211,7 +211,7 @@ public final class Display
     
     public static void setCursor(Cursor cursor)
     {
-    	if (displayWindow == null)
+        if (displayWindow == null)
             return;
 
         displayWindow.setCursor(cursor);
