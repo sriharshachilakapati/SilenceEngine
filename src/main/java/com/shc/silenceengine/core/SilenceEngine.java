@@ -29,6 +29,8 @@ import com.shc.silenceengine.collision.CollisionEngine;
 import com.shc.silenceengine.core.glfw.GLFW3;
 import com.shc.silenceengine.graphics.GraphicsEngine;
 import com.shc.silenceengine.input.InputEngine;
+import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.math.Vector4;
 import com.shc.silenceengine.utils.Logger;
 import com.shc.silenceengine.utils.NativesLoader;
 import org.lwjgl.Sys;
@@ -82,7 +84,12 @@ public final class SilenceEngine implements IEngine
 
     public static String getVersion()
     {
-        return "0.0.3a";
+        return "0.0.4a";
+    }
+
+    public static Vector4 getVersionVector()
+    {
+        return new Vector4(0, 0, 4, 'a');
     }
 
     @Override
