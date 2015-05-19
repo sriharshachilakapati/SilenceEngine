@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.core;
 
+import com.shc.silenceengine.core.glfw.Cursor;
 import com.shc.silenceengine.core.glfw.GLFW3;
 import com.shc.silenceengine.core.glfw.Monitor;
 import com.shc.silenceengine.core.glfw.VideoMode;
@@ -206,6 +207,14 @@ public final class Display
             return;
 
         displayWindow.setInputMode(GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+    
+    public static void setCursor(Cursor cursor)
+    {
+        if (displayWindow == null)
+            return;
+
+        displayWindow.setCursor(cursor);
     }
 
     public static void destroy()
