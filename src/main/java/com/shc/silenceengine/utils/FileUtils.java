@@ -25,8 +25,10 @@
 package com.shc.silenceengine.utils;
 
 import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.io.FilePath;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -40,9 +42,37 @@ public final class FileUtils
     {
     }
 
+    public static String readLinesToString(FilePath path)
+    {
+        try
+        {
+            return readLinesToString(path.getInputStream());
+        }
+        catch (IOException e)
+        {
+            SilenceException.reThrow(e);
+        }
+
+        return null;
+    }
+
     public static String readLinesToString(InputStream stream)
     {
         return String.join("\n", readLinesToStringArray(stream));
+    }
+
+    public static String[] readLinesToStringArray(FilePath path)
+    {
+        try
+        {
+            return readLinesToStringArray(path.getInputStream());
+        }
+        catch (IOException e)
+        {
+            SilenceException.reThrow(e);
+        }
+
+        return null;
     }
 
     public static String[] readLinesToStringArray(InputStream stream)
@@ -81,6 +111,11 @@ public final class FileUtils
             throw new SilenceException("Resource not found: " + name);
 
         return is;
+    }
+
+    public static String getExtension(FilePath path)
+    {
+        return getExtension(path.getPath());
     }
 
     public static String getExtension(String name)

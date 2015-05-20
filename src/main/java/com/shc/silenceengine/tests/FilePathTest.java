@@ -27,12 +27,14 @@ package com.shc.silenceengine.tests;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.Logger;
 
+import java.io.IOException;
+
 /**
  * @author Sri Harsha Chilakapati
  */
 public class FilePathTest
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
         FilePath resources = FilePath.getResourceFile("resources/");
         Logger.log(resources);
@@ -54,5 +56,10 @@ public class FilePathTest
 
         FilePath externalChild = externalParent.getChild("system32/calc.exe");
         Logger.log(externalChild);
+
+        FilePath newFile = FilePath.getExternalFile("D:/Test.png");
+        Logger.log(newFile);
+        texture1.copyTo(newFile);
+        Logger.log(newFile);
     }
 }

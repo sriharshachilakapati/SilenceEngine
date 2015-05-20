@@ -26,9 +26,12 @@ package com.shc.silenceengine.io;
 
 import com.shc.silenceengine.core.SilenceException;
 
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -45,7 +48,9 @@ public class FilePath
     private boolean directory;
     private boolean exists;
 
-    private FilePath(String path, Type type)
+    private long size;
+
+    private FilePath(String path, Type type) throws IOException
     {
         this.path = path.replaceAll("\\\\", "/").replaceAll("/+", "/").trim();
         this.type = type;
@@ -55,11 +60,22 @@ public class FilePath
             case EXTERNAL:
                 directory = Files.isDirectory(Paths.get(path));
                 exists = Files.exists(Paths.get(path));
+                size = exists() ? Files.size(Paths.get(path)) : -1;
                 break;
 
             case RESOURCE:
                 directory = this.path.endsWith("/");
                 exists = FilePath.class.getResource("/" + path) != null;
+
+                // FIXME: This is a quick hack, and might not be accurate
+                try
+                {
+                    size = exists ? new File(FilePath.class.getClassLoader().getResource(path).toURI()).length() : -1;
+                }
+                catch (URISyntaxException e)
+                {
+                    SilenceException.reThrow(e);
+                }
                 break;
         }
     }
@@ -84,7 +100,7 @@ public class FilePath
         return directory;
     }
 
-    public InputStream getInputStream()
+    public InputStream getInputStream() throws IOException
     {
         if (isDirectory())
             throw new SilenceException("Cannot read from a directory.");
@@ -94,23 +110,16 @@ public class FilePath
 
         InputStream inputStream = null;
 
-        try
+        switch (type)
         {
-            switch (type)
-            {
-                case EXTERNAL: inputStream = Files.newInputStream(Paths.get(path)); break;
-                case RESOURCE: inputStream = FilePath.class.getClassLoader().getResourceAsStream(path);
-            }
-        }
-        catch (Exception e)
-        {
-            SilenceException.reThrow(e);
+            case EXTERNAL: inputStream = Files.newInputStream(Paths.get(path)); break;
+            case RESOURCE: inputStream = FilePath.class.getClassLoader().getResourceAsStream(path);
         }
 
         return inputStream;
     }
 
-    public OutputStream getOutputStream()
+    public OutputStream getOutputStream() throws IOException
     {
         if (type == Type.RESOURCE)
             throw new SilenceException("Cannot write to a resource file.");
@@ -118,21 +127,27 @@ public class FilePath
         if (isDirectory())
             throw new SilenceException("Cannot write to a directory.");
 
-        OutputStream outputStream = null;
-
-        try
-        {
-            outputStream = Files.newOutputStream(Paths.get(path));
-        }
-        catch (Exception e)
-        {
-            SilenceException.reThrow(e);
-        }
-
-        return outputStream;
+        return Files.newOutputStream(Paths.get(path));
     }
 
-    public FilePath getParent()
+    public void copyTo(FilePath path) throws IOException
+    {
+        byte[] buffer = new byte[1024];
+        int length;
+
+        try (InputStream inputStream = getInputStream(); OutputStream outputStream = path.getOutputStream())
+        {
+            while ((length = inputStream.read(buffer)) > 0)
+            {
+                outputStream.write(buffer, 0, length);
+            }
+        }
+
+        path.size = Files.size(Paths.get(path.getPath()));
+        path.exists = true;
+    }
+
+    public FilePath getParent() throws IOException
     {
         String[] parts = path.split("/");
 
@@ -143,7 +158,7 @@ public class FilePath
         return new FilePath(path + "/", type);
     }
 
-    public FilePath getChild(String path)
+    public FilePath getChild(String path) throws IOException
     {
         if (!isDirectory())
             throw new SilenceException("Cannot get a child for a file.");
@@ -154,29 +169,31 @@ public class FilePath
         return new FilePath(this.path + SEPARATOR + path, type);
     }
 
-    public boolean delete()
+    public boolean delete() throws IOException
     {
         if (getType() == Type.RESOURCE)
             throw new SilenceException("Cannot delete resource files.");
 
-        try
-        {
-            return Files.deleteIfExists(Paths.get(path));
-        }
-        catch (Exception e)
-        {
-            SilenceException.reThrow(e);
-        }
-
-        return false;
+        return Files.deleteIfExists(Paths.get(path));
     }
 
-    public static FilePath getExternalFile(String path)
+    public String getExtension()
+    {
+        String[] parts = getPath().split("\\.(?=[^\\.]+$)");
+        return parts.length > 1 ? parts[1] : "";
+    }
+
+    public long sizeInBytes()
+    {
+        return size;
+    }
+
+    public static FilePath getExternalFile(String path) throws IOException
     {
         return new FilePath(path, Type.EXTERNAL);
     }
 
-    public static FilePath getResourceFile(String path)
+    public static FilePath getResourceFile(String path) throws IOException
     {
         return new FilePath(path, Type.RESOURCE);
     }
@@ -191,9 +208,11 @@ public class FilePath
     {
         return "FilePath{" +
                "path='" + path + '\'' +
+               ", extension='" + getExtension() + "'" +
                ", type=" + type +
                ", isDirectory=" + directory +
                ", exists=" + exists +
+               ", size=" + size +
                '}';
     }
 
@@ -207,6 +226,7 @@ public class FilePath
 
         return isDirectory() == filePath.isDirectory() &&
                exists() == filePath.exists() &&
+               sizeInBytes() == filePath.sizeInBytes() &&
                getPath().equals(filePath.getPath()) &&
                getType() == filePath.getType();
     }
@@ -217,7 +237,8 @@ public class FilePath
         int result = getPath().hashCode();
         result = 31 * result + getType().hashCode();
         result = 31 * result + (isDirectory() ? 1 : 0);
-        result = 31 * result + (exists() ? 1 : 0);
+        result = 31 * result + (exists ? 1 : 0);
+        result = 31 * result + (int) (size ^ (size >>> 32));
         return result;
     }
 }
