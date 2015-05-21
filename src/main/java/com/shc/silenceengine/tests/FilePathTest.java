@@ -36,8 +36,11 @@ public class FilePathTest
 {
     public static void main(String[] args) throws IOException
     {
+        Logger.setPrintTimeStamps(false);
+
         FilePath resources = FilePath.getResourceFile("resources/");
         Logger.log(resources);
+        resources.listFiles().forEach(Logger::log);
 
         FilePath texture1 = resources.getChild("texture.png");
         Logger.log(texture1);
@@ -53,6 +56,7 @@ public class FilePathTest
 
         FilePath externalParent = externalFile.getParent();
         Logger.log(externalParent);
+        externalParent.getParent().listFiles().forEach(Logger::log);
 
         FilePath externalChild = externalParent.getChild("system32/calc.exe");
         Logger.log(externalChild);
@@ -60,6 +64,9 @@ public class FilePathTest
         FilePath newFile = FilePath.getExternalFile("D:/Test.png");
         Logger.log(newFile);
         texture1.copyTo(newFile);
+        Logger.log(newFile);
+
+        newFile.delete();
         Logger.log(newFile);
     }
 }
