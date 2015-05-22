@@ -80,13 +80,6 @@ public class FilePath
     private String path;
     private Type   type;
 
-    // The flags to store whether it is a directory, or if it exists
-    private boolean directory;
-    private boolean exists;
-
-    // The size of this resource file.
-    private long size;
-
     /**
      * Constructs an instance of FilePath by taking a path string, and a type.
      *
@@ -100,20 +93,20 @@ public class FilePath
         this.path = path.replaceAll("\\\\", "/").replaceAll("/+", "/").trim();
         this.type = type;
 
-        switch (type)
-        {
-            case EXTERNAL:
-                directory = Files.isDirectory(Paths.get(path));
-                exists = Files.exists(Paths.get(path));
-                size = exists() ? Files.size(Paths.get(path)) : -1;
-                break;
-
-            case RESOURCE:
-                directory = this.path.endsWith("/");
-                exists = FilePath.class.getResource("/" + path) != null || existsInJar();
-                size = exists ? calculateResourceSize() : -1;
-                break;
-        }
+////        switch (type)
+////        {
+////            case EXTERNAL:
+////                directory = Files.isDirectory(Paths.get(path));
+//////                exists = Files.exists(Paths.get(path));
+//////                size = exists() ? Files.size(Paths.get(path)) : -1;
+////                break;
+////
+////            case RESOURCE:
+////                directory = this.path.endsWith("/");
+//////                exists = existsInJar() || FilePath.class.getClassLoader().getResource(path) != null;
+//////                size = exists ? calculateResourceSize() : -1;
+////                break;
+//        }
     }
 
     /**
@@ -140,7 +133,7 @@ public class FilePath
         else
         {
             // Otherwise, try to find the location of the executable JAR
-            File jarFile = new File(FilePath.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+            File jarFile = new File(FilePath.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "));
 
             // If this is a JAR file, we are running through an executable JAR. Construct a JarFile instance
             // and use that instance to read the entries from the JAR.
@@ -185,7 +178,7 @@ public class FilePath
     {
         boolean exists = false;
 
-        File jarFile = new File(FilePath.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+        File jarFile = new File(FilePath.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "));
 
         if (jarFile.isFile())
         {
@@ -209,12 +202,56 @@ public class FilePath
 
     public boolean exists()
     {
-        return exists;
+        if (getType() == Type.EXTERNAL)
+            return Files.exists(Paths.get(path));
+        else
+            try
+            {
+                return existsInJar() || FilePath.class.getClassLoader().getResource(path) != null;
+            }
+            catch (IOException e)
+            {
+                SilenceException.reThrow(e);
+            }
+
+        return false;
     }
 
     public boolean isDirectory()
     {
-        return directory;
+        if (!exists())
+            return false;
+
+        if (getType() == Type.EXTERNAL)
+            return Files.isDirectory(Paths.get(path));
+        else
+        {
+            boolean isDirectory = false;
+
+            try
+            {
+                File file = new File(FilePath.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "));
+
+                if (file.isFile())
+                {
+                    JarFile jarFile = new JarFile(file);
+
+                    isDirectory = jarFile.stream().filter(e -> e.getName().startsWith(path)).count() > 1;
+
+                    jarFile.close();
+                }
+                else
+                {
+                    isDirectory = Files.isDirectory(Paths.get(FilePath.class.getClassLoader().getResource(path).toURI()));
+                }
+            }
+            catch (Exception e)
+            {
+                SilenceException.reThrow(e);
+            }
+
+            return isDirectory;
+        }
     }
 
     public InputStream getInputStream() throws IOException
@@ -274,8 +311,8 @@ public class FilePath
             }
         }
 
-        path.size = Files.size(Paths.get(path.getPath()));
-        path.exists = true;
+//        path.size = Files.size(Paths.get(path.getPath()));
+//        path.exists = true;
     }
 
     public void moveTo(FilePath path) throws IOException
@@ -335,10 +372,7 @@ public class FilePath
         if (getType() == Type.RESOURCE)
             throw new SilenceException("Cannot delete resource files.");
 
-        exists = !Files.deleteIfExists(Paths.get(path));
-        size = exists ? sizeInBytes() : -1;
-
-        return !exists;
+        return Files.deleteIfExists(Paths.get(path));
     }
 
     public String getExtension()
@@ -349,7 +383,22 @@ public class FilePath
 
     public long sizeInBytes()
     {
-        return size;
+        if (!exists())
+            return -1;
+
+        try
+        {
+            if (getType() == Type.EXTERNAL)
+                return Files.size(Paths.get(path));
+            else
+                return calculateResourceSize();
+        }
+        catch (IOException e)
+        {
+            SilenceException.reThrow(e);
+        }
+
+        return -1;
     }
 
     public List<FilePath> listFiles() throws IOException
@@ -371,7 +420,7 @@ public class FilePath
         }
         else
         {
-            File file = new File(FilePath.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+            File file = new File(FilePath.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "));
 
             if (file.isFile())
             {
@@ -430,9 +479,9 @@ public class FilePath
                "path='" + path + '\'' +
                ", extension='" + getExtension() + "'" +
                ", type=" + type +
-               ", isDirectory=" + directory +
-               ", exists=" + exists +
-               ", size=" + size +
+               ", isDirectory=" + isDirectory() +
+               ", exists=" + exists() +
+               ", size=" + sizeInBytes() +
                '}';
     }
 
@@ -457,8 +506,8 @@ public class FilePath
         int result = getPath().hashCode();
         result = 31 * result + getType().hashCode();
         result = 31 * result + (isDirectory() ? 1 : 0);
-        result = 31 * result + (exists ? 1 : 0);
-        result = 31 * result + (int) (size ^ (size >>> 32));
+        result = 31 * result + (exists() ? 1 : 0);
+        result = 31 * result + (int) (sizeInBytes() ^ (sizeInBytes() >>> 32));
         return result;
     }
 }
