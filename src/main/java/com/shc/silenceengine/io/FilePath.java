@@ -92,21 +92,6 @@ public class FilePath
     {
         this.path = path.replaceAll("\\\\", "/").replaceAll("/+", "/").trim();
         this.type = type;
-
-////        switch (type)
-////        {
-////            case EXTERNAL:
-////                directory = Files.isDirectory(Paths.get(path));
-//////                exists = Files.exists(Paths.get(path));
-//////                size = exists() ? Files.size(Paths.get(path)) : -1;
-////                break;
-////
-////            case RESOURCE:
-////                directory = this.path.endsWith("/");
-//////                exists = existsInJar() || FilePath.class.getClassLoader().getResource(path) != null;
-//////                size = exists ? calculateResourceSize() : -1;
-////                break;
-//        }
     }
 
     /**
@@ -217,6 +202,11 @@ public class FilePath
         return false;
     }
 
+    public boolean isFile()
+    {
+        return !isDirectory();
+    }
+
     public boolean isDirectory()
     {
         if (!exists())
@@ -310,9 +300,6 @@ public class FilePath
                 outputStream.write(buffer, 0, length);
             }
         }
-
-//        path.size = Files.size(Paths.get(path.getPath()));
-//        path.exists = true;
     }
 
     public void moveTo(FilePath path) throws IOException

@@ -38,35 +38,57 @@ public class FilePathTest
     {
         Logger.setPrintTimeStamps(false);
 
+        Logger.log("Trying to locate the 'resources' directory in classpath\n");
+
         FilePath resources = FilePath.getResourceFile("resources/");
-        Logger.log(resources);
-        resources.listFiles().forEach(Logger::log);
+        logFilePath(resources);
 
+        Logger.log("\nTrying to list all files in the 'resources' directory\n");
+        resources.listFiles().forEach(FilePathTest::logFilePath);
+
+        Logger.log("\nGetting the child 'texture.png' from the 'resources' in classpath\n");
         FilePath texture1 = resources.getChild("texture.png");
-        Logger.log(texture1);
+        logFilePath(texture1);
 
+        Logger.log("\nChecking if the parent of the texture file is the resources directory\n");
         FilePath parent = resources.getParent();
-        Logger.log(parent);
+        logFilePath(parent);
+        Logger.log(">> " + (parent.equals(resources)));
 
-        FilePath nonExistantResource = FilePath.getResourceFile("resources/nonExistingTexture.png");
-        Logger.log(nonExistantResource);
+        Logger.log("\nTrying to create a path to a non existing resource\n");
+        FilePath nonExistantResource = FilePath.getResourceFile("nonExistingTexture.png");
+        logFilePath(nonExistantResource);
 
+        Logger.log("\nGetting an external file\n");
         FilePath externalFile = FilePath.getExternalFile("C:/Windows/explorer.exe");
-        Logger.log(externalFile);
+        logFilePath(externalFile);
 
+        Logger.log("\nTrying to get the parent of the external file\n");
         FilePath externalParent = externalFile.getParent();
-        Logger.log(externalParent);
-        externalParent.getParent().listFiles().forEach(Logger::log);
+        logFilePath(externalParent);
 
+        Logger.log("\nListing all the files in the external directory\n");
+        externalParent.getParent().listFiles().forEach(FilePathTest::logFilePath);
+
+        Logger.log("\nGetting the child 'system32/calc.exe' of the external directory\n");
         FilePath externalChild = externalParent.getChild("system32/calc.exe");
-        Logger.log(externalChild);
+        logFilePath(externalChild);
 
+        Logger.log("\nTrying to create a new file, and copy a resource to it\n");
         FilePath newFile = FilePath.getExternalFile("D:/Test.png");
-        Logger.log(newFile);
+        logFilePath(newFile);
         texture1.copyTo(newFile);
-        Logger.log(newFile);
+        logFilePath(newFile);
 
+        Logger.log("\nTrying to delete the newly created file\n");
         newFile.delete();
-        Logger.log(newFile);
+        logFilePath(newFile);
+    }
+
+    private static void logFilePath(FilePath path)
+    {
+        Logger.log(String.format(">> Path='%-35s', Extension='.%-4s', Type='%s', Directory=%-5s, Exists=%-5s, Size=%-8d KB",
+                                 path.getPath(), path.getExtension(), "" + path.getType(), "" + path.isDirectory(),
+                                 "" + path.exists(), path.sizeInBytes()));
     }
 }
