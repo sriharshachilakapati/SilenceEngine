@@ -40,7 +40,7 @@ public class FilePathTest
 
         Logger.log("Trying to locate the 'resources' directory in classpath\n");
 
-        FilePath resources = FilePath.getResourceFile("resources/");
+        FilePath resources = FilePath.getResourceFile("resources");
         logFilePath(resources);
 
         Logger.log("\nTrying to list all files in the 'resources' directory\n");

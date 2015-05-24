@@ -26,10 +26,8 @@ package com.shc.silenceengine.utils;
 
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.io.FilePath;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.nio.file.Files;
 
 /**
@@ -43,7 +41,7 @@ import java.nio.file.Files;
  */
 public class NativesLoader
 {
-    private static File nativesDir;
+    private static FilePath nativesDir;
 
     /**
      * Loads the natives from the JAR resources
@@ -63,39 +61,40 @@ public class NativesLoader
         try
         {
             // Create temporary Directory
-            nativesDir = Files.createTempDirectory("SilenceEngine").toFile();
+            nativesDir = FilePath.getExternalFile(Files.createTempDirectory("SilenceEngine").toFile().getAbsolutePath());
+            nativesDir.deleteOnExit();
 
             // Delete the temp dir on exit
             nativesDir.deleteOnExit();
 
             // Set the LWJGL library path
-            System.setProperty("java.library.path", nativesDir.getAbsolutePath());
+            System.setProperty("java.library.path", nativesDir.getPath());
 
             switch (SilenceEngine.getPlatform())
             {
                 case WINDOWS_32:
-                    loadLibrary("/lwjgl32.dll");
-                    loadLibrary("/OpenAL32.dll");
+                    loadLibrary("lwjgl32.dll");
+                    loadLibrary("OpenAL32.dll");
                     break;
 
                 case WINDOWS_64:
-                    loadLibrary("/lwjgl.dll");
-                    loadLibrary("/OpenAL.dll");
+                    loadLibrary("lwjgl.dll");
+                    loadLibrary("OpenAL.dll");
                     break;
 
                 case MACOSX:
-                    loadLibrary("/liblwjgl.dylib");
-                    loadLibrary("/libopenal.dylib");
+                    loadLibrary("liblwjgl.dylib");
+                    loadLibrary("libopenal.dylib");
                     break;
 
                 case LINUX_32:
-                    loadLibrary("/liblwjgl32.so");
-                    loadLibrary("/libopenal32.so");
+                    loadLibrary("liblwjgl32.so");
+                    loadLibrary("libopenal32.so");
                     break;
 
                 case LINUX_64:
-                    loadLibrary("/liblwjgl.so");
-                    loadLibrary("/libopenal.so");
+                    loadLibrary("liblwjgl.so");
+                    loadLibrary("libopenal.so");
                     break;
 
                 case UNKNOWN:
@@ -125,52 +124,42 @@ public class NativesLoader
                 break;
 
             // Don't perform this cleanup on non windows platforms
-            default:
-                return;
+            default: return;
         }
 
-        // Get the Temp directory
-        File temp = new File(System.getProperty("java.io.tmpdir"));
-        File[] files = temp.listFiles();
-
-        if (files == null)
-            return;
-
-        // Iterate on all files in the temp directory
-        for (File file : files)
+        try
         {
-            if (file.isDirectory())
+            FilePath temp = FilePath.getExternalFile(System.getProperty("java.io.tmpdir"));
+
+            for (FilePath file : temp.listFiles())
             {
-                String path = file.getAbsolutePath();
-
-                // If path is a directory check if it is a SilenceEngine native location
-                if (path.contains("Silence") && path.contains("Engine"))
+                if (file.isDirectory())
                 {
-                    // It is a Directory that is created by SilenceEngine, delete it
-                    File[] natives = file.listFiles();
-
-                    if (natives != null && natives.length != 0)
+                    if (file.getPath().contains("Silence") && file.getPath().contains("Engine"))
                     {
-                        // Delete all the native DLLs first
-                        for (File dll : natives)
+                        int tryCount;
+                        boolean success;
+
+                        for (FilePath nativeFile : file.listFiles())
                         {
-                            int tryCount = 0;
-                            boolean success = false;
+                            tryCount = 0; success = false;
 
-                            // Try to delete 5 times
                             while (!success && tryCount++ < 5)
-                                success = dll.delete();
+                                success = nativeFile.delete();
                         }
+
+                        tryCount = 0; success = false;
+
+
+                        while (!success && tryCount++ < 5)
+                            success = file.delete();
                     }
-
-                    int tryCount = 0;
-                    boolean success = false;
-
-                    // Try to delete 5 times
-                    while (!success && tryCount++ < 5)
-                        success = file.delete();
                 }
             }
+        }
+        catch (Exception e)
+        {
+            SilenceException.reThrow(e);
         }
     }
 
@@ -181,12 +170,9 @@ public class NativesLoader
      */
     public static void loadLibrary(String path)
     {
-        if (!path.startsWith("/"))
-            throw new IllegalArgumentException("The path has to be absolute! (Start with a '/' character)");
-
         // Get the filename from path
         String[] parts = path.replaceAll("\\\\", "/").split("/");
-        String filename = (parts.length > 1) ? parts[parts.length - 1] : null;
+        String filename = (parts.length > 0) ? parts[parts.length - 1] : null;
 
         if (filename == null)
             throw new SilenceException("Filename is null. Did you pass a directory?");
@@ -194,23 +180,15 @@ public class NativesLoader
         try
         {
             // Create a file in the DIR which deletes itself
-            File tmp = new File(nativesDir, filename);
+            FilePath tmp = nativesDir.getChild(filename);
             tmp.deleteOnExit();
 
-            // Create the OutputStream
+            // Copy (extract) the resource file
+            FilePath nativeLib = FilePath.getResourceFile(path);
+            nativeLib.copyTo(tmp);
 
-            // Extract the native library
-            byte[] buffer = new byte[1024];
-            int readBytes;
-
-            try (FileOutputStream os = new FileOutputStream(tmp); InputStream is = NativesLoader.class.getResourceAsStream(path))
-            {
-                while ((readBytes = is.read(buffer)) != -1)
-                    os.write(buffer, 0, readBytes);
-            }
-
-            // Load the library
-            System.load(tmp.getAbsolutePath());
+            // Load the extracted native library
+            System.load(tmp.getPath());
         }
         catch (Exception e)
         {

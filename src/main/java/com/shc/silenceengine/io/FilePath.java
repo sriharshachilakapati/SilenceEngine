@@ -35,6 +35,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -232,7 +233,20 @@ public class FilePath
                 }
                 else
                 {
-                    isDirectory = Files.isDirectory(Paths.get(FilePath.class.getClassLoader().getResource(path).toURI()));
+                    try
+                    {
+                        isDirectory = Files.isDirectory(Paths.get(FilePath.class.getClassLoader().getResource(path).toURI()));
+                    }
+                    catch (FileSystemNotFoundException fsnfe)
+                    {
+                        // We swallow the exception here, as this is a bug with the implementation of ZipFileSystem
+                        // See: http://stackoverflow.com/
+                        isDirectory = path.endsWith("/");
+                    }
+                    catch (Exception e)
+                    {
+                        SilenceException.reThrow(e);
+                    }
                 }
             }
             catch (Exception e)
@@ -360,6 +374,14 @@ public class FilePath
             throw new SilenceException("Cannot delete resource files.");
 
         return Files.deleteIfExists(Paths.get(path));
+    }
+
+    public void deleteOnExit() throws IOException
+    {
+        if (getType() == Type.RESOURCE)
+            throw new SilenceException("Cannot delete resource files.");
+
+        new File(path).deleteOnExit();
     }
 
     public String getExtension()
