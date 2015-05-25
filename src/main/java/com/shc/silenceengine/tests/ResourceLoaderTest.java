@@ -27,6 +27,7 @@ package com.shc.silenceengine.tests;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.ResourceLoader;
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.TrueTypeFont;
@@ -54,6 +55,8 @@ public class ResourceLoaderTest extends Game
 
     public void init()
     {
+        SilenceEngine.graphics.setClearColor(Color.NAVY);
+
         ResourceLoader loader = ResourceLoader.getInstance();
         loader.setRenderProgressCallback(this::customProgressRenderCallback);
 

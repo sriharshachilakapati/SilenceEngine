@@ -66,6 +66,7 @@ public final class GL3Context
      */
     public static void clearColor(Color color)
     {
+        SilenceEngine.graphics.getClearColor().set(color);
         clearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
@@ -79,6 +80,7 @@ public final class GL3Context
      */
     public static void clearColor(float r, float g, float b, float a)
     {
+        SilenceEngine.graphics.getClearColor().set(r, g, b, a);
         glClearColor(r, g, b, a);
         GLError.check();
     }

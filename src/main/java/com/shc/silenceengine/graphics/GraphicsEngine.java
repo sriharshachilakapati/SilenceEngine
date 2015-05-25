@@ -25,7 +25,6 @@
 package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.core.Display;
-import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.IEngine;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
@@ -42,6 +41,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class GraphicsEngine implements IEngine
 {
     public static final Material DEFAULT_MATERIAL;
+    private Color clearColor = Color.BLACK.copy();
 
     public float renderCalls         = 0;
     public float renderCallsPerFrame = 0;
@@ -89,6 +89,8 @@ public class GraphicsEngine implements IEngine
 
         GL3Context.cullFace(GL_FRONT_AND_BACK);
         GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
+
+        setClearColor(clearColor);
     }
 
     @Override
@@ -96,6 +98,7 @@ public class GraphicsEngine implements IEngine
     {
         GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         Texture.setActiveUnit(0);
+        setClearColor(clearColor);
     }
 
     @Override
@@ -138,12 +141,19 @@ public class GraphicsEngine implements IEngine
 
     public void setClearColor(float r, float g, float b, float a)
     {
+        clearColor.set(r, g, b, a);
         GL3Context.clearColor(r, g, b, a);
     }
 
     public void setClearColor(Color color)
     {
+        clearColor.set(color);
         GL3Context.clearColor(color);
+    }
+
+    public Color getClearColor()
+    {
+        return clearColor;
     }
 
     public Batcher getBatcher()
