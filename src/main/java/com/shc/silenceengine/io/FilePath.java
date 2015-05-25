@@ -34,14 +34,19 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.FileSystemNotFoundException;
+import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -233,19 +238,34 @@ public class FilePath
                 }
                 else
                 {
-                    try
+                    // Now that we know that our code base is a directory, we should be running from the IDE
+                    URL url = FilePath.class.getClassLoader().getResource(path);
+
+                    if (url == null)
                     {
-                        isDirectory = Files.isDirectory(Paths.get(FilePath.class.getClassLoader().getResource(path).toURI()));
+                        isDirectory = new File(file, path).isDirectory();
                     }
-                    catch (FileSystemNotFoundException fsnfe)
+                    else
                     {
-                        // We swallow the exception here, as this is a bug with the implementation of ZipFileSystem
-                        // See: http://stackoverflow.com/
-                        isDirectory = path.endsWith("/");
-                    }
-                    catch (Exception e)
-                    {
-                        SilenceException.reThrow(e);
+                        final Map<String, String> env = new HashMap<>();
+                        final String[] array = url.toURI().toString().split("!");
+                        Path path;
+
+                        if (array[0].startsWith("jar") || array[0].startsWith("zip"))
+                        {
+                            // The requested file is from a JAR file in the classpath, so create a
+                            // new FileSystem to resolve it.
+                            final FileSystem fs = FileSystems.newFileSystem(URI.create(array[0]), env);
+                            path = fs.getPath(array[1]);
+                            isDirectory = Files.isDirectory(path);
+                            fs.close();
+                        }
+                        else
+                        {
+                            // The requested file is from the directory of the project
+                            path = Paths.get(url.toURI());
+                            isDirectory = Files.isDirectory(path);
+                        }
                     }
                 }
             }
@@ -304,6 +324,15 @@ public class FilePath
 
     public void copyTo(FilePath path) throws IOException
     {
+        if (isDirectory() && path.isFile())
+            throw new SilenceException("Cannot copy a directory into a file.");
+
+        if (isFile() && path.isDirectory())
+            throw new SilenceException("Cannot copy a file into a directory.");
+
+        if (!exists())
+            throw new SilenceException("Cannot copy a non existing file.");
+
         byte[] buffer = new byte[1024];
         int length;
 
@@ -318,7 +347,7 @@ public class FilePath
 
     public void moveTo(FilePath path) throws IOException
     {
-        if (getType() == Type.RESOURCE || path.getType() == Type.EXTERNAL)
+        if (getType() == Type.RESOURCE || path.getType() == Type.RESOURCE)
             throw new SilenceException("Cannot move resource files!");
 
         Files.move(Paths.get(this.path), Paths.get(path.getPath()));
@@ -348,13 +377,13 @@ public class FilePath
 
     public FilePath getParent() throws IOException
     {
-        String[] parts = path.split("/");
+        String[] parts = path.split("" + SEPARATOR);
 
         String path = parts[0];
         for (int i = 1; i < parts.length - 1; i++)
-            path += "/" + parts[i] + "/";
+            path += SEPARATOR + parts[i] + SEPARATOR;
 
-        return new FilePath(path + "/", type);
+        return new FilePath(path + SEPARATOR, type);
     }
 
     public FilePath getChild(String path) throws IOException
