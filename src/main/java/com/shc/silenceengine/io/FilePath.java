@@ -91,106 +91,89 @@ public class FilePath
      *
      * @param path The path string of the path
      * @param type The type of the file, one of {@link Type#EXTERNAL} or {@link Type#RESOURCE}.
-     *
-     * @throws IOException When an error occurred reading the attributes of the file path.
      */
-    private FilePath(String path, Type type) throws IOException
+    private FilePath(String path, Type type)
     {
-        this.path = path.replaceAll("\\\\", "/").replaceAll("/+", "/").trim();
+        this.path = path.replaceAll("\\\\", "" + SEPARATOR).replaceAll("/+", "" + SEPARATOR).trim();
         this.type = type;
+
+        if (type == Type.RESOURCE && this.path.startsWith("/"))
+            this.path = this.path.replaceFirst("/", "");
     }
 
     /**
-     * This method calculates the size of the resource file or the directory. If this path is a directory, then the size
-     * is the sum of all the files in this directory. Otherwise the size is calculated either by retrieving the JarEntry
-     * of the resource, or by delegating it to the Files class with a path, in case of running from the IDE.
+     * This method creates a {@link FilePath} instance that handles a path to an external file or directory. The path
+     * can be either an absolute path, or a relative path. In case of the relative path, the files are expected to be in
+     * project root folder when running through an IDE, and besides the JAR file when running from an executable JAR.
      *
-     * @return The size of the FilePath, in bytes.
+     * @param path The path string that specifies the location of the file or directory.
      *
-     * @throws IOException If an error occurred while accessing the file path.
+     * @return The FilePath instance that can be used to handle an external file.
      */
-    private long calculateResourceSize() throws IOException
+    public static FilePath getExternalFile(String path)
     {
-        long size = 0;
-
-        if (isDirectory())
-        {
-            // If this path is a directory, then the size is the sum of all the files in it.
-            List<FilePath> files = listFiles();
-
-            for (FilePath path : files)
-                size += path.sizeInBytes();
-        }
-        else
-        {
-            // Otherwise, try to find the location of the executable JAR
-            File jarFile = new File(FilePath.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "));
-
-            // If this is a JAR file, we are running through an executable JAR. Construct a JarFile instance
-            // and use that instance to read the entries from the JAR.
-            if (jarFile.isFile())
-            {
-                JarFile jar = new JarFile(jarFile);
-
-                // Collect all the entries whose name equals with the path
-                List<JarEntry> entries = jar.stream().filter(e -> e.getName().equals(path))
-                        .collect(Collectors.toList());
-
-                size = entries.get(0).getSize();
-
-                jar.close();
-            }
-            else
-            {
-                try
-                {
-                    // This is a resource, but the file is requested when running from an IDE. We can safely delegate
-                    // the work to the Files class now.
-                    size = Files.size(Paths.get(FilePath.class.getClassLoader().getResource(path).toURI()));
-                }
-                catch (URISyntaxException e)
-                {
-                    SilenceException.reThrow(e);
-                }
-            }
-        }
-
-        return size;
+        return new FilePath(path, Type.EXTERNAL);
     }
 
     /**
-     * This method finds whether this path exists in the executable JAR file.
+     * This method creates a {@link FilePath} instance that handles a path to an internal file or directory, which is
+     * present in the classpath. This path is always absolute, and starts with the root of classpath, which will be the
+     * source directory in case of running from the IDE, or from the root of the JAR file when running from executable
+     * JAR file.
      *
-     * @return True if the file exists, else false.
+     * @param path The path string that specifies the location of the file or directory.
      *
-     * @throws IOException If an error occurs when accessing the JAR file.
+     * @return The FilePath instance that can be used to handle a resource file, which will be packed into the JAR.
      */
-    private boolean existsInJar() throws IOException
+    public static FilePath getResourceFile(String path)
     {
-        boolean exists = false;
-
-        File jarFile = new File(FilePath.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "));
-
-        if (jarFile.isFile())
-        {
-            JarFile jar = new JarFile(jarFile);
-            exists = jar.stream().filter(e -> e.getName().startsWith(path)).count() > 0;
-            jar.close();
-        }
-
-        return exists;
+        return new FilePath(path, Type.RESOURCE);
     }
 
+    /**
+     * Gets the path string of this FilePath instance. This path will be the same as the one that you used to create
+     * this object, except that it will be changed to use the separator defined by {@link #SEPARATOR} which works in all
+     * the platforms.
+     *
+     * @return The path string of this FilePath instance.
+     */
     public String getPath()
     {
         return path;
     }
 
+    /**
+     * Gets the absolute path string of this FilePath instance. The root of the path will be the root of the filesystem
+     * if this path is an external file, or the root of the classpath if this is a JAR file resource.
+     *
+     * @return The absolute path string of this FilePath instance.
+     */
+    public String getAbsolutePath()
+    {
+        if (type == Type.EXTERNAL)
+            // For external files, use the File object to get the absolute path
+            return new File(path).getAbsolutePath().replaceAll("\\\\", "" + SEPARATOR)
+                                                   .replaceAll("/+", "" + SEPARATOR).trim();
+        else
+            // For resource files, the path is always absolute, just return it
+            return path;
+    }
+
+    /**
+     * Gets the type of file this FilePath instance resolves to.
+     *
+     * @return One of {@link Type#EXTERNAL} or {@link Type#RESOURCE}.
+     */
     public Type getType()
     {
         return type;
     }
 
+    /**
+     * Checks if the file resolved to from this FilePath instance actually exists, or whether it is a hypothetical one.
+     *
+     * @return True if the file exists, or else False.
+     */
     public boolean exists()
     {
         if (getType() == Type.EXTERNAL)
@@ -208,11 +191,46 @@ public class FilePath
         return false;
     }
 
-    public boolean isFile()
+    /**
+     * This method finds whether this path exists in the executable JAR file.
+     *
+     * @return True if the file exists, else false.
+     *
+     * @throws IOException If an error occurs when accessing the JAR file.
+     */
+    private boolean existsInJar() throws IOException
     {
-        return !isDirectory();
+        boolean exists = false;
+
+        // Get the code source as a file
+        File jarFile = new File(FilePath.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "));
+
+        if (jarFile.isFile())
+        {
+            // If this is a file, we are sure that we are running from a JAR file.
+            JarFile jar = new JarFile(jarFile);
+            exists = jar.stream().filter(e -> e.getName().startsWith(path)).count() > 0;
+            jar.close();
+        }
+
+        return exists;
     }
 
+    /**
+     * Checks if this FilePath is a file, or a directory.
+     *
+     * @return True if a file, else false.
+     */
+    public boolean isFile()
+    {
+        return exists() && !isDirectory();
+    }
+
+    /**
+     * Checks if this FilePath is a directory, or a file.
+     *
+     * @return True if a directory, else false.
+     */
     public boolean isDirectory()
     {
         if (!exists())
@@ -226,10 +244,13 @@ public class FilePath
 
             try
             {
+                // Try to get the code source as a file
                 File file = new File(FilePath.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "));
 
                 if (file.isFile())
                 {
+                    // If the source is a JAR file, then this is a directory if it has more entries that starts with
+                    // the path of this resource.
                     JarFile jarFile = new JarFile(file);
 
                     isDirectory = jarFile.stream().filter(e -> e.getName().startsWith(path)).count() > 1;
@@ -243,6 +264,7 @@ public class FilePath
 
                     if (url == null)
                     {
+                        // A guess, if the url is not found, search the code source for this path (Shouldn't be run)
                         isDirectory = new File(file, path).isDirectory();
                     }
                     else
@@ -278,6 +300,13 @@ public class FilePath
         }
     }
 
+    /**
+     * Gets an {@link InputStream} that can be used to read data from this file path.
+     *
+     * @return An input stream that allows you to read from this FilePath.
+     *
+     * @throws IOException If an I/O error occurs while creating an input stream.
+     */
     public InputStream getInputStream() throws IOException
     {
         if (isDirectory())
@@ -358,10 +387,10 @@ public class FilePath
         if (getType() == Type.RESOURCE)
             throw new SilenceException("Cannot create resource directories!");
 
-        if (!isDirectory())
-            throw new SilenceException("Cannot create directories for a path that denotes a file!");
-
-        Files.createDirectories(Paths.get(path));
+        if (isFile() && !exists())
+            getParent().mkdirs();
+        else
+            Files.createDirectories(Paths.get(path));
     }
 
     public void createFile() throws IOException
@@ -419,6 +448,16 @@ public class FilePath
         return parts.length > 1 ? parts[1] : "";
     }
 
+    public String getName()
+    {
+        return path.substring(path.lastIndexOf(SEPARATOR) + 1);
+    }
+
+    public String getNameWithoutExtension()
+    {
+        return getName().replaceAll("\\." + getExtension(), "");
+    }
+
     public long sizeInBytes()
     {
         if (!exists())
@@ -437,6 +476,64 @@ public class FilePath
         }
 
         return -1;
+    }
+
+    /**
+     * This method calculates the size of the resource file or the directory. If this path is a directory, then the size
+     * is the sum of all the files in this directory. Otherwise the size is calculated either by retrieving the JarEntry
+     * of the resource, or by delegating it to the Files class with a path, in case of running from the IDE.
+     *
+     * @return The size of the FilePath, in bytes.
+     *
+     * @throws IOException If an error occurred while accessing the file path.
+     */
+    private long calculateResourceSize() throws IOException
+    {
+        long size = 0;
+
+        if (isDirectory())
+        {
+            // If this path is a directory, then the size is the sum of all the files in it.
+            List<FilePath> files = listFiles();
+
+            for (FilePath path : files)
+                size += path.sizeInBytes();
+        }
+        else
+        {
+            // Otherwise, try to find the location of the executable JAR
+            File jarFile = new File(FilePath.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "));
+
+            // If this is a JAR file, we are unning through an executable JAR. Construct a JarFile instance
+            // and use that instance to read the entries from the JAR.
+            if (jarFile.isFile())
+            {
+                JarFile jar = new JarFile(jarFile);
+
+                // Collect all the entries whose name equals with the path
+                List<JarEntry> entries = jar.stream().filter(e -> e.getName().equals(path))
+                        .collect(Collectors.toList());
+
+                size = entries.get(0).getSize();
+
+                jar.close();
+            }
+            else
+            {
+                try
+                {
+                    // This is a resource, but the file is requested when running from an IDE. We can safely delegate
+                    // the work to the Files class now.
+                    size = Files.size(Paths.get(FilePath.class.getClassLoader().getResource(path).toURI()));
+                }
+                catch (URISyntaxException e)
+                {
+                    SilenceException.reThrow(e);
+                }
+            }
+        }
+
+        return size;
     }
 
     public List<FilePath> listFiles() throws IOException
@@ -495,32 +592,15 @@ public class FilePath
         return Collections.unmodifiableList(list);
     }
 
-    public static FilePath getExternalFile(String path) throws IOException
-    {
-        return new FilePath(path, Type.EXTERNAL);
-    }
-
-    public static FilePath getResourceFile(String path) throws IOException
-    {
-        return new FilePath(path, Type.RESOURCE);
-    }
-
-    public enum Type
-    {
-        EXTERNAL, RESOURCE
-    }
-
     @Override
-    public String toString()
+    public int hashCode()
     {
-        return "FilePath{" +
-               "path='" + path + '\'' +
-               ", extension='" + getExtension() + "'" +
-               ", type=" + type +
-               ", isDirectory=" + isDirectory() +
-               ", exists=" + exists() +
-               ", size=" + sizeInBytes() +
-               '}';
+        int result = getPath().hashCode();
+        result = 31 * result + getType().hashCode();
+        result = 31 * result + (isDirectory() ? 1 : 0);
+        result = 31 * result + (exists() ? 1 : 0);
+        result = 31 * result + (int) (sizeInBytes() ^ (sizeInBytes() >>> 32));
+        return result;
     }
 
     @Override
@@ -539,13 +619,21 @@ public class FilePath
     }
 
     @Override
-    public int hashCode()
+    public String toString()
     {
-        int result = getPath().hashCode();
-        result = 31 * result + getType().hashCode();
-        result = 31 * result + (isDirectory() ? 1 : 0);
-        result = 31 * result + (exists() ? 1 : 0);
-        result = 31 * result + (int) (sizeInBytes() ^ (sizeInBytes() >>> 32));
-        return result;
+        return "FilePath{" +
+               "path='" + path + '\'' +
+               ", name='" + getName() + "'" +
+               ", extension='" + getExtension() + "'" +
+               ", type=" + type +
+               ", isDirectory=" + isDirectory() +
+               ", exists=" + exists() +
+               ", size=" + sizeInBytes() +
+               '}';
+    }
+
+    public enum Type
+    {
+        EXTERNAL, RESOURCE
     }
 }

@@ -60,7 +60,7 @@ public class FilePathTest
         logFilePath(nonExistantResource);
 
         Logger.log("\nGetting an external file\n");
-        FilePath externalFile = FilePath.getExternalFile("C:/Windows/explorer.exe");
+        FilePath externalFile = FilePath.getExternalFile(System.getProperty("user.dir") + "/Test.exe");
         logFilePath(externalFile);
 
         Logger.log("\nTrying to get the parent of the external file\n");
@@ -70,12 +70,12 @@ public class FilePathTest
         Logger.log("\nListing all the files in the external directory\n");
         externalParent.getParent().listFiles().forEach(FilePathTest::logFilePath);
 
-        Logger.log("\nGetting the child 'system32/calc.exe' of the external directory\n");
-        FilePath externalChild = externalParent.getChild("system32/calc.exe");
+        Logger.log("\nGetting the child 'com/shc' of the external directory\n");
+        FilePath externalChild = externalParent.getChild("Test.exe");
         logFilePath(externalChild);
 
         Logger.log("\nTrying to create a new file, and copy a resource to it\n");
-        FilePath newFile = FilePath.getExternalFile("D:/Test.png");
+        FilePath newFile = FilePath.getExternalFile(System.getProperty("java.io.tmpdir") + "/Test.png");
         logFilePath(newFile);
         texture1.copyTo(newFile);
         logFilePath(newFile);
@@ -87,8 +87,8 @@ public class FilePathTest
 
     private static void logFilePath(FilePath path)
     {
-        Logger.log(String.format(">> Path='%-35s', Extension='.%-4s', Type='%s', Directory=%-5s, Exists=%-5s, Size=%-8d KB",
-                                 path.getPath(), path.getExtension(), "" + path.getType(), "" + path.isDirectory(),
+        Logger.log(String.format(">> Path='%-35s' Name='%-25s' Extension='.%-4s' Type='%s' Directory=%-5s Exists=%-5s Size=%-8d Bytes",
+                                 path.getPath(), path.getName(), path.getExtension(), "" + path.getType(), "" + path.isDirectory(),
                                  "" + path.exists(), path.sizeInBytes()));
     }
 }
