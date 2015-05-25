@@ -53,6 +53,7 @@ public final class Display
     private static boolean fullScreen = false;
     private static boolean dirty      = true;
     private static boolean vSync      = true;
+    private static boolean decorated  = true;
 
     private static int width  = 800;
     private static int height = 600;
@@ -116,6 +117,7 @@ public final class Display
 
         Window.setHint(GLFW_VISIBLE, false);
         Window.setHint(GLFW_RESIZABLE, resizable);
+        Window.setHint(GLFW_DECORATED, decorated);
     }
 
     private static void setCallbacks(Window window)
@@ -345,6 +347,36 @@ public final class Display
 
         displayWindow.destroy();
         displayWindow = resizableWindow;
+        displayWindow.makeCurrent();
+
+        dirty = true;
+
+        hide();
+        show();
+
+        // Update the Display
+        update();
+    }
+
+    public static boolean isDecorated()
+    {
+        return decorated;
+    }
+
+    public static void setDecorated(boolean decorated)
+    {
+        if (Display.decorated == decorated)
+            return;
+
+        Display.decorated = decorated;
+
+        if (fullScreen)
+            return;
+
+        Window newWindow = createWindow(width, height, getTitle(), monitor, displayWindow);
+
+        displayWindow.destroy();
+        displayWindow = newWindow;
         displayWindow.makeCurrent();
 
         dirty = true;

@@ -42,6 +42,7 @@ import java.nio.file.Files;
 public class NativesLoader
 {
     private static FilePath nativesDir;
+    private static boolean lwjglLoaded;
 
     /**
      * Loads the natives from the JAR resources
@@ -50,6 +51,9 @@ public class NativesLoader
     {
         // If NativesLoader is disabled in properties, do nothing
         if (System.getProperty("NativesLoader", "true").equalsIgnoreCase("false"))
+            return;
+
+        if (lwjglLoaded)
             return;
 
         // Cleanup natives on Windows, without which the temp folder will
@@ -100,11 +104,14 @@ public class NativesLoader
                 case UNKNOWN:
                     throw new SilenceException("SilenceEngine does not support your Operating System. We're sorry :(");
             }
+
+            lwjglLoaded = true;
         }
         catch (Exception e)
         {
             // Oops, something went wrong, print to stack trace
             SilenceException.reThrow(e);
+            lwjglLoaded = false;
         }
     }
 

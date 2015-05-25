@@ -29,6 +29,7 @@ import com.shc.silenceengine.graphics.Graphics2D;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.utils.GameTimer;
 import com.shc.silenceengine.utils.Logger;
+import com.shc.silenceengine.utils.NativesLoader;
 import com.shc.silenceengine.utils.TimeUtils;
 
 /**
@@ -193,6 +194,10 @@ public class Game
     {
         instance = this;
 
+        // The preInit() method, called before anything else is loaded
+        NativesLoader.loadLWJGL();
+        preInit();
+
         // Initialize SilenceEngine
         SilenceEngine.getInstance().init();
 
@@ -310,6 +315,13 @@ public class Game
         }
 
         Game.end();
+    }
+
+    /**
+     * This method is invoked even before the engine is loaded. Only the LWJGL natives are loaded.
+     */
+    public void preInit()
+    {
     }
 
     /**

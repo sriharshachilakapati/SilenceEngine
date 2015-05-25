@@ -224,6 +224,46 @@ public class Window
      */
     public Window(int width, int height, String title, Monitor monitor, Window share)
     {
+        this(width, height, title, monitor, (monitor == null ? Monitor.getPrimaryMonitor() : monitor).getVideoMode().getRefreshRate(), share);
+    }
+
+    /**
+     * <p> Creates a window and its associated OpenGL context. Most of the options controlling how the window and its
+     * context should be created are specified with window hints.</p>
+     *
+     * <p> Successful creation does not change which context is current. Before you can use the newly created context,
+     * you need to make it current.</p>
+     *
+     * <p> The created window, framebuffer and context may differ from what you requested, as not all parameters and
+     * hints are hard constraints. This includes the size of the window, especially for full screen windows. You could
+     * query them manually after the window is created.</p>
+     *
+     * <p> To create a full screen window, you need to specify the monitor the window will cover. If no monitor is
+     * specified, windowed mode will be used. Unless you have a way for the user to choose a specific monitor, it is
+     * recommended that you pick the primary monitor.</p>
+     *
+     * <p> For full screen windows, the specified size becomes the resolution of the window's desired video mode. As
+     * long as a full screen window has input focus, the supported video mode most closely matching the desired video
+     * mode is set for the specified monitor.</p>
+     *
+     * <p> By default, newly created windows use the placement recommended by the window system. To create the window at
+     * a specific position, make it initially invisible using the <code>GLFW_VISIBLE</code> window hint, set its
+     * position and then show it.</p>
+     *
+     * <p> If a full screen window has input focus, the screensaver is prohibited from starting.</p>
+     *
+     * <p> The swap interval is not set during window creation and the initial value may vary depending on driver
+     * settings and defaults.</p>
+     *
+     * @param width       The desired width, in screen coordinates, of the window. This must be greater than zero.
+     * @param height      The desired height, in screen coordinates, of the window. This must be greater than zero.
+     * @param title       The desired title string of the Window. This can also contain UTF-8 characters.
+     * @param monitor     The monitor to use for full screen mode, or <code>null</code> to use windowed mode.
+     * @param refreshRate The refresh rate to be used for the window. This is ignored for windowed mode windows.
+     * @param share       The window whose context to share resources with, or <code>null</code> to not share resources.
+     */
+    public Window(int width, int height, String title, Monitor monitor, int refreshRate, Window share)
+    {
         size = new Vector2(width, height);
         framebufferSize = new Vector2();
 
@@ -231,6 +271,7 @@ public class Window
         this.title = title;
         this.monitor = monitor;
 
+        setHint(GLFW_REFRESH_RATE, refreshRate);
         handle = glfwCreateWindow(width, height, title, monitor == null ? NULL : monitor.getHandle(), share == null ? NULL : share.getHandle());
 
         if (handle == NULL)
@@ -377,7 +418,7 @@ public class Window
      */
     public Window(VideoMode videoMode, String title, Monitor monitor, Window share)
     {
-        this(videoMode.getWidth(), videoMode.getHeight(), title, monitor, share);
+        this(videoMode.getWidth(), videoMode.getHeight(), title, monitor, videoMode.getRefreshRate(), share);
     }
 
     /**
