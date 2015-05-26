@@ -37,6 +37,7 @@ public class FilePathTest
     public static void main(String[] args) throws IOException
     {
         Logger.setPrintTimeStamps(false);
+        Logger.addLogStream(FilePath.getExternalFile(System.getProperty("java.io.tmpdir") + "/FilePathTest.log"));
 
         Logger.log("Trying to locate the 'resources' directory in classpath\n");
 

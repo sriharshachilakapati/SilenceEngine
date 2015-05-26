@@ -450,6 +450,11 @@ public class FilePath
 
     public String getName()
     {
+        String path = this.path;
+
+        if (path.endsWith("" + SEPARATOR))
+            path = path.substring(0, path.length()-1);
+
         return path.substring(path.lastIndexOf(SEPARATOR) + 1);
     }
 

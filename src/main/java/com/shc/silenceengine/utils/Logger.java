@@ -26,9 +26,14 @@ package com.shc.silenceengine.utils;
 
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.io.FilePath;
 
+import java.io.IOException;
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A simplified logging utility class used by SilenceEngine. Supports logging at three levels, INFO, WARNING and ERROR.
@@ -43,10 +48,14 @@ public final class Logger
      */
     private static boolean printTimeStamps;
 
+    private static boolean printToConsole;
+
     /**
      * The format time stamps are printed in
      */
     private static SimpleDateFormat timeStampFormat;
+
+    private static List<PrintStream> printStreams;
 
     /**
      * Prevent instantiation
@@ -69,7 +78,16 @@ public final class Logger
             return;
 
         for (Object message : messages)
-            System.out.println((printTimeStamps ? "[INFO " + getTimeStamp() + "] " : "") + message);
+        {
+            String info = ((printTimeStamps ? "[INFO " + getTimeStamp() + "] " : "") + message)
+                                             .replaceAll("\r\n", "\n").replaceAll("\n", "\r\n");
+
+            for (PrintStream stream : printStreams)
+                stream.println(info);
+
+            if (printToConsole)
+                System.out.println(info);
+        }
     }
 
     /**
@@ -94,7 +112,16 @@ public final class Logger
             return;
 
         for (Object message : messages)
-            System.err.println((printTimeStamps ? "[WARNING " + getTimeStamp() + "] " : "") + message);
+        {
+            String warning = ((printTimeStamps ? "[INFO " + getTimeStamp() + "] " : "") + message)
+                    .replaceAll("\r\n", "\n").replaceAll("\n", "\r\n");
+
+            for (PrintStream stream : printStreams)
+                stream.println(warning);
+
+            if (printToConsole)
+                System.err.println(warning);
+        }
     }
 
     /**
@@ -108,10 +135,23 @@ public final class Logger
      */
     public static void error(Object... messages)
     {
-        for (Object message : messages)
-            System.err.println((printTimeStamps ? "[FATAL ERROR " + getTimeStamp() + "] " : "") + message);
+        if (!Game.development)
+            return;
 
-        System.err.println("Terminating with exception");
+        for (Object message : messages)
+        {
+            String error = ((printTimeStamps ? "[INFO " + getTimeStamp() + "] " : "") + message)
+                    .replaceAll("\r\n", "\n").replaceAll("\n", "\r\n");
+
+            for (PrintStream stream : printStreams)
+                stream.println(error);
+
+            if (printToConsole)
+                System.err.println(error);
+        }
+
+        warn("Terminating with Exception");
+
         throw new SilenceException("FATAL Error occurred, cannot continue further");
     }
 
@@ -138,9 +178,34 @@ public final class Logger
         Logger.printTimeStamps = printTimeStamps;
     }
 
+    public static void addLogStream(PrintStream stream)
+    {
+        printStreams.add(stream);
+    }
+
+    public static void removeLogStream(PrintStream stream)
+    {
+        if (!printStreams.contains(stream))
+            return;
+
+        printStreams.remove(stream);
+    }
+
+    public static void addLogStream(FilePath path) throws IOException
+    {
+        addLogStream(new PrintStream(path.getOutputStream(), true));
+    }
+
+    public static void setPrintToConsole(boolean printToConsole)
+    {
+        Logger.printToConsole = printToConsole;
+    }
+
     static
     {
+        printStreams = new ArrayList<>();
         setPrintTimeStamps(true);
+        setPrintToConsole(true);
         setTimeStampFormat(new SimpleDateFormat("MM/dd/yyyy h:mm:ss a"));
     }
 }
