@@ -308,6 +308,8 @@ public class Batcher
      */
     private void mapBuffers()
     {
+        vao.bind(true);
+
         vBuffer = vboVert.map(BufferObject.MapAccess.WRITE_ONLY, vBuffer);
         vao.pointAttribute(vertexLocation, SIZE_OF_VERTEX, GL_FLOAT, vboVert);
 

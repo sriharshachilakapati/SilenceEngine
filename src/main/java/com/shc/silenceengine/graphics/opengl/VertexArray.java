@@ -39,6 +39,8 @@ public class VertexArray
     private int     id;
     private boolean disposed;
 
+    public static VertexArray CURRENT;
+
     /**
      * Constructs a VertexArrayObject.
      */
@@ -61,15 +63,30 @@ public class VertexArray
     }
 
     /**
-     * Binds this VertexArray to the OpenGL context
+     * Binds this VertexArray to the OpenGL context.
      */
     public void bind()
+    {
+        bind(false);
+    }
+
+    /**
+     * Binds this VertexArray to the OpenGL context
+     *
+     * @param force Force binding the object.
+     */
+    public void bind(boolean force)
     {
         if (disposed)
             throw new GLException("VertexArray is disposed!");
 
-        glBindVertexArray(id);
-        GLError.check();
+        if (force || CURRENT != this)
+        {
+            glBindVertexArray(id);
+            GLError.check();
+
+            CURRENT = this;
+        }
     }
 
     /**

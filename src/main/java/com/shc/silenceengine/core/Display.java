@@ -32,6 +32,7 @@ import com.shc.silenceengine.core.glfw.Window;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.graphics.opengl.VertexArray;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Vector2;
@@ -87,10 +88,12 @@ public final class Display
         setCallbacks(window);
         clearHints();
 
-        window.setPosition(posX, posY);
+        if (!fullScreen)
+            window.setPosition(posX, posY);
 
         dirty = true;
 
+        VertexArray.CURRENT = null;
         SilenceEngine.graphics.setBatcher(new Batcher());
         setVSync(vSync);
 
@@ -158,7 +161,7 @@ public final class Display
 
     public static void centerOnScreen()
     {
-        if (monitor != null)
+        if (monitor != null || fullScreen)
             return;
 
         VideoMode videoMode = Monitor.getPrimaryMonitor().getVideoMode();
@@ -167,7 +170,7 @@ public final class Display
 
     public static void setPosition(int x, int y)
     {
-        if (displayWindow == null)
+        if (displayWindow == null || fullScreen)
             return;
 
         Display.posX = x;
@@ -210,7 +213,7 @@ public final class Display
 
         displayWindow.setInputMode(GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
-    
+
     public static void setCursor(Cursor cursor)
     {
         if (displayWindow == null)
