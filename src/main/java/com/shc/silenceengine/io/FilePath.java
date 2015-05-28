@@ -404,7 +404,7 @@ public class FilePath
         Files.createFile(Paths.get(path));
     }
 
-    public FilePath getParent() throws IOException
+    public FilePath getParent()
     {
         String[] parts = path.split("" + SEPARATOR);
 
@@ -415,7 +415,7 @@ public class FilePath
         return new FilePath(path + SEPARATOR, type);
     }
 
-    public FilePath getChild(String path) throws IOException
+    public FilePath getChild(String path)
     {
         if (!isDirectory())
             throw new SilenceException("Cannot get a child for a file.");
@@ -434,7 +434,7 @@ public class FilePath
         return Files.deleteIfExists(Paths.get(path));
     }
 
-    public void deleteOnExit() throws IOException
+    public void deleteOnExit()
     {
         if (getType() == Type.RESOURCE)
             throw new SilenceException("Cannot delete resource files.");
@@ -509,7 +509,7 @@ public class FilePath
             // Otherwise, try to find the location of the executable JAR
             File jarFile = new File(FilePath.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "));
 
-            // If this is a JAR file, we are unning through an executable JAR. Construct a JarFile instance
+            // If this is a JAR file, we are running through an executable JAR. Construct a JarFile instance
             // and use that instance to read the entries from the JAR.
             if (jarFile.isFile())
             {
@@ -529,7 +529,10 @@ public class FilePath
                 {
                     // This is a resource, but the file is requested when running from an IDE. We can safely delegate
                     // the work to the Files class now.
-                    size = Files.size(Paths.get(FilePath.class.getClassLoader().getResource(path).toURI()));
+                    URL url = FilePath.class.getClassLoader().getResource(path);
+
+                    if (url != null)
+                        size = Files.size(Paths.get(url.toURI()));
                 }
                 catch (URISyntaxException e)
                 {
@@ -555,8 +558,11 @@ public class FilePath
         {
             File file = new File(path);
 
-            for (File child : file.listFiles())
-                list.add(new FilePath(path + SEPARATOR + child.getPath().replace(file.getPath(), ""), getType()));
+            File[] children = file.listFiles();
+
+            if (children != null)
+                for (File child : children)
+                    list.add(new FilePath(path + SEPARATOR + child.getPath().replace(file.getPath(), ""), getType()));
         }
         else
         {
@@ -565,13 +571,9 @@ public class FilePath
             if (file.isFile())
             {
                 JarFile jarFile = new JarFile(file);
-                List<JarEntry> entries = jarFile.stream().filter(e -> e.getName().startsWith(path))
-                        .collect(Collectors.toList());
 
-                for (JarEntry entry : entries)
-                {
-                    list.add(new FilePath(entry.getName(), getType()));
-                }
+                jarFile.stream().filter(e -> e.getName().startsWith(path)).forEach(p ->
+                        list.add(new FilePath(p.getName(), getType())));
 
                 jarFile.close();
             }
@@ -579,12 +581,12 @@ public class FilePath
             {
                 try
                 {
-                    List<Path> paths = Files.list(Paths.get(FilePath.class.getClassLoader().getResource(path).toURI()))
-                            .collect(Collectors.toList());
+                    URL url = FilePath.class.getClassLoader().getResource(path);
 
-                    for (Path path : paths)
+                    if (url != null)
                     {
-                        list.add(new FilePath(this.path + SEPARATOR + path.toFile().getName(), getType()));
+                        Files.list(Paths.get(url.toURI())).forEach(p ->
+                                list.add(new FilePath(path + SEPARATOR + p.toFile().getName(), getType())));
                     }
                 }
                 catch (URISyntaxException e)
