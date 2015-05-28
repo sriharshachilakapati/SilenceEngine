@@ -32,7 +32,6 @@ import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Graphics2D;
 import com.shc.silenceengine.graphics.Paint;
-import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.geom2d.Circle;
@@ -62,12 +61,10 @@ public class Graphics2DTest extends Game
     {
         ResourceLoader loader = ResourceLoader.getInstance();
 
-        int fontID = loader.defineFont("Arial", TrueTypeFont.STYLE_NORMAL, 16);
         int texID = loader.defineTexture("resources/texture.png");
         loader.startLoading();
 
         Graphics2D g2d = getGraphics2D();
-        g2d.setFont(loader.getFont(fontID));
 
         texture = loader.getTexture(texID);
 

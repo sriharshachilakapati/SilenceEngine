@@ -25,7 +25,6 @@
 package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.core.Display;
-import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.cameras.BaseCamera;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
@@ -63,6 +62,7 @@ public class Graphics2D
 
         paint = new Paint();
         transform = new Transform();
+        font = TrueTypeFont.DEFAULT;
     }
 
     public static Graphics2D getInstance()

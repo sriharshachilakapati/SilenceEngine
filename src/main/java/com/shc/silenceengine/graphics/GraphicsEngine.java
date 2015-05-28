@@ -91,6 +91,9 @@ public class GraphicsEngine implements IEngine
         GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
 
         setClearColor(clearColor);
+
+        // Default font!!
+        TrueTypeFont.DEFAULT = new TrueTypeFont("Verdana", TrueTypeFont.STYLE_NORMAL, 16);
     }
 
     @Override
@@ -114,6 +117,9 @@ public class GraphicsEngine implements IEngine
     @Override
     public void dispose()
     {
+        // Dispose the default font
+        TrueTypeFont.DEFAULT.dispose();
+
         // Dispose the batcher
         batcher.dispose();
 
