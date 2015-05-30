@@ -32,9 +32,15 @@ import java.io.Writer;
  * Default Exception class of SilenceEngine.
  *
  * @author Sri Harsha Chilakapati
+ * @author Josh "ShadowLordAlpha"
  */
 public class SilenceException extends RuntimeException
 {
+    /**
+     * Generated Serial UID
+     */
+    private static final long serialVersionUID = -2424650959040475391L;
+
     /**
      * Constructs the SilenceException with a message.
      *

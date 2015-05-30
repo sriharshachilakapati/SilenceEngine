@@ -24,7 +24,6 @@
 
 package com.shc.silenceengine.graphics.programs;
 
-import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Material;
@@ -38,6 +37,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 /**
  * @author Sri Harsha Chilakapati
+ * @author Josh "ShadowLordAlpha"
  */
 public class DirectionalLightProgram extends Program
 {

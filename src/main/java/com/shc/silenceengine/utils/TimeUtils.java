@@ -30,6 +30,7 @@ import static org.lwjgl.glfw.GLFW.*;
  * A standard Time Utility class
  *
  * @author Sri Harsha Chilakapati
+ * @author Josh "ShadowLordAlpha"
  */
 public final class TimeUtils
 {
@@ -67,9 +68,9 @@ public final class TimeUtils
                 return currentMicros();
             case MILLIS:
                 return currentMillis();
+            default:
+                return currentSeconds();
         }
-
-        return currentSeconds();
     }
 
     public static double currentTime()
