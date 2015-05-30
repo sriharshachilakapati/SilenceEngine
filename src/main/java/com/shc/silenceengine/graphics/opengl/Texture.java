@@ -326,4 +326,28 @@ public class Texture
     {
         return disposed;
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Texture texture = (Texture) o;
+
+        return getId() == texture.getId() &&
+               Float.compare(texture.getWidth(), getWidth()) == 0 &&
+               Float.compare(texture.getHeight(), getHeight()) == 0 &&
+               isDisposed() == texture.isDisposed();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = getId();
+        result = 31 * result + (getWidth() != +0.0f ? Float.floatToIntBits(getWidth()) : 0);
+        result = 31 * result + (getHeight() != +0.0f ? Float.floatToIntBits(getHeight()) : 0);
+        result = 31 * result + (isDisposed() ? 1 : 0);
+        return result;
+    }
 }

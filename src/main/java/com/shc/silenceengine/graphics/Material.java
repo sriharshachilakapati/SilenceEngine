@@ -62,11 +62,17 @@ public class Material
         this.name = "Default";
     }
 
+    public Material(String name)
+    {
+        this();
+        setName(name);
+    }
+
     public Material(Material m)
     {
-        this.ambient = m.ambient;
-        this.diffuse = m.diffuse;
-        this.specular = m.specular;
+        this.ambient = m.ambient.copy();
+        this.diffuse = m.diffuse.copy();
+        this.specular = m.specular.copy();
 
         this.diffuseMap = m.diffuseMap;
         this.normalMap = m.normalMap;
@@ -175,5 +181,41 @@ public class Material
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Material material = (Material) o;
+
+        return Float.compare(material.getDissolve(), getDissolve()) == 0 &&
+               Float.compare(material.getSpecularPower(), getSpecularPower()) == 0 &&
+               Float.compare(material.getIllumination(), getIllumination()) == 0 &&
+               getAmbient().equals(material.getAmbient()) &&
+               getDiffuse().equals(material.getDiffuse()) &&
+               getSpecular().equals(material.getSpecular()) &&
+               getDiffuseMap().equals(material.getDiffuseMap()) &&
+               getNormalMap().equals(material.getNormalMap()) &&
+               getSpecularMap().equals(material.getSpecularMap()) &&
+               getName().equals(material.getName());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = getAmbient().hashCode();
+        result = 31 * result + getDiffuse().hashCode();
+        result = 31 * result + getSpecular().hashCode();
+        result = 31 * result + getDiffuseMap().hashCode();
+        result = 31 * result + getNormalMap().hashCode();
+        result = 31 * result + getSpecularMap().hashCode();
+        result = 31 * result + (getDissolve() != +0.0f ? Float.floatToIntBits(getDissolve()) : 0);
+        result = 31 * result + (getSpecularPower() != +0.0f ? Float.floatToIntBits(getSpecularPower()) : 0);
+        result = 31 * result + (getIllumination() != +0.0f ? Float.floatToIntBits(getIllumination()) : 0);
+        result = 31 * result + getName().hashCode();
+        return result;
     }
 }
