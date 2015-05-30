@@ -29,7 +29,6 @@ import com.shc.silenceengine.collision.CollisionEngine;
 import com.shc.silenceengine.core.glfw.GLFW3;
 import com.shc.silenceengine.graphics.GraphicsEngine;
 import com.shc.silenceengine.input.InputEngine;
-import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.Vector4;
 import com.shc.silenceengine.utils.Logger;
 import com.shc.silenceengine.utils.NativesLoader;
@@ -37,6 +36,7 @@ import org.lwjgl.Sys;
 
 /**
  * @author Sri Harsha Chilakapati
+ * @author Josh "ShadowLordAlpha"
  */
 public final class SilenceEngine implements IEngine
 {

@@ -28,9 +28,15 @@ import com.shc.silenceengine.core.SilenceException;
 
 /**
  * @author Sri Harsha Chilakapati
+ * @author Josh "ShadowLordAlpha"
  */
 public class GLException extends SilenceException
 {
+    /**
+     * Generated Serial UID
+     */
+    private static final long serialVersionUID = -4233294051491634242L;
+
     /**
      * Constructs the SilenceException with a message
      *
@@ -43,6 +49,11 @@ public class GLException extends SilenceException
 
     public static class InvalidEnum extends GLException
     {
+        /**
+         * Generated Serial UID
+         */
+        private static final long serialVersionUID = 2029433042086596990L;
+
         public InvalidEnum()
         {
             super("An unacceptable value is specified for an enumerated argument");
@@ -51,6 +62,11 @@ public class GLException extends SilenceException
 
     public static class InvalidValue extends GLException
     {
+        /**
+         * Generated Serial UID
+         */
+        private static final long serialVersionUID = -8619110001750124988L;
+
         public InvalidValue()
         {
             super("A numeric argument is out of range");
@@ -59,6 +75,11 @@ public class GLException extends SilenceException
 
     public static class InvalidOperation extends GLException
     {
+        /**
+         * Generated Serial UID
+         */
+        private static final long serialVersionUID = -8672095451587407513L;
+
         public InvalidOperation()
         {
             super("The specified operation is not allowed in current state");
@@ -67,6 +88,11 @@ public class GLException extends SilenceException
 
     public static class InvalidFramebufferOperation extends GLException
     {
+        /**
+         * Generated Serial UID
+         */
+        private static final long serialVersionUID = -6321399771655108100L;
+
         public InvalidFramebufferOperation()
         {
             super("The FrameBuffer object is incomplete");
@@ -75,6 +101,11 @@ public class GLException extends SilenceException
 
     public static class OutOfMemory extends GLException
     {
+        /**
+         * Generated Serial UID
+         */
+        private static final long serialVersionUID = -5726568667092289095L;
+
         public OutOfMemory()
         {
             super("There is not enough memory left to execute the command");
@@ -83,6 +114,11 @@ public class GLException extends SilenceException
 
     public static class StackUnderflow extends GLException
     {
+        /**
+         * Generated Serial UID
+         */
+        private static final long serialVersionUID = 6029167882538662114L;
+
         public StackUnderflow()
         {
             super("An attempt has been made to perform an operation that would cause an internal stack to underflow");
@@ -91,6 +127,11 @@ public class GLException extends SilenceException
 
     public static class StackOverflow extends GLException
     {
+        /**
+         * Generated Serial UID
+         */
+        private static final long serialVersionUID = 3794676582619102610L;
+
         public StackOverflow()
         {
             super("An attempt has been made to perform an operation that would cause an internal stack to overflow");

@@ -35,6 +35,7 @@ import java.util.Map;
 
 /**
  * @author Sri Harsha Chilakapati
+ * @author Josh "ShadowLordAlpha"
  */
 public class DynamicTree2D implements IBroadphase2D
 {
@@ -303,6 +304,7 @@ public class DynamicTree2D implements IBroadphase2D
             this.max = min.add(width, height);
         }
 
+        // Unused method should possibly delete
         public static AABB create(Entity2D entity)
         {
             return new AABB(entity.getBounds().getMin(), entity.getBounds().getMax());
