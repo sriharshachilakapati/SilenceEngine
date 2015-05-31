@@ -42,15 +42,9 @@ public class ModelEntity extends Entity3D
         this.model = model;
     }
 
-    public void preUpdate(float delta)
-    {
-        super.preUpdate(delta);
-        model.update(delta);
-    }
-
     public void preRender(float delta, Batcher batcher)
     {
         super.preRender(delta, batcher);
-        model.render(delta, batcher, getTransform());
+        model.render(batcher, getTransform());
     }
 }

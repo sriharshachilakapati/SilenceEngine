@@ -24,27 +24,117 @@
 
 package com.shc.silenceengine.models;
 
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.Material;
+import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Transform;
-import com.shc.silenceengine.models.obj.OBJModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public abstract class Model
 {
+    private List<Mesh> meshes;
+
+    public Model()
+    {
+        meshes = new ArrayList<>();
+    }
+
     public static Model load(String filename)
     {
         if (filename.endsWith(".obj"))
             return new OBJModel(filename);
 
-        throw new SilenceException("The model type you are trying to loadLWJGL is unsupported.");
+        throw new SilenceException("The model type you are trying to load is unsupported.");
     }
 
-    public abstract void update(float delta);
+    public static Model load(FilePath filePath)
+    {
+        if (filePath.getExtension().equalsIgnoreCase("obj"))
+            return new OBJModel(filePath);
 
-    public abstract void render(float delta, Batcher batcher, Transform transform);
+        throw new SilenceException("The model type you are trying to load is unsupported.");
+    }
 
-    public abstract void dispose();
+    public void render(Batcher batcher, Transform transform)
+    {
+        Mesh m = getMeshes().get(0);
+        Material originalMaterial = SilenceEngine.graphics.getCurrentMaterial();
+        Texture originalTexture = Texture.CURRENT;
+
+        SilenceEngine.graphics.useMaterial(m.getMaterial());
+
+        if (transform != null) batcher.applyTransform(transform);
+        batcher.begin();
+        {
+            for (Mesh mesh : getMeshes())
+            {
+                if (!m.getMaterial().equals(mesh.getMaterial()))
+                {
+                    batcher.end();
+
+                    SilenceEngine.graphics.useMaterial(mesh.getMaterial());
+                    mesh.getMaterial().getDiffuseMap().bind();
+
+                    m = mesh;
+                    if (transform != null) batcher.applyTransform(transform);
+                    batcher.begin();
+                }
+
+                Color color = mesh.getMaterial().getDiffuse();
+
+                for (Face face : mesh.getFaces())
+                {
+                    batcher.vertex(mesh.getVertices().get((int) face.vertexIndex.x));
+                    batcher.normal(mesh.getNormals().get((int) face.normalIndex.x));
+                    batcher.texCoord(mesh.getTexcoords().get((int) face.texcoordIndex.x));
+                    batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
+
+                    batcher.vertex(mesh.getVertices().get((int) face.vertexIndex.y));
+                    batcher.normal(mesh.getNormals().get((int) face.normalIndex.y));
+                    batcher.texCoord(mesh.getTexcoords().get((int) face.texcoordIndex.y));
+                    batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
+
+                    batcher.vertex(mesh.getVertices().get((int) face.vertexIndex.z));
+                    batcher.normal(mesh.getNormals().get((int) face.normalIndex.z));
+                    batcher.texCoord(mesh.getTexcoords().get((int) face.texcoordIndex.z));
+                    batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
+                }
+            }
+        }
+        batcher.end();
+
+        SilenceEngine.graphics.useMaterial(originalMaterial);
+        originalTexture.bind();
+    }
+
+    public void dispose()
+    {
+        for (Mesh mesh : getMeshes())
+        {
+            Material material = mesh.getMaterial();
+
+            if (material.getDiffuseMap() != Texture.EMPTY)
+                material.getDiffuseMap().dispose();
+
+            if (material.getNormalMap() != Texture.EMPTY)
+                material.getNormalMap().dispose();
+
+            if (material.getSpecularMap() != Texture.EMPTY)
+                material.getSpecularMap().dispose();
+        }
+    }
+
+    public List<Mesh> getMeshes()
+    {
+        return meshes;
+    }
 }

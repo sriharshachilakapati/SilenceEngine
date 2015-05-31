@@ -26,12 +26,14 @@ package com.shc.silenceengine.graphics.opengl;
 
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.utils.FileUtils;
 import org.lwjgl.BufferUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
@@ -112,6 +114,20 @@ public class Texture
         texture.generateMipMaps();
 
         return texture;
+    }
+
+    public static Texture fromFilePath(FilePath path)
+    {
+        try
+        {
+            return fromInputStream(path.getInputStream());
+        }
+        catch (IOException e)
+        {
+            SilenceException.reThrow(e);
+        }
+
+        return null;
     }
 
     public static Texture fromResource(String name)
