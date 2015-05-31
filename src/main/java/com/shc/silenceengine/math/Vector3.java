@@ -380,9 +380,9 @@ public class Vector3
 
     public Vector3 multiplySelf(Matrix4 m)
     {
-        float rx = x * m.get(0, 0) + y * m.get(0, 1) + z * m.get(0, 2) + 1 * m.get(0, 3);
-        float ry = x * m.get(1, 0) + y * m.get(1, 1) + z * m.get(1, 2) + 1 * m.get(1, 3);
-        float rz = x * m.get(2, 0) + y * m.get(2, 1) + z * m.get(2, 2) + 1 * m.get(2, 3);
+        float rx = x * m.get(0, 0) + y * m.get(1, 0) + z * m.get(2, 0) + 1 * m.get(3, 0);
+        float ry = x * m.get(0, 1) + y * m.get(1, 1) + z * m.get(2, 1) + 1 * m.get(3, 1);
+        float rz = x * m.get(0, 2) + y * m.get(1, 2) + z * m.get(2, 2) + 1 * m.get(3, 2);
 
         return set(rx, ry, rz);
     }
