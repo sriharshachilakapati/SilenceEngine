@@ -49,6 +49,7 @@ public class GraphicsEngine implements IEngine
 
     private Material currentMaterial;
     private Batcher  batcher;
+    private ModelBatch modelBatch;
 
     public Material getCurrentMaterial()
     {
@@ -91,6 +92,8 @@ public class GraphicsEngine implements IEngine
         GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
 
         setClearColor(clearColor);
+
+        modelBatch = new ModelBatch();
 
         // Default font!!
         TrueTypeFont.DEFAULT = new TrueTypeFont("Verdana", TrueTypeFont.STYLE_NORMAL, 16);
@@ -170,6 +173,11 @@ public class GraphicsEngine implements IEngine
     public Graphics2D getGraphics2D()
     {
         return Graphics2D.getInstance();
+    }
+
+    public ModelBatch getModelBatch()
+    {
+        return modelBatch;
     }
 
     static
