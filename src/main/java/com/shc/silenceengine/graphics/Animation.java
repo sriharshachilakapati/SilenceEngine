@@ -77,7 +77,7 @@ public class Animation
     public void addFrame(Texture texture, float length, TimeUtils.Unit unit)
     {
         frames.add(texture);
-        frameLengths.add((float) TimeUtils.convert(length, unit, TimeUtils.Unit.SECONDS));
+        frameLengths.add((float) TimeUtils.convert(length, unit, TimeUtils.getDefaultTimeUnit()));
     }
 
     public void start()
@@ -130,6 +130,30 @@ public class Animation
         endCallback.invoke();
     }
 
+    public Animation copy()
+    {
+        Animation animation = new Animation(startCallback, pauseCallback, resumeCallback, endCallback);
+
+        for (int i = 0; i < frames.size(); i++)
+        {
+            animation.addFrame(frames.get(i), frameLengths.get(i), TimeUtils.getDefaultTimeUnit());
+        }
+
+        animation.currentFrame = currentFrame;
+
+        return animation;
+    }
+
+    public Animation clearFrames()
+    {
+        frames.clear();
+        frameLengths.clear();
+
+        currentFrame = 0;
+
+        return this;
+    }
+
     public Texture getCurrentFrame()
     {
         return frames.get(currentFrame);
@@ -177,26 +201,26 @@ public class Animation
     }
 
     @FunctionalInterface
-    public static interface IAnimationStartCallback
+    public interface IAnimationStartCallback
     {
-        public void invoke();
+        void invoke();
     }
 
     @FunctionalInterface
-    public static interface IAnimationPauseCallback
+    public interface IAnimationPauseCallback
     {
-        public void invoke();
+        void invoke();
     }
 
     @FunctionalInterface
-    public static interface IAnimationResumeCallback
+    public interface IAnimationResumeCallback
     {
-        public void invoke();
+        void invoke();
     }
 
     @FunctionalInterface
-    public static interface IAnimationEndCallback
+    public interface IAnimationEndCallback
     {
-        public void invoke();
+        void invoke();
     }
 }
