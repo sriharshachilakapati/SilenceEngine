@@ -43,19 +43,32 @@ public class Sprite
 
     public Sprite()
     {
-        animation = new Animation();
-        id = IDGenerator.generate();
+        this(new Animation(), 1, 1, 0);
     }
 
     public Sprite(Animation animation)
     {
-        this.animation = animation.copy();
-        id = IDGenerator.generate();
+        this(animation, 1, 1, 0);
     }
 
     public Sprite(Texture texture)
     {
-        this();
+        this(texture, 1, 1, 0);
+    }
+
+    public Sprite(Animation animation, float scaleX, float scaleY, float rotation)
+    {
+        id = IDGenerator.generate();
+
+        this.animation = animation.copy();
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        this.rotation = rotation;
+    }
+
+    public Sprite(Texture texture, float scaleX, float scaleY, float rotation)
+    {
+        this(new Animation(), scaleX, scaleY, rotation);
         setTexture(texture);
     }
 

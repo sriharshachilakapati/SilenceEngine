@@ -71,6 +71,7 @@ public abstract class Model
         Texture originalTexture = Texture.CURRENT;
 
         SilenceEngine.graphics.useMaterial(m.getMaterial());
+        m.getMaterial().getDiffuseMap().bind();
 
         if (transform != null) batcher.applyTransform(transform);
         batcher.begin();

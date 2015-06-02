@@ -32,6 +32,8 @@ import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.graphics.programs.DefaultProgram;
 import com.shc.silenceengine.graphics.programs.DirectionalLightProgram;
 import com.shc.silenceengine.graphics.programs.PointLightProgram;
+import org.lwjgl.opengl.ContextCapabilities;
+import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -50,6 +52,7 @@ public class GraphicsEngine implements IEngine
     private Material currentMaterial;
     private Batcher  batcher;
     private ModelBatch modelBatch;
+    private SpriteBatch spriteBatch;
 
     public Material getCurrentMaterial()
     {
@@ -94,6 +97,7 @@ public class GraphicsEngine implements IEngine
         setClearColor(clearColor);
 
         modelBatch = new ModelBatch();
+        spriteBatch = new SpriteBatch();
 
         // Default font!!
         TrueTypeFont.DEFAULT = new TrueTypeFont("Verdana", TrueTypeFont.STYLE_NORMAL, 16);
@@ -178,6 +182,16 @@ public class GraphicsEngine implements IEngine
     public ModelBatch getModelBatch()
     {
         return modelBatch;
+    }
+
+    public SpriteBatch getSpriteBatch()
+    {
+        return spriteBatch;
+    }
+
+    public ContextCapabilities getGLCapabilities()
+    {
+        return GL.getCapabilities();
     }
 
     static
