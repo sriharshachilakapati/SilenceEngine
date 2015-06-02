@@ -31,7 +31,7 @@ import com.shc.silenceengine.graphics.Graphics2D;
 import com.shc.silenceengine.graphics.Paint;
 import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.models.Model;
+import com.shc.silenceengine.graphics.models.Model;
 import com.shc.silenceengine.utils.FileUtils;
 import com.shc.silenceengine.utils.MathUtils;
 

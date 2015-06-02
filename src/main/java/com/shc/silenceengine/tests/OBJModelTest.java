@@ -32,7 +32,7 @@ import com.shc.silenceengine.graphics.cameras.PerspCam;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.geom3d.Cuboid;
-import com.shc.silenceengine.models.Model;
+import com.shc.silenceengine.graphics.models.Model;
 import com.shc.silenceengine.scene.Scene;
 import com.shc.silenceengine.scene.entity.ModelEntity;
 import com.shc.silenceengine.scene.lights.DirectionalLight;

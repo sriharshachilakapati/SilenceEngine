@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.models;
+package com.shc.silenceengine.graphics.models;
 
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Material;

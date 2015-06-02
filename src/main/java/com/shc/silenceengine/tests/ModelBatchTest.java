@@ -35,7 +35,7 @@ import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.models.Model;
+import com.shc.silenceengine.graphics.models.Model;
 import com.shc.silenceengine.scene.lights.PointLight;
 import org.lwjgl.opengl.GL11;
 
