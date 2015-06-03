@@ -52,7 +52,7 @@ public class PointLight extends SceneComponent
 
     public PointLight(Vector3 position, Color color, float intensity)
     {
-        this(position, color, intensity, 10);
+        this(position, color, intensity, 100);
     }
 
     public PointLight(Vector3 position, Color color, float intensity, float range)
