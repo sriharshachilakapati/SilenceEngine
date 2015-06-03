@@ -26,12 +26,12 @@ package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
-import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.math.Transform;
-import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.graphics.models.Face;
 import com.shc.silenceengine.graphics.models.Mesh;
 import com.shc.silenceengine.graphics.models.Model;
+import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.math.Transform;
+import com.shc.silenceengine.math.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +43,10 @@ import java.util.List;
  */
 public class ModelBatch
 {
-    private List<Mesh> meshes;
+    private List<Mesh>      meshes;
     private List<Transform> transforms;
+    private List<Integer>   indices;
+
     private Transform transform;
 
     private boolean active;
@@ -53,6 +55,7 @@ public class ModelBatch
     {
         meshes = new ArrayList<>();
         transforms = new ArrayList<>();
+        indices = new ArrayList<>();
     }
 
     public void begin()
@@ -67,6 +70,8 @@ public class ModelBatch
 
         meshes.clear();
         transforms.clear();
+        indices.clear();
+
         this.transform = transform;
 
         active = true;
@@ -84,7 +89,7 @@ public class ModelBatch
         Material originalMaterial = SilenceEngine.graphics.getCurrentMaterial();
         Texture originalTexture = Texture.CURRENT;
 
-        Material material = meshes.get(0).getMaterial();
+        Material material = meshes.get(indices.get(0)).getMaterial();
         material.getDiffuseMap().bind();
         SilenceEngine.graphics.useMaterial(material);
 
@@ -93,7 +98,7 @@ public class ModelBatch
         if (transform != null) batcher.applyTransform(transform);
         batcher.begin();
         {
-            for (int i = 0; i < meshes.size(); i++)
+            for (int i : indices)
             {
                 Mesh mesh = meshes.get(i);
 
@@ -141,11 +146,16 @@ public class ModelBatch
 
         originalTexture.bind();
         SilenceEngine.graphics.useMaterial(originalMaterial);
+
+        meshes.clear();
+        transforms.clear();
+        indices.clear();
     }
 
     private void sortMeshes()
     {
-        meshes.sort((m1, m2) -> m1.getMaterial().equals(m2.getMaterial()) ? -1 : 0);
+        // Only sort the indices
+        indices.sort((i, j) -> meshes.get(i).getMaterial().equals(meshes.get(j).getMaterial()) ? -1 : 1);
     }
 
     public void end()
@@ -166,5 +176,6 @@ public class ModelBatch
     {
         meshes.add(mesh);
         transforms.add(transform);
+        indices.add(meshes.size() - 1);
     }
 }
