@@ -31,24 +31,25 @@ import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.math.Vector2;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class SpriteBatch
 {
-    private List<Sprite>          sprites;
-    private Map<Integer, Vector2> spritePositionMap;
+    private List<Sprite>  sprites;
+    private List<Integer> indices;
+    private List<Vector2> positions;
 
     private boolean active;
 
     public SpriteBatch()
     {
         sprites = new ArrayList<>();
-        spritePositionMap = new HashMap<>();
+        indices = new ArrayList<>();
+        positions = new ArrayList<>();
+
         active = false;
     }
 
@@ -58,6 +59,8 @@ public class SpriteBatch
             throw new SilenceException("SpriteBatch already active");
 
         sprites.clear();
+        indices.clear();
+        positions.clear();
 
         active = true;
     }
@@ -73,15 +76,18 @@ public class SpriteBatch
 
         Texture originalTexture = Texture.CURRENT;
 
-        Texture texture = sprites.get(0).getTexture();
+        Texture texture = sprites.get(indices.get(0)).getTexture();
         texture.bind();
 
         Vector2 temp = Vector2.REUSABLE_STACK.pop();
 
         batcher.begin(Primitive.TRIANGLES);
         {
-            for (Sprite sprite : sprites)
+            for (int i : indices)
             {
+                Sprite sprite = sprites.get(i);
+                Vector2 position = positions.get(i);
+
                 Texture t = sprite.getTexture();
 
                 if (t.getId() != texture.getId())
@@ -91,16 +97,14 @@ public class SpriteBatch
                     texture = t;
                     t.bind();
 
-                    batcher.begin();
+                    batcher.begin(Primitive.TRIANGLES);
                 }
-
-                Vector2 position = spritePositionMap.get(sprite.getID());
 
                 // Triangle 1
                 batcher.vertex(temp.set(-texture.getWidth() / 2, -texture.getHeight() / 2)  // Top-left
                         .rotateSelf(sprite.getRotation())
                         .scaleSelf(sprite.getScaleX(), sprite.getScaleY())
-                        .addSelf(position).addSelf(texture.getWidth()/2, texture.getHeight()/2));
+                        .addSelf(position).addSelf(texture.getWidth() / 2, texture.getHeight() / 2));
                 batcher.texCoord(texture.getMinU(), texture.getMinV());
                 batcher.vertex(temp.set(texture.getWidth() / 2, -texture.getHeight() / 2)   // Top-right
                         .rotateSelf(sprite.getRotation())
@@ -127,7 +131,7 @@ public class SpriteBatch
                 batcher.vertex(temp.set(-texture.getWidth() / 2, texture.getHeight() / 2)   // Bottom-left
                         .rotateSelf(sprite.getRotation())
                         .scaleSelf(sprite.getScaleX(), sprite.getScaleY())
-                        .addSelf(position).addSelf(texture.getWidth()/2, texture.getHeight()/2));
+                        .addSelf(position).addSelf(texture.getWidth() / 2, texture.getHeight() / 2));
                 batcher.texCoord(texture.getMinU(), texture.getMaxV());
             }
         }
@@ -136,7 +140,8 @@ public class SpriteBatch
         Vector2.REUSABLE_STACK.push(temp);
 
         sprites.clear();
-        spritePositionMap.clear();
+        indices.clear();
+        positions.clear();
 
         originalTexture.bind();
     }
@@ -152,12 +157,14 @@ public class SpriteBatch
 
     private void sortSprites()
     {
-        sprites.sort((s1, s2) -> s1.getTexture().getId() < s2.getTexture().getId() ? 1 : -1);
+        // Only sort the indices
+        indices.sort((i, j) -> sprites.get(i).getTexture().getId() < sprites.get(j).getTexture().getId() ? 1 : -1);
     }
 
     public void addSprite(Sprite sprite, Vector2 position)
     {
         sprites.add(sprite);
-        spritePositionMap.put(sprite.getID(), position);
+        positions.add(position);
+        indices.add(sprites.size() - 1);
     }
 }
