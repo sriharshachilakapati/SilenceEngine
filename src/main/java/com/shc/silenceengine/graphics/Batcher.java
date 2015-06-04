@@ -187,6 +187,7 @@ public class Batcher
 
         flush();
 
+        unmapBuffers();
         transform.reset();
     }
 
@@ -257,11 +258,8 @@ public class Batcher
         texCoordCount = 0;
         normalCount = 0;
 
-        // Map buffers again if still active
-        if (active)
-        {
-            mapBuffers();
-        }
+        // Map the buffers again
+        mapBuffers();
     }
 
     private void fillBuffers()
