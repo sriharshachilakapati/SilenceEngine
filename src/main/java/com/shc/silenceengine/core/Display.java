@@ -243,13 +243,7 @@ public final class Display
 
     public static boolean wasDirty()
     {
-        if (dirty)
-        {
-            dirty = false;
-            return true;
-        }
-
-        return false;
+        return dirty;
     }
 
     public static Window getWindow()
@@ -428,9 +422,14 @@ public final class Display
         displayWindow.swapBuffers();
         GLFW3.pollEvents();
 
-        // Force binding
-        Program.CURRENT = null;
-        Texture.CURRENT = null;
+        if (dirty)
+        {
+            // Force binding
+            Program.CURRENT = null;
+            Texture.CURRENT = null;
+
+            dirty = false;
+        }
 
         Program.DEFAULT.use();
         Texture.EMPTY.bind();
