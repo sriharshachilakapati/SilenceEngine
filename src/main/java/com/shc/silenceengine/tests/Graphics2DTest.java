@@ -34,6 +34,7 @@ import com.shc.silenceengine.graphics.Graphics2D;
 import com.shc.silenceengine.graphics.Paint;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.geom2d.Circle;
 import com.shc.silenceengine.math.geom2d.Ellipse;
 import com.shc.silenceengine.math.geom2d.Rectangle;
@@ -59,14 +60,9 @@ public class Graphics2DTest extends Game
 
     public void init()
     {
-        ResourceLoader loader = ResourceLoader.getInstance();
+        Graphics2D g2d = SilenceEngine.graphics.getGraphics2D();
 
-        int texID = loader.defineTexture("resources/texture.png");
-        loader.startLoading();
-
-        Graphics2D g2d = getGraphics2D();
-
-        texture = loader.getTexture(texID);
+        texture = Texture.fromFilePath(FilePath.getResourceFile("resources/texture2.png"));
 
         gradientPaint = new Paint(Color.RED, Color.BLUE, Paint.Gradient.DIAGONAL_LEFT_TO_RIGHT);
         originalPaint = g2d.getPaint();
@@ -74,6 +70,8 @@ public class Graphics2DTest extends Game
         rectangle = new Rectangle(530, 190, 100, 100);
         circle = new Circle(500, 350, 50);
         ellipse = new Ellipse(650, 400, 50, 100);
+
+        SilenceEngine.graphics.setClearColor(Color.DARK_SLATE_GRAY);
     }
 
     public void update(float delta)
@@ -88,7 +86,7 @@ public class Graphics2DTest extends Game
 
     public void render(float delta, Batcher batcher)
     {
-        Graphics2D g2d = getGraphics2D();
+        Graphics2D g2d = SilenceEngine.graphics.getGraphics2D();
         g2d.setPaint(originalPaint);
 
         g2d.setColor(Color.RED);

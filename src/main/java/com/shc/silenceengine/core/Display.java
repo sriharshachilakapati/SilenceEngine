@@ -29,7 +29,6 @@ import com.shc.silenceengine.core.glfw.GLFW3;
 import com.shc.silenceengine.core.glfw.Monitor;
 import com.shc.silenceengine.core.glfw.VideoMode;
 import com.shc.silenceengine.core.glfw.Window;
-import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.graphics.opengl.VertexArray;
@@ -79,9 +78,6 @@ public final class Display
 
     private static Window createWindow(int width, int height, String title, Monitor monitor, Window share)
     {
-        if (SilenceEngine.graphics.getBatcher() != null)
-            SilenceEngine.graphics.getBatcher().dispose();
-
         setHints();
         Window window = new Window(width, height, title, monitor, share);
         window.makeCurrent();
@@ -94,7 +90,6 @@ public final class Display
         dirty = true;
 
         VertexArray.CURRENT = null;
-        SilenceEngine.graphics.setBatcher(new Batcher());
         setVSync(vSync);
 
         return window;

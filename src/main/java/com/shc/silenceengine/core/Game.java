@@ -139,11 +139,6 @@ public class Game
         Runtime.getRuntime().gc();
     }
 
-    public static Graphics2D getGraphics2D()
-    {
-        return Graphics2D.getInstance();
-    }
-
     public static long getUsedMemory()
     {
         return getTotalMemory() - getFreeMemory();
@@ -260,8 +255,6 @@ public class Game
             {
                 if (Display.wasDirty())
                 {
-                    dirtyDisplay();
-
                     // End the old frame and start a new frame
                     SilenceEngine.getInstance().endFrame();
                     SilenceEngine.getInstance().beginFrame();
@@ -335,10 +328,6 @@ public class Game
      * Handle the window-resize event. Used to set the view-port and re-size the camera.
      */
     public void resize()
-    {
-    }
-
-    public void dirtyDisplay()
     {
     }
 

@@ -81,9 +81,6 @@ public class ModelBatch
     {
         sortMeshes();
 
-        final int numFacesPerBatch = 50000;
-        int faceCountInBatch = 0;
-
         Batcher batcher = SilenceEngine.graphics.getBatcher();
 
         Material originalMaterial = SilenceEngine.graphics.getCurrentMaterial();
@@ -102,7 +99,7 @@ public class ModelBatch
             {
                 Mesh mesh = meshes.get(i);
 
-                if (!mesh.getMaterial().equals(material) || faceCountInBatch > numFacesPerBatch)
+                if (!mesh.getMaterial().equals(material))
                 {
                     batcher.end();
 
@@ -112,8 +109,6 @@ public class ModelBatch
 
                     if (transform != null) batcher.applyTransform(transform);
                     batcher.begin();
-
-                    faceCountInBatch = 0;
                 }
 
                 Transform transform = transforms.get(i);
@@ -135,8 +130,6 @@ public class ModelBatch
                     batcher.normal(mesh.getNormals().get((int) face.normalIndex.z));
                     batcher.texCoord(mesh.getTexcoords().get((int) face.texcoordIndex.z));
                     batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
-
-                    faceCountInBatch++;
                 }
             }
         }

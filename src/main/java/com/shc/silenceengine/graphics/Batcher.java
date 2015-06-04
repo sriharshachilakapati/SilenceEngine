@@ -122,6 +122,8 @@ public class Batcher
         initGLHandles();
     }
 
+
+
     /**
      * Initialises VAOs and VBOs and creates the data store to store the entire batch.
      */
@@ -312,6 +314,9 @@ public class Batcher
      */
     private void mapBuffers()
     {
+        if (!vao.isValid())
+            vao = new VertexArray();
+
         vao.bind(true);
 
         vBuffer = vboVert.map(BufferObject.MapAccess.WRITE_ONLY, vBuffer);

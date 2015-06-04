@@ -56,8 +56,6 @@ public class QuadTreeSceneColliderTest extends Game
     public void init()
     {
         Display.setTitle("QuadTreeCollider Test");
-//        Display.setFullScreen(true);
-//        Display.hideCursor();
 
         GL3Context.clearColor(Color.DARK_SLATE_GRAY);
 

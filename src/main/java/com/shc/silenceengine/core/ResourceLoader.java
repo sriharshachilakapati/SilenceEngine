@@ -110,7 +110,7 @@ public final class ResourceLoader
             float actualPercentage = MathUtils.convertRange(renderedProgress, 0, 100, 100, Display.getWidth() - 100);
 
             // Draw using Graphics2D
-            Graphics2D g2d = Game.getGraphics2D();
+            Graphics2D g2d = SilenceEngine.graphics.getGraphics2D();
 
             // Draw the logo in the center
             float logoX = Display.getWidth() / 2 - logo.getWidth() / 2;

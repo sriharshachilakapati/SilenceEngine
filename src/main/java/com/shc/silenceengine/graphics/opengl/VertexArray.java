@@ -164,6 +164,16 @@ public class VertexArray
         disposed = true;
     }
 
+    public static boolean isValid(int id)
+    {
+        return glIsVertexArray(id);
+    }
+
+    public boolean isValid()
+    {
+        return isValid(id);
+    }
+
     /**
      * @return The OpenGL ID of this VertexArrayObject
      */

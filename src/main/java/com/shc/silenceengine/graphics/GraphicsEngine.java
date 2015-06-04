@@ -74,10 +74,14 @@ public class GraphicsEngine implements IEngine
         // Use the default material
         useMaterial(DEFAULT_MATERIAL);
 
+        // Create the Batcher
+        batcher = new Batcher();
+
         // Load default programs here
         Program.DEFAULT = DefaultProgram.getInstance();
         Program.POINT_LIGHT = PointLightProgram.getInstance();
         Program.DIRECTIONAL_LIGHT = DirectionalLightProgram.getInstance();
+
         Program.DEFAULT.use();
 
         // The default null texture
