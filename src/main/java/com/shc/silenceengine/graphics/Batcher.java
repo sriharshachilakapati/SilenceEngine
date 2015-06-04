@@ -55,14 +55,20 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Batcher
 {
-    // The sizes (no. of components) in vertex, color, texcoord
-    private static final int SIZE_OF_VERTEX   = 4;
-    private static final int SIZE_OF_NORMAL   = 4;
-    private static final int SIZE_OF_COLOR    = 4;
-    private static final int SIZE_OF_TEXCOORD = 2;
+    // The no. of components in vertex, normal, color and texcoord
+    public static final int NUM_VERTEX_COMPONENTS   = 4;
+    public static final int NUM_NORMAL_COMPONENTS   = 4;
+    public static final int NUM_COLOR_COMPONENTS    = 4;
+    public static final int NUM_TEXCOORD_COMPONENTS = 2;
 
-    // The maximum size of the batch is 4 MB
-    private static final int BATCH_SIZE = 4 * 1024 * 1024;
+    // The sizes of the components in bytes
+    public static final int SIZE_OF_VERTEX   = Float.BYTES * NUM_VERTEX_COMPONENTS;
+    public static final int SIZE_OF_NORMAL   = Float.BYTES * NUM_NORMAL_COMPONENTS;
+    public static final int SIZE_OF_COLOR    = Float.BYTES * NUM_COLOR_COMPONENTS;
+    public static final int SIZE_OF_TEXCOORD = Float.BYTES * NUM_TEXCOORD_COMPONENTS;
+
+    // The maximum size of the batch is 1024^2 = 10,48,576 vertices
+    public static final int BATCH_SIZE = 1024 * 1024;
 
     // Active state of this batcher
     private boolean active = false;
@@ -104,10 +110,10 @@ public class Batcher
     public Batcher()
     {
         // Create the buffers
-        vBuffer = BufferUtils.createByteBuffer(BATCH_SIZE);
-        cBuffer = BufferUtils.createByteBuffer(BATCH_SIZE);
-        tBuffer = BufferUtils.createByteBuffer(BATCH_SIZE);
-        nBuffer = BufferUtils.createByteBuffer(BATCH_SIZE);
+        vBuffer = BufferUtils.createByteBuffer(BATCH_SIZE * SIZE_OF_VERTEX);
+        nBuffer = BufferUtils.createByteBuffer(BATCH_SIZE * SIZE_OF_NORMAL);
+        cBuffer = BufferUtils.createByteBuffer(BATCH_SIZE * SIZE_OF_COLOR);
+        tBuffer = BufferUtils.createByteBuffer(BATCH_SIZE * SIZE_OF_TEXCOORD);
 
         // Create the transformations
         transform = new Transform();
@@ -186,9 +192,7 @@ public class Batcher
         active = false;
 
         flush();
-
         unmapBuffers();
-        transform.reset();
     }
 
     /**
@@ -260,6 +264,8 @@ public class Batcher
 
         // Map the buffers again
         mapBuffers();
+
+        transform.reset();
     }
 
     private void fillBuffers()
@@ -309,16 +315,16 @@ public class Batcher
         vao.bind(true);
 
         vBuffer = vboVert.map(BufferObject.MapAccess.WRITE_ONLY, vBuffer);
-        vao.pointAttribute(vertexLocation, SIZE_OF_VERTEX, GL_FLOAT, vboVert);
+        vao.pointAttribute(vertexLocation, NUM_VERTEX_COMPONENTS, GL_FLOAT, vboVert);
 
         cBuffer = vboCol.map(BufferObject.MapAccess.WRITE_ONLY, cBuffer);
-        vao.pointAttribute(colorLocation, SIZE_OF_COLOR, GL_FLOAT, vboCol);
+        vao.pointAttribute(colorLocation, NUM_COLOR_COMPONENTS, GL_FLOAT, vboCol);
 
         tBuffer = vboTex.map(BufferObject.MapAccess.WRITE_ONLY, tBuffer);
-        vao.pointAttribute(texCoordLocation, SIZE_OF_TEXCOORD, GL_FLOAT, vboTex);
+        vao.pointAttribute(texCoordLocation, NUM_TEXCOORD_COMPONENTS, GL_FLOAT, vboTex);
 
         nBuffer = vboNorm.map(BufferObject.MapAccess.WRITE_ONLY, nBuffer);
-        vao.pointAttribute(normalLocation, SIZE_OF_NORMAL, GL_FLOAT, vboNorm);
+        vao.pointAttribute(normalLocation, NUM_NORMAL_COMPONENTS, GL_FLOAT, vboNorm);
     }
 
     public void applyTransform(Matrix4 m)
@@ -344,7 +350,7 @@ public class Batcher
 
     public void flushOnOverflow(int capacity)
     {
-        if (vertexCount + capacity >= BATCH_SIZE / 4)
+        if (vertexCount + capacity >= BATCH_SIZE)
             flush();
     }
 
