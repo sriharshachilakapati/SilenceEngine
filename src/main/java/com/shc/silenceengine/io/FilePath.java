@@ -508,10 +508,12 @@ public class FilePath
     /**
      * Deletes the file resolved by this FilePath instance.
      *
+     * @return True if the attempt is successful or false otherwise.
+     *
      * @throws IOException      If an I/O error occurs.
      * @throws SilenceException If this file is a resource, or if this doesn't exist.
      */
-    public void delete() throws IOException
+    public boolean delete() throws IOException
     {
         if (getType() == Type.RESOURCE)
             throw new SilenceException("Cannot delete resource files.");
@@ -519,7 +521,7 @@ public class FilePath
         if (!exists())
             throw new SilenceException("Cannot delete non existing file.");
 
-        Files.delete(Paths.get(path));
+        return Files.deleteIfExists(Paths.get(path));
     }
 
     /**
