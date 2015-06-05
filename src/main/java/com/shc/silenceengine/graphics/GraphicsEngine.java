@@ -26,6 +26,8 @@ package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.IEngine;
+import com.shc.silenceengine.graphics.models.Mesh;
+import com.shc.silenceengine.graphics.models.StaticMesh;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
@@ -35,6 +37,9 @@ import com.shc.silenceengine.graphics.programs.PointLightProgram;
 import org.lwjgl.opengl.ContextCapabilities;
 import org.lwjgl.opengl.GL;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -43,6 +48,9 @@ import static org.lwjgl.opengl.GL11.*;
 public class GraphicsEngine implements IEngine
 {
     public static final Material DEFAULT_MATERIAL;
+
+    private static Map<Mesh, StaticMesh> staticMeshMap;
+
     private Color clearColor = Color.BLACK.copy();
 
     public float renderCalls         = 0;
@@ -105,6 +113,20 @@ public class GraphicsEngine implements IEngine
 
         // Default font!!
         TrueTypeFont.DEFAULT = new TrueTypeFont("Verdana", TrueTypeFont.STYLE_NORMAL, 16);
+
+        // Static Mesh map
+        staticMeshMap = new HashMap<>();
+    }
+
+    public StaticMesh getStaticMesh(Mesh mesh)
+    {
+        if (staticMeshMap.containsKey(mesh))
+            return staticMeshMap.get(mesh);
+
+        StaticMesh staticMesh = new StaticMesh(mesh);
+        staticMeshMap.put(mesh, staticMesh);
+
+        return staticMesh;
     }
 
     @Override
@@ -128,6 +150,9 @@ public class GraphicsEngine implements IEngine
     @Override
     public void dispose()
     {
+        // Dispose static meshes
+        staticMeshMap.values().forEach(StaticMesh::dispose);
+
         // Dispose the default font
         TrueTypeFont.DEFAULT.dispose();
 

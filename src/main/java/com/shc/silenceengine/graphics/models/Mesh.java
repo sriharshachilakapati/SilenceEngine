@@ -27,6 +27,7 @@ package com.shc.silenceengine.graphics.models;
 import com.shc.silenceengine.graphics.Material;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.utils.IDGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,8 @@ public class Mesh
     private List<Vector3> normals;
     private List<Vector2> texcoords;
 
+    private int id;
+
     public Mesh()
     {
         material = new Material("Default");
@@ -53,6 +56,8 @@ public class Mesh
         vertices = new ArrayList<>();
         normals = new ArrayList<>();
         texcoords = new ArrayList<>();
+
+        id = IDGenerator.generate();
     }
 
     public Material getMaterial()
@@ -83,5 +88,15 @@ public class Mesh
     public void setMaterial(Material material)
     {
         this.material = material;
+    }
+
+    public int getNumberOfVertices()
+    {
+        return getFaces().size() * 3;
+    }
+
+    public int getID()
+    {
+        return id;
     }
 }
