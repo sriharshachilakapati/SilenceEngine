@@ -139,6 +139,9 @@ public class FilePath
      */
     public String getPath()
     {
+        if (path.trim().endsWith("" + SEPARATOR))
+            return path.trim().substring(0, path.lastIndexOf(SEPARATOR));
+
         return path;
     }
 
@@ -330,6 +333,15 @@ public class FilePath
         return inputStream;
     }
 
+    /**
+     * Gets an {@link OutputStream} that can be used to write data to this file path. Note that data can only be written
+     * to external file paths, resources will generate a SilenceException.
+     *
+     * @return An output stream that allows you to write into this FilePath.
+     *
+     * @throws IOException      If an I/O error occurs.
+     * @throws SilenceException If the path is a directory, or if the path is a resource.
+     */
     public OutputStream getOutputStream() throws IOException
     {
         if (type == Type.RESOURCE)
@@ -341,22 +353,49 @@ public class FilePath
         return Files.newOutputStream(Paths.get(path));
     }
 
+    /**
+     * Gets a {@link Reader} that can be used to read the data from this file path.
+     *
+     * @return An InputStreamReader instance that reads from the input stream of this FilePath.
+     *
+     * @throws IOException      If an I/O error occurs.
+     * @throws SilenceException If the path is a directory, or if the path does not exist.
+     */
     public Reader getReader() throws IOException
     {
         return new InputStreamReader(getInputStream());
     }
 
+    /**
+     * Gets a {@link Writer} that can be used to write data into this file path.
+     *
+     * @return An OutputStreamWriter instance that writes data into the output stream of this FilePath.
+     *
+     * @throws IOException      If an I/O error occurs.
+     * @throws SilenceException If the path is a directory, or if the path does not exist.
+     */
     public Writer getWriter() throws IOException
     {
         return new OutputStreamWriter(getOutputStream());
     }
 
+    /**
+     * Copies the contents of this FilePath into another FilePath replacing the destination contents.
+     *
+     * @param path The destination FilePath where to copy the contents of this FilePath.
+     *
+     * @throws IOException      If an I/O error occurs.
+     * @throws SilenceException If either this or the destination are directories, or if this path doesn't exist.
+     */
     public void copyTo(FilePath path) throws IOException
     {
-        if (isDirectory() && path.isFile())
+        boolean thisIsDirectory = this.isDirectory();
+        boolean pathIsDirectory = path.isDirectory();
+
+        if (thisIsDirectory && !pathIsDirectory)
             throw new SilenceException("Cannot copy a directory into a file.");
 
-        if (isFile() && path.isDirectory())
+        if (!thisIsDirectory && pathIsDirectory)
             throw new SilenceException("Cannot copy a file into a directory.");
 
         if (!exists())
@@ -371,17 +410,37 @@ public class FilePath
             {
                 outputStream.write(buffer, 0, length);
             }
+
+            inputStream.close();
+            outputStream.close();
         }
     }
 
+    /**
+     * Moves this path to another path, overwriting the destination if something exists there already.
+     *
+     * @param path The destination path to move the contents of this path into.
+     *
+     * @throws IOException      If an I/O error occurs.
+     * @throws SilenceException If either the source or the destinations are resources.
+     */
     public void moveTo(FilePath path) throws IOException
     {
         if (getType() == Type.RESOURCE || path.getType() == Type.RESOURCE)
             throw new SilenceException("Cannot move resource files!");
 
         Files.move(Paths.get(this.path), Paths.get(path.getPath()));
+
+        // Change this path
+        this.path = path.path;
     }
 
+    /**
+     * Creates the directories represented by this path if any does not exist.
+     *
+     * @throws IOException      If an I/O error occurs.
+     * @throws SilenceException If this path is a resource.
+     */
     public void mkdirs() throws IOException
     {
         if (getType() == Type.RESOURCE)
@@ -393,6 +452,12 @@ public class FilePath
             Files.createDirectories(Paths.get(path));
     }
 
+    /**
+     * Creates an empty file at the path resolved by this FilePath instance.
+     *
+     * @throws IOException      If an I/O error occurs.
+     * @throws SilenceException If this path is a resource, or is a directory.
+     */
     public void createFile() throws IOException
     {
         if (getType() == Type.RESOURCE)
@@ -404,6 +469,11 @@ public class FilePath
         Files.createFile(Paths.get(path));
     }
 
+    /**
+     * Gets a new FilePath that represents the parent directory of this FilePath.
+     *
+     * @return The parent directory of this FilePath.
+     */
     public FilePath getParent()
     {
         String[] parts = path.split("" + SEPARATOR);
@@ -415,6 +485,15 @@ public class FilePath
         return new FilePath(path + SEPARATOR, type);
     }
 
+    /**
+     * Gets a new FilePath that represents a file that is a child of this path.
+     *
+     * @param path The path of the child, relative to this path.
+     *
+     * @return The FilePath instance of the child.
+     *
+     * @throws SilenceException If this path is not a directory, or if it does not exist.
+     */
     public FilePath getChild(String path)
     {
         if (!isDirectory())
@@ -426,14 +505,28 @@ public class FilePath
         return new FilePath(this.path + SEPARATOR + path, type);
     }
 
-    public boolean delete() throws IOException
+    /**
+     * Deletes the file resolved by this FilePath instance.
+     *
+     * @throws IOException      If an I/O error occurs.
+     * @throws SilenceException If this file is a resource, or if this doesn't exist.
+     */
+    public void delete() throws IOException
     {
         if (getType() == Type.RESOURCE)
             throw new SilenceException("Cannot delete resource files.");
 
-        return Files.deleteIfExists(Paths.get(path));
+        if (!exists())
+            throw new SilenceException("Cannot delete non existing file.");
+
+        Files.delete(Paths.get(path));
     }
 
+    /**
+     * Marks this FilePath to be deleted on JVM exit.
+     *
+     * @throws SilenceException If this path is a resource.
+     */
     public void deleteOnExit()
     {
         if (getType() == Type.RESOURCE)
@@ -442,12 +535,22 @@ public class FilePath
         new File(path).deleteOnExit();
     }
 
+    /**
+     * Returns the extension of the file represented by this FilePath.
+     *
+     * @return The extension of the file without the leading dot.
+     */
     public String getExtension()
     {
         String[] parts = getPath().split("\\.(?=[^\\.]+$)");
         return parts.length > 1 ? parts[1] : "";
     }
 
+    /**
+     * Returns the file name of the file represented by this FilePath.
+     *
+     * @return The filename of this FilePath, along with the extension.
+     */
     public String getName()
     {
         String path = this.path;
@@ -458,11 +561,22 @@ public class FilePath
         return path.substring(path.lastIndexOf(SEPARATOR) + 1);
     }
 
+    /**
+     * Returns the file name of this file represented by this FilePath without it's extension.
+     *
+     * @return The filename of this FilePath, without the extension.
+     */
     public String getNameWithoutExtension()
     {
         return getName().replaceAll("\\." + getExtension(), "");
     }
 
+    /**
+     * Returns the file size of this path in number of bytes. In case of a directory, the size will be the sum of the
+     * sizes of all it's children. If this file path does not exist, a value of {@code -1} is returned.
+     *
+     * @return The size of the file in bytes.
+     */
     public long sizeInBytes()
     {
         if (!exists())
@@ -544,6 +658,14 @@ public class FilePath
         return size;
     }
 
+    /**
+     * Returns a list of FilePaths for the children of this directory.
+     *
+     * @return An un-modifiable list of FilePaths for all the children of this directory.
+     *
+     * @throws IOException      If an I/O error occurs.
+     * @throws SilenceException If this is not a directory, of if this doesn't exist.
+     */
     public List<FilePath> listFiles() throws IOException
     {
         if (!isDirectory())
@@ -639,6 +761,9 @@ public class FilePath
                '}';
     }
 
+    /**
+     * Describes the type of the FilePath. A path can only be either {@link #EXTERNAL} or {@link #RESOURCE}.
+     */
     public enum Type
     {
         EXTERNAL, RESOURCE
