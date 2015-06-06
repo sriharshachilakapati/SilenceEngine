@@ -93,6 +93,11 @@ public class Sprite
         animation.update(delta);
     }
 
+    public Sprite copy()
+    {
+        return new Sprite(animation, scaleX, scaleY, rotation);
+    }
+
     public Texture getTexture()
     {
         return animation.getCurrentFrame();

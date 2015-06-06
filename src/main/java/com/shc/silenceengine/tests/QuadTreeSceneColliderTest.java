@@ -28,25 +28,30 @@ import com.shc.silenceengine.collision.broadphase.QuadTree;
 import com.shc.silenceengine.collision.colliders.SceneCollider2D;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.Sprite;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
+import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.geom2d.Rectangle;
-import com.shc.silenceengine.scene.Scene;
+import com.shc.silenceengine.scene.Scene2D;
 import com.shc.silenceengine.scene.entity.Entity2D;
-import com.shc.silenceengine.utils.RenderUtils;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class QuadTreeSceneColliderTest extends Game
 {
-    private Scene           scene;
+    private Scene2D         scene;
     private SceneCollider2D collider;
     private OrthoCam        cam;
+
+    private Texture playerTexture;
+    private Texture boxTexture;
 
     public static void main(String[] args)
     {
@@ -55,14 +60,17 @@ public class QuadTreeSceneColliderTest extends Game
 
     public void init()
     {
-        Display.setTitle("QuadTreeCollider Test");
+        Display.setTitle("QuadTree Collider Test 2D");
+
+        playerTexture = Texture.fromColor(Color.DARK_RED, 48, 48);
+        boxTexture = Texture.fromColor(Color.CORN_FLOWER_BLUE, 48, 48);
 
         GL3Context.clearColor(Color.DARK_SLATE_GRAY);
 
         cam = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
 
         // Create and initialize the scene
-        scene = new Scene();
+        scene = new Scene2D();
         for (int i = 0; i < 20; i++)
         {
             scene.addChild(new Box(new Vector2(48 * i, 0)));
@@ -72,14 +80,15 @@ public class QuadTreeSceneColliderTest extends Game
             scene.addChild(new Box(new Vector2(48 * 19, 48 * i)));
         }
         scene.addChild(new Player(new Vector2(Display.getWidth() / 2 - 24, Display.getHeight() / 2 - 24)));
-        scene.init();
 
         // Create the SceneCollider and set the scene
-        collider = new SceneCollider2D(new QuadTree(Display.getWidth(), Display.getHeight()));
+        collider = new SceneCollider2D(new QuadTree(48 * 20, 48 * 20));
         collider.setScene(scene);
 
         // Register entities for collisions
         collider.register(Player.class, Box.class);
+
+        System.out.println(scene.getEntities().size());
     }
 
     public void resize()
@@ -96,45 +105,40 @@ public class QuadTreeSceneColliderTest extends Game
         scene.update(delta);
         collider.checkCollisions();
 
-        Display.setTitle("Total Memory: " + (getTotalMemory() / 1048576) + "MB / Free Memory: " + (getFreeMemory() / 1048576) + "MB / Used Memory: " + (getUsedMemory() / 1048576) + "MB");
+        Display.setTitle("Total Memory: " + (getTotalMemory() / 1048576) +
+                         "MB / Free Memory: " + (getFreeMemory() / 1048576) +
+                         "MB / Used Memory: " + (getUsedMemory() / 1048576) + "MB" +
+                         "/ RC: " + SilenceEngine.graphics.renderCallsPerFrame);
     }
 
     public void render(float delta, Batcher batcher)
     {
         cam.apply();
-        scene.render(delta, batcher);
+        scene.render(delta);
     }
 
     public void dispose()
     {
         scene.destroy();
+        playerTexture.dispose();
+        boxTexture.dispose();
     }
 
     public class Box extends Entity2D
     {
         public Box(Vector2 position)
         {
-            setPolygon(new Rectangle(0, 0, 48, 48));
+            super(new Sprite(boxTexture), new Rectangle(48, 48));
             setPosition(position);
-        }
-
-        public void render(float delta, Batcher batcher)
-        {
-            RenderUtils.fillPolygon(batcher, getPolygon(), Color.CORN_FLOWER_BLUE);
-            RenderUtils.tracePolygon(batcher, getPolygon(), Color.RED);
         }
     }
 
     public class Player extends Entity2D
     {
-        private Color color;
-
         public Player(Vector2 position)
         {
-            setPolygon(new Rectangle(0, 0, 48, 48));
+            super(new Sprite(playerTexture), new Rectangle(48, 48));
             setPosition(position);
-
-            color = Color.random();
         }
 
         public void update(float delta)
@@ -160,16 +164,8 @@ public class QuadTreeSceneColliderTest extends Game
 
         public void collision(Entity2D other)
         {
-            color = Color.random();
-
             alignNextTo(other);
             bounce(other);
-        }
-
-        public void render(float delta, Batcher batcher)
-        {
-            RenderUtils.fillPolygon(batcher, getPolygon(), getVelocity().scale(delta), color);
-            RenderUtils.tracePolygon(batcher, getPolygon(), getVelocity().scale(delta), Color.GREEN);
         }
     }
 }

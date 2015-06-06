@@ -25,12 +25,12 @@
 package com.shc.silenceengine.scene.entity;
 
 import com.shc.silenceengine.collision.Collision2D;
-import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.Sprite;
+import com.shc.silenceengine.graphics.SpriteBatch;
 import com.shc.silenceengine.math.Vector2;
-import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.geom2d.Polygon;
 import com.shc.silenceengine.math.geom2d.Rectangle;
-import com.shc.silenceengine.scene.SceneNode;
+import com.shc.silenceengine.utils.IDGenerator;
 
 /**
  * <p> This class represents all the 2D Entities in a Scene. Any entity which is 2D and wants to be in a Scene must
@@ -50,11 +50,6 @@ import com.shc.silenceengine.scene.SceneNode;
  *             // Update the entity here
  *         }
  *
- *         public void render(float delta, Batcher batcher)
- *         {
- *             // Render the entity to the screen
- *         }
- *
  *         public void collision(Entity2D other)
  *         {
  *             // Process collisions here
@@ -67,8 +62,11 @@ import com.shc.silenceengine.scene.SceneNode;
  *
  * @author Sri Harsha Chilakapati
  */
-public class Entity2D extends SceneNode
+public class Entity2D
 {
+    // The sprite
+    private Sprite sprite;
+
     // The position, velocity and the polygon
     private Vector2 position;
     private Vector2 velocity;
@@ -78,26 +76,25 @@ public class Entity2D extends SceneNode
     // The higher the depth, the first the object is rendered.
     private int depth;
 
+    private int id;
+
+    private boolean destroyed;
+
     /**
      * Constructs a Entity2D to use a Polygon that can be used to perform collisions.
      *
      * @param polygon The collision mask.
      */
-    public Entity2D(Polygon polygon)
+    public Entity2D(Sprite sprite, Polygon polygon)
     {
-        this();
+        setSprite(sprite);
         this.polygon = polygon;
-    }
 
-    /**
-     * The default constructor.
-     */
-    public Entity2D()
-    {
         position = new Vector2();
         velocity = new Vector2();
 
         depth = 0;
+        id = IDGenerator.generate();
     }
 
     /**
@@ -106,7 +103,6 @@ public class Entity2D extends SceneNode
      *
      * @param delta The delta time.
      */
-    @Override
     public void preUpdate(float delta)
     {
         if (isDestroyed())
@@ -122,28 +118,14 @@ public class Entity2D extends SceneNode
         // Calculate the new position
         setPosition(tempVec2.set(position).addSelf(velocity));
 
-        // Setup the local transform
-        getLocalTransform().reset().translateSelf(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                .rotateSelf(Vector3.AXIS_Z, polygon.getRotation())
-                .translateSelf(getCenter());
-
         Vector2.REUSABLE_STACK.push(tempVec2);
+
+        sprite.update(delta);
+        sprite.setRotation(getRotation());
     }
 
-    /**
-     * Prepares this Entity2D for a new frame. This method is not meant to be called by the user and is called by the
-     * SceneGraph.
-     *
-     * @param delta   The delta time.
-     * @param batcher The Batcher to batch rendering.
-     */
-    @Override
-    public void preRender(float delta, Batcher batcher)
+    public void update(float delta)
     {
-        if (isDestroyed())
-            return;
-
-        super.preRender(delta, batcher);
     }
 
     /**
@@ -163,14 +145,6 @@ public class Entity2D extends SceneNode
     {
         this.position.set(position);
         polygon.setPosition(position);
-
-        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
-
-        getLocalTransform().reset().translateSelf(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                .rotateSelf(Vector3.AXIS_Z, polygon.getRotation())
-                .translateSelf(getCenter());
-
-        Vector2.REUSABLE_STACK.push(tempVec2);
     }
 
     /**
@@ -194,15 +168,11 @@ public class Entity2D extends SceneNode
 
         Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
 
-        getLocalTransform().reset().translateSelf(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                .rotateSelf(Vector3.AXIS_Z, polygon.getRotation())
-                .translateSelf(getCenter());
-
         Vector2.REUSABLE_STACK.push(tempVec2);
     }
 
     /**
-     * Called by the ISceneCollider2D instance to notify that a collision event has occurred.
+     * Called by the SceneCollider2D instance to notify that a collision event has occurred.
      *
      * @param other The other entity that collided with this entity.
      */
@@ -293,6 +263,20 @@ public class Entity2D extends SceneNode
         alignNextTo(other);
     }
 
+    Vector2 temp  = new Vector2();
+    Vector2 temp2 = new Vector2();
+
+    public void render(float delta, SpriteBatch batch)
+    {
+        temp.set(getPosition());
+        temp2.set(getVelocity());
+        temp2.normalizeSelf();
+        temp2.scaleSelf(delta);
+        temp.addSelf(temp2);
+
+        batch.addSprite(sprite, temp);
+    }
+
     /**
      * @return The width of the bounding rectangle of this entity
      */
@@ -355,14 +339,6 @@ public class Entity2D extends SceneNode
     public void rotate(float angle)
     {
         polygon.rotate(angle);
-
-        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
-
-        getLocalTransform().reset().translateSelf(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                .rotateSelf(Vector3.AXIS_Z, polygon.getRotation())
-                .translateSelf(getCenter());
-
-        Vector2.REUSABLE_STACK.push(tempVec2);
     }
 
     public int getDepth()
@@ -392,14 +368,12 @@ public class Entity2D extends SceneNode
     public void setRotation(float rotation)
     {
         polygon.setRotation(rotation);
+        sprite.setRotation(rotation);
+    }
 
-        Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
-
-        getLocalTransform().reset().translateSelf(tempVec2.set(getPosition()).subtractSelf(getCenter()))
-                .rotateSelf(Vector3.AXIS_Z, polygon.getRotation())
-                .translateSelf(getCenter());
-
-        Vector2.REUSABLE_STACK.push(tempVec2);
+    public int getID()
+    {
+        return id;
     }
 
     /**
@@ -468,6 +442,11 @@ public class Entity2D extends SceneNode
         return velocity;
     }
 
+    public boolean isDestroyed()
+    {
+        return destroyed;
+    }
+
     /**
      * Sets the velocity of this entity
      *
@@ -476,6 +455,21 @@ public class Entity2D extends SceneNode
     public void setVelocity(Vector2 velocity)
     {
         this.velocity.set(velocity);
+    }
+
+    public void destroy()
+    {
+        destroyed = true;
+    }
+
+    public Sprite getSprite()
+    {
+        return sprite;
+    }
+
+    public void setSprite(Sprite sprite)
+    {
+        this.sprite = sprite.copy();
     }
 
     @Override

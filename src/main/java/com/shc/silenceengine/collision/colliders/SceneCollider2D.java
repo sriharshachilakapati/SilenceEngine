@@ -26,8 +26,7 @@ package com.shc.silenceengine.collision.colliders;
 
 import com.shc.silenceengine.collision.broadphase.IBroadphase2D;
 import com.shc.silenceengine.math.Vector2;
-import com.shc.silenceengine.scene.Scene;
-import com.shc.silenceengine.scene.SceneNode;
+import com.shc.silenceengine.scene.Scene2D;
 import com.shc.silenceengine.scene.entity.Entity2D;
 
 import java.util.ArrayList;
@@ -57,8 +56,8 @@ public class SceneCollider2D
     // The collision map, used to store registered classes
     private Map<Class<? extends Entity2D>, List<Class<? extends Entity2D>>> collisionMap = new HashMap<>();
 
-    // The Scene and the grid
-    private Scene         scene;
+    // The Scene and the broadphase
+    private Scene2D       scene;
     private IBroadphase2D broadphase;
 
     // Number of children in the scene
@@ -76,7 +75,7 @@ public class SceneCollider2D
     /**
      * @return The scene that this ISceneCollider2D is using to resolve collisions.
      */
-    public Scene getScene()
+    public Scene2D getScene()
     {
         return scene;
     }
@@ -86,7 +85,7 @@ public class SceneCollider2D
      *
      * @param scene The scene to be used.
      */
-    public void setScene(Scene scene)
+    public void setScene(Scene2D scene)
     {
         this.scene = scene;
     }
@@ -114,28 +113,23 @@ public class SceneCollider2D
     public void checkCollisions()
     {
         // If there are no children in the scene, simply return
-        if (scene.getChildren() == null || scene.getChildren().size() == 0)
+        if (scene.getEntities().size() == 0)
         {
             childrenInScene = 0;
             return;
         }
 
         // Update the list of entities from the list of children in the scene
-        if (scene.getChildren().size() != childrenInScene)
+        if (scene.getEntities().size() != childrenInScene)
         {
             entities.clear();
             broadphase.clear();
             childrenInScene = 0;
 
-            for (SceneNode child : scene.getChildren())
+            for (Entity2D entity : scene.getEntities())
             {
-                if (child instanceof Entity2D)
-                {
-                    Entity2D entity = (Entity2D) child;
-
-                    broadphase.insert(entity);
-                    entities.add(entity);
-                }
+                broadphase.insert(entity);
+                entities.add(entity);
 
                 childrenInScene++;
             }
