@@ -31,11 +31,11 @@ import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.ModelBatch;
 import com.shc.silenceengine.graphics.cameras.PerspCam;
+import com.shc.silenceengine.graphics.models.Model;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.graphics.models.Model;
 import com.shc.silenceengine.scene.lights.PointLight;
 import org.lwjgl.opengl.GL11;
 
@@ -47,17 +47,16 @@ import java.util.List;
  */
 public class ModelBatchTest extends Game
 {
+    private Model           model;
+    private PerspCam        camera;
+    private List<Transform> transforms;
+    private Transform       transform;
+    private PointLight camLight;
+
     public static void main(String[] args)
     {
         new ModelBatchTest().start();
     }
-
-    private Model model;
-    private PerspCam camera;
-    private List<Transform> transforms;
-    private Transform transform;
-
-    private PointLight camLight;
 
     @Override
     public void init()
@@ -82,6 +81,12 @@ public class ModelBatchTest extends Game
         camLight = new PointLight(new Vector3(0, 0, 0), Color.RED);
 
         camera.setPosition(new Vector3(0, 1, 0)).lookAt(new Vector3(0, 0.5f, -1));
+    }
+
+    @Override
+    public void resize()
+    {
+        camera.initProjection(70, Display.getAspectRatio(), 0.1f, 1000f);
     }
 
     @Override
@@ -151,6 +156,12 @@ public class ModelBatchTest extends Game
         GL3Context.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
+    @Override
+    public void dispose()
+    {
+        model.dispose();
+    }
+
     private void renderScene()
     {
         ModelBatch batch = SilenceEngine.graphics.getModelBatch();
@@ -163,17 +174,5 @@ public class ModelBatchTest extends Game
             }
         }
         batch.end();
-    }
-
-    @Override
-    public void resize()
-    {
-        camera.initProjection(70, Display.getAspectRatio(), 0.1f, 1000f);
-    }
-
-    @Override
-    public void dispose()
-    {
-        model.dispose();
     }
 }

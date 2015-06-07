@@ -39,14 +39,14 @@ public class FPSCamera extends BaseCamera
 {
     // To limit the angle on the x axis
     private static final float ANGLE_LIMIT_X = 60;
-    private Matrix4 mProj;
-    private Matrix4 mView;
+    private Matrix4    mProj;
+    private Matrix4    mView;
     private Vector3    position;
     private Quaternion rotation;
-    private Vector3 forward;
-    private Vector3 right;
-    private Vector3 up;
-    private float angleX;
+    private Vector3    forward;
+    private Vector3    right;
+    private Vector3    up;
+    private float      angleX;
 
     public FPSCamera()
     {

@@ -64,20 +64,18 @@ import com.shc.silenceengine.utils.IDGenerator;
  */
 public class Entity2D
 {
+    Vector2 temp  = new Vector2();
+    Vector2 temp2 = new Vector2();
     // The sprite
     private Sprite sprite;
-
     // The position, velocity and the polygon
     private Vector2 position;
     private Vector2 velocity;
     private Polygon polygon;
-
     // Depth here indicates the ordering of entity rendering.
     // The higher the depth, the first the object is rendered.
     private int depth;
-
     private int id;
-
     private boolean destroyed;
 
     /**
@@ -263,9 +261,6 @@ public class Entity2D
         alignNextTo(other);
     }
 
-    Vector2 temp  = new Vector2();
-    Vector2 temp2 = new Vector2();
-
     public void render(float delta, SpriteBatch batch)
     {
         temp.set(getPosition());
@@ -442,11 +437,6 @@ public class Entity2D
         return velocity;
     }
 
-    public boolean isDestroyed()
-    {
-        return destroyed;
-    }
-
     /**
      * Sets the velocity of this entity
      *
@@ -455,6 +445,11 @@ public class Entity2D
     public void setVelocity(Vector2 velocity)
     {
         this.velocity.set(velocity);
+    }
+
+    public boolean isDestroyed()
+    {
+        return destroyed;
     }
 
     public void destroy()

@@ -44,13 +44,10 @@ public class TrueTypeFont
     public static final int STYLE_NORMAL = Font.PLAIN;
     public static final int STYLE_BOLD   = Font.BOLD;
     public static final int STYLE_ITALIC = Font.ITALIC;
-
-    public static TrueTypeFont DEFAULT;
-
     // The regular expression used for getting all trailing whitespace
     private static final String TRAILING_WHITESPACE = "\\s+$";
     private static final int    STANDARD_CHARACTERS = 256;
-
+    public static TrueTypeFont DEFAULT;
     private FontChar[] chars = new FontChar[STANDARD_CHARACTERS];
 
     private boolean antiAlias = true;

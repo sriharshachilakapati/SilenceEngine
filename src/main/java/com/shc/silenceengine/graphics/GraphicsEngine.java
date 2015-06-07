@@ -50,26 +50,18 @@ public class GraphicsEngine implements IEngine
     public static final Material DEFAULT_MATERIAL;
 
     private static Map<Mesh, StaticMesh> staticMeshMap;
-
-    private Color clearColor = Color.BLACK.copy();
-
     public float renderCalls         = 0;
     public float renderCallsPerFrame = 0;
     public float totalRenderCalls    = 0;
-
-    private Material currentMaterial;
-    private Batcher  batcher;
-    private ModelBatch modelBatch;
+    private Color clearColor = Color.BLACK.copy();
+    private Material    currentMaterial;
+    private Batcher     batcher;
+    private ModelBatch  modelBatch;
     private SpriteBatch spriteBatch;
 
     public Material getCurrentMaterial()
     {
         return currentMaterial;
-    }
-
-    public void setBatcher(Batcher batcher)
-    {
-        this.batcher = batcher;
     }
 
     @Override
@@ -118,17 +110,6 @@ public class GraphicsEngine implements IEngine
         staticMeshMap = new HashMap<>();
     }
 
-    public StaticMesh getStaticMesh(Mesh mesh)
-    {
-        if (staticMeshMap.containsKey(mesh))
-            return staticMeshMap.get(mesh);
-
-        StaticMesh staticMesh = new StaticMesh(mesh);
-        staticMeshMap.put(mesh, staticMesh);
-
-        return staticMesh;
-    }
-
     @Override
     public void beginFrame()
     {
@@ -171,6 +152,17 @@ public class GraphicsEngine implements IEngine
         Display.destroy();
     }
 
+    public StaticMesh getStaticMesh(Mesh mesh)
+    {
+        if (staticMeshMap.containsKey(mesh))
+            return staticMeshMap.get(mesh);
+
+        StaticMesh staticMesh = new StaticMesh(mesh);
+        staticMeshMap.put(mesh, staticMesh);
+
+        return staticMesh;
+    }
+
     public void useMaterial(Material m)
     {
         currentMaterial = m;
@@ -187,20 +179,25 @@ public class GraphicsEngine implements IEngine
         GL3Context.clearColor(r, g, b, a);
     }
 
+    public Color getClearColor()
+    {
+        return clearColor;
+    }
+
     public void setClearColor(Color color)
     {
         clearColor.set(color);
         GL3Context.clearColor(color);
     }
 
-    public Color getClearColor()
-    {
-        return clearColor;
-    }
-
     public Batcher getBatcher()
     {
         return batcher;
+    }
+
+    public void setBatcher(Batcher batcher)
+    {
+        this.batcher = batcher;
     }
 
     public Graphics2D getGraphics2D()

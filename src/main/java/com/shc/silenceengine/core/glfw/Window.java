@@ -260,7 +260,8 @@ public class Window
      * @param title       The desired title string of the Window. This can also contain UTF-8 characters.
      * @param monitor     The monitor to use for full screen mode, or <code>null</code> to use windowed mode.
      * @param refreshRate The refresh rate to be used for the window. This is ignored for windowed mode windows.
-     * @param share       The window whose context to share resources with, or <code>null</code> to not share resources.
+     * @param share       The window whose context to share resources with, or <code>null</code> to not share
+     *                    resources.
      */
     public Window(int width, int height, String title, Monitor monitor, int refreshRate, Window share)
     {

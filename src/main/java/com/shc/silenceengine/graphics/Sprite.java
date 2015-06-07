@@ -72,22 +72,6 @@ public class Sprite
         setTexture(texture);
     }
 
-    public void setAnimation(Animation animation)
-    {
-        this.animation = animation.copy();
-    }
-
-    public void setTexture(Texture texture)
-    {
-        animation.clearFrames();
-        animation.setStartCallback(null);
-        animation.setPauseCallback(null);
-        animation.setResumeCallback(null);
-        animation.setEndCallback(null);
-
-        animation.addFrame(texture, 1000, TimeUtils.Unit.SECONDS);
-    }
-
     public void update(float delta)
     {
         animation.update(delta);
@@ -103,9 +87,25 @@ public class Sprite
         return animation.getCurrentFrame();
     }
 
+    public void setTexture(Texture texture)
+    {
+        animation.clearFrames();
+        animation.setStartCallback(null);
+        animation.setPauseCallback(null);
+        animation.setResumeCallback(null);
+        animation.setEndCallback(null);
+
+        animation.addFrame(texture, 1000, TimeUtils.Unit.SECONDS);
+    }
+
     public Animation getAnimation()
     {
         return animation;
+    }
+
+    public void setAnimation(Animation animation)
+    {
+        this.animation = animation.copy();
     }
 
     public float getScaleX()

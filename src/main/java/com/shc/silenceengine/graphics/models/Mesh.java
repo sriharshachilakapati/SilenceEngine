@@ -65,6 +65,11 @@ public class Mesh
         return material;
     }
 
+    public void setMaterial(Material material)
+    {
+        this.material = material;
+    }
+
     public List<Face> getFaces()
     {
         return faces;
@@ -83,11 +88,6 @@ public class Mesh
     public List<Vector2> getTexcoords()
     {
         return texcoords;
-    }
-
-    public void setMaterial(Material material)
-    {
-        this.material = material;
     }
 
     public int getNumberOfVertices()

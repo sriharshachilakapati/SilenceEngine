@@ -156,7 +156,7 @@ public class FilePath
         if (type == Type.EXTERNAL)
             // For external files, use the File object to get the absolute path
             return new File(path).getAbsolutePath().replaceAll("\\\\", "" + SEPARATOR)
-                                                   .replaceAll("/+", "" + SEPARATOR).trim();
+                    .replaceAll("/+", "" + SEPARATOR).trim();
         else
             // For resource files, the path is always absolute, just return it
             return path;
@@ -558,7 +558,7 @@ public class FilePath
         String path = this.path;
 
         if (path.endsWith("" + SEPARATOR))
-            path = path.substring(0, path.length()-1);
+            path = path.substring(0, path.length() - 1);
 
         return path.substring(path.lastIndexOf(SEPARATOR) + 1);
     }

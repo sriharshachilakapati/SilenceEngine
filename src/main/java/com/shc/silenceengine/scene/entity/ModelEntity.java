@@ -25,8 +25,8 @@
 package com.shc.silenceengine.scene.entity;
 
 import com.shc.silenceengine.graphics.Batcher;
-import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.graphics.models.Model;
+import com.shc.silenceengine.math.geom3d.Polyhedron;
 
 /**
  * @author Sri Harsha Chilakapati

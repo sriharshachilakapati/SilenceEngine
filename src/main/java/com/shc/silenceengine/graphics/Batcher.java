@@ -123,7 +123,6 @@ public class Batcher
     }
 
 
-
     /**
      * Initialises VAOs and VBOs and creates the data store to store the entire batch.
      */

@@ -80,7 +80,7 @@ public final class Logger
         for (Object message : messages)
         {
             String info = ((printTimeStamps ? "[INFO " + getTimeStamp() + "] " : "") + message)
-                                             .replaceAll("\r\n", "\n").replaceAll("\n", "\r\n");
+                    .replaceAll("\r\n", "\n").replaceAll("\n", "\r\n");
 
             for (PrintStream stream : printStreams)
                 stream.println(info);

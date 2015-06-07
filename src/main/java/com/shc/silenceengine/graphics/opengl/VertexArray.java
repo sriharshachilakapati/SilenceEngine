@@ -36,10 +36,9 @@ import static org.lwjgl.opengl.GL30.*;
  */
 public class VertexArray
 {
+    public static VertexArray CURRENT;
     private int     id;
     private boolean disposed;
-
-    public static VertexArray CURRENT;
 
     /**
      * Constructs a VertexArrayObject.
@@ -48,6 +47,11 @@ public class VertexArray
     {
         id = glGenVertexArrays();
         GLError.check();
+    }
+
+    public static boolean isValid(int id)
+    {
+        return glIsVertexArray(id);
     }
 
     /**
@@ -162,11 +166,6 @@ public class VertexArray
         glDeleteVertexArrays(id);
         GLError.check();
         disposed = true;
-    }
-
-    public static boolean isValid(int id)
-    {
-        return glIsVertexArray(id);
     }
 
     public boolean isValid()

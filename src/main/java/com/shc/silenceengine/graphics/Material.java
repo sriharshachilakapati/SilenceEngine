@@ -184,6 +184,22 @@ public class Material
     }
 
     @Override
+    public int hashCode()
+    {
+        int result = getAmbient().hashCode();
+        result = 31 * result + getDiffuse().hashCode();
+        result = 31 * result + getSpecular().hashCode();
+        result = 31 * result + getDiffuseMap().hashCode();
+        result = 31 * result + getNormalMap().hashCode();
+        result = 31 * result + getSpecularMap().hashCode();
+        result = 31 * result + (getDissolve() != +0.0f ? Float.floatToIntBits(getDissolve()) : 0);
+        result = 31 * result + (getSpecularPower() != +0.0f ? Float.floatToIntBits(getSpecularPower()) : 0);
+        result = 31 * result + (getIllumination() != +0.0f ? Float.floatToIntBits(getIllumination()) : 0);
+        result = 31 * result + getName().hashCode();
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -201,21 +217,5 @@ public class Material
                getNormalMap().equals(material.getNormalMap()) &&
                getSpecularMap().equals(material.getSpecularMap()) &&
                getName().equals(material.getName());
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = getAmbient().hashCode();
-        result = 31 * result + getDiffuse().hashCode();
-        result = 31 * result + getSpecular().hashCode();
-        result = 31 * result + getDiffuseMap().hashCode();
-        result = 31 * result + getNormalMap().hashCode();
-        result = 31 * result + getSpecularMap().hashCode();
-        result = 31 * result + (getDissolve() != +0.0f ? Float.floatToIntBits(getDissolve()) : 0);
-        result = 31 * result + (getSpecularPower() != +0.0f ? Float.floatToIntBits(getSpecularPower()) : 0);
-        result = 31 * result + (getIllumination() != +0.0f ? Float.floatToIntBits(getIllumination()) : 0);
-        result = 31 * result + getName().hashCode();
-        return result;
     }
 }

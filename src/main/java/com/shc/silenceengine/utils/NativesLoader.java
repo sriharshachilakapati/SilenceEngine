@@ -42,7 +42,7 @@ import java.nio.file.Files;
 public class NativesLoader
 {
     private static FilePath nativesDir;
-    private static boolean lwjglLoaded;
+    private static boolean  lwjglLoaded;
 
     /**
      * Loads the natives from the JAR resources
@@ -131,7 +131,8 @@ public class NativesLoader
                 break;
 
             // Don't perform this cleanup on non windows platforms
-            default: return;
+            default:
+                return;
         }
 
         try
@@ -149,13 +150,15 @@ public class NativesLoader
 
                         for (FilePath nativeFile : file.listFiles())
                         {
-                            tryCount = 0; success = false;
+                            tryCount = 0;
+                            success = false;
 
                             while (!success && tryCount++ < 5)
                                 success = nativeFile.delete();
                         }
 
-                        tryCount = 0; success = false;
+                        tryCount = 0;
+                        success = false;
 
 
                         while (!success && tryCount++ < 5)

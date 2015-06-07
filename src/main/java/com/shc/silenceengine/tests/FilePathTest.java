@@ -89,7 +89,7 @@ public class FilePathTest
     private static void logFilePath(FilePath path)
     {
         Logger.log(String.format(">> Path='%-35s' Name='%-25s' Extension='.%-4s' Type='%s' Directory=%-5s Exists=%-5s Size=%-8d Bytes",
-                                 path.getPath(), path.getName(), path.getExtension(), "" + path.getType(), "" + path.isDirectory(),
-                                 "" + path.exists(), path.sizeInBytes()));
+                path.getPath(), path.getName(), path.getExtension(), "" + path.getType(), "" + path.isDirectory(),
+                "" + path.exists(), path.sizeInBytes()));
     }
 }
