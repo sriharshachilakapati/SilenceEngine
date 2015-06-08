@@ -30,6 +30,7 @@ import com.shc.silenceengine.core.glfw.GLFW3;
 import com.shc.silenceengine.core.glfw.Window;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Shader;
 import com.shc.silenceengine.graphics.opengl.Texture;
@@ -37,6 +38,7 @@ import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.utils.NativesLoader;
 import com.shc.silenceengine.utils.TimeUtils;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 /**
@@ -46,6 +48,8 @@ import org.lwjgl.opengl.GL20;
  */
 public class GLFWTest
 {
+    private static Batcher batcher;
+
     public static void main(String[] args)
     {
         // Start with loading the natives
@@ -73,7 +77,7 @@ public class GLFWTest
 
         window.setCursor(cursor);
 
-        Batcher batcher = new Batcher();
+        batcher = new Batcher();
         batcher.setVertexLocation(0);
         batcher.setColorLocation(1);
         batcher.setNormalLocation(2);
@@ -126,6 +130,9 @@ public class GLFWTest
 
         shaderProgram.use();
 
+        window.setRefreshCallback(GLFWTest::glfwRefreshCallback);
+        window.setSizeCallback(GLFWTest::glfwResizeCallback);
+
         // Initialize the input engine
         SilenceEngine.input.init();
 
@@ -147,18 +154,7 @@ public class GLFWTest
                 break;
 
             // Render here
-            batcher.begin();
-            {
-                batcher.vertex(+0.0f, +0.8f);
-                batcher.color(Color.RED);
-
-                batcher.vertex(+0.8f, -0.8f);
-                batcher.color(Color.GREEN);
-
-                batcher.vertex(-0.8f, -0.8f);
-                batcher.color(Color.BLUE);
-            }
-            batcher.end();
+            render();
 
             // Swap front and back buffers
             window.swapBuffers();
@@ -190,5 +186,36 @@ public class GLFWTest
         cursor.destroy();
 
         GLFW3.terminate();
+    }
+
+    private static void glfwRefreshCallback(Window window)
+    {
+        render();
+        window.swapBuffers();
+    }
+
+    private static void glfwResizeCallback(Window window, double width, double height)
+    {
+        GL3Context.viewport(0, 0, (float) width, (float) height);
+        render();
+        window.swapBuffers();
+    }
+
+    private static void render()
+    {
+        GL3Context.clear(GL11.GL_COLOR_BUFFER_BIT);
+
+        batcher.begin();
+        {
+            batcher.vertex(+0.0f, +0.8f);
+            batcher.color(Color.RED);
+
+            batcher.vertex(+0.8f, -0.8f);
+            batcher.color(Color.GREEN);
+
+            batcher.vertex(-0.8f, -0.8f);
+            batcher.color(Color.BLUE);
+        }
+        batcher.end();
     }
 }
