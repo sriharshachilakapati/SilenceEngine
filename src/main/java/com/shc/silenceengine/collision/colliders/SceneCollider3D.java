@@ -26,8 +26,7 @@ package com.shc.silenceengine.collision.colliders;
 
 import com.shc.silenceengine.collision.broadphase.IBroadphase3D;
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.scene.Scene;
-import com.shc.silenceengine.scene.SceneNode;
+import com.shc.silenceengine.scene.Scene3D;
 import com.shc.silenceengine.scene.entity.Entity3D;
 
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ public class SceneCollider3D
     private Map<Class<? extends Entity3D>, List<Class<? extends Entity3D>>> collisionMap = new HashMap<>();
 
     // The Scene and the grid
-    private Scene         scene;
+    private Scene3D       scene;
     private IBroadphase3D broadphase;
 
     // Number of children in the scene
@@ -76,7 +75,7 @@ public class SceneCollider3D
     /**
      * @return The scene that this ISceneCollider2D is using to resolve collisions.
      */
-    public Scene getScene()
+    public Scene3D getScene()
     {
         return scene;
     }
@@ -86,7 +85,7 @@ public class SceneCollider3D
      *
      * @param scene The scene to be used.
      */
-    public void setScene(Scene scene)
+    public void setScene(Scene3D scene)
     {
         this.scene = scene;
     }
@@ -114,28 +113,22 @@ public class SceneCollider3D
     public void checkCollisions()
     {
         // If there are no children in the scene, simply return
-        if (scene.getChildren() == null || scene.getChildren().size() == 0)
+        if (scene.getEntities().size() == 0)
         {
             childrenInScene = 0;
             return;
         }
 
-        if (scene.getChildren().size() != childrenInScene)
+        if (scene.getEntities().size() != childrenInScene)
         {
             entities.clear();
             broadphase.clear();
             childrenInScene = 0;
 
-            for (SceneNode child : scene.getChildren())
+            for (Entity3D entity : scene.getEntities())
             {
-                if (child instanceof Entity3D)
-                {
-                    Entity3D entity = (Entity3D) child;
-
-                    broadphase.insert(entity);
-                    entities.add(entity);
-                }
-
+                broadphase.insert(entity);
+                entities.add(entity);
                 childrenInScene++;
             }
         }

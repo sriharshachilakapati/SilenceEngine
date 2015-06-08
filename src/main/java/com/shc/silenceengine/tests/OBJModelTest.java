@@ -33,8 +33,8 @@ import com.shc.silenceengine.graphics.models.Model;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.geom3d.Cuboid;
-import com.shc.silenceengine.scene.Scene;
-import com.shc.silenceengine.scene.entity.ModelEntity;
+import com.shc.silenceengine.scene.Scene3D;
+import com.shc.silenceengine.scene.entity.Entity3D;
 import com.shc.silenceengine.scene.lights.DirectionalLight;
 import com.shc.silenceengine.scene.lights.PointLight;
 
@@ -43,13 +43,13 @@ import com.shc.silenceengine.scene.lights.PointLight;
  */
 public class OBJModelTest extends Game
 {
-    private PerspCam    cam;
-    private Model       model;
-    private ModelEntity entity;
+    private PerspCam cam;
+    private Model    model;
+    private Entity3D entity;
 
     private PointLight cameraLight;
 
-    private Scene scene;
+    private Scene3D scene;
     private long usedMemory = 0;
 
     public static void main(String[] args)
@@ -64,10 +64,10 @@ public class OBJModelTest extends Game
 
         model = Model.load("resources/monkey model suzanne.obj");
 
-        scene = new Scene();
+        scene = new Scene3D();
         {
             // Add the ModelEntity to the scene
-            scene.addChild(entity = new ModelEntity(model, new Cuboid(Vector3.ZERO, 1, 1, 1)));
+            scene.addChild(entity = new Entity3D(model, new Cuboid(Vector3.ZERO, 1, 1, 1)));
 
             // Add some lights, so that we can see the model
             scene.addComponent(new PointLight(new Vector3(-1, -1, 1), Color.BLUE));
@@ -76,7 +76,6 @@ public class OBJModelTest extends Game
             scene.addComponent(new DirectionalLight(new Vector3(1, 0, 0), Color.AZURE));
             scene.addComponent(cameraLight = new PointLight(cam.getPosition(), Color.DARK_KHAKI));
         }
-        scene.init();
     }
 
     public void resize()
@@ -134,7 +133,7 @@ public class OBJModelTest extends Game
     public void render(float delta, Batcher batcher)
     {
         cam.apply();
-        scene.render(delta, batcher);
+        scene.render(delta);
     }
 
     public void dispose()

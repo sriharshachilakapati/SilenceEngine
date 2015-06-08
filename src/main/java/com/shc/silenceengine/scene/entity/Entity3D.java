@@ -24,11 +24,13 @@
 
 package com.shc.silenceengine.scene.entity;
 
-import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.ModelBatch;
+import com.shc.silenceengine.graphics.models.Model;
+import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.geom3d.Cuboid;
 import com.shc.silenceengine.math.geom3d.Polyhedron;
-import com.shc.silenceengine.scene.SceneNode;
+import com.shc.silenceengine.utils.IDGenerator;
 
 /**
  * <p> This class represents all the 3D Entities in a Scene. Any entity which is 2D and wants to be in a Scene must
@@ -48,11 +50,6 @@ import com.shc.silenceengine.scene.SceneNode;
  *             // Update the entity here
  *         }
  *
- *         public void render(float delta, Batcher batcher)
- *         {
- *             // Render the entity to the screen
- *         }
- *
  *         public void collision(Entity3D other)
  *         {
  *             // Process collisions here
@@ -65,31 +62,35 @@ import com.shc.silenceengine.scene.SceneNode;
  *
  * @author Sri Harsha Chilakapati
  */
-public class Entity3D extends SceneNode
+public class Entity3D
 {
     // The position, velocity and the polygon
     private Vector3    position;
     private Vector3    velocity;
+    private Transform  transform;
     private Polyhedron polyhedron;
+
+    private int id;
+
+    private Model model;
+
+    private boolean destroyed;
 
     /**
      * Constructs a Entity3D to use a Polyhedron that can be used to perform collisions.
      *
      * @param polyhedron The collision mask.
      */
-    public Entity3D(Polyhedron polyhedron)
-    {
-        this();
-        this.polyhedron = polyhedron;
-    }
-
-    /**
-     * The default constructor.
-     */
-    public Entity3D()
+    public Entity3D(Model model, Polyhedron polyhedron)
     {
         position = new Vector3();
         velocity = new Vector3();
+        this.model = model;
+        this.polyhedron = polyhedron;
+
+        transform = new Transform();
+
+        id = IDGenerator.generate();
     }
 
     /**
@@ -98,7 +99,6 @@ public class Entity3D extends SceneNode
      *
      * @param delta The delta time.
      */
-    @Override
     public void preUpdate(float delta)
     {
         if (isDestroyed())
@@ -117,24 +117,13 @@ public class Entity3D extends SceneNode
         updateTransforms();
     }
 
-    /**
-     * Prepares this Entity3D for a new frame. This method is not meant to be called by the user and is called by the
-     * SceneGraph.
-     *
-     * @param delta   The delta time.
-     * @param batcher The Batcher to batch rendering.
-     */
-    public void preRender(float delta, Batcher batcher)
+    public void update(float delta)
     {
-        if (isDestroyed())
-            return;
-
-        super.preRender(delta, batcher);
     }
 
     private void updateTransforms()
     {
-        getLocalTransform().reset()
+        getTransform().reset()
                 .rotateSelf(Vector3.AXIS_X, polyhedron.getRotationX())
                 .rotateSelf(Vector3.AXIS_Z, polyhedron.getRotationZ())
                 .rotateSelf(Vector3.AXIS_Y, polyhedron.getRotationY())
@@ -159,6 +148,18 @@ public class Entity3D extends SceneNode
         this.position.set(position);
         polyhedron.setPosition(position);
         updateTransforms();
+    }
+
+    private Vector3   temp  = new Vector3();
+    private Transform temp2 = new Transform();
+
+    public void render(float delta, ModelBatch batch)
+    {
+        temp.set(getVelocity()).normalizeSelf();
+        temp.scaleSelf(delta);
+
+        temp2.set(getTransform()).translateSelf(temp);
+        batch.addModel(getModel(), temp2);
     }
 
     /**
@@ -390,6 +391,31 @@ public class Entity3D extends SceneNode
     public void setVelocity(Vector3 velocity)
     {
         this.velocity = velocity;
+    }
+
+    public void destroy()
+    {
+        destroyed = true;
+    }
+
+    public boolean isDestroyed()
+    {
+        return destroyed;
+    }
+
+    public Transform getTransform()
+    {
+        return transform;
+    }
+
+    public Model getModel()
+    {
+        return model;
+    }
+
+    public int getID()
+    {
+        return id;
     }
 
     @Override
