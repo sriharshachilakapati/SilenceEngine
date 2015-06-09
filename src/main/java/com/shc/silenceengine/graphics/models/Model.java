@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public abstract class Model
+public class Model
 {
     private List<Mesh> meshes;
 

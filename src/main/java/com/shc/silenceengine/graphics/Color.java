@@ -200,6 +200,11 @@ public class Color extends Vector4
         set(rgba);
     }
 
+    public Color(float c)
+    {
+        set(c);
+    }
+
     public Color(float r, float g, float b)
     {
         this(r, g, b, 1);

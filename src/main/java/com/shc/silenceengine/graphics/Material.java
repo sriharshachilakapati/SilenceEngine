@@ -88,9 +88,10 @@ public class Material
         return ambient;
     }
 
-    public void setAmbient(Color ambient)
+    public Material setAmbient(Color ambient)
     {
         this.ambient = ambient;
+        return this;
     }
 
     public Color getDiffuse()
@@ -98,9 +99,10 @@ public class Material
         return diffuse;
     }
 
-    public void setDiffuse(Color diffuse)
+    public Material setDiffuse(Color diffuse)
     {
         this.diffuse = diffuse;
+        return this;
     }
 
     public Color getSpecular()
@@ -108,9 +110,10 @@ public class Material
         return specular;
     }
 
-    public void setSpecular(Color specular)
+    public Material setSpecular(Color specular)
     {
         this.specular = specular;
+        return this;
     }
 
     public Texture getDiffuseMap()
@@ -118,9 +121,10 @@ public class Material
         return diffuseMap;
     }
 
-    public void setDiffuseMap(Texture diffuseMap)
+    public Material setDiffuseMap(Texture diffuseMap)
     {
         this.diffuseMap = diffuseMap;
+        return this;
     }
 
     public Texture getNormalMap()
@@ -128,9 +132,10 @@ public class Material
         return normalMap;
     }
 
-    public void setNormalMap(Texture normalMap)
+    public Material setNormalMap(Texture normalMap)
     {
         this.normalMap = normalMap;
+        return this;
     }
 
     public Texture getSpecularMap()
@@ -138,9 +143,10 @@ public class Material
         return specularMap;
     }
 
-    public void setSpecularMap(Texture specularMap)
+    public Material setSpecularMap(Texture specularMap)
     {
         this.specularMap = specularMap;
+        return this;
     }
 
     public float getDissolve()
@@ -148,9 +154,10 @@ public class Material
         return dissolve;
     }
 
-    public void setDissolve(float dissolve)
+    public Material setDissolve(float dissolve)
     {
         this.dissolve = dissolve;
+        return this;
     }
 
     public float getSpecularPower()
@@ -158,9 +165,10 @@ public class Material
         return specularPower;
     }
 
-    public void setSpecularPower(float specularPower)
+    public Material setSpecularPower(float specularPower)
     {
         this.specularPower = specularPower;
+        return this;
     }
 
     public float getIllumination()
@@ -168,9 +176,10 @@ public class Material
         return illumination;
     }
 
-    public void setIllumination(float illumination)
+    public Material setIllumination(float illumination)
     {
         this.illumination = illumination;
+        return this;
     }
 
     public String getName()
@@ -178,9 +187,10 @@ public class Material
         return name;
     }
 
-    public void setName(String name)
+    public Material setName(String name)
     {
         this.name = name;
+        return this;
     }
 
     @Override
@@ -217,5 +227,19 @@ public class Material
                getNormalMap().equals(material.getNormalMap()) &&
                getSpecularMap().equals(material.getSpecularMap()) &&
                getName().equals(material.getName());
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Material{" +
+               "ambient=" + ambient +
+               ", diffuse=" + diffuse +
+               ", specular=" + specular +
+               ", dissolve=" + dissolve +
+               ", specularPower=" + specularPower +
+               ", illumination=" + illumination +
+               ", name='" + name + '\'' +
+               '}';
     }
 }

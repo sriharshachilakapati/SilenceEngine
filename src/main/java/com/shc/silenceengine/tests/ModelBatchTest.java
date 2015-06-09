@@ -32,8 +32,10 @@ import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.ModelBatch;
 import com.shc.silenceengine.graphics.cameras.PerspCam;
 import com.shc.silenceengine.graphics.models.Model;
+import com.shc.silenceengine.graphics.models.OBJModel;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.scene.lights.PointLight;
@@ -62,8 +64,7 @@ public class ModelBatchTest extends Game
     public void init()
     {
         camera = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.1f, 1000f);
-
-        model = Model.load("resources/cube.obj");
+        model = OBJModel.load(FilePath.getResourceFile("resources/cube.obj"));
 
         transforms = new ArrayList<>();
         for (float i = -11; i < 10; i++)
