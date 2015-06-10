@@ -48,6 +48,8 @@ public class Mesh
 
     private int id;
 
+    private boolean preferStatic;
+
     public Mesh()
     {
         material = new Material("Default");
@@ -58,6 +60,8 @@ public class Mesh
         texcoords = new ArrayList<>();
 
         id = IDGenerator.generate();
+
+        preferStatic = false;
     }
 
     public Material getMaterial()
@@ -98,5 +102,15 @@ public class Mesh
     public int getID()
     {
         return id;
+    }
+
+    public boolean prefersStatic()
+    {
+        return preferStatic;
+    }
+
+    public void setPreferStatic(boolean preferStatic)
+    {
+        this.preferStatic = preferStatic;
     }
 }

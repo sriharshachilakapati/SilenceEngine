@@ -202,7 +202,7 @@ public class ModelBatch
 
     public void addMesh(Mesh mesh, Transform transform)
     {
-        if (mesh.getNumberOfVertices() <= 900)
+        if (mesh.getNumberOfVertices() <= 900 || !mesh.prefersStatic())
         {
             meshes.add(mesh);
             transforms.add(transform);

@@ -138,4 +138,14 @@ public class Model
     {
         return meshes;
     }
+
+    public boolean prefersStatic()
+    {
+        return meshes.stream().filter(Mesh::prefersStatic).count() > 0;
+    }
+
+    public void setPrefersStatic(boolean prefersStatic)
+    {
+        meshes.forEach(m -> m.setPreferStatic(prefersStatic));
+    }
 }
