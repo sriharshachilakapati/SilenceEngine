@@ -71,7 +71,7 @@ public class Scene2D
     public void render(float delta)
     {
         // Sort the entities based on depth
-//        entities.sort((e1, e2) -> Integer.compare(e2.getDepth(), e1.getDepth()));
+        entities.sort((e1, e2) -> Integer.compare(e2.getDepth(), e1.getDepth()));
 
         // Render the entities in batches of depths
         int depth = entities.get(0).getDepth();
