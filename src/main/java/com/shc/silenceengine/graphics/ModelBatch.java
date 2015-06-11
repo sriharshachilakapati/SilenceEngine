@@ -137,17 +137,17 @@ public class ModelBatch
                     for (Face face : mesh.getFaces())
                     {
                         batcher.vertex(temp.set(mesh.getVertices().get((int) face.vertexIndex.x)).multiplySelf(modelMatrix));
-                        batcher.normal(temp.set(mesh.getNormals().get((int) face.normalIndex.x)).multiplySelf(modelMatrix).normalizeSelf());
+                        batcher.normal(temp.set(mesh.getNormals().get((int) face.normalIndex.x)).multiplySelf(normalMatrix).normalizeSelf());
                         batcher.texCoord(mesh.getTexcoords().get((int) face.texcoordIndex.x));
                         batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
 
                         batcher.vertex(temp.set(mesh.getVertices().get((int) face.vertexIndex.y)).multiplySelf(modelMatrix));
-                        batcher.normal(temp.set(mesh.getNormals().get((int) face.normalIndex.y)).multiplySelf(modelMatrix).normalizeSelf());
+                        batcher.normal(temp.set(mesh.getNormals().get((int) face.normalIndex.y)).multiplySelf(normalMatrix).normalizeSelf());
                         batcher.texCoord(mesh.getTexcoords().get((int) face.texcoordIndex.y));
                         batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
 
                         batcher.vertex(temp.set(mesh.getVertices().get((int) face.vertexIndex.z)).multiplySelf(modelMatrix));
-                        batcher.normal(temp.set(mesh.getNormals().get((int) face.normalIndex.z)).multiplySelf(modelMatrix).normalizeSelf());
+                        batcher.normal(temp.set(mesh.getNormals().get((int) face.normalIndex.z)).multiplySelf(normalMatrix).normalizeSelf());
                         batcher.texCoord(mesh.getTexcoords().get((int) face.texcoordIndex.z));
                         batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
                     }
