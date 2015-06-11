@@ -31,6 +31,7 @@ import com.shc.silenceengine.graphics.models.Mesh;
 import com.shc.silenceengine.graphics.models.Model;
 import com.shc.silenceengine.graphics.models.StaticMesh;
 import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector3;
 
@@ -129,23 +130,29 @@ public class ModelBatch
                     Transform transform = transforms.get(i);
                     Color color = mesh.getMaterial().getDiffuse();
 
+                    Matrix4 modelMatrix = transform.getMatrix();
+                    Matrix4 normalMatrix = Matrix4.REUSABLE_STACK.pop();
+                    normalMatrix.set(modelMatrix).invertSelf().transposeSelf();
+
                     for (Face face : mesh.getFaces())
                     {
-                        batcher.vertex(temp.set(mesh.getVertices().get((int) face.vertexIndex.x)).multiplySelf(transform.getMatrix()));
-                        batcher.normal(mesh.getNormals().get((int) face.normalIndex.x));
+                        batcher.vertex(temp.set(mesh.getVertices().get((int) face.vertexIndex.x)).multiplySelf(modelMatrix));
+                        batcher.normal(temp.set(mesh.getNormals().get((int) face.normalIndex.x)).multiplySelf(modelMatrix).normalizeSelf());
                         batcher.texCoord(mesh.getTexcoords().get((int) face.texcoordIndex.x));
                         batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
 
-                        batcher.vertex(temp.set(mesh.getVertices().get((int) face.vertexIndex.y)).multiplySelf(transform.getMatrix()));
-                        batcher.normal(mesh.getNormals().get((int) face.normalIndex.y));
+                        batcher.vertex(temp.set(mesh.getVertices().get((int) face.vertexIndex.y)).multiplySelf(modelMatrix));
+                        batcher.normal(temp.set(mesh.getNormals().get((int) face.normalIndex.y)).multiplySelf(modelMatrix).normalizeSelf());
                         batcher.texCoord(mesh.getTexcoords().get((int) face.texcoordIndex.y));
                         batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
 
-                        batcher.vertex(temp.set(mesh.getVertices().get((int) face.vertexIndex.z)).multiplySelf(transform.getMatrix()));
-                        batcher.normal(mesh.getNormals().get((int) face.normalIndex.z));
+                        batcher.vertex(temp.set(mesh.getVertices().get((int) face.vertexIndex.z)).multiplySelf(modelMatrix));
+                        batcher.normal(temp.set(mesh.getNormals().get((int) face.normalIndex.z)).multiplySelf(modelMatrix).normalizeSelf());
                         batcher.texCoord(mesh.getTexcoords().get((int) face.texcoordIndex.z));
                         batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
                     }
+
+                    Matrix4.REUSABLE_STACK.push(normalMatrix);
                 }
             }
             batcher.end();
