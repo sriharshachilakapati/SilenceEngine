@@ -51,6 +51,8 @@ public class Polyhedron
     private float rotationY;
     private float rotationZ;
 
+    private Vector3 scale;
+
     private Cuboid bounds;
 
     private Quaternion tempQuat;
@@ -70,6 +72,7 @@ public class Polyhedron
         position = new Vector3();
 
         tempQuat = new Quaternion();
+        scale = new Vector3(1, 1, 1);
 
         clearVertices();
     }
@@ -146,6 +149,8 @@ public class Polyhedron
             v.scaleSelf(sx, sy, sz);
 
         updateBounds();
+
+        scale.addSelf(sx, sy, sz);
     }
 
     public void translate(float x, float y, float z)
@@ -205,6 +210,11 @@ public class Polyhedron
     public Vector3 getPosition()
     {
         return position;
+    }
+
+    public Vector3 getScale()
+    {
+        return scale;
     }
 
     public void setPosition(Vector3 position)

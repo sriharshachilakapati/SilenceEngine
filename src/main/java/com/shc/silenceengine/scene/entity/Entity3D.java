@@ -39,9 +39,9 @@ import com.shc.silenceengine.utils.IDGenerator;
  * <pre>
  *     public class MyEntity3D extends Entity3D
  *     {
- *         public MyEntity3D(Vector3 position, Polyhedron polyhedron)
+ *         public MyEntity3D(Model model, Polyhedron polyhedron, Vector3 position)
  *         {
- *             setPolyhedron(polyhedron);
+ *             super(model, polyhedron);
  *             setPosition(position);
  *         }
  *
@@ -127,6 +127,7 @@ public class Entity3D
                 .rotateSelf(Vector3.AXIS_X, polyhedron.getRotationX())
                 .rotateSelf(Vector3.AXIS_Z, polyhedron.getRotationZ())
                 .rotateSelf(Vector3.AXIS_Y, polyhedron.getRotationY())
+                .scaleSelf(polyhedron.getScale())
                 .translateSelf(getPosition());
     }
 
@@ -150,16 +151,9 @@ public class Entity3D
         updateTransforms();
     }
 
-    private Vector3   temp  = new Vector3();
-    private Transform temp2 = new Transform();
-
     public void render(float delta, ModelBatch batch)
     {
-        temp.set(getVelocity()).normalizeSelf();
-        temp.scaleSelf(delta);
-
-        temp2.set(getTransform()).translateSelf(temp);
-        batch.addModel(getModel(), temp2);
+        batch.addModel(getModel(), getTransform());
     }
 
     /**
@@ -250,6 +244,12 @@ public class Entity3D
     public void rotate(float rx, float ry, float rz)
     {
         polyhedron.rotate(rx, ry, rz);
+        updateTransforms();
+    }
+
+    public void scale(float sx, float sy, float sz)
+    {
+        polyhedron.scale(sx, sy, sz);
         updateTransforms();
     }
 
