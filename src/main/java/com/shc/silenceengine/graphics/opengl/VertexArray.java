@@ -29,7 +29,7 @@ import static org.lwjgl.opengl.GL30.*;
 
 /**
  * This class encapsulates OpenGL Vertex Array Objects nicely and cleanly allowing you to use OpenGL in an object
- * oriented way. <p> An OpenGL VAO is an OpenGL object that keeps track of the links between the attributes and
+ * oriented way. An OpenGL VAO is an OpenGL object that keeps track of the links between the attributes and
  * VertexBufferObjects.
  *
  * @author Sri Harsha Chilakapati
@@ -37,6 +37,7 @@ import static org.lwjgl.opengl.GL30.*;
 public class VertexArray
 {
     public static VertexArray CURRENT;
+
     private int     id;
     private boolean disposed;
 

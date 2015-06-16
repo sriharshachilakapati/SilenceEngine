@@ -41,7 +41,7 @@ import com.shc.silenceengine.utils.IDGenerator;
  *     {
  *         public MyEntity2D(Vector2 position, Polygon polygon)
  *         {
- *             setPolygon(polygon);
+ *             super(new Sprite(Resources.Textures.MY_TEXTURE), polygon);
  *             setPosition(position);
  *         }
  *
@@ -57,7 +57,7 @@ import com.shc.silenceengine.utils.IDGenerator;
  *     }
  * </pre>
  *
- * <p> Note that the collisions will only be notified if you are using a ISceneCollider2D and registered a collision
+ * <p> Note that the collisions will only be notified if you are using a SceneCollider2D and registered a collision
  * check.</p>
  *
  * @author Sri Harsha Chilakapati
@@ -66,21 +66,27 @@ public class Entity2D
 {
     Vector2 temp  = new Vector2();
     Vector2 temp2 = new Vector2();
+
     // The sprite
     private Sprite sprite;
+
     // The position, velocity and the polygon
     private Vector2 position;
     private Vector2 velocity;
     private Polygon polygon;
+
     // Depth here indicates the ordering of entity rendering.
     // The higher the depth, the first the object is rendered.
     private int depth;
     private int id;
+
+    // Whether this entity is destroyed
     private boolean destroyed;
 
     /**
      * Constructs a Entity2D to use a Polygon that can be used to perform collisions.
      *
+     * @param sprite  The sprite to use for this entity.
      * @param polygon The collision mask.
      */
     public Entity2D(Sprite sprite, Polygon polygon)
@@ -97,7 +103,8 @@ public class Entity2D
 
     /**
      * Prepares this Entity2D for a new frame. This method is not meant to be called by the user and is called by the
-     * SceneGraph.
+     * Scene2D class. This is where the velocity is added to the position after the update is called. This also updates
+     * the sprite.
      *
      * @param delta The delta time.
      */
@@ -244,8 +251,8 @@ public class Entity2D
      */
     public void bounce(Entity2D other)
     {
-        float xd = getBounds().getAABBIntersectionWidth(other.getBounds());
-        float yd = getBounds().getAABBIntersectionHeight(other.getBounds());
+        float xd = getBounds().getIntersectionWidth(other.getBounds());
+        float yd = getBounds().getIntersectionHeight(other.getBounds());
 
         float dx = velocity.x;
         float dy = velocity.y;
@@ -261,6 +268,13 @@ public class Entity2D
         alignNextTo(other);
     }
 
+    /**
+     * Renders this entity using a SpriteBatch and a delta time. The SpriteBatch must be active before calling this
+     * method. This also takes delta time into account.
+     *
+     * @param delta The delta-time. A fraction between 0 and 1, where 0 means this exact frame, and 1 means we're in lag.
+     * @param batch The SpriteBatch to which the sprite should be submitted to be rendered.
+     */
     public void render(float delta, SpriteBatch batch)
     {
         temp.set(getPosition());
@@ -288,6 +302,13 @@ public class Entity2D
         return polygon.getBounds().getHeight();
     }
 
+    /**
+     * Aligns this entity over another entity such that they both will collide in the next frame. Note that this method
+     * is not guaranteed to be 100% accurate, so if you can, use your own logic. However, this supports any polygons
+     * instead of just bounding boxes.
+     *
+     * @param other The other entity which this entity should be aligned with.
+     */
     public void alignNextTo(Entity2D other)
     {
         Vector2 tempVec2 = Vector2.REUSABLE_STACK.pop();
@@ -336,11 +357,21 @@ public class Entity2D
         polygon.rotate(angle);
     }
 
+    /**
+     * Gets the depth of this entity.
+     *
+     * @return The depth of this entity.
+     */
     public int getDepth()
     {
         return depth;
     }
 
+    /**
+     * Sets the depth layer that this entity lives in the scene.
+     *
+     * @param depth The new depth of the entity.
+     */
     public void setDepth(int depth)
     {
         this.depth = depth;
@@ -366,6 +397,11 @@ public class Entity2D
         sprite.setRotation(rotation);
     }
 
+    /**
+     * Returns the ID of this Entity. Note that this ID differs per instance and not per class.
+     *
+     * @return the ID of this Entity.
+     */
     public int getID()
     {
         return id;
@@ -447,33 +483,42 @@ public class Entity2D
         this.velocity.set(velocity);
     }
 
+    /**
+     * Returns whether this entity is destroyed.
+     *
+     * @return True if destroyed, else false.
+     */
     public boolean isDestroyed()
     {
         return destroyed;
     }
 
+    /**
+     * Destroys this entity.
+     */
     public void destroy()
     {
         destroyed = true;
     }
 
+    /**
+     * Returns the sprite being used by this entity.
+     *
+     * @return The currently used sprite.
+     */
     public Sprite getSprite()
     {
         return sprite;
     }
 
+    /**
+     * Sets the sprite that should be used by this entity.
+     *
+     * @param sprite The new sprite to be used.
+     */
     public void setSprite(Sprite sprite)
     {
         this.sprite = sprite.copy();
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = position.hashCode();
-        result = 31 * result + velocity.hashCode();
-        result = 31 * result + polygon.hashCode();
-        return result;
     }
 
     @Override
@@ -484,19 +529,25 @@ public class Entity2D
 
         Entity2D entity2D = (Entity2D) o;
 
-        return polygon.equals(entity2D.polygon) &&
-               position.equals(entity2D.position) &&
-               velocity.equals(entity2D.velocity);
-
+        return getDepth() == entity2D.getDepth() &&
+               getID() == entity2D.getID() &&
+               isDestroyed() == entity2D.isDestroyed() &&
+               getSprite().equals(entity2D.getSprite()) &&
+               getPosition().equals(entity2D.getPosition()) &&
+               getVelocity().equals(entity2D.getVelocity()) &&
+               getPolygon().equals(entity2D.getPolygon());
     }
 
     @Override
-    public String toString()
+    public int hashCode()
     {
-        return "Entity2D{" +
-               "position=" + position +
-               ", velocity=" + velocity +
-               ", polygon=" + polygon +
-               '}';
+        int result = getSprite().hashCode();
+        result = 31 * result + getPosition().hashCode();
+        result = 31 * result + getVelocity().hashCode();
+        result = 31 * result + getPolygon().hashCode();
+        result = 31 * result + getDepth();
+        result = 31 * result + getID();
+        result = 31 * result + (isDestroyed() ? 1 : 0);
+        return result;
     }
 }

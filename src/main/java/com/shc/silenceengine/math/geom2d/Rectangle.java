@@ -141,7 +141,7 @@ public class Rectangle extends Polygon
                '}';
     }
 
-    public float getAABBIntersectionWidth(Rectangle aabb)
+    public float getIntersectionWidth(Rectangle aabb)
     {
         if (aabb.getRotation() != 0)
             aabb = aabb.getBounds();
@@ -157,7 +157,7 @@ public class Rectangle extends Polygon
         return tx2 > rx2 ? rx2 - tx1 : tx2 - rx1;
     }
 
-    public float getAABBIntersectionHeight(Rectangle aabb)
+    public float getIntersectionHeight(Rectangle aabb)
     {
         if (aabb.getRotation() != 0)
             aabb = aabb.getBounds();
