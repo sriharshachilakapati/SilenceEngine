@@ -66,8 +66,8 @@ vec4 getBaseColor()
 {
     // Create the texture color
     vec4 texColor = texture(textureID, vTexCoords);
-
-    return vec4(min(texColor.rgb + vColor.rgb, vec3(1.0)), texColor.a * vColor.a);
+    vec4 baseColor = vec4(min(texColor.rgb + vColor.rgb, vec3(1.0)), texColor.a * vColor.a);
+    return baseColor;
 }
 
 vec4 getPointLight()
