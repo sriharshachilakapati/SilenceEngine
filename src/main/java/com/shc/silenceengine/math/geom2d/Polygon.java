@@ -154,7 +154,6 @@ public class Polygon
     public void setPosition(Vector2 v)
     {
         this.position.set(v);
-        center.set(position).addSelf((maxX - minX) / 2, (maxY - minY) / 2);
 
         if (bounds != null)
             bounds.setPosition(position);
@@ -162,13 +161,22 @@ public class Polygon
 
     public Vector2 getCenter()
     {
+        if (vertexCount() == 0)
+            center.set(position);
+        else
+            center.set(position).addSelf((maxX - minX) / 2, (maxY - minY) / 2);
+
         return center;
     }
 
     public void setCenter(Vector2 center)
     {
         this.center.set(center);
-        position.set(center).subtractSelf((maxX - minX) / 2, (maxY - minY) / 2);
+
+        position.set(center);
+
+        if (vertexCount() != 0)
+            position.subtractSelf((maxX - minX) / 2, (maxY - minY) / 2);
     }
 
     public void setPosition(float x, float y)
