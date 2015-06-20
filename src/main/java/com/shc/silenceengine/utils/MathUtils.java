@@ -382,4 +382,130 @@ public final class MathUtils
     {
         return (float) Math.toDegrees(Math.atan(value));
     }
+
+    public static boolean isBoolean(Object object)
+    {
+        boolean bool = object instanceof Boolean || Boolean.TYPE.isInstance(object);
+
+        if (bool) return true;
+
+        boolean result;
+
+        try
+        {
+            result = Boolean.parseBoolean(object.toString());
+            bool = true;
+        }
+        catch (Exception e)
+        {
+            bool = false;
+        }
+
+        return bool;
+    }
+
+    public static boolean isInteger(Object object)
+    {
+        boolean bool = object instanceof Integer || Integer.TYPE.isInstance(object);
+
+        if (bool) return true;
+
+        int result;
+
+        try
+        {
+            result = Integer.parseInt(object.toString());
+            bool = true;
+        }
+        catch (Exception e)
+        {
+            bool = false;
+        }
+
+        return bool;
+    }
+
+    public static boolean isShort(Object object)
+    {
+        boolean bool = object instanceof Short || Short.TYPE.isInstance(object);
+
+        if (bool) return true;
+
+        short result;
+
+        try
+        {
+            result = Short.parseShort(object.toString());
+            bool = true;
+        }
+        catch (Exception e)
+        {
+            bool = false;
+        }
+
+        return bool;
+    }
+
+    public static boolean isFloat(Object object)
+    {
+        boolean bool = object instanceof Float || Float.TYPE.isInstance(object);
+
+        if (bool) return true;
+
+        float result;
+
+        try
+        {
+            result = Float.parseFloat(object.toString());
+            bool = true;
+        }
+        catch (Exception e)
+        {
+            bool = false;
+        }
+
+        return bool;
+    }
+
+    public static boolean isLong(Object object)
+    {
+        boolean bool = object instanceof Long || Long.TYPE.isInstance(object);
+
+        if (bool) return true;
+
+        long result;
+
+        try
+        {
+            result = Long.parseLong(object.toString());
+            bool = true;
+        }
+        catch (Exception e)
+        {
+            bool = false;
+        }
+
+        return bool;
+    }
+
+    public static boolean isDouble(Object object)
+    {
+        boolean bool = object instanceof Double || Double.TYPE.isInstance(object);
+
+        if (bool) return true;
+
+        double result;
+
+        try
+        {
+            result = Double.parseDouble(object.toString());
+            bool = true;
+        }
+        catch (Exception e)
+        {
+            bool = false;
+        }
+
+        return bool;
+    }
 }
