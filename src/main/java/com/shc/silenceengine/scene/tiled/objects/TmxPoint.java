@@ -22,19 +22,13 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.scene.tiled;
+package com.shc.silenceengine.scene.tiled.objects;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class TmxTerrain
+public class TmxPoint
 {
-    // The name of the Terrain type
-    protected String name;
-
-    // The local tile ID of the tile that represents this terrain
-    protected int tile;
-
-    // The properties of this Terrain
-    protected TmxProperties properties;
+    public int x;
+    public int y;
 }

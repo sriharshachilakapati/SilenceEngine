@@ -25,29 +25,75 @@
 package com.shc.silenceengine.scene.tiled;
 
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.io.FilePath;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class TmxTileImage
+public class TmxImage
 {
     // The format of the TileImage
-    protected Format format;
+    private Format format;
 
     // The path to the reference image
-    protected FilePath source;
-
-    // The texture of the reference image
-    protected Texture sourceTexture;
+    private FilePath source;
 
     // The transparent color on the reference image
-    protected Color trans;
+    private Color trans;
 
     // The width and height of the image in pixels
-    protected int width;
-    protected int height;
+    private int width;
+    private int height;
+
+    public void parse(Node node, FilePath tmxPath)
+    {
+        Element element = (Element) node;
+
+        String sourcePath = element.getAttribute("source");
+        source = tmxPath.getParent().getChild(sourcePath.trim());
+
+        width = Integer.parseInt(element.getAttribute("width"));
+        height = Integer.parseInt(element.getAttribute("height"));
+
+        trans = Color.TRANSPARENT;
+
+        if (element.hasAttribute("trans"))
+        {
+            String color = element.getAttribute("trans").trim();
+
+            if (color.startsWith("#"))
+                color = color.substring(1);
+
+            trans = new Color(Integer.decode(color));
+        }
+    }
+
+    public Format getFormat()
+    {
+        return format;
+    }
+
+    public FilePath getSource()
+    {
+        return source;
+    }
+
+    public int getWidth()
+    {
+        return width;
+    }
+
+    public Color getTrans()
+    {
+        return trans;
+    }
+
+    public int getHeight()
+    {
+        return height;
+    }
 
     public enum Format
     {

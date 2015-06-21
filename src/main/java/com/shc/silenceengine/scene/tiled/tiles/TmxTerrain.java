@@ -22,25 +22,56 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.scene.tiled;
+package com.shc.silenceengine.scene.tiled.tiles;
+
+import com.shc.silenceengine.scene.tiled.TmxProperties;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class TmxMapLayer
+public class TmxTerrain
 {
-    // The name of the layer
-    protected String layer;
+    // The name of the Terrain type
+    private String name;
 
-    // The opacity of the layer from 0 to 1 (Defaults to 1)
-    protected float opacity = 1;
+    // The local tile ID of the tile that represents this terrain
+    private int tileID;
 
-    // The visibility of this layer (Defaults to true)
-    protected boolean visible = true;
+    // The properties of this Terrain
+    private TmxProperties properties;
 
-    // The TileData in this layer
-    protected TmxTileData data;
+    public TmxTerrain()
+    {
+        properties = new TmxProperties();
+    }
 
-    // The properties of this layer
-    protected TmxProperties properties;
+    public void parse(Node node)
+    {
+        Element element = (Element) node;
+
+        name = element.getAttribute("name");
+        tileID = Integer.parseInt(element.getAttribute("tile"));
+
+        NodeList nodes = element.getElementsByTagName("properties");
+        if (nodes.getLength() > 0)
+            properties.parse(nodes.item(0));
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public int getTileID()
+    {
+        return tileID;
+    }
+
+    public TmxProperties getProperties()
+    {
+        return properties;
+    }
 }

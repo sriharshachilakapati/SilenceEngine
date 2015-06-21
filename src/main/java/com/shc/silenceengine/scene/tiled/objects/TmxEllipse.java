@@ -22,39 +22,43 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.scene.tiled;
-
-import com.shc.silenceengine.math.Vector2;
+package com.shc.silenceengine.scene.tiled.objects;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class TmxMapObject
+public class TmxEllipse
 {
-    // The unique ID of the object
-    protected int id;
+    private int x;
+    private int y;
+    private int radiusX;
+    private int radiusY;
 
-    // The name of the object
-    protected String name;
+    public void set(int x, int y, int width, int height)
+    {
+        this.x = x + (width / 2);
+        this.y = y + (height / 2);
+        this.radiusX = width / 2;
+        this.radiusY = height / 2;
+    }
 
-    // The type of the object
-    protected String type;
+    public int getCenterX()
+    {
+        return x;
+    }
 
-    // The position of the object in pixels
-    protected Vector2 position;
+    public int getCenterY()
+    {
+        return y;
+    }
 
-    // The size of the object in pixels
-    protected Vector2 size;
+    public int getRadiusX()
+    {
+        return radiusX;
+    }
 
-    // The rotation of the object in pixels
-    protected float rotation;
-
-    // The visibility of this object
-    protected boolean visible;
-
-    // A reference to a tile
-    protected int gid;
-
-    // The MapObject properties
-    protected TmxProperties properties;
+    public int getRadiusY()
+    {
+        return radiusY;
+    }
 }

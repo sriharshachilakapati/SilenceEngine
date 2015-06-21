@@ -22,55 +22,29 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.scene.tiled;
-
-import com.shc.silenceengine.graphics.Color;
-
-import java.util.List;
+package com.shc.silenceengine.scene.tiled.tiles;
 
 /**
- * A TiledMap represents the data format of the TMX file format, used by the Tiled Map Editor.
- *
  * @author Sri Harsha Chilakapati
  */
-public class TiledMap
+public class TmxAnimationFrame
 {
-    // The TMX format version, generally 1.0
-    private String version;
+    private int tileID;
+    private int duration;
 
-    // Map orientation. Can be ORTHOGONAL, ISOMETRIC, or STAGGERED
-    private Orientation orientation;
-
-    // The width and height of map, in tiles
-    private int width;
-    private int height;
-
-    // The width and height of a tile, in pixels
-    private int tileWidth;
-    private int tileHeight;
-
-    // The background color of this map (defaults to Transparent)
-    private Color backgroundColor = Color.TRANSPARENT.copy();
-
-    // The render order of the map (defaults to RIGHT_DOWN)
-    private RenderOrder renderOrder = RenderOrder.RIGHT_DOWN;
-
-    // The list of TileSets used by this TiledMap
-    private List<TileSet> tileSets;
-
-    /**
-     * The orientation of the TiledMap.
-     */
-    public enum Orientation
+    public TmxAnimationFrame(int tileID, int duration)
     {
-        ORTHOGONAL, ISOMETRIC, STAGGERED
+        this.tileID = tileID;
+        this.duration = duration;
     }
 
-    /**
-     * The render order of the TiledMap
-     */
-    public enum RenderOrder
+    public int getTileID()
     {
-        RIGHT_DOWN, RIGHT_UP, LEFT_DOWN, LEFT_UP
+        return tileID;
+    }
+
+    public int getDuration()
+    {
+        return duration;
     }
 }

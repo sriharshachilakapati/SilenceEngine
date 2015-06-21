@@ -24,8 +24,15 @@
 
 package com.shc.silenceengine.scene.tiled;
 
+import com.shc.silenceengine.utils.MathUtils;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -42,6 +49,12 @@ public class TmxProperties
     public TmxProperties put(String key, Object value)
     {
         properties.put(key, value);
+        return this;
+    }
+
+    public TmxProperties putAll(TmxProperties properties)
+    {
+        properties.forEach(this::put);
         return this;
     }
 
@@ -71,5 +84,59 @@ public class TmxProperties
     public Map<String, Object> getPropertiesMap()
     {
         return properties;
+    }
+
+    public Set<String> getKeySet()
+    {
+        return getPropertiesMap().keySet();
+    }
+
+    public Collection<Object> getValues()
+    {
+        return getPropertiesMap().values();
+    }
+
+    public TmxProperties forEach(BiConsumer<String, Object> function)
+    {
+        getKeySet().forEach(k -> function.accept(k, get(k)));
+        return this;
+    }
+
+    public void parse(Node node)
+    {
+        Element element = (Element) node;
+
+        Node property = element.getElementsByTagName("property").item(0);
+
+        while (property != null)
+        {
+            Element propertyElement = (Element) property;
+
+            String name = propertyElement.getAttribute("name");
+            String value = propertyElement.getAttribute("value");
+
+            if (MathUtils.isBoolean(value))
+                put(name, Boolean.parseBoolean(value));
+
+            else if (MathUtils.isShort(value))
+                put(name, Short.parseShort(value));
+
+            else if (MathUtils.isInteger(value))
+                put(name, Integer.parseInt(value));
+
+            else if (MathUtils.isLong(value))
+                put(name, Long.parseLong(value));
+
+            else if (MathUtils.isFloat(value))
+                put(name, Float.parseFloat(value));
+
+            else if (MathUtils.isDouble(value))
+                put(name, Double.parseDouble(value));
+
+            else
+                put(name, value);
+
+            property = property.getNextSibling();
+        }
     }
 }

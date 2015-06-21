@@ -22,15 +22,54 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.scene.tiled;
+package com.shc.silenceengine.scene.tiled.objects;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class TmxTerrainTypes
+public class TmxPolygon
 {
-    // The list of terrains in this collection
-    protected List<TmxTerrain> terrainList;
+    private List<TmxPoint> points;
+
+    public TmxPolygon()
+    {
+        points = new ArrayList<>();
+    }
+
+    public TmxPoint getPoint(int index)
+    {
+        return points.get(index);
+    }
+
+    public List<TmxPoint> getPoints()
+    {
+        return points;
+    }
+
+    public int getNumPoints()
+    {
+        return points.size();
+    }
+
+    public void parse(Node node)
+    {
+        String pointsLine = ((Element) node).getAttribute("points").trim();
+
+        for (String token : pointsLine.split(" "))
+        {
+            String[] subTokens = token.split(",");
+
+            TmxPoint point = new TmxPoint();
+            point.x = Integer.parseInt(subTokens[0].trim());
+            point.y = Integer.parseInt(subTokens[1].trim());
+
+            points.add(point);
+        }
+    }
 }

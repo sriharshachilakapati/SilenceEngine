@@ -22,37 +22,54 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.scene.tiled;
+package com.shc.silenceengine.scene.tiled.objects;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class TmxTileData
+public class TmxPolyLine
 {
-    // The encoding used to encode this data
-    protected Encoding encoding;
+    private List<TmxPoint> points;
 
-    // The compression format used
-    protected Compression compression;
-
-    // The list of Tiles in this tile data
-    protected List<TmxTile> tilesList;
-
-    /**
-     * The encoding used to encode the data
-     */
-    public enum Encoding
+    public TmxPolyLine()
     {
-        BASE64, CSV, NONE
+        points = new ArrayList<>();
     }
 
-    /**
-     * The compression used to compress the data
-     */
-    public enum Compression
+    public TmxPoint getPoint(int index)
     {
-        GZIP, ZLIB, NONE
+        return points.get(index);
+    }
+
+    public List<TmxPoint> getPoints()
+    {
+        return points;
+    }
+
+    public int getNumPoints()
+    {
+        return points.size();
+    }
+
+    public void parse(Node node)
+    {
+        String pointsLine = ((Element) node).getAttribute("points").trim();
+
+        for (String token : pointsLine.split(" "))
+        {
+            String[] subTokens = token.split(",");
+
+            TmxPoint point = new TmxPoint();
+            point.x = Integer.parseInt(subTokens[0].trim());
+            point.y = Integer.parseInt(subTokens[1].trim());
+
+            points.add(point);
+        }
     }
 }
