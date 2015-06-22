@@ -132,7 +132,7 @@ public class TmxTileLayer extends TmxMapLayer
         {
             Element tileElement = (Element) nodes.item(tileCount);
 
-            int gid = Integer.parseInt(tileElement.getAttribute("gid"));
+            int gid = Integer.parseUnsignedInt(tileElement.getAttribute("gid"));
             int tileSetIndex = map.findTileSetIndex(gid);
 
             if (tileSetIndex != -1)
@@ -192,7 +192,7 @@ public class TmxTileLayer extends TmxMapLayer
 
         for (String token : tokens)
         {
-            int gid = Integer.parseInt(token.trim());
+            int gid = Integer.parseUnsignedInt(token.trim());
 
             int tileSetIndex = map.findTileSetIndex(gid);
 

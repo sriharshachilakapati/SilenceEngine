@@ -44,14 +44,13 @@ public class TmxMapTile
     public TmxMapTile(int gid, int tileSetFirstID, int tileSetID)
     {
         this.tileSetID = tileSetID;
-        this.id = gid & ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
 
         flippedHorizontally = (gid & FLIPPED_HORIZONTALLY_FLAG) != 0;
         flippedVertically = (gid & FLIPPED_VERTICALLY_FLAG) != 0;
         flippedDiagonally = (gid & FLIPPED_DIAGONALLY_FLAG) != 0;
 
-        this.gid = gid;
-        this.id -= tileSetFirstID;
+        this.gid = gid & ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
+        this.id = gid - tileSetFirstID;
     }
 
     public int getTileSetID()
