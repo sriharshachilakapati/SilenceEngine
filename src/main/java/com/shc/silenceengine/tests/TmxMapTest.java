@@ -24,6 +24,13 @@
 
 package com.shc.silenceengine.tests;
 
+import com.shc.silenceengine.core.Display;
+import com.shc.silenceengine.core.Game;
+import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.cameras.OrthoCam;
+import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.scene.tiled.TmxMap;
 import com.shc.silenceengine.scene.tiled.TmxTileSet;
@@ -33,6 +40,7 @@ import com.shc.silenceengine.scene.tiled.objects.TmxObject;
 import com.shc.silenceengine.scene.tiled.objects.TmxPoint;
 import com.shc.silenceengine.scene.tiled.objects.TmxPolyLine;
 import com.shc.silenceengine.scene.tiled.objects.TmxPolygon;
+import com.shc.silenceengine.scene.tiled.renderers.TmxMapRenderer;
 import com.shc.silenceengine.scene.tiled.tiles.TmxAnimationFrame;
 import com.shc.silenceengine.scene.tiled.tiles.TmxTile;
 import com.shc.silenceengine.utils.Logger;
@@ -42,8 +50,58 @@ import java.io.IOException;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class TmxMapTest
+public class TmxMapTest extends Game
 {
+    private OrthoCam camera;
+    private TmxMap   map;
+
+    private TmxMapRenderer renderer;
+
+    public TmxMapTest(TmxMap map)
+    {
+        super();
+        this.map = map;
+    }
+
+    @Override
+    public void init()
+    {
+        camera = new OrthoCam(Display.getWidth(), Display.getHeight());
+        renderer = TmxMapRenderer.create(map);
+
+        SilenceEngine.graphics.setClearColor(Color.GRAY);
+    }
+
+    @Override
+    public void update(float delta)
+    {
+        if (Keyboard.isClicked(Keyboard.KEY_ESCAPE))
+            Game.end();
+
+        Display.setTitle("SilenceEngine TmxMapTest | FPS: " + getFPS() +
+                         " | UPS: " + getUPS() + " | RC: " + SilenceEngine.graphics.renderCallsPerFrame);
+    }
+
+    @Override
+    public void render(float delta, Batcher batcher)
+    {
+        camera.apply();
+        renderer.render(batcher);
+    }
+
+    @Override
+    public void resize()
+    {
+        camera.initProjection(Display.getWidth(), Display.getHeight());
+        camera.center(map.getWidth() * map.getTileWidth() / 2, map.getHeight() * map.getTileHeight() / 2);
+    }
+
+    @Override
+    public void dispose()
+    {
+        renderer.dispose();
+    }
+
     public static void main(String[] args) throws IOException
     {
         Logger.setPrintTimeStamps(false);
@@ -179,6 +237,8 @@ public class TmxMapTest
 
             i++;
         }
+
+        new TmxMapTest(map).start();
     }
 
     private static void printHeader(String title)
