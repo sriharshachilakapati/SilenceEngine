@@ -138,6 +138,11 @@ public class Polyhedron
         rotationZ += rz;
     }
 
+    public void setRotation(float rx, float ry, float rz)
+    {
+        rotate(rx - rotationX, ry - rotationY, rz - rotationZ);
+    }
+
     public void scale(float s)
     {
         scale(s, s, s);
@@ -151,6 +156,11 @@ public class Polyhedron
         updateBounds();
 
         scale.addSelf(sx, sy, sz);
+    }
+
+    public void setScale(float sx, float sy, float sz)
+    {
+        scale(sx - scale.x, sy - scale.y, sz - scale.z);
     }
 
     public void translate(float x, float y, float z)

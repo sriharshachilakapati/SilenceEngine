@@ -247,9 +247,21 @@ public class Entity3D
         updateTransforms();
     }
 
+    public void setRotation(float rx, float ry, float rz)
+    {
+        polyhedron.setRotation(rx, ry, rz);
+        updateTransforms();
+    }
+
     public void scale(float sx, float sy, float sz)
     {
         polyhedron.scale(sx, sy, sz);
+        updateTransforms();
+    }
+
+    public void setScale(float sx, float sy, float sz)
+    {
+        polyhedron.setScale(sx, sy, sz);
         updateTransforms();
     }
 
