@@ -32,6 +32,7 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -267,7 +268,7 @@ public class BufferObject
      *
      * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
      */
-    public ByteBuffer mapRange(long offset, int length, MapAccess access)
+    public ByteBuffer mapRange(long offset, int length, EnumSet<MapAccessFlag> access)
     {
         return mapRange(offset, access, BufferUtils.createByteBuffer(length));
     }
@@ -283,10 +284,14 @@ public class BufferObject
      *
      * @return A pointer to the buffer object's data store as a NIO ByteBuffer.
      */
-    public ByteBuffer mapRange(long offset, MapAccess access, ByteBuffer pointer)
+    public ByteBuffer mapRange(long offset, EnumSet<MapAccessFlag> access, ByteBuffer pointer)
     {
+        int value = 0;
+        for (MapAccessFlag flag : access)
+            value |= flag.getValue();
+        
         bind();
-        pointer = glMapBufferRange(target.getValue(), offset, pointer.capacity(), access.getValue());
+        pointer = glMapBufferRange(target.getValue(), offset, pointer.capacity(), value);
 
         GLError.check();
 
@@ -414,6 +419,28 @@ public class BufferObject
         private int value;
 
         private MapAccess(int value)
+        {
+            this.value = value;
+        }
+
+        public int getValue()
+        {
+            return value;
+        }
+    }
+
+    public static enum MapAccessFlag
+    {
+        MAP_READ_BIT(GL_MAP_READ_BIT),
+        MAP_WRITE_BIT(GL_MAP_WRITE_BIT),
+        MAP_INVALIDATE_RANGE_BIT(GL_MAP_INVALIDATE_RANGE_BIT),
+        MAP_INVALIDATE_BUFFER_BIT(GL_MAP_INVALIDATE_BUFFER_BIT),
+        MAP_FLUSH_EXPLICIT_BIT(GL_MAP_FLUSH_EXPLICIT_BIT),
+        MAP_UNSYNCHRONIZED_BIT(GL_MAP_UNSYNCHRONIZED_BIT);
+
+        private int value;
+
+        private MapAccessFlag(int value)
         {
             this.value = value;
         }
