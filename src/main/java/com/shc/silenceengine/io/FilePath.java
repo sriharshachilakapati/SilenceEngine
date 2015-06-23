@@ -521,6 +521,13 @@ public class FilePath
         if (!exists())
             throw new SilenceException("Cannot delete non existing file.");
 
+        if (isDirectory())
+        {
+            // Delete all the children first
+            for (FilePath filePath : listFiles())
+                filePath.delete();
+        }
+
         return Files.deleteIfExists(Paths.get(path));
     }
 
@@ -724,17 +731,6 @@ public class FilePath
     }
 
     @Override
-    public int hashCode()
-    {
-        int result = getPath().hashCode();
-        result = 31 * result + getType().hashCode();
-        result = 31 * result + (isDirectory() ? 1 : 0);
-        result = 31 * result + (exists() ? 1 : 0);
-        result = 31 * result + (int) (sizeInBytes() ^ (sizeInBytes() >>> 32));
-        return result;
-    }
-
-    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -742,11 +738,15 @@ public class FilePath
 
         FilePath filePath = (FilePath) o;
 
-        return isDirectory() == filePath.isDirectory() &&
-               exists() == filePath.exists() &&
-               sizeInBytes() == filePath.sizeInBytes() &&
-               getPath().equals(filePath.getPath()) &&
-               getType() == filePath.getType();
+        return getPath().equals(filePath.getPath()) && getType() == filePath.getType();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = getPath().hashCode();
+        result = 31 * result + getType().hashCode();
+        return result;
     }
 
     @Override
