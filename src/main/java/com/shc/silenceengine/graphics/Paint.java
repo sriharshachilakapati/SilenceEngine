@@ -34,6 +34,12 @@ public class Paint
     private Color bottomLeft;
     private Color bottomRight;
 
+    public Paint(Paint paint)
+    {
+        this();
+        set(paint);
+    }
+
     public Paint(Color topLeft, Color topRight, Color bottomLeft, Color bottomRight)
     {
         this.topLeft = topLeft.copy();
@@ -150,6 +156,14 @@ public class Paint
         setTopRightColor(color);
         setBottomLeftColor(color);
         setBottomRightColor(color);
+    }
+
+    public void set(Paint paint)
+    {
+        setTopLeftColor(paint.getTopLeftColor());
+        setTopRightColor(paint.getTopRightColor());
+        setBottomLeftColor(paint.getBottomLeftColor());
+        setBottomRightColor(paint.getBottomRightColor());
     }
 
     public enum Gradient

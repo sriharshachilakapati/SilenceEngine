@@ -47,9 +47,10 @@ import static org.lwjgl.opengl.GL30.*;
  */
 public class Texture
 {
-    private static int     activeUnit;
-    public static  Texture CURRENT;
-    public static  Texture EMPTY;
+    private static int activeUnit;
+
+    public static Texture CURRENT;
+    public static Texture EMPTY;
 
     private int     id;
     private float   width;

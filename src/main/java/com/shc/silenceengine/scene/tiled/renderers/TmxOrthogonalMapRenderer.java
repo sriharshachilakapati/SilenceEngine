@@ -153,10 +153,10 @@ public class TmxOrthogonalMapRenderer extends TmxMapRenderer
                     float clipY = (tileSet.getMargin() + (tileSet.getTileHeight() + tileSet.getSpacing()) * tileSetRow);
 
                     // The texture coordinates of the tile
-                    float minU = (clipX + 0.5f) / tileSet.getImage().getWidth();
-                    float maxU = (clipX + tileWidth - 0.5f) / tileSet.getImage().getWidth();
-                    float minV = (clipY + 0.5f) / tileSet.getImage().getHeight();
-                    float maxV = (clipY + tileHeight - 0.5f) / tileSet.getImage().getHeight();
+                    float minU = clipX / tileSet.getImage().getWidth();
+                    float maxU = (clipX + tileWidth) / tileSet.getImage().getWidth();
+                    float minV = clipY / tileSet.getImage().getHeight();
+                    float maxV = (clipY + tileHeight) / tileSet.getImage().getHeight();
 
                     // Flip the texture coordinates to flip the tile
                     boolean flipX = mapTile.isFlippedHorizontally();
@@ -183,24 +183,27 @@ public class TmxOrthogonalMapRenderer extends TmxMapRenderer
                         maxV = temp;
                     }
 
+                    float uvCorrectionX = (0.2f / tileSet.getImage().getWidth());
+                    float uvCorrectionY = (0.2f / tileSet.getImage().getHeight());
+
                     // Draw the tile
                     batcher.vertex(posX, posY);
-                    batcher.texCoord(minU, minV);
+                    batcher.texCoord(minU + uvCorrectionX, minV + uvCorrectionY);
 
                     batcher.vertex(flipZ ? posX : posX + tileWidth, flipZ ? posY + tileHeight : posY);
-                    batcher.texCoord(maxU, minV);
+                    batcher.texCoord(maxU - uvCorrectionX, minV + uvCorrectionY);
 
                     batcher.vertex(flipZ ? posX + tileWidth : posX, flipZ ? posY : posY + tileHeight);
-                    batcher.texCoord(minU, maxV);
+                    batcher.texCoord(minU + uvCorrectionX, maxV - uvCorrectionY);
 
                     batcher.vertex(flipZ ? posX : posX + tileWidth, flipZ ? posY + tileHeight : posY);
-                    batcher.texCoord(maxU, minV);
+                    batcher.texCoord(maxU - uvCorrectionX, minV + uvCorrectionY);
 
                     batcher.vertex(posX + tileWidth, posY + tileHeight);
-                    batcher.texCoord(maxU, maxV);
+                    batcher.texCoord(maxU - uvCorrectionX, maxV - uvCorrectionY);
 
                     batcher.vertex(flipZ ? posX + tileWidth : posX, flipZ ? posY : posY + tileHeight);
-                    batcher.texCoord(minU, maxV);
+                    batcher.texCoord(minU + uvCorrectionX, maxV - uvCorrectionY);
                 }
             }
         }

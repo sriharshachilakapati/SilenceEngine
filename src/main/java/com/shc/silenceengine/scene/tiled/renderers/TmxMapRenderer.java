@@ -25,6 +25,7 @@
 package com.shc.silenceengine.scene.tiled.renderers;
 
 import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.scene.tiled.TmxMap;
@@ -75,6 +76,24 @@ public abstract class TmxMapRenderer
 
     public void render(Batcher batcher)
     {
+        // Render the background rectangle
+        batcher.begin(Primitive.TRIANGLE_FAN);
+        {
+            batcher.vertex(0, 0);
+            batcher.color(map.getBackgroundColor());
+
+            batcher.vertex(map.getWidth() * map.getTileWidth(), 0);
+            batcher.color(map.getBackgroundColor());
+
+            batcher.vertex(map.getWidth() * map.getTileWidth(), map.getHeight() * map.getTileHeight());
+            batcher.color(map.getBackgroundColor());
+
+            batcher.vertex(0, map.getHeight() * map.getTileHeight());
+            batcher.color(map.getBackgroundColor());
+        }
+        batcher.end();
+
+        // Render the image and tile layers
         renderImageLayers(batcher);
         renderTileLayers(batcher);
     }
