@@ -304,9 +304,9 @@ public final class MathUtils
      *
      * @return The fractional part of x
      */
-    public static int frac(double x)
+    public static double frac(double x)
     {
-        return Integer.parseInt(String.valueOf(x).replaceAll("^.*\\.", ""));
+        return x % 1.0;
     }
 
     /**
