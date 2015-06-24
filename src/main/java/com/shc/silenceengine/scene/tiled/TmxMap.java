@@ -302,9 +302,9 @@ public class TmxMap
         {
             String hexColor = element.getAttribute("background").trim();
             if (hexColor.startsWith("#"))
-                hexColor = hexColor.substring(1, hexColor.length());
+                hexColor = hexColor.substring(1);
 
-            backgroundColor = new Color(Integer.decode(hexColor));
+            backgroundColor = new Color(Integer.parseInt(hexColor, 16));
         }
 
         orientation = Orientation.valueOf(element.getAttribute("orientation").trim().toUpperCase());

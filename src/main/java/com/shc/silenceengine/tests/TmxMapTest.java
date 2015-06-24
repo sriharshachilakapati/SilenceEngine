@@ -107,7 +107,7 @@ public class TmxMapTest extends Game
         Logger.setPrintTimeStamps(false);
         Logger.addLogStream(FilePath.getExternalFile(System.getProperty("user.home") + "/TmxMapTest.log"));
 
-        TmxMap map = new TmxMap(FilePath.getResourceFile("resources/example.tmx"));
+        TmxMap map = new TmxMap(FilePath.getResourceFile("resources/example-isometric.tmx"));
 
         printHeader("Map");
         Logger.log("Version:          " + map.getVersion());

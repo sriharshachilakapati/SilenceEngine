@@ -66,7 +66,7 @@ public class TmxImage
             if (color.startsWith("#"))
                 color = color.substring(1);
 
-            trans = new Color(Integer.decode(color));
+            trans = new Color(Integer.parseInt(color, 16));
         }
     }
 

@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.scene.tiled.renderers;
 
+import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
@@ -31,6 +32,8 @@ import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.scene.tiled.TmxMap;
 import com.shc.silenceengine.scene.tiled.TmxTileSet;
 import com.shc.silenceengine.scene.tiled.layers.TmxImageLayer;
+import com.shc.silenceengine.scene.tiled.layers.TmxMapLayer;
+import com.shc.silenceengine.scene.tiled.layers.TmxTileLayer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,10 +48,14 @@ public abstract class TmxMapRenderer
 
     public static TmxMapRenderer create(TmxMap map)
     {
-        if (map.getOrientation() == TmxMap.Orientation.ORTHOGONAL)
-            return new TmxOrthogonalMapRenderer(map);
+        switch (map.getOrientation())
+        {
+            case ISOMETRIC:  return new TmxIsometricMapRenderer(map);
+            case ORTHOGONAL: return new TmxOrthogonalMapRenderer(map);
+        }
 
-        return null;
+        throw new SilenceException("A TmxMapRenderer has not yet been implemented for "
+                                   + map.getOrientation() + " orientation");
     }
 
     public TmxMapRenderer(TmxMap map)
@@ -94,13 +101,53 @@ public abstract class TmxMapRenderer
         batcher.end();
 
         // Render the image and tile layers
-        renderImageLayers(batcher);
-        renderTileLayers(batcher);
+        for (TmxMapLayer mapLayer : map.getLayers())
+        {
+            if (mapLayer instanceof TmxTileLayer)
+                renderTileLayer(batcher, (TmxTileLayer) mapLayer);
+
+            if (mapLayer instanceof TmxImageLayer)
+                renderImageLayer(batcher, (TmxImageLayer) mapLayer);
+        }
     }
 
-    public abstract void renderImageLayers(Batcher batcher, int... layerIDs);
+    public void renderImageLayers(Batcher batcher, int... layerIDs)
+    {
+        if (layerIDs == null || layerIDs.length == 0)
+        {
+            for (TmxImageLayer imageLayer : map.getImageLayers())
+                renderImageLayer(batcher, imageLayer);
+        }
+        else
+        {
+            for (int layerIndex : layerIDs)
+            {
+                if (layerIndex < map.getNumImageLayers())
+                    renderImageLayer(batcher, map.getImageLayer(layerIndex));
+            }
+        }
+    }
 
-    public abstract void renderTileLayers(Batcher batcher, int... layerIDs);
+    protected abstract void renderImageLayer(Batcher batcher, TmxImageLayer imageLayer);
+
+    public void renderTileLayers(Batcher batcher, int... layerIDs)
+    {
+        if (layerIDs == null || layerIDs.length == 0)
+        {
+            for (TmxTileLayer tileLayer : map.getTileLayers())
+                renderTileLayer(batcher, tileLayer);
+        }
+        else
+        {
+            for (int layerIndex : layerIDs)
+            {
+                if (layerIndex > map.getNumTileLayers())
+                    renderTileLayer(batcher, map.getTileLayer(layerIndex));
+            }
+        }
+    }
+
+    protected abstract void renderTileLayer(Batcher batcher, TmxTileLayer tileLayer);
 
     public void dispose()
     {

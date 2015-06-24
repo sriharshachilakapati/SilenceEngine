@@ -187,6 +187,56 @@ public final class MathUtils
         return (((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
     }
 
+    public static int floor(int value)
+    {
+        return (int) Math.floor(value);
+    }
+
+    public static float floor(float value)
+    {
+        return (float) Math.floor(value);
+    }
+
+    public static short floor(short value)
+    {
+        return (short) Math.floor(value);
+    }
+
+    public static long floor(long value)
+    {
+        return (long) Math.floor(value);
+    }
+
+    public static double floor(double value)
+    {
+        return (double) Math.floor(value);
+    }
+
+    public static int ceil(int value)
+    {
+        return (int) Math.ceil(value);
+    }
+
+    public static float ceil(float value)
+    {
+        return (float) Math.ceil(value);
+    }
+
+    public static short ceil(short value)
+    {
+        return (short) Math.ceil(value);
+    }
+
+    public static long ceil(long value)
+    {
+        return (long) Math.ceil(value);
+    }
+
+    public static double ceil(double value)
+    {
+        return (double) Math.ceil(value);
+    }
+
     public static int clamp(int val, int min, int max)
     {
         val = Math.min(val, max);
