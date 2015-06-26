@@ -83,6 +83,21 @@ public abstract class TmxMapRenderer
 
     public void render(Batcher batcher)
     {
+        renderBackgroundColor(batcher);
+
+        // Render the image and tile layers
+        for (TmxMapLayer mapLayer : map.getLayers())
+        {
+            if (mapLayer instanceof TmxTileLayer)
+                renderTileLayer(batcher, (TmxTileLayer) mapLayer);
+
+            if (mapLayer instanceof TmxImageLayer)
+                renderImageLayer(batcher, (TmxImageLayer) mapLayer);
+        }
+    }
+
+    protected void renderBackgroundColor(Batcher batcher)
+    {
         // Render the background rectangle
         batcher.begin(Primitive.TRIANGLE_FAN);
         {
@@ -99,16 +114,6 @@ public abstract class TmxMapRenderer
             batcher.color(map.getBackgroundColor());
         }
         batcher.end();
-
-        // Render the image and tile layers
-        for (TmxMapLayer mapLayer : map.getLayers())
-        {
-            if (mapLayer instanceof TmxTileLayer)
-                renderTileLayer(batcher, (TmxTileLayer) mapLayer);
-
-            if (mapLayer instanceof TmxImageLayer)
-                renderImageLayer(batcher, (TmxImageLayer) mapLayer);
-        }
     }
 
     public void renderImageLayers(Batcher batcher, int... layerIDs)

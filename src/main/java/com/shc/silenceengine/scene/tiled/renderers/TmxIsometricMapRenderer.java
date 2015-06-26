@@ -27,35 +27,24 @@ package com.shc.silenceengine.scene.tiled.renderers;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.math.Matrix4;
-import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.scene.tiled.TmxMap;
 import com.shc.silenceengine.scene.tiled.TmxTileSet;
 import com.shc.silenceengine.scene.tiled.layers.TmxImageLayer;
 import com.shc.silenceengine.scene.tiled.layers.TmxTileLayer;
 import com.shc.silenceengine.scene.tiled.tiles.TmxMapTile;
-import com.shc.silenceengine.utils.MathUtils;
-import com.shc.silenceengine.utils.TransformUtils;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class TmxIsometricMapRenderer extends TmxMapRenderer
 {
-    protected Matrix4 isoProjection;
-
     public TmxIsometricMapRenderer(TmxMap map)
     {
         super(map);
-
-        isoProjection = new Matrix4();
-        isoProjection.initIdentity()
-                .multiplySelf(TransformUtils.createTranslation(Vector3.AXIS_Y
-                        .scale((map.getHeight() * map.getTileHeight()) / 2f)))
-                .multiplySelf(TransformUtils.createScaling(new Vector3(MathUtils.sqrt(2.0f) / 2.0f,
-                        MathUtils.sqrt(2.0f) / 4.0f, 1.0f)));
     }
 
+    @Override
     protected void renderImageLayer(Batcher batcher, TmxImageLayer imageLayer)
     {
         if (!imageLayer.isVisible())
@@ -64,7 +53,6 @@ public class TmxIsometricMapRenderer extends TmxMapRenderer
         Texture originalTexture = Texture.CURRENT;
 
         textureMap.get(imageLayer.getImage().getSource().getAbsolutePath()).bind();
-        batcher.applyTransform(isoProjection);
         batcher.begin(Primitive.TRIANGLE_FAN);
         {
             float tileWidth = map.getTileWidth();
@@ -90,6 +78,38 @@ public class TmxIsometricMapRenderer extends TmxMapRenderer
         originalTexture.bind();
     }
 
+    private Vector2 tempVector = new Vector2();
+
+    private Vector2 orthoToIso(float x, float y)
+    {
+        tempVector.x = (x - y) * map.getTileWidth() / 2;
+        tempVector.y = (x + y) * map.getTileHeight() / 2;
+
+        return tempVector.addSelf(map.getWidth() * map.getTileWidth() / 2,0);
+    }
+
+    @Override
+    protected void renderBackgroundColor(Batcher batcher)
+    {
+        // Render the background rectangle
+        batcher.begin(Primitive.TRIANGLE_FAN);
+        {
+            batcher.vertex(orthoToIso(0, 0));
+            batcher.color(map.getBackgroundColor());
+
+            batcher.vertex(orthoToIso(map.getWidth(), 0));
+            batcher.color(map.getBackgroundColor());
+
+            batcher.vertex(orthoToIso(map.getWidth(), map.getHeight()));
+            batcher.color(map.getBackgroundColor());
+
+            batcher.vertex(orthoToIso(0, map.getHeight()));
+            batcher.color(map.getBackgroundColor());
+        }
+        batcher.end();
+    }
+
+    @Override
     protected void renderTileLayer(Batcher batcher, TmxTileLayer tileLayer)
     {
         if (!tileLayer.isVisible())
@@ -99,7 +119,6 @@ public class TmxIsometricMapRenderer extends TmxMapRenderer
         Texture current = textureMap.get(map.getTileset(0).getImage().getSource().getAbsolutePath());
         current.bind();
 
-        batcher.applyTransform(isoProjection);
         batcher.begin(Primitive.TRIANGLES);
         {
             for (int x = 0; x < tileLayer.getWidth(); x++)
@@ -120,7 +139,6 @@ public class TmxIsometricMapRenderer extends TmxMapRenderer
                         batcher.end();
                         current = texture;
                         texture.bind();
-                        batcher.applyTransform(isoProjection);
                         batcher.begin(Primitive.TRIANGLES);
                     }
 
@@ -129,15 +147,8 @@ public class TmxIsometricMapRenderer extends TmxMapRenderer
                     int tileSetCol = (mapTile.getGID() - tileSet.getFirstGID()) % numColsPerRow;
                     int tileSetRow = (mapTile.getGID() - tileSet.getFirstGID()) / numColsPerRow;
 
-                    float tileWidth = map.getTileWidth();
-                    float tileHeight = map.getTileHeight();
-
-                    // The position of the tile in the world
-//                    float posX = x * tileWidth;
-//                    float posY = y * tileWidth;
-
-                    float posX = (y * tileWidth/2) + (x * tileWidth/2);
-                    float posY = (x * tileHeight/2) - (y * tileHeight/2);
+                    float tileWidth = tileSet.getTileWidth();
+                    float tileHeight = tileSet.getTileHeight();
 
                     // The clip space of the tile in the texture
                     float clipX = (tileSet.getMargin() + (tileSet.getTileWidth() + tileSet.getSpacing()) * tileSetCol);
@@ -174,26 +185,26 @@ public class TmxIsometricMapRenderer extends TmxMapRenderer
                         maxV = temp;
                     }
 
-                    float uvCorrectionX = (0.2f / tileSet.getImage().getWidth());
-                    float uvCorrectionY = (0.2f / tileSet.getImage().getHeight());
+                    float uvCorrectionX = (0.5f / tileSet.getImage().getWidth());
+                    float uvCorrectionY = (0.5f / tileSet.getImage().getHeight());
 
                     // Draw the tile
-                    batcher.vertex(posX, posY);
+                    batcher.vertex(orthoToIso(x, y).addSelf(-tileWidth / 2, 0).addSelf(0, 0));
                     batcher.texCoord(minU + uvCorrectionX, minV + uvCorrectionY);
 
-                    batcher.vertex(flipZ ? posX : posX + tileWidth, flipZ ? posY + tileHeight : posY);
+                    batcher.vertex(orthoToIso(x, y).addSelf(-tileWidth/2, 0).addSelf(flipZ ? 0 : tileWidth, flipZ ? tileHeight : 0));
                     batcher.texCoord(maxU - uvCorrectionX, minV + uvCorrectionY);
 
-                    batcher.vertex(flipZ ? posX + tileWidth : posX, flipZ ? posY : posY + tileHeight);
+                    batcher.vertex(orthoToIso(x, y).addSelf(-tileWidth / 2, 0).addSelf(flipZ ? tileWidth : 0, flipZ ? 0 : tileHeight));
                     batcher.texCoord(minU + uvCorrectionX, maxV - uvCorrectionY);
 
-                    batcher.vertex(flipZ ? posX : posX + tileWidth, flipZ ? posY + tileHeight : posY);
+                    batcher.vertex(orthoToIso(x, y).addSelf(-tileWidth / 2, 0).addSelf(flipZ ? 0 : tileWidth, flipZ ? tileHeight : 0));
                     batcher.texCoord(maxU - uvCorrectionX, minV + uvCorrectionY);
 
-                    batcher.vertex(posX + tileWidth, posY + tileHeight);
+                    batcher.vertex(orthoToIso(x, y).addSelf(-tileWidth / 2, 0).addSelf(tileWidth, tileHeight));
                     batcher.texCoord(maxU - uvCorrectionX, maxV - uvCorrectionY);
 
-                    batcher.vertex(flipZ ? posX + tileWidth : posX, flipZ ? posY : posY + tileHeight);
+                    batcher.vertex(orthoToIso(x, y).addSelf(-tileWidth / 2, 0).addSelf(flipZ ? tileWidth : 0, flipZ ? 0 : tileHeight));
                     batcher.texCoord(minU + uvCorrectionX, maxV - uvCorrectionY);
                 }
             }
@@ -203,6 +214,7 @@ public class TmxIsometricMapRenderer extends TmxMapRenderer
         original.bind();
     }
 
+    @Override
     public void dispose()
     {
         textureMap.values().forEach(Texture::dispose);
