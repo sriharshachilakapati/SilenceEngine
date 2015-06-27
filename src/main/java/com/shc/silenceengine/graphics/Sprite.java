@@ -89,12 +89,13 @@ public class Sprite
 
     public Sprite copy()
     {
-        return new Sprite().set(this);
+        return new Sprite(this);
     }
 
     public Sprite set(Sprite sprite)
     {
         animation.set(sprite.getAnimation());
+
         scaleX = sprite.getScaleX();
         scaleY = sprite.getScaleY();
         rotation = sprite.getRotation();
@@ -127,7 +128,7 @@ public class Sprite
 
     public Sprite setAnimation(Animation animation)
     {
-        this.animation = animation.copy();
+        this.animation.set(animation);
         return this;
     }
 

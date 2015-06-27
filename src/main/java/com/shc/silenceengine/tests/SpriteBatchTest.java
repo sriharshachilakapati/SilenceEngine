@@ -54,6 +54,9 @@ public class SpriteBatchTest extends Game
     private List<Sprite>  sprites;
     private List<Vector2> positions;
 
+    private Sprite sprite1;
+    private Sprite sprite2;
+
     private GameTimer timer;
 
     public static void main(String[] args)
@@ -70,8 +73,25 @@ public class SpriteBatchTest extends Game
         texture1 = Texture.fromResource("resources/texture.png");
         texture2 = Texture.fromResource("resources/texture2.png");
 
+        sprite1 = new Sprite(texture1);
+        sprite2 = new Sprite(texture2);
+
         sprites = new ArrayList<>();
         positions = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++)
+        {
+            sprites.add(new Sprite(
+                    i % 2 == 0 ? texture1 : texture2,   // Either texture1 or texture2
+                    MathUtils.random_range(1, 3),       // A x-scale between 1 and 3
+                    MathUtils.random_range(1, 3),       // A y-scale between 1 and 3
+                    MathUtils.random(360)               // A random rotation between 0 and 360
+            ));
+
+            positions.add(new Vector2());
+        }
+
+        defineSprites();
 
         timer = new GameTimer(0.5, TimeUtils.Unit.SECONDS);
         timer.setCallback(() ->
@@ -127,23 +147,19 @@ public class SpriteBatchTest extends Game
 
     private void defineSprites()
     {
-        sprites.clear();
-        positions.clear();
-
         for (int i = 0; i < 10; i++)
         {
-            sprites.add(new Sprite(
-                    i % 2 == 0 ? texture1 : texture2,   // Either texture1 or texture2
-                    MathUtils.random_range(1, 3),       // A x-scale between 1 and 3
-                    MathUtils.random_range(1, 3),       // A y-scale between 1 and 3
-                    MathUtils.random(360)               // A random rotation between 0 and 360
-            ));
+            sprites.get(i).set((MathUtils.random_range(0, 2) == 0) ? sprite1 : sprite2)
+                          .setScaleX(MathUtils.random_range(1, 3))
+                          .setScaleY(MathUtils.random_range(1, 3))
+                          .setRotation(MathUtils.random(360));
         }
 
+        int i = 0;
         for (int y = 0; y < 2; y++)
         {
-            for (int x = 0; x < 5; x++)
-                positions.add(new Vector2(Display.getWidth() / 5 * x, Display.getHeight() / 2 * y));
+            for (int x = 0; x < 5; x++, i++)
+                positions.get(i).set(Display.getWidth() / 5 * x, Display.getHeight() / 2 * y);
         }
     }
 }

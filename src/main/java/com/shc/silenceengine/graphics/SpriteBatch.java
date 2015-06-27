@@ -101,38 +101,38 @@ public class SpriteBatch
                 }
 
                 // Triangle 1
-                batcher.vertex(temp.set(-texture.getWidth() / 2, -texture.getHeight() / 2)  // Top-left
+                batcher.vertex(temp.set(-t.getWidth() / 2, -t.getHeight() / 2)  // Top-left
                         .rotateSelf(sprite.getRotation())
                         .scaleSelf(sprite.getScaleX(), sprite.getScaleY())
-                        .addSelf(position).addSelf(texture.getWidth() / 2, texture.getHeight() / 2));
-                batcher.texCoord(texture.getMinU(), texture.getMinV());
-                batcher.vertex(temp.set(texture.getWidth() / 2, -texture.getHeight() / 2)   // Top-right
+                        .addSelf(position).addSelf(t.getWidth() / 2, t.getHeight() / 2));
+                batcher.texCoord(t.getMinU(), t.getMinV());
+                batcher.vertex(temp.set(t.getWidth() / 2, -t.getHeight() / 2)   // Top-right
                         .rotateSelf(sprite.getRotation())
                         .scaleSelf(sprite.getScaleX(), sprite.getScaleY())
-                        .addSelf(position).addSelf(texture.getWidth() / 2, texture.getHeight() / 2));
-                batcher.texCoord(texture.getMaxU(), texture.getMinV());
-                batcher.vertex(temp.set(-texture.getWidth() / 2, texture.getHeight() / 2)   // Bottom-left
+                        .addSelf(position).addSelf(t.getWidth() / 2, t.getHeight() / 2));
+                batcher.texCoord(t.getMaxU(), t.getMinV());
+                batcher.vertex(temp.set(-t.getWidth() / 2, t.getHeight() / 2)   // Bottom-left
                         .rotateSelf(sprite.getRotation())
                         .scaleSelf(sprite.getScaleX(), sprite.getScaleY())
-                        .addSelf(position).addSelf(texture.getWidth() / 2, texture.getHeight() / 2));
-                batcher.texCoord(texture.getMinU(), texture.getMaxV());
+                        .addSelf(position).addSelf(t.getWidth() / 2, t.getHeight() / 2));
+                batcher.texCoord(t.getMinU(), t.getMaxV());
 
                 // Triangle 2
-                batcher.vertex(temp.set(texture.getWidth() / 2, -texture.getHeight() / 2)   // Top-right
+                batcher.vertex(temp.set(t.getWidth() / 2, -t.getHeight() / 2)   // Top-right
                         .rotateSelf(sprite.getRotation())
                         .scaleSelf(sprite.getScaleX(), sprite.getScaleY())
-                        .addSelf(position).addSelf(texture.getWidth() / 2, texture.getHeight() / 2));
-                batcher.texCoord(texture.getMaxU(), texture.getMinV());
-                batcher.vertex(temp.set(texture.getWidth() / 2, texture.getHeight() / 2)   // Bottom-right
+                        .addSelf(position).addSelf(t.getWidth() / 2, t.getHeight() / 2));
+                batcher.texCoord(t.getMaxU(), t.getMinV());
+                batcher.vertex(temp.set(t.getWidth() / 2, t.getHeight() / 2)   // Bottom-right
                         .rotateSelf(sprite.getRotation())
                         .scaleSelf(sprite.getScaleX(), sprite.getScaleY())
-                        .addSelf(position).addSelf(texture.getWidth() / 2, texture.getHeight() / 2));
-                batcher.texCoord(texture.getMaxU(), texture.getMaxV());
-                batcher.vertex(temp.set(-texture.getWidth() / 2, texture.getHeight() / 2)   // Bottom-left
+                        .addSelf(position).addSelf(t.getWidth() / 2, t.getHeight() / 2));
+                batcher.texCoord(t.getMaxU(), t.getMaxV());
+                batcher.vertex(temp.set(-t.getWidth() / 2, t.getHeight() / 2)   // Bottom-left
                         .rotateSelf(sprite.getRotation())
                         .scaleSelf(sprite.getScaleX(), sprite.getScaleY())
-                        .addSelf(position).addSelf(texture.getWidth() / 2, texture.getHeight() / 2));
-                batcher.texCoord(texture.getMinU(), texture.getMaxV());
+                        .addSelf(position).addSelf(t.getWidth() / 2, t.getHeight() / 2));
+                batcher.texCoord(t.getMinU(), t.getMaxV());
             }
         }
         batcher.end();

@@ -53,6 +53,9 @@ public class DynamicTreeSceneColliderTest2D extends Game
     private Texture playerTexture;
     private Texture boxTexture;
 
+    private Sprite boxSprite;
+    private Sprite playerSprite;
+
     public static void main(String[] args)
     {
         new DynamicTreeSceneColliderTest2D().start();
@@ -64,6 +67,9 @@ public class DynamicTreeSceneColliderTest2D extends Game
 
         playerTexture = Texture.fromColor(Color.DARK_RED, 48, 48);
         boxTexture = Texture.fromColor(Color.CORN_FLOWER_BLUE, 48, 48);
+
+        boxSprite = new Sprite(boxTexture);
+        playerSprite = new Sprite(playerTexture);
 
         GL3Context.clearColor(Color.DARK_SLATE_GRAY);
 
@@ -128,7 +134,7 @@ public class DynamicTreeSceneColliderTest2D extends Game
     {
         public Box(Vector2 position)
         {
-            super(new Sprite(boxTexture), new Rectangle(48, 48));
+            super(boxSprite, new Rectangle(48, 48));
             setPosition(position);
         }
     }
@@ -137,8 +143,10 @@ public class DynamicTreeSceneColliderTest2D extends Game
     {
         public Player(Vector2 position)
         {
-            super(new Sprite(playerTexture), new Rectangle(48, 48));
+            super(boxSprite, new Rectangle(48, 48));
             setPosition(position);
+
+            setSprite(playerSprite);
         }
 
         public void update(float delta)

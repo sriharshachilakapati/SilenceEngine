@@ -91,9 +91,7 @@ public class Entity2D
      */
     public Entity2D(Sprite sprite, Polygon polygon)
     {
-        this.sprite = new Sprite(Sprite.EMPTY);
-
-        setSprite(sprite);
+        this.sprite = sprite.copy();
         this.polygon = polygon;
 
         position = new Vector2();

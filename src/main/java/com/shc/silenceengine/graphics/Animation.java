@@ -145,6 +145,7 @@ public class Animation
         }
 
         currentFrame = other.currentFrame;
+        time = other.time;
 
         setStartCallback(other.startCallback);
         setPauseCallback(other.pauseCallback);
@@ -160,6 +161,7 @@ public class Animation
         frameLengths.clear();
 
         currentFrame = 0;
+        time = 0;
 
         return this;
     }
