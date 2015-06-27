@@ -139,7 +139,7 @@ public class Animation
     {
         clearFrames();
 
-        for (int i = 0; i < frames.size(); i++)
+        for (int i = 0; i < other.frames.size(); i++)
         {
             addFrame(other.frames.get(i), other.frameLengths.get(i), TimeUtils.getDefaultTimeUnit());
         }
