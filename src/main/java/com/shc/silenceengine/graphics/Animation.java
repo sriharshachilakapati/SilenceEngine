@@ -132,16 +132,26 @@ public class Animation
 
     public Animation copy()
     {
-        Animation animation = new Animation(startCallback, pauseCallback, resumeCallback, endCallback);
+        return new Animation().set(this);
+    }
+
+    public Animation set(Animation other)
+    {
+        clearFrames();
 
         for (int i = 0; i < frames.size(); i++)
         {
-            animation.addFrame(frames.get(i), frameLengths.get(i), TimeUtils.getDefaultTimeUnit());
+            addFrame(other.frames.get(i), other.frameLengths.get(i), TimeUtils.getDefaultTimeUnit());
         }
 
-        animation.currentFrame = currentFrame;
+        currentFrame = other.currentFrame;
 
-        return animation;
+        setStartCallback(other.startCallback);
+        setPauseCallback(other.pauseCallback);
+        setResumeCallback(other.resumeCallback);
+        setEndCallback(other.endCallback);
+
+        return this;
     }
 
     public Animation clearFrames()

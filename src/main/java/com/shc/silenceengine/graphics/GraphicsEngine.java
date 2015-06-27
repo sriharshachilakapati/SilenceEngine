@@ -50,10 +50,13 @@ public class GraphicsEngine implements IEngine
     public static final Material DEFAULT_MATERIAL;
 
     private static Map<Mesh, StaticMesh> staticMeshMap;
+
     public float renderCalls         = 0;
     public float renderCallsPerFrame = 0;
     public float totalRenderCalls    = 0;
+
     private Color clearColor = Color.BLACK.copy();
+
     private Material    currentMaterial;
     private Batcher     batcher;
     private ModelBatch  modelBatch;
@@ -87,6 +90,7 @@ public class GraphicsEngine implements IEngine
         // The default null texture
         Texture.EMPTY = Texture.fromColor(Color.TRANSPARENT, 16, 16);
         Texture.EMPTY.bind();
+        Sprite.EMPTY = new Sprite(Texture.EMPTY);
 
         GL3Context.clearColor(Color.BLACK);
         GL3Context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

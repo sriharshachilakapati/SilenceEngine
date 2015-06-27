@@ -35,7 +35,6 @@ import com.shc.silenceengine.graphics.models.Face;
 import com.shc.silenceengine.graphics.models.Mesh;
 import com.shc.silenceengine.graphics.models.Model;
 import com.shc.silenceengine.graphics.models.ModelBuilder;
-import com.shc.silenceengine.graphics.models.OBJModel;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Vector3;
@@ -75,9 +74,7 @@ public class ModelBuilderTest extends Game
                         .setSpecularPower(96.07843f))
                 .createBox(1, 1, 1).build();
 
-        // Debug
-        printMesh(model.getMeshes().get(0), FilePath.getExternalFile("E:\\ModelBuilder.txt"));
-        printMesh(OBJModel.load("resources/cube.obj").getMeshes().get(0), FilePath.getExternalFile("E:\\OBJModel.txt"));
+        cam.setPosition(new Vector3(1)).lookAt(Vector3.ZERO);
 
         scene = new Scene3D();
         scene.addChild(new Entity3D(model, new Cuboid(Vector3.ZERO, 1, 1, 1)));

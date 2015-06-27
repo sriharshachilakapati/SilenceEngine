@@ -33,6 +33,8 @@ import com.shc.silenceengine.utils.TimeUtils;
  */
 public class Sprite
 {
+    public static Sprite EMPTY;
+
     private Animation animation;
 
     private int id;
@@ -44,6 +46,12 @@ public class Sprite
     public Sprite()
     {
         this(new Animation(), 1, 1, 0);
+    }
+
+    public Sprite(Sprite sprite)
+    {
+        this();
+        set(sprite);
     }
 
     public Sprite(Animation animation)
@@ -72,14 +80,26 @@ public class Sprite
         setTexture(texture);
     }
 
-    public void update(float delta)
+    public Sprite update(float delta)
     {
         animation.update(delta);
+
+        return this;
     }
 
     public Sprite copy()
     {
-        return new Sprite(animation, scaleX, scaleY, rotation);
+        return new Sprite().set(this);
+    }
+
+    public Sprite set(Sprite sprite)
+    {
+        animation.set(sprite.getAnimation());
+        scaleX = sprite.getScaleX();
+        scaleY = sprite.getScaleY();
+        rotation = sprite.getRotation();
+
+        return this;
     }
 
     public Texture getTexture()
@@ -87,7 +107,7 @@ public class Sprite
         return animation.getCurrentFrame();
     }
 
-    public void setTexture(Texture texture)
+    public Sprite setTexture(Texture texture)
     {
         animation.clearFrames();
         animation.setStartCallback(null);
@@ -96,6 +116,8 @@ public class Sprite
         animation.setEndCallback(null);
 
         animation.addFrame(texture, 1000, TimeUtils.Unit.SECONDS);
+
+        return this;
     }
 
     public Animation getAnimation()
@@ -103,9 +125,10 @@ public class Sprite
         return animation;
     }
 
-    public void setAnimation(Animation animation)
+    public Sprite setAnimation(Animation animation)
     {
         this.animation = animation.copy();
+        return this;
     }
 
     public float getScaleX()
@@ -113,9 +136,10 @@ public class Sprite
         return scaleX;
     }
 
-    public void setScaleX(float scaleX)
+    public Sprite setScaleX(float scaleX)
     {
         this.scaleX = scaleX;
+        return this;
     }
 
     public float getScaleY()
@@ -123,9 +147,10 @@ public class Sprite
         return scaleY;
     }
 
-    public void setScaleY(float scaleY)
+    public Sprite setScaleY(float scaleY)
     {
         this.scaleY = scaleY;
+        return this;
     }
 
     public float getRotation()
@@ -133,9 +158,10 @@ public class Sprite
         return rotation;
     }
 
-    public void setRotation(float rotation)
+    public Sprite setRotation(float rotation)
     {
         this.rotation = rotation;
+        return this;
     }
 
     public int getID()

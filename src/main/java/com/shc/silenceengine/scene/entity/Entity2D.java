@@ -91,6 +91,8 @@ public class Entity2D
      */
     public Entity2D(Sprite sprite, Polygon polygon)
     {
+        this.sprite = new Sprite(Sprite.EMPTY);
+
         setSprite(sprite);
         this.polygon = polygon;
 
@@ -518,7 +520,7 @@ public class Entity2D
      */
     public void setSprite(Sprite sprite)
     {
-        this.sprite = sprite.copy();
+        this.sprite.set(sprite);
     }
 
     @Override
