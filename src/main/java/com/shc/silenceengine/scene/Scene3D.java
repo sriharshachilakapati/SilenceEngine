@@ -73,6 +73,10 @@ public class Scene3D
 
     public void render(float delta)
     {
+        // Quit early if there are no children
+        if (entities.size() == 0)
+            return;
+
         doRender(delta);
 
         for (SceneComponent component : components)

@@ -70,6 +70,10 @@ public class Scene2D
 
     public void render(float delta)
     {
+        // Quit early if there are no children
+        if (entities.size() == 0)
+            return;
+
         // Sort the entities based on depth
         entities.sort((e1, e2) -> Integer.compare(e2.getDepth(), e1.getDepth()));
 
