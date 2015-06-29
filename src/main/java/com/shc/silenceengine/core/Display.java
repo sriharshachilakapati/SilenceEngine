@@ -507,6 +507,7 @@ public final class Display
         update();
 
         dirty = true;
+        resized = true;
     }
 
     public static VideoMode getVideoMode()
@@ -532,6 +533,7 @@ public final class Display
 
         update();
         dirty = true;
+        resized = true;
     }
 
     public static Monitor getMonitor()
@@ -576,6 +578,7 @@ public final class Display
         update();
 
         dirty = true;
+        resized = true;
     }
 
     /*
