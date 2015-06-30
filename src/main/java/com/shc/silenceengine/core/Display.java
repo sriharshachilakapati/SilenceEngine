@@ -95,7 +95,7 @@ public final class Display
         return window;
     }
 
-    private static void setHints()
+    public static void setHints()
     {
         Window.setHint(GLFW_SAMPLES, 4);
 

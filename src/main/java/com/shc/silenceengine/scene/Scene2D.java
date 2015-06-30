@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.scene;
 
+import com.shc.silenceengine.core.IUpdatable;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.SpriteBatch;
 import com.shc.silenceengine.scene.entity.Entity2D;
@@ -34,7 +35,7 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Scene2D
+public class Scene2D implements IUpdatable
 {
     private List<Entity2D> entities;
 

@@ -34,7 +34,7 @@ import com.shc.silenceengine.graphics.Batcher;
  *
  * @author Sri Harsha Chilakapati
  */
-public abstract class GameState
+public abstract class GameState implements IUpdatable
 {
     /**
      * Called when the game switches to this <code>GameState</code> through <code>setGameState()</code>.

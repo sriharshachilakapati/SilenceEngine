@@ -65,7 +65,7 @@ import com.shc.silenceengine.utils.TimeUtils;
  *
  * @author Sri Harsha Chilakapati
  */
-public class Game
+public class Game implements IUpdatable
 {
     // Is the game running?
     private static boolean running = false;

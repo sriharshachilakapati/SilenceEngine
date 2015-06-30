@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.graphics;
 
+import com.shc.silenceengine.core.IUpdatable;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.utils.IDGenerator;
 import com.shc.silenceengine.utils.TimeUtils;
@@ -31,7 +32,7 @@ import com.shc.silenceengine.utils.TimeUtils;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Sprite
+public class Sprite implements IUpdatable
 {
     public static Sprite EMPTY;
 
@@ -80,11 +81,9 @@ public class Sprite
         setTexture(texture);
     }
 
-    public Sprite update(float delta)
+    public void update(float delta)
     {
         animation.update(delta);
-
-        return this;
     }
 
     public Sprite copy()

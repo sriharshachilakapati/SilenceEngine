@@ -25,6 +25,7 @@
 package com.shc.silenceengine.scene.entity;
 
 import com.shc.silenceengine.collision.Collision2D;
+import com.shc.silenceengine.core.IUpdatable;
 import com.shc.silenceengine.graphics.Sprite;
 import com.shc.silenceengine.graphics.SpriteBatch;
 import com.shc.silenceengine.math.Vector2;
@@ -62,7 +63,7 @@ import com.shc.silenceengine.utils.IDGenerator;
  *
  * @author Sri Harsha Chilakapati
  */
-public class Entity2D
+public class Entity2D implements IUpdatable
 {
     Vector2 temp  = new Vector2();
     Vector2 temp2 = new Vector2();
@@ -82,6 +83,16 @@ public class Entity2D
 
     // Whether this entity is destroyed
     private boolean destroyed;
+
+    /**
+     * Constructs an Entity2D to use a polygon that can be used to perform collisions.
+     *
+     * @param polygon The collision mask.
+     */
+    public Entity2D(Polygon polygon)
+    {
+        this(Sprite.EMPTY, polygon);
+    }
 
     /**
      * Constructs a Entity2D to use a Polygon that can be used to perform collisions.

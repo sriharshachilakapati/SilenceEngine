@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.scene.entity;
 
+import com.shc.silenceengine.core.IUpdatable;
 import com.shc.silenceengine.graphics.ModelBatch;
 import com.shc.silenceengine.graphics.models.Model;
 import com.shc.silenceengine.math.Transform;
@@ -62,7 +63,7 @@ import com.shc.silenceengine.utils.IDGenerator;
  *
  * @author Sri Harsha Chilakapati
  */
-public class Entity3D
+public class Entity3D implements IUpdatable
 {
     // The position, velocity and the polygon
     private Vector3    position;
@@ -79,6 +80,17 @@ public class Entity3D
     /**
      * Constructs a Entity3D to use a Polyhedron that can be used to perform collisions.
      *
+     * @param polyhedron The collision mask.
+     */
+    public Entity3D(Polyhedron polyhedron)
+    {
+        this(null, polyhedron);
+    }
+
+    /**
+     * Constructs a Entity3D to use a Polyhedron that can be used to perform collisions.
+     *
+     * @param model      The model to use for rendering.
      * @param polyhedron The collision mask.
      */
     public Entity3D(Model model, Polyhedron polyhedron)
@@ -153,7 +165,8 @@ public class Entity3D
 
     public void render(float delta, ModelBatch batch)
     {
-        batch.addModel(getModel(), getTransform());
+        if (model != null)
+            batch.addModel(getModel(), getTransform());
     }
 
     /**

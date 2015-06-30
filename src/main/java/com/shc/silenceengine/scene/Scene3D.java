@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.scene;
 
+import com.shc.silenceengine.core.IUpdatable;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.ModelBatch;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
@@ -37,7 +38,7 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Scene3D
+public class Scene3D implements IUpdatable
 {
     private List<SceneComponent> components;
     private List<Entity3D> entities;
