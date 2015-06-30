@@ -101,7 +101,7 @@ public class ResourceLoaderTest extends Game
 
     private void customProgressRenderCallback(Batcher batcher, float percentage, String filename)
     {
-        System.out.println((percentage * 100) + "% => Loading file: " + filename + "");
+        System.out.println(percentage + "% => Loading file: " + filename + "");
         ResourceLoader.getInstance().defaultRenderProgressCallback(batcher, percentage, filename);
     }
 }
