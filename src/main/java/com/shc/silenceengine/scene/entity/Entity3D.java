@@ -95,7 +95,7 @@ public class Entity3D implements IUpdatable
      */
     public Entity3D(Model model, Polyhedron polyhedron)
     {
-        position = new Vector3();
+        position = new Vector3().set(polyhedron.getPosition());
         velocity = new Vector3();
         this.model = model;
         this.polyhedron = polyhedron;

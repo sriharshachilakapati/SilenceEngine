@@ -105,7 +105,7 @@ public class Entity2D implements IUpdatable
         this.sprite = sprite.copy();
         this.polygon = polygon;
 
-        position = new Vector2();
+        position = new Vector2().set(polygon.getPosition());
         velocity = new Vector2();
 
         depth = 0;
