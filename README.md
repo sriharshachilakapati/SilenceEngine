@@ -27,10 +27,14 @@ The main feature of SilenceEngine is it's simplicity, and it greatly reduces the
 - __Automatic Collision Detection__:
 
     SilenceEngine features with automatic collision detection. All you need to do is give your entities a collision shape, and register the classes in the collider, and the collisions, along with collision response is done for you, in both 2D and 3D. The `CollisionEngine` uses _SAT_ (Separating Axis Theorem) to determine collisions, and hence you get your collision response with good accuracy.
+    
+- __Tiled MAP Editor Support__:
+
+    SilenceEngine has support for loading and rendering maps made with the [Tiled Map Editor](http://mapeditor.org/). Currently supports automatically rendering of Orthogonal and Isometric maps, but the support will soon increase to all other map formats. The parser can parse any TMX format (even compressed) though.
 
 - __Object Oriented Wrappers for OpenGL and OpenAL__:
 
-  If you think that all the above features are not useful for you, and you want more performance and you love going low level, SilenceEngine provides object oriented wrapper classes for OpenGL and OpenAL. It is up to you how to use them, and other parts of the SilenceEngine cooperates with you.
+    If you think that all the above features are not useful for you, and you want more performance and you love going low level, SilenceEngine provides object oriented wrapper classes for OpenGL and OpenAL. It is up to you how to use them, and other parts of the SilenceEngine cooperates with you.
 
 The above list is only half what SilenceEngine offers to you. It is currently in heavy development, and more features are yet to arrive. In the meanwhile, take a look at the source code, and the example games to get an idea of how to use this engine.
 
