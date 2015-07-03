@@ -73,6 +73,7 @@ public class NativesLoader
 
             // Set the LWJGL library path
             System.setProperty("java.library.path", nativesDir.getPath());
+            System.setProperty("org.lwjgl.librarypath", nativesDir.getPath());
 
             switch (SilenceEngine.getPlatform())
             {
