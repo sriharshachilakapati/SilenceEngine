@@ -346,6 +346,13 @@ public class Entity3D implements IUpdatable
         updateTransforms();
     }
 
+    public void setModel(Model model)
+    {
+        this.model = model;
+    }
+
+
+
     /**
      * @return The width of the bounding box of this entity
      */
