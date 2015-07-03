@@ -26,6 +26,7 @@ package com.shc.silenceengine.audio;
 
 import com.shc.silenceengine.audio.openal.ALFormat;
 import com.shc.silenceengine.core.SilenceException;
+import org.lwjgl.BufferUtils;
 
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -136,24 +137,36 @@ public interface ISoundReader
      */
     static ByteBuffer convertAudioBytes(byte[] samples, boolean stereo)
     {
-        ByteBuffer dest = ByteBuffer.allocateDirect(samples.length);
-        dest.order(ByteOrder.nativeOrder());
-
         ByteBuffer src = ByteBuffer.wrap(samples);
         src.order(ByteOrder.LITTLE_ENDIAN);
+
+        return convertAudioBytes(src, stereo);
+    }
+
+    /**
+     * Method borrowed from LWJGL 3 demos, this converts stereo and mono data samples to the internal format of OpenAL.
+     *
+     * @param samples The ByteBuffer of audio samples
+     * @param stereo  Whether to convert to stereo audio
+     *
+     * @return The ByteBuffer containing fixed samples.
+     */
+    static ByteBuffer convertAudioBytes(ByteBuffer samples, boolean stereo)
+    {
+        ByteBuffer dest = BufferUtils.createByteBuffer(samples.capacity());
 
         if (stereo)
         {
             ShortBuffer dest_short = dest.asShortBuffer();
-            ShortBuffer src_short = src.asShortBuffer();
+            ShortBuffer src_short = samples.asShortBuffer();
 
             while (src_short.hasRemaining())
                 dest_short.put(src_short.get());
         }
         else
         {
-            while (src.hasRemaining())
-                dest.put(src.get());
+            while (samples.hasRemaining())
+                dest.put(samples.get());
         }
 
         dest.rewind();

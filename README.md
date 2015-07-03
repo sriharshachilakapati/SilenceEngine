@@ -47,8 +47,6 @@ It is also easier to use in development mode as we will check for OpenGL errors 
 ##Licence
 
  - This is licenced under MIT licence, which you can find [here](http://choosealicense.com/licenses/mit/).
- - This game engine uses JOrbis library from JCraft which are licenced under [LGPL](http://choosealicense.com/licenses/lgpl-3.0/).
- - This game engine uses J-Ogg library from [j-ogg.de](http://www.j-ogg.de/) on a free permissive licence.
  - This game engine is written on top of [LWJGL 3](http://lwjgl.org). You can find it's licence [here](https://github.com/LWJGL/lwjgl3/blob/master/doc/LICENSE.txt).
  
 ##Links

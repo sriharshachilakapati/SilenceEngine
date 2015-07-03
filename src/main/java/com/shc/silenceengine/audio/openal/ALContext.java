@@ -68,7 +68,7 @@ public final class ALContext
     public void init()
     {
         // Create the context and the device
-        context = org.lwjgl.openal.ALContext.create(null, 48000, 60, false);
+        context = org.lwjgl.openal.ALContext.create();
 
         ALDevice device = context.getDevice();
 
