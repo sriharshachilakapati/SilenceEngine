@@ -138,7 +138,7 @@ public final class FileUtils
         {
             return readToByteBuffer(filePath.getInputStream());
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             SilenceException.reThrow(e);
         }
@@ -151,23 +151,30 @@ public final class FileUtils
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         byte[] buffer = new byte[4096];
-        int count = 0;
 
-        while (count != -1)
+        try
         {
-            try
+            while (true)
             {
-                count = inputStream.read(buffer, 0, buffer.length);
-                outputStream.write(buffer, 0, buffer.length);
+                int n = inputStream.read(buffer);
+
+                if (n < 0)
+                    break;
+
+                outputStream.write(buffer, 0, n);
             }
-            catch (IOException e)
-            {
-                SilenceException.reThrow(e);
-            }
+
+            inputStream.close();
+        }
+        catch (Exception e)
+        {
+            SilenceException.reThrow(e);
         }
 
-        ByteBuffer byteBuffer = BufferUtils.createByteBuffer(outputStream.size());
-        byteBuffer.put(outputStream.toByteArray()).flip();
+        byte[] bytes = outputStream.toByteArray();
+
+        ByteBuffer byteBuffer = BufferUtils.createByteBuffer(bytes.length);
+        byteBuffer.put(bytes).flip();
 
         return byteBuffer;
     }

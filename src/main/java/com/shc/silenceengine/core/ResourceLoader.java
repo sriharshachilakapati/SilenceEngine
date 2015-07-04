@@ -84,7 +84,6 @@ public final class ResourceLoader
 
         numLoaded = 0;
 
-        setLogo("resources/logo.png");
         setRenderProgressCallback(this::defaultRenderProgressCallback);
     }
 
@@ -202,6 +201,9 @@ public final class ResourceLoader
         smoothedProgress = 0;
         numLoaded = 0;
         fileInfo = "";
+
+        if (logo == null)
+            setLogo("resources/logo.png");
 
         Display.setHints();
         loaderWindow = new Window(Display.getWindow());

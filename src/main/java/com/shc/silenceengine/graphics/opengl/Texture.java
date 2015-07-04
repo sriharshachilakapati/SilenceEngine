@@ -42,7 +42,6 @@ import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.stb.STBImage.*;
-import static org.lwjgl.system.MemoryUtil.*;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -104,16 +103,16 @@ public class Texture
 
         buffer.flip();
 
-        return fromByteBuffer(buffer, width, height);
+        return fromByteBuffer(buffer, width, height, 4);
     }
 
-    public static Texture fromByteBuffer(ByteBuffer buffer, int width, int height)
+    public static Texture fromByteBuffer(ByteBuffer buffer, int width, int height, int components)
     {
         Texture texture = new Texture();
 
         texture.bind();
         texture.setFilter(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-        texture.image2d(buffer, GL_UNSIGNED_BYTE, GL_RGBA, width, height, GL_RGBA8);
+        texture.image2d(buffer, GL_UNSIGNED_BYTE, components == 4 ? GL_RGBA : GL_RGB, width, height, GL_RGBA8);
         texture.generateMipMaps();
 
         return texture;
@@ -146,10 +145,15 @@ public class Texture
         IntBuffer height = BufferUtils.createIntBuffer(1);
         IntBuffer components = BufferUtils.createIntBuffer(1);
 
-        if (stbi_info_from_memory(imageBuffer, width, height, components) == NULL)
-            throw new SilenceException("Failed to read image: " + stbi_failure_reason());
+        ByteBuffer image = stbi_load_from_memory(imageBuffer, width, height, components, 0);
 
-        return fromByteBuffer(stbi_load_from_memory(imageBuffer, width, height, components, 0), width.get(), height.get());
+        if (image == null)
+            throw new SilenceException("Failed to load image: " + stbi_failure_reason());
+
+        Texture texture = fromByteBuffer(image, width.get(), height.get(), components.get());
+
+        stbi_image_free(image);
+        return texture;
     }
 
     public static Texture fromBufferedImage(BufferedImage img)
@@ -175,7 +179,7 @@ public class Texture
 
         buffer.rewind();
 
-        return fromByteBuffer(buffer, img.getWidth(), img.getHeight());
+        return fromByteBuffer(buffer, img.getWidth(), img.getHeight(), 4);
     }
 
     public void bind()
