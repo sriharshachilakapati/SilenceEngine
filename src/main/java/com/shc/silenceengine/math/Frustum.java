@@ -156,21 +156,9 @@ public class Frustum
         return planeLeft;
     }
 
-    public Frustum setPlaneLeft(Vector4 planeLeft)
-    {
-        this.planeLeft.set(planeLeft);
-        return this;
-    }
-
     public Vector4 getPlaneRight()
     {
         return planeRight;
-    }
-
-    public Frustum setPlaneRight(Vector4 planeRight)
-    {
-        this.planeRight.set(planeRight);
-        return this;
     }
 
     public Vector4 getPlaneTop()
@@ -178,21 +166,9 @@ public class Frustum
         return planeTop;
     }
 
-    public Frustum setPlaneTop(Vector4 planeTop)
-    {
-        this.planeTop.set(planeTop);
-        return this;
-    }
-
     public Vector4 getPlaneBottom()
     {
         return planeBottom;
-    }
-
-    public Frustum setPlaneBottom(Vector4 planeBottom)
-    {
-        this.planeBottom.set(planeBottom);
-        return this;
     }
 
     public Vector4 getPlaneNear()
@@ -200,20 +176,21 @@ public class Frustum
         return planeNear;
     }
 
-    public Frustum setPlaneNear(Vector4 planeNear)
-    {
-        this.planeNear.set(planeNear);
-        return this;
-    }
-
     public Vector4 getPlaneFar()
     {
         return planeFar;
     }
 
-    public Frustum setPlaneFar(Vector4 planeFar)
+    @Override
+    public String toString()
     {
-        this.planeFar.set(planeFar);
-        return this;
+        return "Frustum{" +
+               "planeLeft=" + getPlaneLeft() +
+               ", planeRight=" + getPlaneRight() +
+               ", planeTop=" + getPlaneTop() +
+               ", planeBottom=" + getPlaneBottom() +
+               ", planeNear=" + getPlaneNear() +
+               ", planeFar=" + getPlaneFar() +
+               '}';
     }
 }
