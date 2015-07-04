@@ -30,6 +30,7 @@ import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
+import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.geom2d.Circle;
 import com.shc.silenceengine.math.geom2d.Rectangle;
@@ -76,7 +77,7 @@ public class Geom2DTest extends Game
             end();
 
         // Some magic to position the geometry
-        float yPos = (float) Math.sin(TimeUtils.currentSeconds());
+        float yPos = 2 * (float) Math.sin(TimeUtils.currentSeconds());
 
         rectangle.setY(Display.getHeight() / 2f + yPos * Display.getHeight() / 2f - rectangle.getHeight() / 2f);
         circle.setY(Display.getHeight() / 2f - yPos * Display.getHeight() / 2f);
@@ -94,6 +95,11 @@ public class Geom2DTest extends Game
     public void render(float delta, Batcher batcher)
     {
         cam.apply();
+
+        if (cam.getFrustum().intersects(circle))
+            GL3Context.clearColor(Color.DARK_BLUE);
+        else
+            GL3Context.clearColor(Color.GRAY);
 
         boolean collision = rectangle.intersects(circle);
         Color color = collision ? Color.RED : Color.random();

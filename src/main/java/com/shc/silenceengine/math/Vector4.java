@@ -262,6 +262,21 @@ public class Vector4
         return set(x / l, y / l, z / l, w / l);
     }
 
+    public Vector4 normalize3()
+    {
+        return copy().normalize3Self();
+    }
+
+    public Vector4 normalize3Self()
+    {
+        float l = (float) Math.sqrt(x * x + y * y + z * z);
+
+        if (l == 0 || l == 1)
+            return this;
+
+        return set(x / l, y / l, z / l, w / l);
+    }
+
     public float length()
     {
         return (float) Math.sqrt(lengthSquared());

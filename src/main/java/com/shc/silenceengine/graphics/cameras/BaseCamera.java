@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.graphics.cameras;
 
+import com.shc.silenceengine.math.Frustum;
 import com.shc.silenceengine.math.Matrix4;
 
 /**
@@ -31,6 +32,8 @@ import com.shc.silenceengine.math.Matrix4;
  */
 public abstract class BaseCamera
 {
+    protected Frustum frustum = new Frustum();
+
     public static BaseCamera CURRENT = new NullCamera();
 
     public void apply()
@@ -41,4 +44,9 @@ public abstract class BaseCamera
     public abstract Matrix4 getProjection();
 
     public abstract Matrix4 getView();
+
+    public Frustum getFrustum()
+    {
+        return frustum.update(this);
+    }
 }

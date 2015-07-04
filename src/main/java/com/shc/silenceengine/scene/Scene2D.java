@@ -27,6 +27,7 @@ package com.shc.silenceengine.scene;
 import com.shc.silenceengine.core.IUpdatable;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.SpriteBatch;
+import com.shc.silenceengine.graphics.cameras.BaseCamera;
 import com.shc.silenceengine.scene.entity.Entity2D;
 
 import java.util.ArrayList;
@@ -93,7 +94,8 @@ public class Scene2D implements IUpdatable
                     batch.begin();
                 }
 
-                entity.render(delta, batch);
+                if (BaseCamera.CURRENT.getFrustum().intersects(entity.getPolygon()))
+                    entity.render(delta, batch);
             }
         }
         batch.end();
@@ -101,9 +103,7 @@ public class Scene2D implements IUpdatable
 
     public void destroy()
     {
-        for (Entity2D entity : entities)
-            entity.destroy();
-
+        entities.forEach(Entity2D::destroy);
         entities.clear();
     }
 
