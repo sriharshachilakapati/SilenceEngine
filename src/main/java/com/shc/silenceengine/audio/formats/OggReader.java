@@ -27,11 +27,10 @@ package com.shc.silenceengine.audio.formats;
 import com.shc.silenceengine.audio.ISoundReader;
 import com.shc.silenceengine.audio.openal.ALFormat;
 import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.utils.FileUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.stb.STBVorbisInfo;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -89,26 +88,7 @@ public class OggReader implements ISoundReader
     private void decodeToPCM(InputStream input)
     {
         // Create a memory representation to read from memory
-        ByteArrayOutputStream memory = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int count = 0;
-
-        try
-        {
-            while (count != -1)
-            {
-                count = input.read(buffer, 0, 1024);
-                memory.write(buffer, 0, 1024);
-            }
-        }
-        catch (IOException e)
-        {
-            SilenceException.reThrow(e);
-        }
-
-        // Copy the data to native memory
-        ByteBuffer memoryBuffer = BufferUtils.createByteBuffer(memory.size());
-        memoryBuffer.put(memory.toByteArray()).flip();
+        ByteBuffer memoryBuffer = FileUtils.readToByteBuffer(input);
 
         // Open the vorbis file to get stb_vorbis*
         IntBuffer error = BufferUtils.createIntBuffer(1);

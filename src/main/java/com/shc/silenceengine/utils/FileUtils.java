@@ -26,11 +26,14 @@ package com.shc.silenceengine.utils;
 
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.FilePath;
+import org.lwjgl.BufferUtils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 /**
@@ -127,5 +130,45 @@ public final class FileUtils
     {
         InputStream is = FileUtils.class.getClassLoader().getResourceAsStream(name);
         return is != null;
+    }
+
+    public static ByteBuffer readToByteBuffer(FilePath filePath)
+    {
+        try
+        {
+            return readToByteBuffer(filePath.getInputStream());
+        }
+        catch (IOException e)
+        {
+            SilenceException.reThrow(e);
+        }
+
+        return null;
+    }
+
+    public static ByteBuffer readToByteBuffer(InputStream inputStream)
+    {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        byte[] buffer = new byte[4096];
+        int count = 0;
+
+        while (count != -1)
+        {
+            try
+            {
+                count = inputStream.read(buffer, 0, buffer.length);
+                outputStream.write(buffer, 0, buffer.length);
+            }
+            catch (IOException e)
+            {
+                SilenceException.reThrow(e);
+            }
+        }
+
+        ByteBuffer byteBuffer = BufferUtils.createByteBuffer(outputStream.size());
+        byteBuffer.put(outputStream.toByteArray()).flip();
+
+        return byteBuffer;
     }
 }
