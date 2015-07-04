@@ -31,16 +31,18 @@ import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.utils.FileUtils;
 import org.lwjgl.BufferUtils;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.stb.STBImage.*;
+import static org.lwjgl.system.MemoryUtil.*;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -138,14 +140,16 @@ public class Texture
 
     public static Texture fromInputStream(InputStream stream)
     {
-        try
-        {
-            return fromBufferedImage(ImageIO.read(stream));
-        }
-        catch (Exception e)
-        {
-            throw new SilenceException(e.getMessage());
-        }
+        ByteBuffer imageBuffer = FileUtils.readToByteBuffer(stream);
+
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
+        IntBuffer components = BufferUtils.createIntBuffer(1);
+
+        if (stbi_info_from_memory(imageBuffer, width, height, components) == NULL)
+            throw new SilenceException("Failed to read image: " + stbi_failure_reason());
+
+        return fromByteBuffer(stbi_load_from_memory(imageBuffer, width, height, components, 0), width.get(), height.get());
     }
 
     public static Texture fromBufferedImage(BufferedImage img)
