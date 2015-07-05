@@ -92,6 +92,10 @@ vec4 getPointLight()
     vec4 diffuseLight = vec4(0.0);
     vec4 specularLight = vec4(0.0);
 
+    // Invert the normal for lighting the second side
+    if (!gl_FrontFacing)
+        normal = -normal;
+
     // Calculate the ambient light first
     ambientLight = light.color * material.ambientColor;
 
