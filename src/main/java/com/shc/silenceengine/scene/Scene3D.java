@@ -29,6 +29,7 @@ import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.ModelBatch;
 import com.shc.silenceengine.graphics.cameras.BaseCamera;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
+import com.shc.silenceengine.math.Frustum;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.scene.entity.Entity3D;
 import org.lwjgl.opengl.GL11;
@@ -79,7 +80,10 @@ public class Scene3D implements IUpdatable
         if (entities.size() == 0)
             return;
 
-        doRender(delta);
+        // Get the Frustum once to save unnecessary calculations
+        Frustum frustum = BaseCamera.CURRENT.getFrustum();
+
+        doRender(delta, frustum);
 
         for (SceneComponent component : components)
         {
@@ -88,7 +92,7 @@ public class Scene3D implements IUpdatable
             GL3Context.depthFunc(GL11.GL_EQUAL);
 
             component.use();
-            doRender(delta);
+            doRender(delta, frustum);
             component.release();
 
             GL3Context.depthFunc(GL11.GL_LESS);
@@ -97,18 +101,15 @@ public class Scene3D implements IUpdatable
         }
     }
 
-    private void doRender(float delta)
+    private void doRender(float delta, Frustum frustum)
     {
         ModelBatch batch = SilenceEngine.graphics.getModelBatch();
-
-        // Apply the camera so frustum gets updated
-        BaseCamera.CURRENT.apply();
 
         batch.begin(transform);
         {
             entities.forEach(e ->
             {
-                if (BaseCamera.CURRENT.getFrustum().intersects(e.getPolyhedron()))
+                if (frustum.intersects(e.getPolyhedron()))
                     e.render(delta, batch);
             });
         }

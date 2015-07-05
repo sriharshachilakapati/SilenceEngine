@@ -38,7 +38,6 @@ public abstract class BaseCamera
 
     public void apply()
     {
-        frustum.update(this);
         CURRENT = this;
     }
 
@@ -48,9 +47,6 @@ public abstract class BaseCamera
 
     public Frustum getFrustum()
     {
-        if (CURRENT != this)
-            return frustum.update(this);
-
-        return frustum;
+        return frustum.update(this);
     }
 }

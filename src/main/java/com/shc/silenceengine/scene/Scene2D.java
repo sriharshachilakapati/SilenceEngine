@@ -28,6 +28,7 @@ import com.shc.silenceengine.core.IUpdatable;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.SpriteBatch;
 import com.shc.silenceengine.graphics.cameras.BaseCamera;
+import com.shc.silenceengine.math.Frustum;
 import com.shc.silenceengine.scene.entity.Entity2D;
 
 import java.util.ArrayList;
@@ -82,14 +83,17 @@ public class Scene2D implements IUpdatable
         // Render the entities in batches of depths
         int depth = entities.get(0).getDepth();
 
-        // Apply the camera so frustum gets updated
-        BaseCamera.CURRENT.apply();
+        // Get the Frustum once to prevent unnecessary calculations
+        Frustum frustum = BaseCamera.CURRENT.getFrustum();
 
         SpriteBatch batch = SilenceEngine.graphics.getSpriteBatch();
         batch.begin();
         {
             for (Entity2D entity : entities)
             {
+                if (!frustum.intersects(entity.getPolygon()))
+                    continue;
+
                 if (entity.getDepth() != depth)
                 {
                     batch.end();
@@ -97,8 +101,7 @@ public class Scene2D implements IUpdatable
                     batch.begin();
                 }
 
-                if (BaseCamera.CURRENT.getFrustum().intersects(entity.getPolygon()))
-                    entity.render(delta, batch);
+                entity.render(delta, batch);
             }
         }
         batch.end();
