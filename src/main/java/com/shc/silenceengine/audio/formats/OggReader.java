@@ -113,6 +113,9 @@ public class OggReader implements ISoundReader
 
         // Convert the audio bytes and store the data buffer
         data = ISoundReader.convertAudioBytes(pcm, channels == 2);
+
+        // Close the stb_vorbis* handle
+        stb_vorbis_close(handle);
     }
 
     @Override
