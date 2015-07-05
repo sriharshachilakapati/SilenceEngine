@@ -101,6 +101,9 @@ public class Scene3D implements IUpdatable
     {
         ModelBatch batch = SilenceEngine.graphics.getModelBatch();
 
+        // Apply the camera so frustum gets updated
+        BaseCamera.CURRENT.apply();
+
         batch.begin(transform);
         {
             entities.forEach(e ->

@@ -82,6 +82,9 @@ public class Scene2D implements IUpdatable
         // Render the entities in batches of depths
         int depth = entities.get(0).getDepth();
 
+        // Apply the camera so frustum gets updated
+        BaseCamera.CURRENT.apply();
+
         SpriteBatch batch = SilenceEngine.graphics.getSpriteBatch();
         batch.begin();
         {
