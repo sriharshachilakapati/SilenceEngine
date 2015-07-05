@@ -649,11 +649,10 @@ public class Window
      */
     public Vector2 getCursorPos()
     {
-        DoubleBuffer xPos = BufferUtils.createDoubleBuffer(1);
-        DoubleBuffer yPos = BufferUtils.createDoubleBuffer(1);
-        glfwGetCursorPos(handle, xPos, yPos);
+        DoubleBuffer pos = BufferUtils.createDoubleBuffer(2);
+        nglfwGetCursorPos(handle, memAddress(pos), memAddress(pos) + Double.BYTES);
 
-        return new Vector2((float) xPos.get(), (float) yPos.get());
+        return new Vector2((float) pos.get(0), (float) pos.get(1));
     }
 
     /**
@@ -869,11 +868,10 @@ public class Window
      */
     public Vector2 getPosition()
     {
-        IntBuffer xPos = BufferUtils.createIntBuffer(1);
-        IntBuffer yPos = BufferUtils.createIntBuffer(1);
-        glfwGetWindowPos(handle, xPos, yPos);
+        IntBuffer pos = BufferUtils.createIntBuffer(2);
+        nglfwGetWindowPos(handle, memAddress(pos), memAddress(pos) + Integer.BYTES);
 
-        return position.set(xPos.get(), yPos.get());
+        return position.set(pos.get(0), pos.get(1));
     }
 
     /**
@@ -920,11 +918,10 @@ public class Window
      */
     public Vector2 getSize()
     {
-        IntBuffer width = BufferUtils.createIntBuffer(1);
-        IntBuffer height = BufferUtils.createIntBuffer(1);
-        glfwGetWindowSize(handle, width, height);
+        IntBuffer size = BufferUtils.createIntBuffer(2);
+        nglfwGetWindowSize(handle, memAddress(size), memAddress(size) + Integer.BYTES);
 
-        return size.set(width.get(), height.get());
+        return this.size.set(size.get(0), size.get(1));
     }
 
     /**
@@ -971,11 +968,10 @@ public class Window
      */
     public Vector2 getFramebufferSize()
     {
-        IntBuffer width = BufferUtils.createIntBuffer(1);
-        IntBuffer height = BufferUtils.createIntBuffer(1);
-        glfwGetFramebufferSize(handle, width, height);
+        IntBuffer size = BufferUtils.createIntBuffer(2);
+        nglfwGetFramebufferSize(handle, memAddress(size), memAddress(size) + Integer.BYTES);
 
-        return framebufferSize.set(width.get(), height.get());
+        return framebufferSize.set(size.get(0), size.get(1));
     }
 
     /**
@@ -1029,14 +1025,16 @@ public class Window
      */
     public Vector4 getFrameSize()
     {
-        IntBuffer left = BufferUtils.createIntBuffer(1);
-        IntBuffer top = BufferUtils.createIntBuffer(1);
-        IntBuffer right = BufferUtils.createIntBuffer(1);
-        IntBuffer bottom = BufferUtils.createIntBuffer(1);
+        IntBuffer size = BufferUtils.createIntBuffer(4);
 
-        glfwGetWindowFrameSize(handle, left, top, right, bottom);
+        long left = memAddress(size);
+        long top = left + Integer.BYTES;
+        long right = top + Integer.BYTES;
+        long bottom = right + Integer.BYTES;
 
-        return new Vector4(left.get(), top.get(), right.get(), bottom.get());
+        nglfwGetWindowFrameSize(handle, left, top, right, bottom);
+
+        return new Vector4(size.get(0), size.get(1), size.get(2), size.get(3));
     }
 
     /**
