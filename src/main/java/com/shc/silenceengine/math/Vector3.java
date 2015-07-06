@@ -271,7 +271,12 @@ public class Vector3
 
     public float dot(Vector3 v)
     {
-        return x * v.x + y * v.y + z * v.z;
+        return dot(v.x, v.y, v.z);
+    }
+
+    public float dot(float vx, float vy, float vz)
+    {
+        return x * vx + y * vy + z * vz;
     }
 
     public float distance(float x, float y, float z)
