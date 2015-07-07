@@ -42,6 +42,11 @@ public class Frustum
 
     private Matrix4 frustumMatrix;
 
+    private Vector3[]  frustumCorners;
+    private Vector2[]  frustumPolygonVertices;
+    private Polygon    frustumPolygon;
+    private Polyhedron frustumPolyhedron;
+
     public Frustum()
     {
         planeLeft = new Vector4();
@@ -52,12 +57,63 @@ public class Frustum
         planeFar = new Vector4();
 
         frustumMatrix = new Matrix4().initIdentity();
+        frustumCorners = new Vector3[8];
+
+        for (int i = 0; i < 8; i++)
+            frustumCorners[i] = new Vector3();
+
+        frustumPolygonVertices = new Vector2[4];
+
+        // Create the frustum polygon
+        frustumPolygon = new Polygon();
+        for (int i = 0; i < 4; i++)
+        {
+            frustumPolygonVertices[i] = new Vector2();
+            frustumPolygon.addVertex(frustumPolygonVertices[i]);
+        }
+
+        // Create the frustum polyhedron
+        frustumPolyhedron = new Polyhedron();
+        frustumPolyhedron.addVertex(frustumCorners[7]);
+        frustumPolyhedron.addVertex(frustumCorners[6]);
+        frustumPolyhedron.addVertex(frustumCorners[3]);
+        frustumPolyhedron.addVertex(frustumCorners[2]);
+
+        frustumPolyhedron.addVertex(frustumCorners[2]);
+        frustumPolyhedron.addVertex(frustumCorners[6]);
+        frustumPolyhedron.addVertex(frustumCorners[1]);
+        frustumPolyhedron.addVertex(frustumCorners[5]);
+
+        frustumPolyhedron.addVertex(frustumCorners[5]);
+        frustumPolyhedron.addVertex(frustumCorners[4]);
+        frustumPolyhedron.addVertex(frustumCorners[1]);
+        frustumPolyhedron.addVertex(frustumCorners[0]);
+
+        frustumPolyhedron.addVertex(frustumCorners[0]);
+        frustumPolyhedron.addVertex(frustumCorners[4]);
+        frustumPolyhedron.addVertex(frustumCorners[3]);
+        frustumPolyhedron.addVertex(frustumCorners[7]);
+
+        frustumPolyhedron.addVertex(frustumCorners[7]);
+        frustumPolyhedron.addVertex(frustumCorners[4]);
+        frustumPolyhedron.addVertex(frustumCorners[6]);
+        frustumPolyhedron.addVertex(frustumCorners[5]);
+
+        frustumPolyhedron.addVertex(frustumCorners[5]);
+        frustumPolyhedron.addVertex(frustumCorners[3]);
+
+        frustumPolyhedron.addVertex(frustumCorners[3]);
+        frustumPolyhedron.addVertex(frustumCorners[2]);
+        frustumPolyhedron.addVertex(frustumCorners[0]);
+        frustumPolyhedron.addVertex(frustumCorners[1]);
     }
 
     public Frustum update(BaseCamera camera)
     {
+        // Calculate the frustum matrix
         frustumMatrix.set(camera.getView()).multiplySelf(camera.getProjection());
 
+        // Extract the frustum volume planes
         planeLeft.set(frustumMatrix.get(0, 3) + frustumMatrix.get(0, 0),
                 frustumMatrix.get(1, 3) + frustumMatrix.get(1, 0),
                 frustumMatrix.get(2, 3) + frustumMatrix.get(2, 0),
@@ -94,49 +150,70 @@ public class Frustum
                 frustumMatrix.get(3, 3) - frustumMatrix.get(3, 2))
                 .normalize3Self();
 
+        // Find the corner points of the volume (Polyhedron is updated automatically)
+        frustumCorners[0].set(-planeLeft.w, planeTop.w, -planeFar.w);
+        frustumCorners[1].set(planeRight.w, planeTop.w, -planeFar.w);
+        frustumCorners[2].set(planeRight.w, planeTop.w, planeNear.w);
+        frustumCorners[3].set(-planeLeft.w, planeTop.w, planeNear.w);
+
+        frustumCorners[4].set(-planeLeft.w, -planeBottom.w, -planeFar.w);
+        frustumCorners[5].set(planeRight.w, -planeBottom.w, -planeFar.w);
+        frustumCorners[6].set(planeRight.w, -planeBottom.w, planeNear.w);
+        frustumCorners[7].set(-planeLeft.w, -planeBottom.w, planeNear.w);
+
+        // Calculate the 2D frustum polygon
+        frustumPolygonVertices[0].set(frustumCorners[0].x, -frustumCorners[0].y);
+        frustumPolygonVertices[1].set(frustumCorners[1].x, -frustumCorners[1].y);
+        frustumPolygonVertices[2].set(frustumCorners[6].x, -frustumCorners[6].y);
+        frustumPolygonVertices[3].set(frustumCorners[7].x, -frustumCorners[7].y);
+
         return this;
     }
 
     public boolean intersects(Polygon polygon)
     {
-        boolean intersects = false;
+        return polygon.intersects(frustumPolygon);
+    }
+
+    public boolean isInside(Polygon polygon)
+    {
+        boolean inside = false;
 
         Vector3 temp = Vector3.REUSABLE_STACK.pop();
-
         for (Vector2 v : polygon.getVertices())
         {
             temp.set(v.x, v.y, planeNear.z).addSelf(polygon.getPosition(), 0);
+            inside = isPointInside(temp);
 
-            intersects = isPointInside(temp);
-
-            if (intersects)
+            if (inside)
                 break;
         }
-
         Vector3.REUSABLE_STACK.push(temp);
 
-        return intersects;
+        return inside;
     }
 
     public boolean intersects(Polyhedron polyhedron)
     {
-        boolean intersects = false;
+        return polyhedron.intersects(frustumPolyhedron);
+    }
+
+    public boolean isInside(Polyhedron polyhedron)
+    {
+        boolean inside = false;
 
         Vector3 temp = Vector3.REUSABLE_STACK.pop();
-
         for (Vector3 v : polyhedron.getVertices())
         {
             temp.set(v).addSelf(polyhedron.getPosition());
+            inside = isPointInside(temp);
 
-            intersects = isPointInside(temp);
-
-            if (intersects)
+            if (inside)
                 break;
         }
-
         Vector3.REUSABLE_STACK.push(temp);
 
-        return intersects;
+        return inside;
     }
 
     public boolean isPointInside(Vector3 point)

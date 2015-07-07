@@ -109,7 +109,7 @@ public class Scene3D implements IUpdatable
         {
             entities.forEach(e ->
             {
-                if (frustum.intersects(e.getPolyhedron()))
+                if (frustum.isInside(e.getPolyhedron()))
                     e.render(delta, batch);
             });
         }

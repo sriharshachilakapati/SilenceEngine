@@ -33,8 +33,10 @@ import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.cameras.PerspCam;
+import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.math.Frustum;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.geom3d.Cuboid;
 import com.shc.silenceengine.math.geom3d.Sphere;
@@ -67,7 +69,7 @@ public class Geom3DTest extends Game
 
         hudFont = loader.getFont(fontID);
 
-        camera = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.01f, 1000f);
+        camera = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.1f, 100f);
         camera.setPosition(new Vector3(-2, -2, 5));
         camera.lookAt(Vector3.ZERO);
 
@@ -79,7 +81,7 @@ public class Geom3DTest extends Game
 
     public void resize()
     {
-        camera.initProjection(70, Display.getAspectRatio(), 0.01f, 1000f);
+        camera.initProjection(70, Display.getAspectRatio(), 0.1f, 100f);
         hudCam.initProjection(Display.getWidth(), Display.getHeight());
     }
 
@@ -139,6 +141,13 @@ public class Geom3DTest extends Game
     public void render(float delta, Batcher batcher)
     {
         camera.apply();
+
+        Frustum frustum = camera.getFrustum();
+
+        if (frustum.intersects(sphere))
+            GL3Context.clearColor(Color.GRAY);
+        else
+            GL3Context.clearColor(Color.BLACK);
 
         boolean intersects = sphere.intersects(cube);
         Collision3D.Response response = Collision3D.getResponse();
