@@ -195,7 +195,7 @@ public class Frustum
             temp.set(v.x, v.y, planes[NEAR].d).addSelf(polygon.getPosition(), 0);
             inside = isPointInside(temp);
 
-            if (inside)
+            if (!inside)
                 break;
         }
         Vector3.REUSABLE_STACK.push(temp);
@@ -219,7 +219,7 @@ public class Frustum
             temp.set(v).addSelf(polyhedron.getPosition());
             inside = isPointInside(temp);
 
-            if (inside)
+            if (!inside)
                 break;
         }
         Vector3.REUSABLE_STACK.push(temp);
