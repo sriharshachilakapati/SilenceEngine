@@ -33,15 +33,31 @@ import com.shc.silenceengine.math.geom3d.Polyhedron;
  */
 public class Frustum
 {
-    private Vector4 planeLeft;
-    private Vector4 planeRight;
-    private Vector4 planeTop;
-    private Vector4 planeBottom;
-    private Vector4 planeNear;
-    private Vector4 planeFar;
+    // The plane locations in the array
+    private static final int LEFT   = 0;
+    private static final int RIGHT  = 1;
+    private static final int TOP    = 2;
+    private static final int BOTTOM = 3;
+    private static final int NEAR   = 4;
+    private static final int FAR    = 5;
 
+    // The frustum corner locations in the array
+    private static final int LEFT_TOP_FAR      = 0;
+    private static final int RIGHT_TOP_FAR     = 1;
+    private static final int RIGHT_TOP_NEAR    = 2;
+    private static final int LEFT_TOP_NEAR     = 3;
+    private static final int LEFT_BOTTOM_FAR   = 4;
+    private static final int RIGHT_BOTTOM_FAR  = 5;
+    private static final int RIGHT_BOTTOM_NEAR = 6;
+    private static final int LEFT_BOTTOM_NEAR  = 7;
+
+    // The array of all the planes of the frustum
+    private Plane[] planes;
+
+    // The frustum matrix
     private Matrix4 frustumMatrix;
 
+    // The frustum corners, polygon vertices, polygon and polyhedron
     private Vector3[]  frustumCorners;
     private Vector2[]  frustumPolygonVertices;
     private Polygon    frustumPolygon;
@@ -49,13 +65,12 @@ public class Frustum
 
     public Frustum()
     {
-        planeLeft = new Vector4();
-        planeRight = new Vector4();
-        planeTop = new Vector4();
-        planeBottom = new Vector4();
-        planeNear = new Vector4();
-        planeFar = new Vector4();
+        // Create the planes array
+        planes = new Plane[6];
+        for (int i = 0; i < planes.length; i++)
+            planes[i] = new Plane();
 
+        // Create the frustum matrix and corners array
         frustumMatrix = new Matrix4().initIdentity();
         frustumCorners = new Vector3[8];
 
@@ -74,38 +89,38 @@ public class Frustum
 
         // Create the frustum polyhedron
         frustumPolyhedron = new Polyhedron();
-        frustumPolyhedron.addVertex(frustumCorners[7]);
-        frustumPolyhedron.addVertex(frustumCorners[6]);
-        frustumPolyhedron.addVertex(frustumCorners[3]);
-        frustumPolyhedron.addVertex(frustumCorners[2]);
+        frustumPolyhedron.addVertex(frustumCorners[LEFT_BOTTOM_NEAR]);
+        frustumPolyhedron.addVertex(frustumCorners[RIGHT_BOTTOM_NEAR]);
+        frustumPolyhedron.addVertex(frustumCorners[LEFT_TOP_NEAR]);
+        frustumPolyhedron.addVertex(frustumCorners[RIGHT_TOP_NEAR]);
 
-        frustumPolyhedron.addVertex(frustumCorners[2]);
-        frustumPolyhedron.addVertex(frustumCorners[6]);
-        frustumPolyhedron.addVertex(frustumCorners[1]);
-        frustumPolyhedron.addVertex(frustumCorners[5]);
+        frustumPolyhedron.addVertex(frustumCorners[RIGHT_TOP_NEAR]);
+        frustumPolyhedron.addVertex(frustumCorners[RIGHT_BOTTOM_NEAR]);
+        frustumPolyhedron.addVertex(frustumCorners[RIGHT_TOP_FAR]);
+        frustumPolyhedron.addVertex(frustumCorners[RIGHT_BOTTOM_FAR]);
 
-        frustumPolyhedron.addVertex(frustumCorners[5]);
-        frustumPolyhedron.addVertex(frustumCorners[4]);
-        frustumPolyhedron.addVertex(frustumCorners[1]);
-        frustumPolyhedron.addVertex(frustumCorners[0]);
+        frustumPolyhedron.addVertex(frustumCorners[RIGHT_BOTTOM_FAR]);
+        frustumPolyhedron.addVertex(frustumCorners[LEFT_BOTTOM_FAR]);
+        frustumPolyhedron.addVertex(frustumCorners[RIGHT_TOP_FAR]);
+        frustumPolyhedron.addVertex(frustumCorners[LEFT_TOP_FAR]);
 
-        frustumPolyhedron.addVertex(frustumCorners[0]);
-        frustumPolyhedron.addVertex(frustumCorners[4]);
-        frustumPolyhedron.addVertex(frustumCorners[3]);
-        frustumPolyhedron.addVertex(frustumCorners[7]);
+        frustumPolyhedron.addVertex(frustumCorners[LEFT_TOP_FAR]);
+        frustumPolyhedron.addVertex(frustumCorners[LEFT_BOTTOM_FAR]);
+        frustumPolyhedron.addVertex(frustumCorners[LEFT_TOP_NEAR]);
+        frustumPolyhedron.addVertex(frustumCorners[LEFT_BOTTOM_NEAR]);
 
-        frustumPolyhedron.addVertex(frustumCorners[7]);
-        frustumPolyhedron.addVertex(frustumCorners[4]);
-        frustumPolyhedron.addVertex(frustumCorners[6]);
-        frustumPolyhedron.addVertex(frustumCorners[5]);
+        frustumPolyhedron.addVertex(frustumCorners[LEFT_BOTTOM_NEAR]);
+        frustumPolyhedron.addVertex(frustumCorners[LEFT_BOTTOM_FAR]);
+        frustumPolyhedron.addVertex(frustumCorners[RIGHT_BOTTOM_NEAR]);
+        frustumPolyhedron.addVertex(frustumCorners[RIGHT_BOTTOM_FAR]);
 
-        frustumPolyhedron.addVertex(frustumCorners[5]);
-        frustumPolyhedron.addVertex(frustumCorners[3]);
+        frustumPolyhedron.addVertex(frustumCorners[RIGHT_BOTTOM_FAR]);
+        frustumPolyhedron.addVertex(frustumCorners[LEFT_TOP_NEAR]);
 
-        frustumPolyhedron.addVertex(frustumCorners[3]);
-        frustumPolyhedron.addVertex(frustumCorners[2]);
-        frustumPolyhedron.addVertex(frustumCorners[0]);
-        frustumPolyhedron.addVertex(frustumCorners[1]);
+        frustumPolyhedron.addVertex(frustumCorners[LEFT_TOP_NEAR]);
+        frustumPolyhedron.addVertex(frustumCorners[RIGHT_TOP_NEAR]);
+        frustumPolyhedron.addVertex(frustumCorners[LEFT_TOP_FAR]);
+        frustumPolyhedron.addVertex(frustumCorners[RIGHT_TOP_FAR]);
     }
 
     public Frustum update(BaseCamera camera)
@@ -114,65 +129,60 @@ public class Frustum
         frustumMatrix.set(camera.getView()).multiplySelf(camera.getProjection());
 
         // Extract the frustum volume planes
-        planeLeft.set(frustumMatrix.get(0, 3) + frustumMatrix.get(0, 0),
+        planes[LEFT].set(frustumMatrix.get(0, 3) + frustumMatrix.get(0, 0),
                 frustumMatrix.get(1, 3) + frustumMatrix.get(1, 0),
                 frustumMatrix.get(2, 3) + frustumMatrix.get(2, 0),
-                frustumMatrix.get(3, 3) + frustumMatrix.get(3, 0))
-                .normalize3Self();
+                frustumMatrix.get(3, 3) + frustumMatrix.get(3, 0));
 
-        planeRight.set(frustumMatrix.get(0, 3) - frustumMatrix.get(0, 0),
+        planes[RIGHT].set(frustumMatrix.get(0, 3) - frustumMatrix.get(0, 0),
                 frustumMatrix.get(1, 3) - frustumMatrix.get(1, 0),
                 frustumMatrix.get(2, 3) - frustumMatrix.get(2, 0),
-                frustumMatrix.get(3, 3) - frustumMatrix.get(3, 0))
-                .normalize3Self();
+                frustumMatrix.get(3, 3) - frustumMatrix.get(3, 0));
 
-        planeTop.set(frustumMatrix.get(0, 3) - frustumMatrix.get(0, 1),
+        planes[TOP].set(frustumMatrix.get(0, 3) - frustumMatrix.get(0, 1),
                 frustumMatrix.get(1, 3) - frustumMatrix.get(1, 1),
                 frustumMatrix.get(2, 3) - frustumMatrix.get(2, 1),
-                frustumMatrix.get(3, 3) - frustumMatrix.get(3, 1))
-                .normalize3Self();
+                frustumMatrix.get(3, 3) - frustumMatrix.get(3, 1));
 
-        planeBottom.set(frustumMatrix.get(0, 3) + frustumMatrix.get(0, 1),
+        planes[BOTTOM].set(frustumMatrix.get(0, 3) + frustumMatrix.get(0, 1),
                 frustumMatrix.get(1, 3) + frustumMatrix.get(1, 1),
                 frustumMatrix.get(2, 3) + frustumMatrix.get(2, 1),
-                frustumMatrix.get(3, 3) + frustumMatrix.get(3, 1))
-                .normalize3Self();
+                frustumMatrix.get(3, 3) + frustumMatrix.get(3, 1));
 
-        planeNear.set(frustumMatrix.get(0, 3) + frustumMatrix.get(0, 2),
+        planes[NEAR].set(frustumMatrix.get(0, 3) + frustumMatrix.get(0, 2),
                 frustumMatrix.get(1, 3) + frustumMatrix.get(1, 2),
                 frustumMatrix.get(2, 3) + frustumMatrix.get(2, 2),
-                frustumMatrix.get(3, 3) + frustumMatrix.get(3, 2))
-                .normalize3Self();
+                frustumMatrix.get(3, 3) + frustumMatrix.get(3, 2));
 
-        planeFar.set(frustumMatrix.get(0, 3) - frustumMatrix.get(0, 2),
+        planes[FAR].set(frustumMatrix.get(0, 3) - frustumMatrix.get(0, 2),
                 frustumMatrix.get(1, 3) - frustumMatrix.get(1, 2),
                 frustumMatrix.get(2, 3) - frustumMatrix.get(2, 2),
-                frustumMatrix.get(3, 3) - frustumMatrix.get(3, 2))
-                .normalize3Self();
+                frustumMatrix.get(3, 3) - frustumMatrix.get(3, 2));
 
         // Find the corner points of the volume (Polyhedron is updated automatically)
-        frustumCorners[0].set(-planeLeft.w, planeTop.w, -planeFar.w);
-        frustumCorners[1].set(planeRight.w, planeTop.w, -planeFar.w);
-        frustumCorners[2].set(planeRight.w, planeTop.w, planeNear.w);
-        frustumCorners[3].set(-planeLeft.w, planeTop.w, planeNear.w);
+        Plane.intersection(planes[LEFT], planes[TOP], planes[FAR], frustumCorners[LEFT_TOP_FAR]);
+        Plane.intersection(planes[RIGHT], planes[TOP], planes[FAR], frustumCorners[RIGHT_TOP_FAR]);
+        Plane.intersection(planes[RIGHT], planes[TOP], planes[NEAR], frustumCorners[RIGHT_TOP_NEAR]);
+        Plane.intersection(planes[LEFT], planes[TOP], planes[NEAR], frustumCorners[LEFT_TOP_NEAR]);
 
-        frustumCorners[4].set(-planeLeft.w, -planeBottom.w, -planeFar.w);
-        frustumCorners[5].set(planeRight.w, -planeBottom.w, -planeFar.w);
-        frustumCorners[6].set(planeRight.w, -planeBottom.w, planeNear.w);
-        frustumCorners[7].set(-planeLeft.w, -planeBottom.w, planeNear.w);
+        Plane.intersection(planes[LEFT], planes[BOTTOM], planes[FAR], frustumCorners[LEFT_BOTTOM_FAR]);
+        Plane.intersection(planes[RIGHT], planes[BOTTOM], planes[FAR], frustumCorners[RIGHT_BOTTOM_FAR]);
+        Plane.intersection(planes[RIGHT], planes[BOTTOM], planes[NEAR], frustumCorners[RIGHT_BOTTOM_NEAR]);
+        Plane.intersection(planes[LEFT], planes[BOTTOM], planes[NEAR], frustumCorners[LEFT_BOTTOM_NEAR]);
 
         // Calculate the 2D frustum polygon
-        frustumPolygonVertices[0].set(frustumCorners[0].x, -frustumCorners[0].y);
-        frustumPolygonVertices[1].set(frustumCorners[1].x, -frustumCorners[1].y);
-        frustumPolygonVertices[2].set(frustumCorners[6].x, -frustumCorners[6].y);
-        frustumPolygonVertices[3].set(frustumCorners[7].x, -frustumCorners[7].y);
+        frustumPolygonVertices[0].set(frustumCorners[LEFT_TOP_FAR].x, -frustumCorners[LEFT_TOP_FAR].y);
+        frustumPolygonVertices[1].set(frustumCorners[RIGHT_TOP_FAR].x, -frustumCorners[RIGHT_TOP_FAR].y);
+        frustumPolygonVertices[2].set(frustumCorners[RIGHT_BOTTOM_NEAR].x, -frustumCorners[RIGHT_BOTTOM_NEAR].y);
+        frustumPolygonVertices[3].set(frustumCorners[LEFT_BOTTOM_NEAR].x, -frustumCorners[LEFT_BOTTOM_NEAR].y);
 
         return this;
     }
 
     public boolean intersects(Polygon polygon)
     {
-        return polygon.intersects(frustumPolygon);
+        // The isInside check is faster than running the whole polygon-polygon intersection check
+        return isInside(polygon) || polygon.intersects(frustumPolygon);
     }
 
     public boolean isInside(Polygon polygon)
@@ -182,7 +192,7 @@ public class Frustum
         Vector3 temp = Vector3.REUSABLE_STACK.pop();
         for (Vector2 v : polygon.getVertices())
         {
-            temp.set(v.x, v.y, planeNear.z).addSelf(polygon.getPosition(), 0);
+            temp.set(v.x, v.y, planes[NEAR].d).addSelf(polygon.getPosition(), 0);
             inside = isPointInside(temp);
 
             if (inside)
@@ -195,7 +205,8 @@ public class Frustum
 
     public boolean intersects(Polyhedron polyhedron)
     {
-        return polyhedron.intersects(frustumPolyhedron);
+        // The isInside check is faster than running the whole polyhedron-polyhedron intersection check
+        return isInside(polyhedron) || polyhedron.intersects(frustumPolyhedron);
     }
 
     public boolean isInside(Polyhedron polyhedron)
@@ -218,44 +229,44 @@ public class Frustum
 
     public boolean isPointInside(Vector3 point)
     {
-        return checkPlane(point, planeLeft) && checkPlane(point, planeRight) &&
-               checkPlane(point, planeTop) && checkPlane(point, planeBottom) &&
-               checkPlane(point, planeNear) && checkPlane(point, planeFar);
+        return checkPlane(point, planes[LEFT]) && checkPlane(point, planes[RIGHT]) &&
+               checkPlane(point, planes[TOP]) && checkPlane(point, planes[BOTTOM]) &&
+               checkPlane(point, planes[NEAR]) && checkPlane(point, planes[FAR]);
     }
 
-    private boolean checkPlane(Vector3 point, Vector4 plane)
+    private boolean checkPlane(Vector3 point, Plane plane)
     {
-        return plane.x * point.x + plane.y * point.y + plane.z * point.z + plane.w >= 0;
+        return plane.getSide(point) == Plane.Side.BACK;
     }
 
-    public Vector4 getPlaneLeft()
+    public Plane getPlaneLeft()
     {
-        return planeLeft;
+        return planes[LEFT];
     }
 
-    public Vector4 getPlaneRight()
+    public Plane getPlaneRight()
     {
-        return planeRight;
+        return planes[RIGHT];
     }
 
-    public Vector4 getPlaneTop()
+    public Plane getPlaneTop()
     {
-        return planeTop;
+        return planes[TOP];
     }
 
-    public Vector4 getPlaneBottom()
+    public Plane getPlaneBottom()
     {
-        return planeBottom;
+        return planes[BOTTOM];
     }
 
-    public Vector4 getPlaneNear()
+    public Plane getPlaneNear()
     {
-        return planeNear;
+        return planes[NEAR];
     }
 
-    public Vector4 getPlaneFar()
+    public Plane getPlaneFar()
     {
-        return planeFar;
+        return planes[FAR];
     }
 
     @Override
