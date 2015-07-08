@@ -171,10 +171,10 @@ public class Frustum
         Plane.intersection(planes[LEFT], planes[BOTTOM], planes[NEAR], frustumCorners[LEFT_BOTTOM_NEAR]);
 
         // Calculate the 2D frustum polygon
-        frustumPolygonVertices[0].set(frustumCorners[LEFT_TOP_FAR].x, -frustumCorners[LEFT_TOP_FAR].y);
-        frustumPolygonVertices[1].set(frustumCorners[RIGHT_TOP_FAR].x, -frustumCorners[RIGHT_TOP_FAR].y);
-        frustumPolygonVertices[2].set(frustumCorners[RIGHT_BOTTOM_NEAR].x, -frustumCorners[RIGHT_BOTTOM_NEAR].y);
-        frustumPolygonVertices[3].set(frustumCorners[LEFT_BOTTOM_NEAR].x, -frustumCorners[LEFT_BOTTOM_NEAR].y);
+        frustumPolygonVertices[0].set(frustumCorners[LEFT_TOP_NEAR].x, frustumCorners[LEFT_TOP_NEAR].y);
+        frustumPolygonVertices[1].set(frustumCorners[RIGHT_TOP_NEAR].x, frustumCorners[RIGHT_TOP_NEAR].y);
+        frustumPolygonVertices[2].set(frustumCorners[RIGHT_BOTTOM_NEAR].x, frustumCorners[RIGHT_BOTTOM_NEAR].y);
+        frustumPolygonVertices[3].set(frustumCorners[LEFT_BOTTOM_NEAR].x, frustumCorners[LEFT_BOTTOM_NEAR].y);
 
         return this;
     }
