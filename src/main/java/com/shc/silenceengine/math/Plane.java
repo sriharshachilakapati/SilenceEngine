@@ -60,6 +60,9 @@ public class Plane
 
     public static Vector3 intersection(Plane p1, Plane p2, Plane p3, Vector3 dest)
     {
+        if (dest == null)
+            dest = new Vector3();
+
         float c23x, c23y, c23z;
         float c31x, c31y, c31z;
         float c12x, c12y, c12z;
@@ -76,7 +79,7 @@ public class Plane
         c12y = p1.normal.z * p2.normal.x - p1.normal.x * p2.normal.z;
         c12z = p1.normal.x * p2.normal.y - p1.normal.y * p2.normal.x;
 
-        float dot = p1.normal.x * c23x + p1.normal.y * c23y + p1.normal.z * c23z;
+        float dot = p1.normal.dot(c23x, c23y, c23z);
         dest.x = (-c23x * p1.d - c31x * p2.d - c12x * p3.d) / dot;
         dest.y = (-c23y * p1.d - c31y * p2.d - c12y * p3.d) / dot;
         dest.z = (-c23z * p1.d - c31z * p2.d - c12z * p3.d) / dot;
@@ -84,9 +87,22 @@ public class Plane
         return dest;
     }
 
-    public Side getSide(Vector3 point)
+    public Side testPoint(Vector3 point)
     {
-        return normal.x * point.x + normal.y * point.y + normal.z * point.z + d >= 0 ? Side.BACK : Side.FRONT;
+        return testPoint(point.x, point.y, point.z);
+    }
+
+    public Side testPoint(float x, float y, float z)
+    {
+        float test = normal.dot(x, y, z) + d;
+
+        if (test == 0)
+            return Side.ON_PLANE;
+
+        if (test > 0)
+            return Side.FRONT;
+
+        return Side.BACK;
     }
 
     public Plane set(Vector3 normal, float d)
@@ -148,6 +164,6 @@ public class Plane
 
     public enum Side
     {
-        FRONT, BACK
+        FRONT, BACK, ON_PLANE
     }
 }
