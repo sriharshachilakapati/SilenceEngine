@@ -41,9 +41,12 @@ public class Scene2D implements IUpdatable
 {
     private List<Entity2D> entities;
 
+    private boolean frustumCulling;
+
     public Scene2D()
     {
         entities = new ArrayList<>();
+        setFrustumCulling(true);
     }
 
     public void addChild(Entity2D e)
@@ -91,7 +94,7 @@ public class Scene2D implements IUpdatable
         {
             for (Entity2D entity : entities)
             {
-                if (!frustum.intersects(entity.getPolygon()))
+                if (frustumCulling && !frustum.intersects(entity.getPolygon()))
                     continue;
 
                 if (entity.getDepth() != depth)
@@ -116,5 +119,15 @@ public class Scene2D implements IUpdatable
     public List<Entity2D> getEntities()
     {
         return entities;
+    }
+
+    public boolean isFrustumCullingEnabled()
+    {
+        return frustumCulling;
+    }
+
+    public void setFrustumCulling(boolean frustumCulling)
+    {
+        this.frustumCulling = frustumCulling;
     }
 }

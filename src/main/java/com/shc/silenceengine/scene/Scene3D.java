@@ -47,11 +47,15 @@ public class Scene3D implements IUpdatable
 
     private Transform transform;
 
+    private boolean frustumCulling;
+
     public Scene3D()
     {
         components = new ArrayList<>();
         entities = new ArrayList<>();
         transform = new Transform();
+
+        setFrustumCulling(true);
     }
 
     public void update(float delta)
@@ -109,7 +113,7 @@ public class Scene3D implements IUpdatable
         {
             entities.forEach(e ->
             {
-                if (frustum.intersects(e.getPolyhedron()))
+                if (frustumCulling && frustum.intersects(e.getPolyhedron()))
                     e.render(delta, batch);
             });
         }
@@ -158,5 +162,15 @@ public class Scene3D implements IUpdatable
     public List<SceneComponent> getComponents()
     {
         return components;
+    }
+
+    public boolean isFrustumCullingEnabled()
+    {
+        return frustumCulling;
+    }
+
+    public void setFrustumCulling(boolean frustumCulling)
+    {
+        this.frustumCulling = frustumCulling;
     }
 }
