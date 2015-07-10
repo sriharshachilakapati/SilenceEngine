@@ -111,11 +111,13 @@ public class Scene3D implements IUpdatable
 
         batch.begin(transform);
         {
-            entities.forEach(e ->
+            for (Entity3D e : entities)
             {
-                if (frustumCulling && frustum.intersects(e.getPolyhedron()))
-                    e.render(delta, batch);
-            });
+                if (frustumCulling && !frustum.intersects(e.getPolyhedron()))
+                    continue;
+
+                e.render(delta, batch);
+            }
         }
         batch.end();
     }
