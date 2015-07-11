@@ -48,6 +48,7 @@ public final class Display
 {
     private static Window displayWindow;
 
+    // The display properties
     private static boolean resizable  = true;
     private static boolean resized    = true;
     private static boolean fullScreen = false;
@@ -58,6 +59,7 @@ public final class Display
     private static int width  = 800;
     private static int height = 600;
 
+    // Remember old values to restore
     private static int oldWidth;
     private static int oldHeight;
     private static int oldPosX;
@@ -69,6 +71,9 @@ public final class Display
     private static Monitor   monitor   = null;
     private static VideoMode videoMode = null;
 
+    /**
+     * Creates the display window.
+     */
     public static void create()
     {
         displayWindow = createWindow(width, height, "SilenceEngine Window", monitor, null);
@@ -95,6 +100,9 @@ public final class Display
         return window;
     }
 
+    /**
+     * Sets the GLFW window hints to the hints used by the Display.
+     */
     public static void setHints()
     {
         Window.setHint(GLFW_SAMPLES, 4);
@@ -154,6 +162,9 @@ public final class Display
         Window.setDefaultHints();
     }
 
+    /**
+     * Centers the display window on the screen.
+     */
     public static void centerOnScreen()
     {
         if (monitor != null || fullScreen)

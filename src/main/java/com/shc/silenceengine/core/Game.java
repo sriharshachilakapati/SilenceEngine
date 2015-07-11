@@ -121,11 +121,21 @@ public class Game implements IUpdatable
         Game.targetUPS = targetUPS;
     }
 
+    /**
+     * Returns the current active game state.
+     *
+     * @return The current active game state.
+     */
     public static GameState getGameState()
     {
         return gameState;
     }
 
+    /**
+     * Sets the current game state.
+     *
+     * @param gameState The new game state to be marked as active.
+     */
     public static void setGameState(GameState gameState)
     {
         if (Game.gameState != null)
@@ -139,16 +149,31 @@ public class Game implements IUpdatable
         Runtime.getRuntime().gc();
     }
 
+    /**
+     * Returns the memory used in bytes. This is calculated by subtracting free memory from the total memory.
+     *
+     * @return The used memory in bytes.
+     */
     public static long getUsedMemory()
     {
         return getTotalMemory() - getFreeMemory();
     }
 
+    /**
+     * Returns the total memory available to the JVM process. This is measured in bytes.
+     *
+     * @return The total memory in bytes.
+     */
     public static long getTotalMemory()
     {
         return Runtime.getRuntime().totalMemory();
     }
 
+    /**
+     * Returns the available / free memory of the JVM. This is measured in bytes.
+     *
+     * @return The free memory in bytes.
+     */
     public static long getFreeMemory()
     {
         return Runtime.getRuntime().freeMemory();
@@ -160,6 +185,16 @@ public class Game implements IUpdatable
     public static boolean isRunning()
     {
         return running;
+    }
+
+    /**
+     * Returns the instance of the Game class that is currently running.
+     *
+     * @return The instance of the game class.
+     */
+    public static Game getInstance()
+    {
+        return instance;
     }
 
     /**
