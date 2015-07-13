@@ -44,6 +44,9 @@ public class KeyboardBugTest extends Game
     @Override
     public void update(float delta)
     {
+        if (Keyboard.isClicked('O', Keyboard.KEY_LEFT_SHIFT, Keyboard.KEY_LEFT_ALT))
+            System.out.println("SHIFT-ALT-O");
+
         if (Keyboard.isClicked(Keyboard.KEY_ESCAPE))
             Game.end();
 

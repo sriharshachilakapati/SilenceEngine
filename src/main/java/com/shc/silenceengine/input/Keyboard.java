@@ -171,6 +171,17 @@ public class Keyboard
     private static List<Integer> eventsThisFrame = new ArrayList<>();
     private static List<Integer> eventsLastFrame = new ArrayList<>();
 
+    public static int[] MODIFIERS = {
+            KEY_LEFT_SHIFT,
+            KEY_RIGHT_SHIFT,
+            KEY_LEFT_ALT,
+            KEY_RIGHT_ALT,
+            KEY_LEFT_CONTROL,
+            KEY_RIGHT_CONTROL,
+            KEY_LEFT_SUPER,
+            KEY_RIGHT_SUPER
+    };
+
     /**
      * Gets if the key has not been pressed this event frame
      *
@@ -195,6 +206,15 @@ public class Keyboard
         return eventsThisFrame.contains(key);
     }
 
+    public static boolean isPressed(int key, int... mods)
+    {
+        for (int mod : mods)
+            if (!isPressed(mod))
+                return false;
+
+        return isPressed(key);
+    }
+
     /**
      * Gets if the key has been pressed in this event frame and not the frame before
      *
@@ -205,6 +225,15 @@ public class Keyboard
     public static boolean isClicked(int key)
     {
         return eventsThisFrame.contains(key) && !eventsLastFrame.contains(key);
+    }
+
+    public static boolean isClicked(int key, int... mods)
+    {
+        for (int mod : mods)
+            if (!isPressed(mod))
+                return false;
+
+        return isClicked(key);
     }
 
     /**
@@ -219,6 +248,16 @@ public class Keyboard
         return !isPressed(key);
     }
 
+    public static boolean isReleased(char key, int... mods)
+    {
+        return !isPressed(key, mods);
+    }
+
+    public static boolean isPressed(char key, int... mods)
+    {
+        return isPressed((int) Character.toUpperCase(key), mods);
+    }
+
     /**
      * Gets if the character has been pressed this event frame
      *
@@ -229,6 +268,11 @@ public class Keyboard
     public static boolean isPressed(char key)
     {
         return isPressed((int) Character.toUpperCase(key));
+    }
+
+    public static boolean isClicked(char key, int... mods)
+    {
+        return isClicked((int) Character.toUpperCase(key), mods);
     }
 
     /**
@@ -320,6 +364,10 @@ public class Keyboard
     public static void glfwKeyCallback(Window window, int key, int scanCode, int action, int mods)
     {
         Keyboard.setKey(key, action != GLFW_RELEASE);
+
+        for (int mod : MODIFIERS)
+            if ((mods & mod) == mod)
+                Keyboard.setKey(mod, action != GLFW_RELEASE);
     }
 
     /**

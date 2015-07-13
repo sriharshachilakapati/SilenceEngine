@@ -96,6 +96,11 @@ public class Mouse
         return !isPressed(button);
     }
 
+    public static boolean isReleased(int button, int... mods)
+    {
+        return !isPressed(button, mods);
+    }
+
     /**
      * Gets if the button has been pressed this event frame
      *
@@ -108,6 +113,15 @@ public class Mouse
         return eventsThisFrame.contains(button);
     }
 
+    public static boolean isPressed(int button, int... mods)
+    {
+        for (int mod : mods)
+            if (!Keyboard.isPressed(mod))
+                return false;
+
+        return isPressed(button);
+    }
+
     /**
      * Gets if the button has been pressed in this event frame and not the frame before
      *
@@ -118,6 +132,15 @@ public class Mouse
     public static boolean isClicked(int button)
     {
         return eventsThisFrame.contains(button) && !eventsLastFrame.contains(button);
+    }
+
+    public static boolean isClicked(int button, int... mods)
+    {
+        for (int mod : mods)
+            if (!Keyboard.isPressed(mod))
+                return false;
+
+        return isClicked(button);
     }
 
     /**
@@ -199,6 +222,10 @@ public class Mouse
     public static void glfwMouseButtonCallback(Window window, int button, int action, int mods)
     {
         Mouse.setButton(button, action != GLFW_RELEASE);
+
+        for (int mod : Keyboard.MODIFIERS)
+            if ((mods & mod) == mod)
+                Keyboard.setKey(mod, true);
     }
 
     /**

@@ -33,6 +33,8 @@ import com.shc.silenceengine.core.glfw.callbacks.IKeyCallback;
 import com.shc.silenceengine.core.glfw.callbacks.IMouseButtonCallback;
 import com.shc.silenceengine.core.glfw.callbacks.IScrollCallback;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 /**
  * The InputEngine makes handling easy, and is the central hub of all the input package. This class can be used along
  * with the {@link SilenceEngine} or on it's own. It also allows to post fake input events programmatically.
@@ -93,7 +95,17 @@ public class InputEngine implements IEngine
         keyCallback.invoke(window, key, scanCode, action, mods);
     }
 
+    public void postKeyEvent(Window window, int key, int scanCode, Action action, int mods)
+    {
+        postKeyEvent(window, key, scanCode, action.getEventCode(), mods);
+    }
+
     public void postKeyEvent(int key, int scanCode, int action, int mods)
+    {
+        postKeyEvent(Display.getWindow(), key, scanCode, action, mods);
+    }
+
+    public void postKeyEvent(int key, int scanCode, Action action, int mods)
     {
         postKeyEvent(Display.getWindow(), key, scanCode, action, mods);
     }
@@ -103,14 +115,30 @@ public class InputEngine implements IEngine
         postKeyEvent(key, -1, action, mods);
     }
 
+    public void postKeyEvent(int key, Action action, int mods)
+    {
+        postKeyEvent(key, action.getEventCode(), mods);
+    }
+
     public void postKeyEvent(int key, int action)
     {
         postKeyEvent(key, action, 0);
     }
 
+    public void postKeyEvent(int key, Action action)
+    {
+        postKeyEvent(key, action.getEventCode());
+    }
+
+
     public void postMouseButtonEvent(Window window, int button, int action, int mods)
     {
         mouseButtonCallback.invoke(window, button, action, mods);
+    }
+
+    public void postMouseButtonEvent(Window window, int button, Action action, int mods)
+    {
+        postMouseButtonEvent(window, button, action.getEventCode(), mods);
     }
 
     public void postMouseButtonEvent(int button, int action, int mods)
@@ -118,7 +146,17 @@ public class InputEngine implements IEngine
         postMouseButtonEvent(Display.getWindow(), button, action, mods);
     }
 
+    public void postMouseButtonEvent(int button, Action action, int mods)
+    {
+        postMouseButtonEvent(Display.getWindow(), button, action, mods);
+    }
+
     public void postMouseButtonEvent(int button, int action)
+    {
+        postMouseButtonEvent(button, action, 0);
+    }
+
+    public void postMouseButtonEvent(int button, Action action)
     {
         postMouseButtonEvent(button, action, 0);
     }
@@ -141,5 +179,33 @@ public class InputEngine implements IEngine
     public void postMouseCursorPositionEvent(double x, double y)
     {
         postMouseCursorPositionEvent(Display.getWindow(), x, y);
+    }
+
+    public enum Action
+    {
+        PRESS(GLFW_PRESS),
+        RELEASE(GLFW_RELEASE),
+        HELD_DOWN(GLFW_REPEAT);
+
+        int eventCode;
+
+        Action(int eventCode)
+        {
+            this.eventCode = eventCode;
+        }
+
+        public int getEventCode()
+        {
+            return eventCode;
+        }
+
+        public Action forEventCode(int eventCode)
+        {
+            for (Action action : Action.values())
+                if (eventCode == action.eventCode)
+                    return action;
+
+            return RELEASE;
+        }
     }
 }
