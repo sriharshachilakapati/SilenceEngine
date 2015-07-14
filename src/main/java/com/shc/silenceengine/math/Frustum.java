@@ -272,6 +272,9 @@ public class Frustum
 
     public boolean intersects(Vector3 position, float width, float height, float thickness)
     {
+        if (isInside(position))
+            return true;
+
         float halfWidth = width / 2;
         float halfHeight = height / 2;
         float halfThickness = thickness / 2;
@@ -282,18 +285,18 @@ public class Frustum
 
         for (Plane plane : planes)
         {
-            if (checkPlane(x + halfWidth, y + halfHeight, z + halfThickness, plane) ||
-                checkPlane(x + halfWidth, y + halfHeight, z - halfThickness, plane) ||
-                checkPlane(x + halfWidth, y - halfHeight, z + halfThickness, plane) ||
-                checkPlane(x + halfWidth, y - halfHeight, z - halfThickness, plane) ||
-                checkPlane(x - halfWidth, y + halfHeight, z + halfThickness, plane) ||
-                checkPlane(x - halfWidth, y + halfHeight, z - halfThickness, plane) ||
-                checkPlane(x - halfWidth, y - halfHeight, z + halfThickness, plane) ||
-                checkPlane(x - halfWidth, y - halfHeight, z - halfThickness, plane))
-                return true;
+            if (plane.testPoint(x + halfWidth, y + halfHeight, z + halfThickness) == Plane.Side.BACK &&
+                plane.testPoint(x + halfWidth, y + halfHeight, z - halfThickness) == Plane.Side.BACK &&
+                plane.testPoint(x + halfWidth, y - halfHeight, z + halfThickness) == Plane.Side.BACK &&
+                plane.testPoint(x + halfWidth, y - halfHeight, z - halfThickness) == Plane.Side.BACK &&
+                plane.testPoint(x - halfWidth, y + halfHeight, z + halfThickness) == Plane.Side.BACK &&
+                plane.testPoint(x - halfWidth, y + halfHeight, z - halfThickness) == Plane.Side.BACK &&
+                plane.testPoint(x - halfWidth, y - halfHeight, z + halfThickness) == Plane.Side.BACK &&
+                plane.testPoint(x - halfWidth, y - halfHeight, z - halfThickness) == Plane.Side.BACK)
+                return false;
         }
 
-        return false;
+        return true;
     }
 
     public boolean isInside(Polyhedron polyhedron)
@@ -363,23 +366,15 @@ public class Frustum
 
     public boolean isInside(float x, float y, float z)
     {
+        boolean inside = false;
+
         for (Plane plane : planes)
         {
-            if (!checkPlane(x, y, z, plane))
-                return false;
+            if (!(inside = plane.testPoint(x, y, z) == Plane.Side.FRONT))
+                break;
         }
 
-        return true;
-    }
-
-    private boolean checkPlane(Vector3 point, Plane plane)
-    {
-        return checkPlane(point.x, point.y, point.z, plane);
-    }
-
-    private boolean checkPlane(float x, float y, float z, Plane plane)
-    {
-        return plane.testPoint(x, y, z) != Plane.Side.BACK;
+        return inside;
     }
 
     public Plane getPlane(int id)
