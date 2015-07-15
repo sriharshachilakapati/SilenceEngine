@@ -171,6 +171,8 @@ public class Keyboard
     private static List<Integer> eventsThisFrame = new ArrayList<>();
     private static List<Integer> eventsLastFrame = new ArrayList<>();
 
+    private static List<ITextListener> textListeners = new ArrayList<>();
+
     public static int[] MODIFIERS = {
             KEY_LEFT_SHIFT,
             KEY_RIGHT_SHIFT,
@@ -313,6 +315,16 @@ public class Keyboard
             events.remove((Integer) key);
     }
 
+    public static void registerTextListener(ITextListener listener)
+    {
+        textListeners.add(listener);
+    }
+
+    public static void unregisterTextListener(ITextListener listener)
+    {
+        textListeners.remove(listener);
+    }
+
     /**
      * Get if any key was pressed
      *
@@ -370,6 +382,14 @@ public class Keyboard
                 Keyboard.setKey(mod, action != GLFW_RELEASE);
     }
 
+    public static void glfwCharModsCallback(Window window, int codePoint, int mods)
+    {
+        char[] chars = Character.toChars(codePoint);
+
+        for (ITextListener listener : textListeners)
+            listener.invoke(chars, codePoint, mods);
+    }
+
     /**
      * Gets a character's corresponding key code name
      *
@@ -415,5 +435,11 @@ public class Keyboard
     public static int getKeyCode(char key)
     {
         return (int) Character.toUpperCase(key);
+    }
+
+    @FunctionalInterface
+    public interface ITextListener
+    {
+        void invoke(char[] chars, int codePoint, int mods);
     }
 }

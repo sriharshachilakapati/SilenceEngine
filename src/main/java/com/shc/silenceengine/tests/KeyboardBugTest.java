@@ -42,6 +42,12 @@ public class KeyboardBugTest extends Game
     }
 
     @Override
+    public void init()
+    {
+        Keyboard.registerTextListener(this::textInputListener);
+    }
+
+    @Override
     public void update(float delta)
     {
         if (Keyboard.isClicked('O', Keyboard.KEY_LEFT_SHIFT, Keyboard.KEY_LEFT_ALT))
@@ -66,5 +72,10 @@ public class KeyboardBugTest extends Game
                 count = 0;
             }
         }
+    }
+
+    private void textInputListener(char[] chars, int codePoint, int mods)
+    {
+        System.out.print(chars);
     }
 }

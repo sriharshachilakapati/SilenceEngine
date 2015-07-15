@@ -26,6 +26,7 @@ package com.shc.silenceengine.core.glfw;
 
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.glfw.callbacks.*;
+import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector4;
 import org.lwjgl.BufferUtils;
@@ -491,7 +492,10 @@ public class Window
                 characterCallback.invoke(registeredWindows.get(window), codePoint));
 
         glfwCharModsCallback = GLFWCharModsCallback((window, codePoint, mods) ->
-                characterModsCallback.invoke(registeredWindows.get(window), codePoint, mods));
+        {
+            characterModsCallback.invoke(registeredWindows.get(window), codePoint, mods);
+            Keyboard.glfwCharModsCallback(registeredWindows.get(window), codePoint, mods);
+        });
 
         glfwCursorEnterCallback = GLFWCursorEnterCallback((window, entered) ->
                 cursorEnterCallback.invoke(registeredWindows.get(window), entered != 0));
@@ -1010,6 +1014,16 @@ public class Window
         Vector2 temp = Vector2.REUSABLE_STACK.pop();
         setFramebufferSize(temp.set(width, height));
         Vector2.REUSABLE_STACK.push(temp);
+    }
+
+    public String getClipboardString()
+    {
+        return glfwGetClipboardString(handle);
+    }
+
+    public void setClipboardString(String string)
+    {
+        glfwSetClipboardString(handle, string);
     }
 
     /**
