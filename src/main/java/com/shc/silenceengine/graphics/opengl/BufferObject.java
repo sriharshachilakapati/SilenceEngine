@@ -73,6 +73,14 @@ public class BufferObject
         GLError.check();
     }
 
+    public static boolean isValid(int id)
+    {
+        boolean value = glIsBuffer(id);
+        GLError.check();
+
+        return value;
+    }
+
     /**
      * Uploads the data in the specified NIO Buffer to this VertexBufferObject by calling the
      * <code>glBufferData()</code> function.
@@ -289,7 +297,7 @@ public class BufferObject
         int value = 0;
         for (MapAccessFlag flag : access)
             value |= flag.getValue();
-        
+
         bind();
         pointer = glMapBufferRange(target.getValue(), offset, pointer.capacity(), value);
 
@@ -327,6 +335,11 @@ public class BufferObject
         disposed = true;
     }
 
+    public boolean isValid()
+    {
+        return isValid(id);
+    }
+
     /**
      * @return The ID of this VertexBufferObject. Useful if you directly want to use any OpenGL function yourself.
      */
@@ -360,7 +373,7 @@ public class BufferObject
         return disposed;
     }
 
-    public static enum Target
+    public enum Target
     {
         ARRAY_BUFFER(GL_ARRAY_BUFFER),
         COPY_READ_BUFFER(GL_COPY_READ_BUFFER),
@@ -372,9 +385,9 @@ public class BufferObject
         TRANSFORM_FEEDBACK_BUFFER(GL_TRANSFORM_FEEDBACK_BUFFER),
         UNIFORM_BUFFER(GL_UNIFORM_BUFFER);
 
-        private int value;
+        int value;
 
-        private Target(int value)
+        Target(int value)
         {
             this.value = value;
         }
@@ -385,7 +398,7 @@ public class BufferObject
         }
     }
 
-    public static enum Usage
+    public enum Usage
     {
         STREAM_DRAW(GL_STREAM_DRAW),
         STREAM_READ(GL_STREAM_READ),
@@ -397,9 +410,9 @@ public class BufferObject
         DYNAMIC_READ(GL_DYNAMIC_READ),
         DYNAMIC_COPY(GL_DYNAMIC_COPY);
 
-        private int value;
+        int value;
 
-        private Usage(int value)
+        Usage(int value)
         {
             this.value = value;
         }
@@ -410,15 +423,15 @@ public class BufferObject
         }
     }
 
-    public static enum MapAccess
+    public enum MapAccess
     {
         READ_ONLY(GL_READ_ONLY),
         WRITE_ONLY(GL_WRITE_ONLY),
         READ_WRITE(GL_READ_WRITE);
 
-        private int value;
+        int value;
 
-        private MapAccess(int value)
+        MapAccess(int value)
         {
             this.value = value;
         }
@@ -429,7 +442,7 @@ public class BufferObject
         }
     }
 
-    public static enum MapAccessFlag
+    public enum MapAccessFlag
     {
         MAP_READ_BIT(GL_MAP_READ_BIT),
         MAP_WRITE_BIT(GL_MAP_WRITE_BIT),
@@ -438,9 +451,9 @@ public class BufferObject
         MAP_FLUSH_EXPLICIT_BIT(GL_MAP_FLUSH_EXPLICIT_BIT),
         MAP_UNSYNCHRONIZED_BIT(GL_MAP_UNSYNCHRONIZED_BIT);
 
-        private int value;
+        int value;
 
-        private MapAccessFlag(int value)
+        MapAccessFlag(int value)
         {
             this.value = value;
         }

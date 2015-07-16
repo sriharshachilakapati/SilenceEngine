@@ -71,8 +71,6 @@ public class GraphicsEngine implements IEngine
     public void init()
     {
         Display.create();
-        Display.show();
-        Display.centerOnScreen();
 
         // Use the default material
         useMaterial(DEFAULT_MATERIAL);
@@ -112,6 +110,10 @@ public class GraphicsEngine implements IEngine
 
         // Static Mesh map
         staticMeshMap = new HashMap<>();
+
+
+        Display.show();
+        Display.centerOnScreen();
     }
 
     @Override
