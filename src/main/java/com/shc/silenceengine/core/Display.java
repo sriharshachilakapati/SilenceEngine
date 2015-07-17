@@ -47,19 +47,23 @@ import static org.lwjgl.glfw.GLFW.*;
 public final class Display
 {
     private static Window displayWindow;
+    private static Cursor defaultCursor;
 
     // The display properties
-    private static boolean resizable  = true;
-    private static boolean resized    = true;
-    private static boolean fullScreen = false;
-    private static boolean dirty      = true;
-    private static boolean vSync      = true;
-    private static boolean decorated  = true;
+    private static boolean resizable     = true;
+    private static boolean resized       = true;
+    private static boolean fullScreen    = false;
+    private static boolean dirty         = true;
+    private static boolean vSync         = true;
+    private static boolean decorated     = true;
+    private static boolean cursorHidden  = false;
+    private static boolean cursorGrabbed = false;
 
     private static int width  = 800;
     private static int height = 600;
 
     private static String title = "SilenceEngine Window";
+    private static Cursor cursor;
 
     // Remember old values to restore
     private static int oldWidth;
@@ -81,6 +85,9 @@ public final class Display
         displayWindow = createWindow(width, height, title, monitor, null);
         displayWindow.makeCurrent();
         displayWindow.show();
+
+        centerOnScreen();
+        makeCurrent();
     }
 
     private static Window createWindow(int width, int height, String title, Monitor monitor, Window share)
@@ -104,8 +111,19 @@ public final class Display
         setCallbacks(window);
         clearHints();
 
+        if (cursorHidden)
+            window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
+        if (cursorGrabbed)
+            window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
         if (!fullScreen)
             window.setPosition(posX, posY);
+
+        if (cursor == null)
+            defaultCursor = cursor = new Cursor(Cursor.Type.ARROW);
+
+        window.setCursor(cursor);
 
         dirty = true;
 
@@ -214,6 +232,8 @@ public final class Display
 
     public static void hideCursor()
     {
+        cursorHidden = !(cursorGrabbed = false);
+
         if (displayWindow == null)
             return;
 
@@ -222,6 +242,8 @@ public final class Display
 
     public static void grabCursor()
     {
+        cursorHidden = cursorGrabbed = true;
+
         if (displayWindow == null)
             return;
 
@@ -230,6 +252,8 @@ public final class Display
 
     public static void showCursor()
     {
+        cursorHidden = cursorGrabbed = false;
+
         if (displayWindow == null)
             return;
 
@@ -238,6 +262,12 @@ public final class Display
 
     public static void setCursor(Cursor cursor)
     {
+        if (cursor == null)
+            cursor = defaultCursor;
+
+        Display.cursor = cursor;
+        showCursor();
+
         if (displayWindow == null)
             return;
 
@@ -246,10 +276,11 @@ public final class Display
 
     public static void destroy()
     {
-        if (displayWindow == null)
-            return;
+        if (displayWindow != null)
+            displayWindow.destroy();
 
-        displayWindow.destroy();
+        if (defaultCursor != null)
+            defaultCursor.destroy();
     }
 
     public static boolean wasResized()
@@ -485,12 +516,13 @@ public final class Display
 
         Display.fullScreen = fullScreen;
 
-        if (displayWindow == null)
-            return;
-
         if (fullScreen)
         {
-            VideoMode videoMode = Monitor.getPrimaryMonitor().getVideoMode();
+            if (monitor == null)
+                monitor = Monitor.getPrimaryMonitor();
+
+            if (videoMode == null)
+                videoMode = monitor.getVideoMode();
 
             // Save window size
             oldWidth = width;
@@ -502,8 +534,6 @@ public final class Display
 
             width = videoMode.getWidth();
             height = videoMode.getHeight();
-
-            monitor = Monitor.getPrimaryMonitor();
         }
         else
         {
@@ -516,7 +546,11 @@ public final class Display
             posY = oldPosY;
 
             monitor = null;
+            videoMode = null;
         }
+
+        if (displayWindow == null)
+            return;
 
         // Create new window
         Window fsDisplayWindow = createWindow(width, height, displayWindow.getTitle(), monitor, displayWindow);

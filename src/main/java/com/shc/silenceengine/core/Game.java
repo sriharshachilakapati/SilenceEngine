@@ -231,6 +231,10 @@ public class Game implements IUpdatable
         if (!GLFW3.init())
             throw new SilenceException("Error initializing GLFW. Your system is unsupported.");
 
+        // Default Display properties
+        Display.setSize(800, 600);
+        Display.centerOnScreen();
+
         // The preInit() method, called before anything else is loaded
         preInit();
 
