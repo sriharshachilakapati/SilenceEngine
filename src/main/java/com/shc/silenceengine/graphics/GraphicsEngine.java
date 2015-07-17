@@ -111,7 +111,6 @@ public class GraphicsEngine implements IEngine
         // Static Mesh map
         staticMeshMap = new HashMap<>();
 
-
         Display.show();
         Display.centerOnScreen();
     }

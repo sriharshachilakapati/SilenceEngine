@@ -26,6 +26,7 @@ package com.shc.silenceengine.core.glfw;
 
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.glfw.callbacks.*;
+import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector4;
@@ -755,6 +756,9 @@ public class Window
     {
         glfwMakeContextCurrent(handle);
         GLContext.createFromCurrent();
+
+        Vector2 size = getSize();
+        GL3Context.viewport(0, 0, size.x, size.y);
     }
 
     /**

@@ -59,6 +59,8 @@ public final class Display
     private static int width  = 800;
     private static int height = 600;
 
+    private static String title = "SilenceEngine Window";
+
     // Remember old values to restore
     private static int oldWidth;
     private static int oldHeight;
@@ -76,7 +78,7 @@ public final class Display
      */
     public static void create()
     {
-        displayWindow = createWindow(width, height, "SilenceEngine Window", monitor, null);
+        displayWindow = createWindow(width, height, title, monitor, null);
         displayWindow.makeCurrent();
         displayWindow.show();
     }
@@ -84,6 +86,19 @@ public final class Display
     private static Window createWindow(int width, int height, String title, Monitor monitor, Window share)
     {
         setHints();
+
+        if (fullScreen)
+        {
+            if (monitor == null)
+                monitor = Monitor.getPrimaryMonitor();
+
+            if (videoMode == null)
+                videoMode = monitor.getVideoMode();
+
+            width = videoMode.getWidth();
+            height = videoMode.getHeight();
+        }
+
         Window window = new Window(width, height, title, monitor, share);
         window.makeCurrent();
         setCallbacks(window);
@@ -176,13 +191,14 @@ public final class Display
 
     public static void setPosition(int x, int y)
     {
-        if (displayWindow == null || fullScreen)
+        if (fullScreen)
             return;
 
         Display.posX = x;
         Display.posY = y;
 
-        displayWindow.setPosition(x, y);
+        if (displayWindow != null)
+            displayWindow.setPosition(x, y);
     }
 
     public static void makeCurrent()
@@ -277,12 +293,11 @@ public final class Display
 
     public static void setSize(int width, int height)
     {
-        if (displayWindow == null)
-            return;
-
         Display.width = width;
         Display.height = height;
-        displayWindow.setSize(width, height);
+
+        if (displayWindow != null)
+            displayWindow.setSize(width, height);
     }
 
     public static int getWidth()
@@ -292,11 +307,7 @@ public final class Display
 
     public static void setWidth(int width)
     {
-        if (displayWindow == null)
-            return;
-
-        Display.width = width;
-        displayWindow.setSize(width, getHeight());
+        setSize(width, height);
     }
 
     public static Vector2 getPosition()
@@ -324,11 +335,7 @@ public final class Display
 
     public static void setHeight(int height)
     {
-        if (displayWindow == null)
-            return;
-
-        Display.height = height;
-        displayWindow.setSize(getWidth(), height);
+        setSize(width, height);
     }
 
     public static boolean isResizable()
@@ -346,19 +353,22 @@ public final class Display
         if (fullScreen)
             return;
 
-        Window resizableWindow = createWindow(width, height, getTitle(), monitor, displayWindow);
+        if (displayWindow != null)
+        {
+            Window resizableWindow = createWindow(width, height, getTitle(), monitor, displayWindow);
 
-        displayWindow.destroy();
-        displayWindow = resizableWindow;
-        displayWindow.makeCurrent();
+            displayWindow.destroy();
+            displayWindow = resizableWindow;
+            displayWindow.makeCurrent();
 
-        dirty = true;
+            dirty = true;
 
-        hide();
-        show();
+            hide();
+            show();
 
-        // Update the Display
-        update();
+            // Update the Display
+            update();
+        }
     }
 
     public static boolean isDecorated()
@@ -376,19 +386,22 @@ public final class Display
         if (fullScreen)
             return;
 
-        Window newWindow = createWindow(width, height, getTitle(), monitor, displayWindow);
+        if (displayWindow != null)
+        {
+            Window newWindow = createWindow(width, height, getTitle(), monitor, displayWindow);
 
-        displayWindow.destroy();
-        displayWindow = newWindow;
-        displayWindow.makeCurrent();
+            displayWindow.destroy();
+            displayWindow = newWindow;
+            displayWindow.makeCurrent();
 
-        dirty = true;
+            dirty = true;
 
-        hide();
-        show();
+            hide();
+            show();
 
-        // Update the Display
-        update();
+            // Update the Display
+            update();
+        }
     }
 
     public static String getTitle()
@@ -398,10 +411,10 @@ public final class Display
 
     public static void setTitle(String title)
     {
-        if (displayWindow == null)
-            return;
+        Display.title = title;
 
-        displayWindow.setTitle(title);
+        if (displayWindow != null)
+            displayWindow.setTitle(title);
     }
 
     public static void hide()
@@ -472,6 +485,9 @@ public final class Display
 
         Display.fullScreen = fullScreen;
 
+        if (displayWindow == null)
+            return;
+
         if (fullScreen)
         {
             VideoMode videoMode = Monitor.getPrimaryMonitor().getVideoMode();
@@ -531,13 +547,16 @@ public final class Display
         if (Display.videoMode == videoMode)
             return;
 
+        Display.videoMode = videoMode;
+
+        if (displayWindow == null)
+            return;
+
         if (videoMode == null)
         {
             setFullScreen(false);
             return;
         }
-
-        Display.videoMode = videoMode;
 
         setFullScreen(true);
         setSize(videoMode.getWidth(), videoMode.getHeight());
@@ -558,9 +577,12 @@ public final class Display
             return;
 
         Display.monitor = monitor;
-        Display.fullScreen = true;
+        Display.fullScreen = monitor != null;
 
-        videoMode = Monitor.getPrimaryMonitor().getVideoMode();
+        if (displayWindow == null)
+            return;
+
+        videoMode = monitor == null ? Monitor.getPrimaryMonitor().getVideoMode() : monitor.getVideoMode();
 
         // Save window size
         oldWidth = width;

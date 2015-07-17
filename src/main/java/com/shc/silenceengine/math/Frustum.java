@@ -263,6 +263,9 @@ public class Frustum
 
     public boolean intersects(Vector3 position, float radius)
     {
+        if (isInside(position))
+            return true;
+
         for (Plane plane : planes)
             if (plane.normal.dot(position) + radius + plane.d < 0)
                 return false;

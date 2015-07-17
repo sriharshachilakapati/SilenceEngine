@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.core;
 
+import com.shc.silenceengine.core.glfw.GLFW3;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Graphics2D;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
@@ -224,8 +225,13 @@ public class Game implements IUpdatable
     {
         instance = this;
 
-        // The preInit() method, called before anything else is loaded
         NativesLoader.loadLWJGL();
+
+        // Initialize GLFW
+        if (!GLFW3.init())
+            throw new SilenceException("Error initializing GLFW. Your system is unsupported.");
+
+        // The preInit() method, called before anything else is loaded
         preInit();
 
         // Initialize SilenceEngine

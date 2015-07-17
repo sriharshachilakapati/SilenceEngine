@@ -57,6 +57,12 @@ public class OBJModelTest extends Game
         new OBJModelTest().start();
     }
 
+    public void preInit()
+    {
+        Display.setTitle("OBJ Model Test");
+        Display.setSize(1280, 720);
+    }
+
     public void init()
     {
         cam = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.01f, 100f);

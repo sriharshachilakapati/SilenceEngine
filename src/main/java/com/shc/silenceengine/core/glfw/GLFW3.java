@@ -34,6 +34,7 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.system.MemoryUtil.*;
 
 /**
  * Provides Java-ified versions of the GLFW methods. Use the methods of this class if you want to use the other classes
@@ -48,6 +49,8 @@ public final class GLFW3
     // The error callbacks
     private static GLFWErrorCallback glfwErrorCallback;
     private static IErrorCallback    errorCallback;
+
+    private static boolean initialized = false;
 
     /**
      * Prevent instantiation for a static utility class.
@@ -64,11 +67,14 @@ public final class GLFW3
      */
     public static boolean init()
     {
+        if (isInitialized())
+            return true;
+
         int state = glfwInit();
 
         // Return immediately in case of error
         if (state == 0)
-            return false;
+            return initialized = false;
 
         // Error callback that does nothing
         setErrorCallback(null);
@@ -79,7 +85,7 @@ public final class GLFW3
         // Register the callback
         glfwSetErrorCallback(glfwErrorCallback);
 
-        return true;
+        return initialized = true;
     }
 
     /**
@@ -182,13 +188,9 @@ public final class GLFW3
      */
     public static Vector3 getVersion()
     {
-        IntBuffer major = BufferUtils.createIntBuffer(1);
-        IntBuffer minor = BufferUtils.createIntBuffer(1);
-        IntBuffer rev = BufferUtils.createIntBuffer(1);
-
-        glfwGetVersion(major, minor, rev);
-
-        return new Vector3(major.get(), minor.get(), rev.get());
+        IntBuffer version = BufferUtils.createIntBuffer(3);
+        nglfwGetVersion(memAddress(version), memAddress(version) + Integer.BYTES, memAddress(version) + 2 * Integer.BYTES);
+        return new Vector3(version.get(0), version.get(1), version.get(2));
     }
 
     /**
@@ -216,9 +218,23 @@ public final class GLFW3
      */
     public static void terminate()
     {
+        if (!isInitialized())
+            return;
+
         if (glfwErrorCallback != null)
             glfwErrorCallback.release();
 
         glfwTerminate();
+        initialized = false;
+    }
+
+    /**
+     * Returns whether GLFW3 has been initialized or not.
+     *
+     * @return True if GLFW3 is initialized with {@link #init()}. False otherwise.
+     */
+    public static boolean isInitialized()
+    {
+        return initialized;
     }
 }
