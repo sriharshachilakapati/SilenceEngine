@@ -150,9 +150,9 @@ public class SpriteBatchTest extends Game
         for (int i = 0; i < 10; i++)
         {
             sprites.get(i).set((MathUtils.random_range(0, 2) == 0) ? sprite1 : sprite2)
-                          .setScaleX(MathUtils.random_range(1, 3))
-                          .setScaleY(MathUtils.random_range(1, 3))
-                          .setRotation(MathUtils.random(360));
+                    .setScaleX(MathUtils.random_range(1, 3))
+                    .setScaleY(MathUtils.random_range(1, 3))
+                    .setRotation(MathUtils.random(360));
         }
 
         int i = 0;

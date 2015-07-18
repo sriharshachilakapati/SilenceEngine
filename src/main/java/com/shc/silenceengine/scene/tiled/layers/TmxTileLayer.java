@@ -26,8 +26,8 @@ package com.shc.silenceengine.scene.tiled.layers;
 
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.scene.tiled.TmxMap;
-import com.shc.silenceengine.scene.tiled.tiles.TmxMapTile;
 import com.shc.silenceengine.scene.tiled.TmxTileSet;
+import com.shc.silenceengine.scene.tiled.tiles.TmxMapTile;
 import com.shc.silenceengine.utils.CompressionUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

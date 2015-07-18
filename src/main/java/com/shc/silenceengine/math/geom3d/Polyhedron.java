@@ -222,17 +222,17 @@ public class Polyhedron
         return position;
     }
 
-    public Vector3 getScale()
-    {
-        return scale;
-    }
-
     public void setPosition(Vector3 position)
     {
         this.position.set(position);
 
         if (bounds != null)
             bounds.setPosition(position);
+    }
+
+    public Vector3 getScale()
+    {
+        return scale;
     }
 
     public int vertexCount()

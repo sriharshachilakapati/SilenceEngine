@@ -45,7 +45,7 @@ public final class CompressionUtils
     public static byte[] compressGZIP(byte[] data) throws IOException
     {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ByteArrayInputStream  inputStream = new ByteArrayInputStream(data);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
 
         GZIPOutputStream gzipOutputStream = new GZIPOutputStream(outputStream);
 

@@ -731,6 +731,14 @@ public class FilePath
     }
 
     @Override
+    public int hashCode()
+    {
+        int result = getPath().hashCode();
+        result = 31 * result + getType().hashCode();
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -739,14 +747,6 @@ public class FilePath
         FilePath filePath = (FilePath) o;
 
         return getPath().equals(filePath.getPath()) && getType() == filePath.getType();
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = getPath().hashCode();
-        result = 31 * result + getType().hashCode();
-        return result;
     }
 
     @Override

@@ -24,9 +24,7 @@
 
 package com.shc.silenceengine.scene.tiled.tiles;
 
-import static com.shc.silenceengine.scene.tiled.TmxMap.FLIPPED_HORIZONTALLY_FLAG;
-import static com.shc.silenceengine.scene.tiled.TmxMap.FLIPPED_VERTICALLY_FLAG;
-import static com.shc.silenceengine.scene.tiled.TmxMap.FLIPPED_DIAGONALLY_FLAG;
+import static com.shc.silenceengine.scene.tiled.TmxMap.*;
 
 /**
  * @author Sri Harsha Chilakapati

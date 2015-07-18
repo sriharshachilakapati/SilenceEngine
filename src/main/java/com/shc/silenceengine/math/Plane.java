@@ -134,12 +134,11 @@ public class Plane
     }
 
     @Override
-    public String toString()
+    public int hashCode()
     {
-        return "Plane{" +
-               "normal=" + normal +
-               ", d=" + d +
-               '}';
+        int result = normal.hashCode();
+        result = 31 * result + (d != +0.0f ? Float.floatToIntBits(d) : 0);
+        return result;
     }
 
     @Override
@@ -155,11 +154,12 @@ public class Plane
     }
 
     @Override
-    public int hashCode()
+    public String toString()
     {
-        int result = normal.hashCode();
-        result = 31 * result + (d != +0.0f ? Float.floatToIntBits(d) : 0);
-        return result;
+        return "Plane{" +
+               "normal=" + normal +
+               ", d=" + d +
+               '}';
     }
 
     public enum Side

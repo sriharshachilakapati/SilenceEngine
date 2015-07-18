@@ -39,53 +39,19 @@ import com.shc.silenceengine.scene.tiled.tiles.TmxMapTile;
  */
 public class TmxIsometricMapRenderer extends TmxMapRenderer
 {
+    private Vector2 tempVector = new Vector2();
+
     public TmxIsometricMapRenderer(TmxMap map)
     {
         super(map);
     }
-
-    @Override
-    protected void renderImageLayer(Batcher batcher, TmxImageLayer imageLayer)
-    {
-        if (!imageLayer.isVisible())
-            return;
-
-        Texture originalTexture = Texture.CURRENT;
-
-        textureMap.get(imageLayer.getImage().getSource().getAbsolutePath()).bind();
-        batcher.begin(Primitive.TRIANGLE_FAN);
-        {
-            float tileWidth = map.getTileWidth();
-            float tileHeight = map.getTileHeight();
-
-            float posX = (imageLayer.getY() * tileWidth/2) + (imageLayer.getX() * tileWidth/2);
-            float posY = (imageLayer.getX() * tileHeight/2) - (imageLayer.getY() * tileHeight/2);
-
-            batcher.vertex(posX, posY);
-            batcher.texCoord(0, 0);
-
-            batcher.vertex(posX + imageLayer.getWidth() * map.getTileWidth(), posY);
-            batcher.texCoord(1, 0);
-
-            batcher.vertex(posX + imageLayer.getWidth() * map.getTileWidth(), imageLayer.getY() + imageLayer.getHeight() * map.getTileHeight());
-            batcher.texCoord(1, 1);
-
-            batcher.vertex(posX, imageLayer.getY() + imageLayer.getHeight() * map.getTileHeight());
-            batcher.texCoord(0, 1);
-        }
-        batcher.end();
-
-        originalTexture.bind();
-    }
-
-    private Vector2 tempVector = new Vector2();
 
     private Vector2 orthoToIso(float x, float y)
     {
         tempVector.x = (x - y) * map.getTileWidth() / 2;
         tempVector.y = (x + y) * map.getTileHeight() / 2;
 
-        return tempVector.addSelf(map.getWidth() * map.getTileWidth() / 2,0);
+        return tempVector.addSelf(map.getWidth() * map.getTileWidth() / 2, 0);
     }
 
     @Override
@@ -107,6 +73,40 @@ public class TmxIsometricMapRenderer extends TmxMapRenderer
             batcher.color(map.getBackgroundColor());
         }
         batcher.end();
+    }
+
+    @Override
+    protected void renderImageLayer(Batcher batcher, TmxImageLayer imageLayer)
+    {
+        if (!imageLayer.isVisible())
+            return;
+
+        Texture originalTexture = Texture.CURRENT;
+
+        textureMap.get(imageLayer.getImage().getSource().getAbsolutePath()).bind();
+        batcher.begin(Primitive.TRIANGLE_FAN);
+        {
+            float tileWidth = map.getTileWidth();
+            float tileHeight = map.getTileHeight();
+
+            float posX = (imageLayer.getY() * tileWidth / 2) + (imageLayer.getX() * tileWidth / 2);
+            float posY = (imageLayer.getX() * tileHeight / 2) - (imageLayer.getY() * tileHeight / 2);
+
+            batcher.vertex(posX, posY);
+            batcher.texCoord(0, 0);
+
+            batcher.vertex(posX + imageLayer.getWidth() * map.getTileWidth(), posY);
+            batcher.texCoord(1, 0);
+
+            batcher.vertex(posX + imageLayer.getWidth() * map.getTileWidth(), imageLayer.getY() + imageLayer.getHeight() * map.getTileHeight());
+            batcher.texCoord(1, 1);
+
+            batcher.vertex(posX, imageLayer.getY() + imageLayer.getHeight() * map.getTileHeight());
+            batcher.texCoord(0, 1);
+        }
+        batcher.end();
+
+        originalTexture.bind();
     }
 
     @Override
@@ -192,7 +192,7 @@ public class TmxIsometricMapRenderer extends TmxMapRenderer
                     batcher.vertex(orthoToIso(x, y).addSelf(-tileWidth / 2, 0).addSelf(0, 0));
                     batcher.texCoord(minU + uvCorrectionX, minV + uvCorrectionY);
 
-                    batcher.vertex(orthoToIso(x, y).addSelf(-tileWidth/2, 0).addSelf(flipZ ? 0 : tileWidth, flipZ ? tileHeight : 0));
+                    batcher.vertex(orthoToIso(x, y).addSelf(-tileWidth / 2, 0).addSelf(flipZ ? 0 : tileWidth, flipZ ? tileHeight : 0));
                     batcher.texCoord(maxU - uvCorrectionX, minV + uvCorrectionY);
 
                     batcher.vertex(orthoToIso(x, y).addSelf(-tileWidth / 2, 0).addSelf(flipZ ? tileWidth : 0, flipZ ? 0 : tileHeight));

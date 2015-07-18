@@ -43,20 +43,8 @@ import java.util.Map;
  */
 public abstract class TmxMapRenderer
 {
-    protected TmxMap map;
+    protected TmxMap               map;
     protected Map<String, Texture> textureMap;
-
-    public static TmxMapRenderer create(TmxMap map)
-    {
-        switch (map.getOrientation())
-        {
-            case ISOMETRIC:  return new TmxIsometricMapRenderer(map);
-            case ORTHOGONAL: return new TmxOrthogonalMapRenderer(map);
-        }
-
-        throw new SilenceException("A TmxMapRenderer has not yet been implemented for "
-                                   + map.getOrientation() + " orientation");
-    }
 
     public TmxMapRenderer(TmxMap map)
     {
@@ -79,6 +67,20 @@ public abstract class TmxMapRenderer
             if (!textureMap.containsKey(path.getAbsolutePath()))
                 textureMap.put(path.getAbsolutePath(), Texture.fromFilePath(path));
         }
+    }
+
+    public static TmxMapRenderer create(TmxMap map)
+    {
+        switch (map.getOrientation())
+        {
+            case ISOMETRIC:
+                return new TmxIsometricMapRenderer(map);
+            case ORTHOGONAL:
+                return new TmxOrthogonalMapRenderer(map);
+        }
+
+        throw new SilenceException("A TmxMapRenderer has not yet been implemented for "
+                                   + map.getOrientation() + " orientation");
     }
 
     public void render(Batcher batcher)

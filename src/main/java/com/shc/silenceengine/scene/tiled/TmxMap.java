@@ -313,10 +313,18 @@ public class TmxMap
         {
             switch (element.getAttribute("renderorder").trim().toLowerCase())
             {
-                case "right-down": renderOrder = RenderOrder.RIGHT_DOWN; break;
-                case "right-up":   renderOrder = RenderOrder.RIGHT_UP;   break;
-                case "left-down":  renderOrder = RenderOrder.LEFT_DOWN;  break;
-                case "left-up":    renderOrder = RenderOrder.LEFT_UP;    break;
+                case "right-down":
+                    renderOrder = RenderOrder.RIGHT_DOWN;
+                    break;
+                case "right-up":
+                    renderOrder = RenderOrder.RIGHT_UP;
+                    break;
+                case "left-down":
+                    renderOrder = RenderOrder.LEFT_DOWN;
+                    break;
+                case "left-up":
+                    renderOrder = RenderOrder.LEFT_UP;
+                    break;
             }
         }
 
@@ -324,8 +332,12 @@ public class TmxMap
         {
             switch (element.getAttribute("staggeraxis").trim().toLowerCase())
             {
-                case "x": staggerAxis = StaggerAxis.AXIS_X; break;
-                case "y": staggerAxis = StaggerAxis.AXIS_Y; break;
+                case "x":
+                    staggerAxis = StaggerAxis.AXIS_X;
+                    break;
+                case "y":
+                    staggerAxis = StaggerAxis.AXIS_Y;
+                    break;
             }
         }
 
@@ -333,8 +345,12 @@ public class TmxMap
         {
             switch (element.getAttribute("staggerindex").trim().toLowerCase())
             {
-                case "even": staggerIndex = StaggerIndex.EVEN; break;
-                case "odd":  staggerIndex = StaggerIndex.ODD;  break;
+                case "even":
+                    staggerIndex = StaggerIndex.EVEN;
+                    break;
+                case "odd":
+                    staggerIndex = StaggerIndex.ODD;
+                    break;
             }
         }
 

@@ -63,45 +63,6 @@ public class TmxMapTest extends Game
         this.map = map;
     }
 
-    @Override
-    public void init()
-    {
-        camera = new OrthoCam(Display.getWidth(), Display.getHeight());
-        renderer = TmxMapRenderer.create(map);
-
-        SilenceEngine.graphics.setClearColor(Color.GRAY);
-    }
-
-    @Override
-    public void update(float delta)
-    {
-        if (Keyboard.isClicked(Keyboard.KEY_ESCAPE))
-            Game.end();
-
-        Display.setTitle("SilenceEngine TmxMapTest | FPS: " + getFPS() +
-                         " | UPS: " + getUPS() + " | RC: " + SilenceEngine.graphics.renderCallsPerFrame);
-    }
-
-    @Override
-    public void render(float delta, Batcher batcher)
-    {
-        camera.apply();
-        renderer.render(batcher);
-    }
-
-    @Override
-    public void resize()
-    {
-        camera.initProjection(Display.getWidth(), Display.getHeight());
-        camera.center(map.getWidth() * map.getTileWidth() / 2, map.getHeight() * map.getTileHeight() / 2);
-    }
-
-    @Override
-    public void dispose()
-    {
-        renderer.dispose();
-    }
-
     public static void main(String[] args) throws IOException
     {
         Logger.setPrintTimeStamps(false);
@@ -246,5 +207,44 @@ public class TmxMapTest extends Game
         Logger.log("======================================================================================");
         Logger.log(title);
         Logger.log("======================================================================================");
+    }
+
+    @Override
+    public void init()
+    {
+        camera = new OrthoCam(Display.getWidth(), Display.getHeight());
+        renderer = TmxMapRenderer.create(map);
+
+        SilenceEngine.graphics.setClearColor(Color.GRAY);
+    }
+
+    @Override
+    public void resize()
+    {
+        camera.initProjection(Display.getWidth(), Display.getHeight());
+        camera.center(map.getWidth() * map.getTileWidth() / 2, map.getHeight() * map.getTileHeight() / 2);
+    }
+
+    @Override
+    public void update(float delta)
+    {
+        if (Keyboard.isClicked(Keyboard.KEY_ESCAPE))
+            Game.end();
+
+        Display.setTitle("SilenceEngine TmxMapTest | FPS: " + getFPS() +
+                         " | UPS: " + getUPS() + " | RC: " + SilenceEngine.graphics.renderCallsPerFrame);
+    }
+
+    @Override
+    public void render(float delta, Batcher batcher)
+    {
+        camera.apply();
+        renderer.render(batcher);
+    }
+
+    @Override
+    public void dispose()
+    {
+        renderer.dispose();
     }
 }

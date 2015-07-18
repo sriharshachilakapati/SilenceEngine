@@ -283,7 +283,8 @@ public class Entity2D implements IUpdatable
      * Renders this entity using a SpriteBatch and a delta time. The SpriteBatch must be active before calling this
      * method. This also takes delta time into account.
      *
-     * @param delta The delta-time. A fraction between 0 and 1, where 0 means this exact frame, and 1 means we're in lag.
+     * @param delta The delta-time. A fraction between 0 and 1, where 0 means this exact frame, and 1 means we're in
+     *              lag.
      * @param batch The SpriteBatch to which the sprite should be submitted to be rendered.
      */
     public void render(float delta, SpriteBatch batch)
@@ -533,6 +534,19 @@ public class Entity2D implements IUpdatable
     }
 
     @Override
+    public int hashCode()
+    {
+        int result = getSprite().hashCode();
+        result = 31 * result + getPosition().hashCode();
+        result = 31 * result + getVelocity().hashCode();
+        result = 31 * result + getPolygon().hashCode();
+        result = 31 * result + getDepth();
+        result = 31 * result + getID();
+        result = 31 * result + (isDestroyed() ? 1 : 0);
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -547,18 +561,5 @@ public class Entity2D implements IUpdatable
                getPosition().equals(entity2D.getPosition()) &&
                getVelocity().equals(entity2D.getVelocity()) &&
                getPolygon().equals(entity2D.getPolygon());
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = getSprite().hashCode();
-        result = 31 * result + getPosition().hashCode();
-        result = 31 * result + getVelocity().hashCode();
-        result = 31 * result + getPolygon().hashCode();
-        result = 31 * result + getDepth();
-        result = 31 * result + getID();
-        result = 31 * result + (isDestroyed() ? 1 : 0);
-        return result;
     }
 }

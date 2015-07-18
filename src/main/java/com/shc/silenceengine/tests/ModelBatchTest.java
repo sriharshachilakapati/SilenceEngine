@@ -53,7 +53,7 @@ public class ModelBatchTest extends Game
     private PerspCam        camera;
     private List<Transform> transforms;
     private Transform       transform;
-    private PointLight camLight;
+    private PointLight      camLight;
 
     public static void main(String[] args)
     {

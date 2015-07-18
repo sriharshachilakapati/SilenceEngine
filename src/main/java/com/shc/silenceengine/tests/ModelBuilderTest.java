@@ -50,8 +50,8 @@ import java.io.BufferedWriter;
  */
 public class ModelBuilderTest extends Game
 {
-    private Model model;
-    private PerspCam cam;
+    private Model      model;
+    private PerspCam   cam;
     private PointLight camLight;
 
     private Scene3D scene;
@@ -81,34 +81,9 @@ public class ModelBuilderTest extends Game
         scene.addComponent(camLight);
     }
 
-    private void printMesh(Mesh mesh, FilePath path)
+    public void resize()
     {
-        try (BufferedWriter writer = new BufferedWriter(path.getWriter()))
-        {
-            for (Face face : mesh.getFaces())
-            {
-                Vector3 v1 = mesh.getVertices().get((int) face.vertexIndex.x);
-                Vector3 v2 = mesh.getVertices().get((int) face.vertexIndex.y);
-                Vector3 v3 = mesh.getVertices().get((int) face.vertexIndex.z);
-
-                Vector3 n1 = mesh.getNormals().get((int) face.normalIndex.x);
-                Vector3 n2 = mesh.getNormals().get((int) face.normalIndex.y);
-                Vector3 n3 = mesh.getNormals().get((int) face.normalIndex.z);
-
-                writer.write(v1.toString() + " " + n1.toString());
-                writer.newLine();
-                writer.write(v2.toString() + " " + n2.toString());
-                writer.newLine();
-                writer.write(v3.toString() + " " + n3.toString());
-                writer.newLine();
-            }
-
-            writer.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        cam.initProjection(70, Display.getAspectRatio(), 0.1f, 100f);
     }
 
     public void update(float delta)
@@ -158,14 +133,39 @@ public class ModelBuilderTest extends Game
         scene.render(delta);
     }
 
-    public void resize()
-    {
-        cam.initProjection(70, Display.getAspectRatio(), 0.1f, 100f);
-    }
-
     public void dispose()
     {
         scene.destroy();
         model.dispose();
+    }
+
+    private void printMesh(Mesh mesh, FilePath path)
+    {
+        try (BufferedWriter writer = new BufferedWriter(path.getWriter()))
+        {
+            for (Face face : mesh.getFaces())
+            {
+                Vector3 v1 = mesh.getVertices().get((int) face.vertexIndex.x);
+                Vector3 v2 = mesh.getVertices().get((int) face.vertexIndex.y);
+                Vector3 v3 = mesh.getVertices().get((int) face.vertexIndex.z);
+
+                Vector3 n1 = mesh.getNormals().get((int) face.normalIndex.x);
+                Vector3 n2 = mesh.getNormals().get((int) face.normalIndex.y);
+                Vector3 n3 = mesh.getNormals().get((int) face.normalIndex.z);
+
+                writer.write(v1.toString() + " " + n1.toString());
+                writer.newLine();
+                writer.write(v2.toString() + " " + n2.toString());
+                writer.newLine();
+                writer.write(v3.toString() + " " + n3.toString());
+                writer.newLine();
+            }
+
+            writer.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }
