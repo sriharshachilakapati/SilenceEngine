@@ -26,7 +26,6 @@ package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
-import com.shc.silenceengine.core.ResourceLoader;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
@@ -112,6 +111,6 @@ public class Graphics2DTest extends Game
 
     public void dispose()
     {
-        ResourceLoader.getInstance().dispose();
+        texture.dispose();
     }
 }

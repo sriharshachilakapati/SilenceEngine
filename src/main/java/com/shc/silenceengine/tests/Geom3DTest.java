@@ -54,7 +54,8 @@ public class Geom3DTest extends Game
     private Cuboid cube;
     private Sphere sphere;
 
-    private TrueTypeFont hudFont;
+    private TrueTypeFont   hudFont;
+    private ResourceLoader resourceLoader;
 
     public static void main(String[] args)
     {
@@ -63,11 +64,13 @@ public class Geom3DTest extends Game
 
     public void init()
     {
-        ResourceLoader loader = ResourceLoader.getInstance();
-        int fontID = loader.defineFont("Hobo Std", TrueTypeFont.STYLE_NORMAL, 16);
-        loader.startLoading();
+        resourceLoader = new ResourceLoader();
 
-        hudFont = loader.getFont(fontID);
+        int fontID = resourceLoader.loadResource(TrueTypeFont.class, "Hobo Std");
+        resourceLoader.startLoading();
+
+        hudFont = resourceLoader.getResource(fontID);
+        hudFont.setSize(16f);
 
         camera = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.1f, 100f);
         camera.setPosition(new Vector3(-2, -2, 5));
@@ -186,6 +189,6 @@ public class Geom3DTest extends Game
 
     public void dispose()
     {
-        ResourceLoader.getInstance().dispose();
+        resourceLoader.dispose();
     }
 }

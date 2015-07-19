@@ -26,7 +26,6 @@ package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.audio.Sound;
 import com.shc.silenceengine.core.glfw.Window;
-import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Graphics2D;
 import com.shc.silenceengine.graphics.Paint;
@@ -34,68 +33,136 @@ import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.models.Model;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.utils.FileUtils;
+import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.utils.IDGenerator;
 import com.shc.silenceengine.utils.MathUtils;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 /**
+ * The ResourceLoader is used to load resources asynchronously in a separate thread, so you can display a progress bar
+ * and let the player not get bored by showing him a un-responsive black window.
+ *
  * @author Sri Harsha Chilakapati
  * @author Gamefreak0
  */
-public final class ResourceLoader
+public class ResourceLoader
 {
-    private static ResourceLoader instance;
+    private static Map<Class<?>, IResourceLoadHelper> loadHelpers;
 
-    private Window loaderWindow;
+    private BlockingQueue<ResourceLoadEvent> loadEvents;
 
-    private Map<Integer, Texture>      textures;
-    private Map<Integer, TrueTypeFont> fonts;
-    private Map<Integer, Sound>        sounds;
-    private Map<Integer, Model>        models;
-    private Map<String, Integer>       texturesToLoad;
-    private Map<String, Integer>       fontsToLoad;
-    private Map<String, Integer>       soundsToLoad;
-    private Map<String, Integer>       modelsToLoad;
+    private Map<FilePath, Class<?>>  toBeLoaded;
+    private Map<Integer, FilePath>   idMap;
+    private Map<FilePath, IResource> loaded;
+    private IProgressRenderCallback  progressRenderCallback;
 
-    private IRenderProgressCallback renderProgressCallback;
-
-    private int numLoaded;
-    private String fileInfo = "";
-
-    private float smoothedProgress;
-
+    private Window  loaderWindow;
     private Texture logo;
-    private Paint   progressPaint;
-    private Paint   progressPaint2;
 
-    private ResourceLoader()
+    private Paint progressPaint;
+    private Paint progressPaint2;
+
+    public ResourceLoader()
     {
-        textures = new HashMap<>();
-        fonts = new HashMap<>();
-        sounds = new HashMap<>();
-        models = new HashMap<>();
-        texturesToLoad = new HashMap<>();
-        fontsToLoad = new HashMap<>();
-        soundsToLoad = new HashMap<>();
-        modelsToLoad = new HashMap<>();
+        toBeLoaded = new HashMap<>();
+        idMap = new HashMap<>();
+        loaded = new HashMap<>();
+        setLogo(FilePath.getResourceFile("resources/logo.png"));
 
-        numLoaded = 0;
-
-        setRenderProgressCallback(this::defaultRenderProgressCallback);
+        progressRenderCallback = this::defaultRenderProgressCallback;
     }
 
-    public static ResourceLoader getInstance()
+    public static void setHelper(Class<?> clazz, IResourceLoadHelper loadHelper)
     {
-        if (instance == null)
-            instance = new ResourceLoader();
-
-        return instance;
+        loadHelpers.put(clazz, loadHelper);
     }
 
-    public void defaultRenderProgressCallback(Batcher batcher, float percentage, String file)
+    private static void textureLoadHelper(FilePath path, ResourceLoader loader)
+    {
+        try
+        {
+            ResourceLoadEvent event = new ResourceLoadEvent();
+            loader.loadEvents.put(event);
+
+            event.info = "Loading texture: " + path.getPath();
+            event.percentage = loader.getProgress();
+
+            Texture texture = Texture.fromFilePath(path);
+            loader.loaded.put(path, texture);
+        }
+        catch (Exception e)
+        {
+            SilenceException.reThrow(e);
+        }
+    }
+
+    private static void soundLoadHelper(FilePath path, ResourceLoader loader)
+    {
+        try
+        {
+            ResourceLoadEvent event = new ResourceLoadEvent();
+            loader.loadEvents.put(event);
+
+            event.info = "Loading sound: " + path.getPath();
+            event.percentage = loader.getProgress();
+            Sound sound = SilenceEngine.audio.getSound(path.getInputStream(), path.getExtension());
+            loader.loaded.put(path, sound);
+        }
+        catch (Exception e)
+        {
+            SilenceException.reThrow(e);
+        }
+    }
+
+    private static void modelLoadHelper(FilePath path, ResourceLoader loader)
+    {
+        try
+        {
+            ResourceLoadEvent event = new ResourceLoadEvent();
+            loader.loadEvents.put(event);
+
+            event.info = "Loading model: " + path.getPath();
+            event.percentage = loader.getProgress();
+
+            Model model = Model.load(path);
+            loader.loaded.put(path, model);
+        }
+        catch (Exception e)
+        {
+            SilenceException.reThrow(e);
+        }
+    }
+
+    private static void fontLoadHelper(FilePath path, ResourceLoader loader)
+    {
+        try
+        {
+            ResourceLoadEvent event = new ResourceLoadEvent();
+            loader.loadEvents.put(event);
+
+            event.info = "Loading font: " + path.getPath();
+            event.percentage = loader.getProgress();
+
+            TrueTypeFont font;
+
+            if (!path.exists() && !path.getExtension().equalsIgnoreCase("ttf"))
+                font = new TrueTypeFont(path.getName());
+            else
+                font = new TrueTypeFont(path.getInputStream());
+
+            loader.loaded.put(path, font);
+        }
+        catch (Exception e)
+        {
+            SilenceException.reThrow(e);
+        }
+    }
+
+    public void defaultRenderProgressCallback(String info, float percentage)
     {
         if (progressPaint == null)
         {
@@ -103,8 +170,8 @@ public final class ResourceLoader
             progressPaint2 = new Paint(Color.GREEN);
         }
 
-        // Bring percentage to a scale of 100 - width - 100
-        float actualPercentage = MathUtils.convertRange(percentage, 0, 100, 100, Display.getWidth() - 100);
+        // Bring percentage to a scale of 0 - width - 100
+        float actualPercentage = MathUtils.convertRange(percentage, 0, 100, 0, Display.getWidth() - 100);
 
         // Draw using Graphics2D
         Graphics2D g2d = SilenceEngine.graphics.getGraphics2D();
@@ -138,237 +205,159 @@ public final class ResourceLoader
         g2d.fillRect(50, Display.getHeight() - 75, actualPercentage, 25);
         g2d.setPaint(progressPaint2);
         g2d.drawLine(50, Display.getHeight() - 50, Display.getWidth() - 50, Display.getHeight() - 50);
+        g2d.drawString(info, 50, Display.getHeight() - 80 - g2d.getFont().getHeight());
 
         g2d.setPaint(originalPaint);
     }
 
-    public ResourceLoader setLogo(String logoName)
-    {
-        setLogo(Texture.fromResource(logoName));
-        return instance;
-    }
-
-    public ResourceLoader setLogo(Texture logo)
-    {
-        if (this.logo != null)
-            this.logo.dispose();
-
-        this.logo = logo;
-        return instance;
-    }
-
-    public void setRenderProgressCallback(IRenderProgressCallback renderProgressCallback)
-    {
-        this.renderProgressCallback = renderProgressCallback;
-    }
-
-    public int defineTexture(String name)
-    {
-        int id = texturesToLoad.size();
-        texturesToLoad.put(name, id);
-        return id;
-    }
-
-    public int defineSound(String name)
-    {
-        int id = soundsToLoad.size();
-        soundsToLoad.put(name, id);
-        return id;
-    }
-
-    public int defineModel(String name)
-    {
-        int id = modelsToLoad.size();
-        modelsToLoad.put(name, id);
-        return id;
-    }
-
-    public int defineFont(String name, int style, int size)
-    {
-        int id = fontsToLoad.size();
-        fontsToLoad.put(fontToString(name, style, size), id);
-        return id;
-    }
-
-    private String fontToString(String name, int style, int size)
-    {
-        return name + "," + style + "," + size;
-    }
-
     public void startLoading()
     {
-        // Reset the variables to zero
-        smoothedProgress = 0;
-        numLoaded = 0;
-        fileInfo = "";
+        if (toBeLoaded.keySet().size() == 0)
+            return;
 
-        if (logo == null)
-            setLogo("resources/logo.png");
+        float smoothedProgress = 0;
+
+        loadEvents = new ArrayBlockingQueue<>(toBeLoaded.keySet().size());
 
         Display.setHints();
         loaderWindow = new Window(Display.getWindow());
 
-        Thread loadingThread = new Thread(this::loadResources);
-        loadingThread.start();
+        Thread loaderThread = new Thread(this::asyncLoadResources);
+        loaderThread.start();
 
-        float progress;
+        float progress = 0;
+        String info = "Initializing";
 
-        while ((progress = updateProgress()) != 100)
+        while (smoothedProgress < 100)
         {
-            // Begin an engine frame
-            SilenceEngine.graphics.beginFrame();
+            try
+            {
+                if (loadEvents.peek() != null)
+                {
+                    ResourceLoadEvent event = loadEvents.peek();
 
-            GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
-            SilenceEngine.graphics.getGraphics2D().getCamera().initProjection(Display.getWidth(), Display.getHeight());
-            renderProgressCallback.invoke(SilenceEngine.graphics.getBatcher(), progress, fileInfo);
+                    if (smoothedProgress >= progress)
+                    {
+                        progress = event.percentage;
+                        info = event.info;
 
-            // End an engine frame
-            SilenceEngine.graphics.endFrame();
+                        loadEvents.take();
+                    }
+                }
 
-            sleep(1000 / Game.getTargetUPS());
+                SilenceEngine.graphics.beginFrame();
+
+                GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
+                SilenceEngine.graphics.getGraphics2D().getCamera().initProjection(Display.getWidth(), Display.getHeight());
+
+                smoothedProgress = MathUtils.clamp(++smoothedProgress, 0, progress);
+                progressRenderCallback.invoke(info, smoothedProgress);
+
+                // End an engine frame
+                SilenceEngine.graphics.endFrame();
+
+                Thread.sleep(1000 / Game.getTargetUPS());
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
 
         loaderWindow.destroy();
         Window.setDefaultHints();
     }
 
-    private void sleep(long millis)
-    {
-        try
-        {
-            Thread.sleep(millis);
-        }
-        catch (Exception e)
-        {
-            SilenceException.reThrow(e);
-        }
-    }
-
-    private void loadResources()
+    private void asyncLoadResources()
     {
         loaderWindow.makeCurrent();
 
-        // No loading if there are no resources to load
-        if (texturesToLoad.size() + soundsToLoad.size() + fontsToLoad.size() + modelsToLoad.size() == 0)
-            return;
-
-        for (String texName : texturesToLoad.keySet())
+        for (FilePath path : toBeLoaded.keySet())
         {
-            fileInfo = texName;
-
-            textures.put(texturesToLoad.get(texName), Texture.fromResource(texName));
-            numLoaded++;
-        }
-
-        for (String fontName : fontsToLoad.keySet())
-        {
-            fileInfo = fontName;
-            String[] parts = fontName.split(",");
-
-            TrueTypeFont font;
-
-            int style = Integer.parseInt(parts[1]);
-            int size = Integer.parseInt(parts[2]);
-
-            if (parts[0].endsWith(".ttf"))
-            {
-                InputStream ttfStream = FileUtils.getResource(parts[0]);
-
-                font = new TrueTypeFont(ttfStream, style, size, true);
-            }
-            else
-            {
-                font = new TrueTypeFont(parts[0], style, size);
-            }
-            fonts.put(fontsToLoad.get(fontName), font);
-            numLoaded++;
-        }
-
-        for (String soundName : soundsToLoad.keySet())
-        {
-            fileInfo = soundName;
-
-            sounds.put(soundsToLoad.get(soundName), new Sound(soundName));
-            numLoaded++;
-        }
-
-        for (String modelName : modelsToLoad.keySet())
-        {
-            fileInfo = modelName;
-
-            models.put(modelsToLoad.get(modelName), Model.load(modelName));
-            numLoaded++;
+            Class<?> clazz = toBeLoaded.get(path);
+            loadHelpers.get(clazz).load(path, this);
         }
     }
 
-    /**
-     * Updates the current progress for resource loading and returns the value
-     *
-     * @return Progress on a scale of 0 (inclusive) to  100 (inclusive)
-     */
-    private float updateProgress()
+    @SuppressWarnings("unchecked")
+    public <T> T getResource(int id)
     {
-        float progress = numLoaded / (fontsToLoad.size() + texturesToLoad.size() + soundsToLoad.size() + modelsToLoad.size());
-        return smoothedProgress = MathUtils.clamp(++smoothedProgress, 0, progress * 100);
+        FilePath path = idMap.get(id);
+
+        if (loaded.containsKey(path))
+            return (T) loaded.get(path);
+
+        return null;
     }
 
-    public Texture getTexture(int id)
+    public int loadResource(Class<?> clazz, FilePath path)
     {
-        return textures.get(id);
+        toBeLoaded.put(path, clazz);
+        int id = IDGenerator.generate();
+        idMap.put(id, path);
+        return id;
     }
 
-    public TrueTypeFont getFont(int id)
+    public int loadResource(Class<?> clazz, String path)
     {
-        return fonts.get(id);
+        return loadResource(clazz, FilePath.getResourceFile(path));
     }
 
-    public Sound getSound(int id)
+    private float getProgress()
     {
-        return sounds.get(id);
+        return (((loaded.keySet().size() + 1) * 100) / toBeLoaded.keySet().size());
     }
 
-    public Model getModel(int id)
+    public void setLogo(FilePath logo)
     {
-        return models.get(id);
+        this.logo = Texture.fromFilePath(logo);
     }
 
-    public void clear()
+    public Texture getLogo()
     {
-        clear(false);
+        return logo;
     }
 
-    public void clear(boolean dispose)
+    public void setProgressRenderCallback(IProgressRenderCallback progressRenderCallback)
     {
-        if (dispose) dispose();
-
-        fonts.clear();
-        fontsToLoad.clear();
-        textures.clear();
-        texturesToLoad.clear();
-        sounds.clear();
-        soundsToLoad.clear();
-        models.clear();
-        modelsToLoad.clear();
+        this.progressRenderCallback = progressRenderCallback;
     }
 
     public void dispose()
     {
-        for (int id : textures.keySet())
-            textures.get(id).dispose();
+        loaded.values().forEach(IResource::dispose);
 
-        for (int id : fonts.keySet())
-            fonts.get(id).dispose();
-
-        for (int id : sounds.keySet())
-            sounds.get(id).dispose();
-
-        for (int id : models.keySet())
-            models.get(id).dispose();
+        idMap.clear();
+        loaded.clear();
+        toBeLoaded.clear();
+        logo.dispose();
     }
 
     @FunctionalInterface
-    public interface IRenderProgressCallback
+    public interface IProgressRenderCallback
     {
-        void invoke(Batcher batcher, float percentage, String file);
+        void invoke(String info, float percentage);
+    }
+
+    @FunctionalInterface
+    public interface IResourceLoadHelper
+    {
+        void load(FilePath path, ResourceLoader loader);
+    }
+
+    private static class ResourceLoadEvent
+    {
+        public String info;
+        public float  percentage;
+    }
+
+    static
+    {
+        loadHelpers = new HashMap<>();
+
+        setHelper(Texture.class, ResourceLoader::textureLoadHelper);
+        setHelper(Sound.class, ResourceLoader::soundLoadHelper);
+        setHelper(Model.class, ResourceLoader::modelLoadHelper);
+        setHelper(TrueTypeFont.class, ResourceLoader::fontLoadHelper);
     }
 }

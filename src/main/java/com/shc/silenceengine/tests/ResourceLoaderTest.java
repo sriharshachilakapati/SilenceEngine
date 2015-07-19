@@ -48,6 +48,8 @@ public class ResourceLoaderTest extends Game
 
     private OrthoCam cam;
 
+    private ResourceLoader resourceLoader;
+
     public static void main(String[] args)
     {
         new ResourceLoaderTest().start();
@@ -57,18 +59,20 @@ public class ResourceLoaderTest extends Game
     {
         SilenceEngine.graphics.setClearColor(Color.NAVY);
 
-        ResourceLoader loader = ResourceLoader.getInstance();
-        loader.setRenderProgressCallback(this::customProgressRenderCallback);
+        resourceLoader = new ResourceLoader();
+        resourceLoader.setProgressRenderCallback(this::customProgressRenderCallback);
 
-        int fontID1 = loader.defineFont("Times New Roman", TrueTypeFont.STYLE_NORMAL, 24);
-        int fontID2 = loader.defineFont("resources/FREEBSC_.ttf", TrueTypeFont.STYLE_ITALIC | TrueTypeFont.STYLE_BOLD, 48);
-        int textureID = loader.defineTexture("resources/texture.png");
+        int textureID = resourceLoader.loadResource(Texture.class, "resources/texture.png");
+        int fontID1 = resourceLoader.loadResource(TrueTypeFont.class, "Times New Roman");
+        int fontID2 = resourceLoader.loadResource(TrueTypeFont.class, "resources/FREEBSC_.ttf");
 
-        loader.startLoading();
+        resourceLoader.startLoading();
 
-        texture = loader.getTexture(textureID);
-        font1 = loader.getFont(fontID1);
-        font2 = loader.getFont(fontID2);
+        texture = resourceLoader.getResource(textureID);
+        font1 = resourceLoader.getResource(fontID1);
+        font2 = resourceLoader.getResource(fontID2);
+        font1.setSize(26);
+        font2.setSizeAndStyle(48, TrueTypeFont.STYLE_BOLD | TrueTypeFont.STYLE_ITALIC);
 
         cam = new OrthoCam().initProjection(Display.getWidth(), Display.getHeight());
     }
@@ -88,7 +92,7 @@ public class ResourceLoaderTest extends Game
     {
         cam.apply();
 
-        batcher.drawTexture2d(texture, new Vector2(100, 100));
+        batcher.drawTexture2d(texture, new Vector2(150, 150));
 
         font1.drawString(batcher, "Times New Roman!!", 10, 10);
         font2.drawString(batcher, "Free Booter Script", 10, 40, Color.GREEN);
@@ -96,12 +100,12 @@ public class ResourceLoaderTest extends Game
 
     public void dispose()
     {
-        ResourceLoader.getInstance().dispose();
+        resourceLoader.dispose();
     }
 
-    private void customProgressRenderCallback(Batcher batcher, float percentage, String filename)
+    private void customProgressRenderCallback(String info, float percentage)
     {
-        System.out.println(percentage + "% => Loading file: " + filename + "");
-        ResourceLoader.getInstance().defaultRenderProgressCallback(batcher, percentage, filename);
+        System.out.println(percentage + "% => " + info);
+        resourceLoader.defaultRenderProgressCallback(info, percentage);
     }
 }
