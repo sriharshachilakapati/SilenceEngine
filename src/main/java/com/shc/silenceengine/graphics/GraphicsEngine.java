@@ -97,7 +97,6 @@ public class GraphicsEngine implements IEngine
         GL3Context.enable(GL_BLEND);
         GL3Context.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        GL3Context.cullFace(GL_FRONT_AND_BACK);
         GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
 
         setClearColor(clearColor);

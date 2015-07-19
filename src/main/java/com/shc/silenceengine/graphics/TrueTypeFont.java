@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.graphics;
 
+import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
@@ -39,7 +40,7 @@ import java.util.List;
  * @author Sri Harsha Chilakapati
  * @author Josh "ShadowLordAlpha"
  */
-public class TrueTypeFont
+public class TrueTypeFont implements IResource
 {
     public static final int STYLE_NORMAL = Font.PLAIN;
     public static final int STYLE_BOLD   = Font.BOLD;
@@ -59,6 +60,11 @@ public class TrueTypeFont
     private Texture[]   fontTexture;
     private Font        awtFont;
     private FontMetrics fontMetrics;
+
+    public TrueTypeFont(String name)
+    {
+        this(name, STYLE_NORMAL, 18);
+    }
 
     public TrueTypeFont(String name, int style, int size)
     {
@@ -306,6 +312,36 @@ public class TrueTypeFont
     public TrueTypeFont derive(float size)
     {
         return new TrueTypeFont(awtFont.deriveFont(size));
+    }
+
+    public TrueTypeFont derive(int style)
+    {
+        return new TrueTypeFont(awtFont.deriveFont(style));
+    }
+
+    public TrueTypeFont derive(float size, int style)
+    {
+        return new TrueTypeFont(awtFont.deriveFont(style, size));
+    }
+
+    public TrueTypeFont setSizeAndStyle(float size, int style)
+    {
+        dispose();
+
+        awtFont = awtFont.deriveFont(style, size);
+        createSet();
+
+        return this;
+    }
+
+    public TrueTypeFont setSize(float size)
+    {
+        return setSizeAndStyle(size, awtFont.getStyle());
+    }
+
+    public TrueTypeFont setStyle(int style)
+    {
+        return setSizeAndStyle(awtFont.getSize(), style);
     }
 
     public void dispose()

@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.graphics.models;
 
+import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.Batcher;
@@ -39,7 +40,7 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Model
+public class Model implements IResource
 {
     private List<Mesh> meshes;
 

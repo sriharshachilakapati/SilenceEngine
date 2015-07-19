@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.graphics.opengl;
 
+import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.io.FilePath;
@@ -46,7 +47,7 @@ import static org.lwjgl.stb.STBImage.*;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Texture
+public class Texture implements IResource
 {
     private static int activeUnit;
 
