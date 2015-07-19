@@ -73,12 +73,12 @@ public class ModelBuilder
     {
         // Front faces of the box
         emitVertex(new Vector3(-width / 2, +height / 2, +thickness / 2), new Vector3(0, 0, 1), new Vector2(0, 0));
-        emitVertex(new Vector3(+width / 2, +height / 2, +thickness / 2), new Vector3(0, 0, 1), new Vector2(1, 0));
         emitVertex(new Vector3(-width / 2, -height / 2, +thickness / 2), new Vector3(0, 0, 1), new Vector2(0, 1));
+        emitVertex(new Vector3(+width / 2, +height / 2, +thickness / 2), new Vector3(0, 0, 1), new Vector2(1, 0));
         emitFace();
         emitVertex(new Vector3(+width / 2, +height / 2, +thickness / 2), new Vector3(0, 0, 1), new Vector2(1, 0));
-        emitVertex(new Vector3(+width / 2, -height / 2, +thickness / 2), new Vector3(0, 0, 1), new Vector2(1, 1));
         emitVertex(new Vector3(-width / 2, -height / 2, +thickness / 2), new Vector3(0, 0, 1), new Vector2(0, 1));
+        emitVertex(new Vector3(+width / 2, -height / 2, +thickness / 2), new Vector3(0, 0, 1), new Vector2(1, 1));
         emitFace();
 
         // Back faces of the box
@@ -93,12 +93,12 @@ public class ModelBuilder
 
         // Left faces of the box
         emitVertex(new Vector3(-width / 2, +height / 2, -thickness / 2), new Vector3(-1, 0, 0), new Vector2(0, 0));
-        emitVertex(new Vector3(-width / 2, +height / 2, +thickness / 2), new Vector3(-1, 0, 0), new Vector2(1, 0));
         emitVertex(new Vector3(-width / 2, -height / 2, -thickness / 2), new Vector3(-1, 0, 0), new Vector2(0, 1));
+        emitVertex(new Vector3(-width / 2, +height / 2, +thickness / 2), new Vector3(-1, 0, 0), new Vector2(1, 0));
         emitFace();
         emitVertex(new Vector3(-width / 2, +height / 2, +thickness / 2), new Vector3(-1, 0, 0), new Vector2(1, 0));
-        emitVertex(new Vector3(-width / 2, -height / 2, +thickness / 2), new Vector3(-1, 0, 0), new Vector2(1, 1));
         emitVertex(new Vector3(-width / 2, -height / 2, -thickness / 2), new Vector3(-1, 0, 0), new Vector2(0, 1));
+        emitVertex(new Vector3(-width / 2, -height / 2, +thickness / 2), new Vector3(-1, 0, 0), new Vector2(1, 1));
         emitFace();
 
         // Right faces of the box
@@ -113,12 +113,12 @@ public class ModelBuilder
 
         // Top faces of the box
         emitVertex(new Vector3(-width / 2, +height / 2, -thickness / 2), new Vector3(0, 1, 0), new Vector2(0, 0));
-        emitVertex(new Vector3(+width / 2, +height / 2, -thickness / 2), new Vector3(0, 1, 0), new Vector2(1, 0));
         emitVertex(new Vector3(-width / 2, +height / 2, +thickness / 2), new Vector3(0, 1, 0), new Vector2(0, 1));
+        emitVertex(new Vector3(+width / 2, +height / 2, -thickness / 2), new Vector3(0, 1, 0), new Vector2(1, 0));
         emitFace();
         emitVertex(new Vector3(+width / 2, +height / 2, -thickness / 2), new Vector3(0, 1, 0), new Vector2(1, 0));
-        emitVertex(new Vector3(+width / 2, +height / 2, +thickness / 2), new Vector3(0, 1, 0), new Vector2(1, 1));
         emitVertex(new Vector3(-width / 2, +height / 2, +thickness / 2), new Vector3(0, 1, 0), new Vector2(0, 1));
+        emitVertex(new Vector3(+width / 2, +height / 2, +thickness / 2), new Vector3(0, 1, 0), new Vector2(1, 1));
         emitFace();
 
         // Bottom faces of the box
