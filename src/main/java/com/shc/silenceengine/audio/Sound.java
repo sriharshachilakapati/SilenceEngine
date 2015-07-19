@@ -26,6 +26,7 @@ package com.shc.silenceengine.audio;
 
 import com.shc.silenceengine.audio.openal.ALBuffer;
 import com.shc.silenceengine.audio.openal.ALSource;
+import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.utils.FileUtils;
 
@@ -40,7 +41,7 @@ import static org.lwjgl.openal.AL10.*;
  *
  * @author Sri Harsha Chilakapati
  */
-public class Sound
+public class Sound implements IResource
 {
     private ALSource source;
     private ALBuffer buffer;
