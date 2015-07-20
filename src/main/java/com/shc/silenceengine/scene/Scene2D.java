@@ -24,7 +24,6 @@
 
 package com.shc.silenceengine.scene;
 
-import com.shc.silenceengine.core.IUpdatable;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.SpriteBatch;
 import com.shc.silenceengine.graphics.cameras.BaseCamera;
@@ -37,7 +36,7 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Scene2D implements IUpdatable
+public class Scene2D implements IScene
 {
     private List<Entity2D> entities;
 
@@ -59,21 +58,21 @@ public class Scene2D implements IUpdatable
         entities.remove(e);
     }
 
+    @Override
     public void update(float delta)
     {
-        for (int i = 0; i < entities.size(); i++)
-        {
+        for (int i = 0; i < entities.size(); i++) {
             Entity2D entity = entities.get(i);
             entity.preUpdate(delta);
 
-            if (entity.isDestroyed())
-            {
+            if (entity.isDestroyed()) {
                 removeChild(entity);
                 i--;
             }
         }
     }
 
+    @Override
     public void render(float delta)
     {
         // Quit early if there are no children
@@ -92,13 +91,11 @@ public class Scene2D implements IUpdatable
         SpriteBatch batch = SilenceEngine.graphics.getSpriteBatch();
         batch.begin();
         {
-            for (Entity2D entity : entities)
-            {
+            for (Entity2D entity : entities) {
                 if (frustumCulling && !frustum.intersects(entity.getPolygon()))
                     continue;
 
-                if (entity.getDepth() != depth)
-                {
+                if (entity.getDepth() != depth) {
                     batch.end();
                     depth = entity.getDepth();
                     batch.begin();
