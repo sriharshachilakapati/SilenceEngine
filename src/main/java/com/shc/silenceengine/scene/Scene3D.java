@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Scene3D implements IUpdatable
+public class Scene3D implements IScene
 {
     private List<SceneComponent> components;
     private List<Entity3D>       entities;

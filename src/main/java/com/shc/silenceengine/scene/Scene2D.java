@@ -37,8 +37,7 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Scene2D implements IUpdatable
-{
+public class Scene2D implements IScene {
     private List<Entity2D> entities;
 
     private boolean frustumCulling;
@@ -59,6 +58,7 @@ public class Scene2D implements IUpdatable
         entities.remove(e);
     }
 
+    @java.lang.Override
     public void update(float delta)
     {
         for (int i = 0; i < entities.size(); i++)
@@ -74,6 +74,7 @@ public class Scene2D implements IUpdatable
         }
     }
 
+    @java.lang.Override
     public void render(float delta)
     {
         // Quit early if there are no children
