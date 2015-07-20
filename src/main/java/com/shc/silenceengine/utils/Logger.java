@@ -113,7 +113,7 @@ public final class Logger
 
         for (Object message : messages)
         {
-            String warning = ((printTimeStamps ? "[INFO " + getTimeStamp() + "] " : "") + message)
+            String warning = ((printTimeStamps ? "[WARNING " + getTimeStamp() + "] " : "") + message)
                     .replaceAll("\r\n", "\n").replaceAll("\n", "\r\n");
 
             for (PrintStream stream : printStreams)
@@ -140,7 +140,7 @@ public final class Logger
 
         for (Object message : messages)
         {
-            String error = ((printTimeStamps ? "[INFO " + getTimeStamp() + "] " : "") + message)
+            String error = ((printTimeStamps ? "[ERROR " + getTimeStamp() + "] " : "") + message)
                     .replaceAll("\r\n", "\n").replaceAll("\n", "\r\n");
 
             for (PrintStream stream : printStreams)

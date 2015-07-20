@@ -24,7 +24,6 @@
 
 package com.shc.silenceengine.scene;
 
-import com.shc.silenceengine.core.IUpdatable;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.ModelBatch;
 import com.shc.silenceengine.graphics.cameras.BaseCamera;
