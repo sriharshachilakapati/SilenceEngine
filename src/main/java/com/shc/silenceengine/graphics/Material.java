@@ -25,12 +25,15 @@
 package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.utils.IDGenerator;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class Material
 {
+    private int id;
+
     private Color ambient;
     private Color diffuse;
     private Color specular;
@@ -47,6 +50,8 @@ public class Material
 
     public Material()
     {
+        id = IDGenerator.generate();
+
         ambient = new Color(1, 1, 1, 1);
         diffuse = new Color(1, 1, 1, 1);
         specular = new Color(1, 1, 1, 1);
@@ -191,6 +196,11 @@ public class Material
     {
         this.name = name;
         return this;
+    }
+
+    public int getID()
+    {
+        return id;
     }
 
     @Override

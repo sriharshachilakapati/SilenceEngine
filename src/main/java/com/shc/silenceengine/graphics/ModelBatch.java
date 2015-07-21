@@ -190,7 +190,7 @@ public class ModelBatch
     private void sortMeshes()
     {
         // Only sort the indices
-        indices.sort((i, j) -> meshes.get(i).getMaterial().hashCode() - meshes.get(j).getMaterial().hashCode());
+        indices.sort((i, j) -> meshes.get(i).getMaterial().getID() - meshes.get(j).getMaterial().getID());
     }
 
     public void end()
