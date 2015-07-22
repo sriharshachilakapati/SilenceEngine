@@ -195,6 +195,19 @@ public class Quaternion
         return set(nx, ny, nz, nw).normalizeSelf();
     }
 
+    public Vector3 multiplyInverse(Vector3 v)
+    {
+        return multiplyInverse(v, new Vector3());
+    }
+
+    public Vector3 multiplyInverse(Vector3 v, Vector3 dest)
+    {
+        invertSelf().multiply(v, dest);
+        invertSelf();
+
+        return dest;
+    }
+
     public Vector3 multiply(Vector3 v)
     {
         return multiply(v, new Vector3());
@@ -212,10 +225,10 @@ public class Quaternion
         v = temp.set(v).normalizeSelf();
 
         Quaternion q1 = temp1.set(this).conjugateSelf().normalizeSelf();
-        Quaternion qv = temp2.set(v.x, v.y, v.z, 1);
+        Quaternion qv = temp2.set(v.x, v.y, v.z, 0);
         Quaternion q = this;
 
-        Quaternion res = temp3.set(q).normalizeSelf().multiplySelf(qv.multiplySelf(q1));
+        Quaternion res = temp3.set(q).normalizeSelf().multiplySelf(qv.multiplySelf(q1).normalizeSelf());
 
         dest.x = res.x;
         dest.y = res.y;

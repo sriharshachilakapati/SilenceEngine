@@ -85,6 +85,22 @@ public class Transform
         return this;
     }
 
+    public Transform rotate(float rx, float ry, float rz)
+    {
+        return copy().rotateSelf(rx, ry, rz);
+    }
+
+    public Transform rotateSelf(float rx, float ry, float rz)
+    {
+        Quaternion temp = Quaternion.REUSABLE_STACK.pop();
+
+        temp.set(rx, ry, rz);
+        tMatrix.multiplySelf(TransformUtils.createRotation(temp));
+
+        Quaternion.REUSABLE_STACK.push(temp);
+        return this;
+    }
+
     public Transform scale(Vector2 scale)
     {
         return copy().scaleSelf(scale);

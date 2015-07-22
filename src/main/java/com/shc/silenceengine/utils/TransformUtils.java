@@ -139,15 +139,15 @@ public final class TransformUtils
         Vector3 v = tempVec.set(axis).normalizeSelf();
 
         result.set(0, 0, v.getX() * v.getX() * (1 - c) + c)
-                .set(1, 0, v.getX() * v.getY() * (1 - c) - v.getZ() * s)
-                .set(2, 0, v.getX() * v.getZ() * (1 - c) + v.getY() * s);
+                .set(0, 1, v.getX() * v.getY() * (1 - c) - v.getZ() * s)
+                .set(0, 2, v.getX() * v.getZ() * (1 - c) + v.getY() * s);
 
-        result.set(0, 1, v.getY() * v.getX() * (1 - c) + v.getZ() * s)
+        result.set(1, 0, v.getY() * v.getX() * (1 - c) + v.getZ() * s)
                 .set(1, 1, v.getY() * v.getY() * (1 - c) + c)
-                .set(2, 1, v.getY() * v.getZ() * (1 - c) - v.getX() * s);
+                .set(1, 2, v.getY() * v.getZ() * (1 - c) - v.getX() * s);
 
-        result.set(0, 2, v.getX() * v.getZ() * (1 - c) - v.getY() * s)
-                .set(1, 2, v.getY() * v.getZ() * (1 - c) + v.getX() * s)
+        result.set(2, 0, v.getX() * v.getZ() * (1 - c) - v.getY() * s)
+                .set(2, 1, v.getY() * v.getZ() * (1 - c) + v.getX() * s)
                 .set(2, 2, v.getZ() * v.getZ() * (1 - c) + c);
 
         return result;
