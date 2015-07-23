@@ -211,6 +211,20 @@ public class Entity2D implements IUpdatable
     }
 
     /**
+     * Moves this object's center to a specified point with a specific speed. Note that the velocity used is independent
+     * of vertical or horizontal velocities of this object.
+     *
+     * @param pos   The new position vector to move to
+     * @param speed The speed with which to move
+     *
+     * @return True if the new point has been reached
+     */
+    public boolean moveCenterTo(Vector2 pos, float speed)
+    {
+        return moveCenterTo(pos.x, pos.y, speed);
+    }
+
+    /**
      * Moves this object to a specified point with a specific speed. Note that the velocity used is independent of
      * vertical or horizontal velocities of this object.
      *
@@ -250,6 +264,52 @@ public class Entity2D implements IUpdatable
         position.y = y;
 
         polygon.setPosition(position);
+
+        return (_x && _y);
+    }
+
+    /**
+     * Moves this object's center to a specified point with a specific speed. Note that the velocity used is independent
+     *  of vertical or horizontal velocities of this object.
+     *
+     * @param nx    The new x-position
+     * @param ny    The new y-position
+     * @param speed The speed with which to move
+     *
+     * @return True if the new point has been reached
+     */
+    public boolean moveCenterTo(float nx, float ny, float speed)
+    {
+        boolean _x = false;
+        boolean _y = false;
+
+        float x = getCenter().x;
+        float y = getCenter().y;
+
+        int distance = (int) Math.sqrt((double) ((x - nx) * (x - nx) + (y - ny) * (y - ny)));
+
+        float vel = Math.min(distance, speed);
+
+        if (x > nx)
+            x -= vel;
+        else if (x < nx)
+            x += vel;
+        else
+            _x = true;
+
+        if (y > ny)
+            y -= vel;
+        else if (y < ny)
+            y += vel;
+        else
+            _y = true;
+
+        Vector2 center = getCenter();
+
+        center.x = x;
+        center.y = y;
+
+        setCenter(center);
 
         return (_x && _y);
     }
