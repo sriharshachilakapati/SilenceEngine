@@ -47,21 +47,37 @@ public final class Logger
      * Whether time stamps should be printed
      */
     private static boolean printTimeStamps;
-
     private static boolean printToConsole;
 
     /**
      * The format time stamps are printed in
      */
-    private static SimpleDateFormat timeStampFormat;
-
+    private static SimpleDateFormat  timeStampFormat;
     private static List<PrintStream> printStreams;
+
+    private static RedirectionCallback redirectionCallback;
 
     /**
      * Prevent instantiation
      */
     private Logger()
     {
+    }
+
+    public static void log(Level level, Object... messages)
+    {
+        switch (level)
+        {
+            case INFO:
+                info(messages);
+                break;
+            case WARNING:
+                warn(messages);
+                break;
+            case ERROR:
+                error(messages);
+                break;
+        }
     }
 
     /**
@@ -72,21 +88,26 @@ public final class Logger
      *
      * @see java.lang.System#out
      */
-    public static void log(Object... messages)
+    public static void info(Object... messages)
     {
-        if (!Game.development)
-            return;
-
-        for (Object message : messages)
+        if (redirectionCallback != null)
+            redirectionCallback.redirect(Level.INFO, messages);
+        else
         {
-            String info = ((printTimeStamps ? "[INFO " + getTimeStamp() + "] " : "") + message)
-                    .replaceAll("\r\n", "\n").replaceAll("\n", "\r\n");
+            if (!Game.development)
+                return;
 
-            for (PrintStream stream : printStreams)
-                stream.println(info);
+            for (Object message : messages)
+            {
+                String info = ((printTimeStamps ? "[INFO " + getTimeStamp() + "] " : "") + message)
+                        .replaceAll("\r\n", "\n").replaceAll("\n", "\r\n");
 
-            if (printToConsole)
-                System.out.println(info);
+                for (PrintStream stream : printStreams)
+                    stream.println(info);
+
+                if (printToConsole)
+                    System.out.println(info);
+            }
         }
     }
 
@@ -108,19 +129,24 @@ public final class Logger
      */
     public static void warn(Object... messages)
     {
-        if (!Game.development)
-            return;
-
-        for (Object message : messages)
+        if (redirectionCallback != null)
+            redirectionCallback.redirect(Level.WARNING, messages);
+        else
         {
-            String warning = ((printTimeStamps ? "[WARNING " + getTimeStamp() + "] " : "") + message)
-                    .replaceAll("\r\n", "\n").replaceAll("\n", "\r\n");
+            for (Object message : messages)
+            {
+                if (!Game.development)
+                    return;
 
-            for (PrintStream stream : printStreams)
-                stream.println(warning);
+                String warning = ((printTimeStamps ? "[WARNING " + getTimeStamp() + "] " : "") + message)
+                        .replaceAll("\r\n", "\n").replaceAll("\n", "\r\n");
 
-            if (printToConsole)
-                System.err.println(warning);
+                for (PrintStream stream : printStreams)
+                    stream.println(warning);
+
+                if (printToConsole)
+                    System.err.println(warning);
+            }
         }
     }
 
@@ -135,28 +161,33 @@ public final class Logger
      */
     public static void error(Object... messages)
     {
-        if (!Game.development)
-            return;
-
-        for (Object message : messages)
+        if (redirectionCallback != null)
+            redirectionCallback.redirect(Level.ERROR, messages);
+        else
         {
-            String error = ((printTimeStamps ? "[ERROR " + getTimeStamp() + "] " : "") + message)
-                    .replaceAll("\r\n", "\n").replaceAll("\n", "\r\n");
+            for (Object message : messages)
+            {
+                if (!Game.development)
+                    return;
 
-            for (PrintStream stream : printStreams)
-                stream.println(error);
+                String error = ((printTimeStamps ? "[ERROR " + getTimeStamp() + "] " : "") + message)
+                        .replaceAll("\r\n", "\n").replaceAll("\n", "\r\n");
 
-            if (printToConsole)
-                System.err.println(error);
+                for (PrintStream stream : printStreams)
+                    stream.println(error);
+
+                if (printToConsole)
+                    System.err.println(error);
+            }
+
+            warn("Terminating with Exception");
         }
-
-        warn("Terminating with Exception");
 
         throw new SilenceException("FATAL Error occurred, cannot continue further");
     }
 
     /**
-     * Sets the format of time stamps printed with <code>log()</code>, <code>warn()</code> and <code>error()</code>.
+     * Sets the format of time stamps printed with <code>info()</code>, <code>warn()</code> and <code>error()</code>.
      * This will not be used if {@link com.shc.silenceengine.utils.Logger#setPrintTimeStamps(boolean)
      * setPrintTimeStamps()} is false.
      *
@@ -168,7 +199,7 @@ public final class Logger
     }
 
     /**
-     * Change whether or not Time Stamps should be printed when using <code>log()</code>, <code>warn()</code> and
+     * Change whether or not Time Stamps should be printed when using <code>info()</code>, <code>warn()</code> and
      * <code>error()</code>.
      *
      * @param printTimeStamps Whether or not to print time stamps
@@ -199,6 +230,23 @@ public final class Logger
     public static void setPrintToConsole(boolean printToConsole)
     {
         Logger.printToConsole = printToConsole;
+    }
+
+    public static void setRedirectionCallback(RedirectionCallback redirectionCallback)
+    {
+        Logger.redirectionCallback = redirectionCallback;
+    }
+
+    public enum Level
+    {
+        INFO,
+        WARNING,
+        ERROR
+    }
+
+    public interface RedirectionCallback
+    {
+        void redirect(Level level, Object... messages);
     }
 
     static

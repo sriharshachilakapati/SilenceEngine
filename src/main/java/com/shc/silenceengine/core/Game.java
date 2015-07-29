@@ -205,13 +205,13 @@ public class Game implements IUpdatable
     {
         if (!running)
         {
-            Logger.log("Disposing the Game resources");
+            Logger.info("Disposing the Game resources");
 
             instance.dispose();
 
             SilenceEngine.getInstance().dispose();
 
-            Logger.log("This game has been terminated successfully");
+            Logger.info("This game has been terminated successfully");
             System.exit(0);
         }
 
@@ -242,10 +242,10 @@ public class Game implements IUpdatable
         SilenceEngine.getInstance().init();
 
         // Initialize the Game
-        Logger.log("Initializing the Game resources");
+        Logger.info("Initializing the Game resources");
         init();
         Runtime.getRuntime().gc();
-        Logger.log("Game initialized successfully, proceeding to the main loop");
+        Logger.info("Game initialized successfully, proceeding to the main loop");
 
         // GameLoop constants
         final double second = TimeUtils.convert(1, TimeUtils.Unit.SECONDS, TimeUtils.getDefaultTimeUnit());

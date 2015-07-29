@@ -95,22 +95,22 @@ public final class SilenceEngine implements IEngine
     @Override
     public void init()
     {
-        Logger.log("Initializing SilenceEngine. Platform identified as " + getPlatform());
+        Logger.info("Initializing SilenceEngine. Platform identified as " + getPlatform());
 
         if (getPlatform() == Platform.MACOSX)
         {
-            Logger.log("Running AWT fix on Mac OS X, needed for LWJGL to run");
+            Logger.info("Running AWT fix on Mac OS X, needed for LWJGL to run");
 
             // We need to start AWT in Headless mode, Needed for AWT to work on OS X
             System.setProperty("java.awt.headless", "true");
         }
 
-        Logger.log("Initializing LWJGL library. Extracting natives");
+        Logger.info("Initializing LWJGL library. Extracting natives");
 
         // Load LWJGL natives
         NativesLoader.loadLWJGL();
 
-        Logger.log("LWJGL version " + Sys.getVersion() + " is initialised");
+        Logger.info("LWJGL version " + Sys.getVersion() + " is initialised");
 
         // Initialize GLFW
         if (!GLFW3.init())
@@ -125,7 +125,7 @@ public final class SilenceEngine implements IEngine
         collision.init();
         input.init();
 
-        Logger.log("SilenceEngine version " + getVersion() + " was initialized successfully");
+        Logger.info("SilenceEngine version " + getVersion() + " was initialized successfully");
     }
 
     @Override
@@ -154,10 +154,10 @@ public final class SilenceEngine implements IEngine
         input.dispose();
         graphics.dispose();
 
-        Logger.log("Terminating GLFW library");
+        Logger.info("Terminating GLFW library");
         GLFW3.terminate();
 
-        Logger.log("SilenceEngine version " + getVersion() + " was successfully terminated");
+        Logger.info("SilenceEngine version " + getVersion() + " was successfully terminated");
     }
 
     public enum Platform

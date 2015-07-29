@@ -71,47 +71,47 @@ public class TmxMapTest extends Game
         TmxMap map = new TmxMap(FilePath.getResourceFile("resources/example-isometric.tmx"));
 
         printHeader("Map");
-        Logger.log("Version:          " + map.getVersion());
-        Logger.log("Orientation:      " + map.getOrientation());
-        Logger.log("Background Color: " + map.getBackgroundColor());
-        Logger.log("Render Order:     " + map.getRenderOrder());
-        Logger.log("Stagger Axis:     " + map.getStaggerAxis());
-        Logger.log("Stagger Index:    " + map.getStaggerIndex());
+        Logger.info("Version:          " + map.getVersion());
+        Logger.info("Orientation:      " + map.getOrientation());
+        Logger.info("Background Color: " + map.getBackgroundColor());
+        Logger.info("Render Order:     " + map.getRenderOrder());
+        Logger.info("Stagger Axis:     " + map.getStaggerAxis());
+        Logger.info("Stagger Index:    " + map.getStaggerIndex());
 
-        Logger.log("");
+        Logger.info("");
 
-        Logger.log("Width:       " + map.getWidth());
-        Logger.log("Height:      " + map.getHeight());
-        Logger.log("Tile Width:  " + map.getTileWidth());
-        Logger.log("Tile Height: " + map.getTileHeight());
+        Logger.info("Width:       " + map.getWidth());
+        Logger.info("Height:      " + map.getHeight());
+        Logger.info("Tile Width:  " + map.getTileWidth());
+        Logger.info("Tile Height: " + map.getTileHeight());
 
         int i = 0;
         for (TmxTileSet tileSet : map.getTileSets())
         {
             printHeader("TileSet " + i);
 
-            Logger.log("Name:         " + tileSet.getName());
-            Logger.log("Margin:       " + tileSet.getMargin());
-            Logger.log("Spacing:      " + tileSet.getSpacing());
-            Logger.log("First GID:    " + tileSet.getFirstGID());
-            Logger.log("Image Width:  " + tileSet.getImage().getWidth());
-            Logger.log("Image Height: " + tileSet.getImage().getHeight());
-            Logger.log("Image Source: " + tileSet.getImage().getSource());
-            Logger.log("Trans Color:  " + tileSet.getImage().getTrans());
+            Logger.info("Name:         " + tileSet.getName());
+            Logger.info("Margin:       " + tileSet.getMargin());
+            Logger.info("Spacing:      " + tileSet.getSpacing());
+            Logger.info("First GID:    " + tileSet.getFirstGID());
+            Logger.info("Image Width:  " + tileSet.getImage().getWidth());
+            Logger.info("Image Height: " + tileSet.getImage().getHeight());
+            Logger.info("Image Source: " + tileSet.getImage().getSource());
+            Logger.info("Trans Color:  " + tileSet.getImage().getTrans());
 
             for (TmxTile tile : tileSet.getTiles())
             {
-                tile.getProperties().forEach((k, v) -> Logger.log(k + " => " + v));
+                tile.getProperties().forEach((k, v) -> Logger.info(k + " => " + v));
 
                 if (tile.isAnimated())
                 {
-                    Logger.log("Tile is animated: " + tile.getFrameCount() + " frames with total duration of " +
-                               tile.getTotalDuration() + "ms");
+                    Logger.info("Tile is animated: " + tile.getFrameCount() + " frames with total duration of " +
+                                tile.getTotalDuration() + "ms");
 
                     int j = 0;
                     for (TmxAnimationFrame frame : tile.getFrames())
                     {
-                        Logger.log(String.format("\tFrame %d: TileID = %d, Duration = %dms", j, frame.getTileID(), frame.getDuration()));
+                        Logger.info(String.format("\tFrame %d: TileID = %d, Duration = %dms", j, frame.getTileID(), frame.getDuration()));
                         j++;
                     }
                 }
@@ -154,7 +154,7 @@ public class TmxMapTest extends Game
                         info += "........    ";
                 }
 
-                Logger.log(info);
+                Logger.info(info);
             }
 
             i++;
@@ -168,10 +168,10 @@ public class TmxMapTest extends Game
             int j = 0;
             for (TmxObject object : objectLayer.getObjects())
             {
-                Logger.log("Object " + j);
-                Logger.log("Name: " + object.getName());
-                Logger.log("Position: [" + object.getX() + ", " + object.getY() + "]");
-                Logger.log("Size: [" + object.getWidth() + ", " + object.getHeight() + "]");
+                Logger.info("Object " + j);
+                Logger.info("Name: " + object.getName());
+                Logger.info("Position: [" + object.getX() + ", " + object.getY() + "]");
+                Logger.info("Size: [" + object.getWidth() + ", " + object.getHeight() + "]");
 
                 TmxPolygon polygon = object.getPolygon();
                 if (polygon != null)
@@ -179,7 +179,7 @@ public class TmxMapTest extends Game
                     for (int k = 0; k < polygon.getNumPoints(); k++)
                     {
                         TmxPoint point = polygon.getPoint(k);
-                        Logger.log("Polygon point " + k + " [" + point.x + ", " + point.y + "]");
+                        Logger.info("Polygon point " + k + " [" + point.x + ", " + point.y + "]");
                     }
                 }
 
@@ -189,7 +189,7 @@ public class TmxMapTest extends Game
                     for (int k = 0; k < polyLine.getNumPoints(); k++)
                     {
                         TmxPoint point = polyLine.getPoint(k);
-                        Logger.log("Polygon point " + k + " [" + point.x + ", " + point.y + "]");
+                        Logger.info("Polygon point " + k + " [" + point.x + ", " + point.y + "]");
                     }
                 }
 
@@ -204,9 +204,9 @@ public class TmxMapTest extends Game
 
     private static void printHeader(String title)
     {
-        Logger.log("======================================================================================");
-        Logger.log(title);
-        Logger.log("======================================================================================");
+        Logger.info("======================================================================================");
+        Logger.info(title);
+        Logger.info("======================================================================================");
     }
 
     @Override
