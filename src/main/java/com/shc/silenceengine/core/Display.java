@@ -32,8 +32,6 @@ import com.shc.silenceengine.core.glfw.Window;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.graphics.opengl.VertexArray;
-import com.shc.silenceengine.input.Keyboard;
-import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Vector2;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -161,14 +159,6 @@ public final class Display
 
     private static void setCallbacks(Window window)
     {
-        window.setPositionCallback(Display::glfwPositionCallback);
-        window.setSizeCallback(Display::glfwSizeCallback);
-        window.setKeyCallback(Keyboard::glfwKeyCallback);
-
-        window.setMouseButtonCallback(Mouse::glfwMouseButtonCallback);
-        window.setScrollCallback(Mouse::glfwScrollCallback);
-        window.setCursorPositionCallback(Mouse::glfwCursorCallback);
-
         // Set all the callbacks of existing display window to the new window
         if (displayWindow != null)
         {
@@ -433,6 +423,16 @@ public final class Display
             // Update the Display
             update();
         }
+    }
+
+    public static boolean isCursorHidden()
+    {
+        return cursorHidden;
+    }
+
+    public static boolean isCursorGrabbed()
+    {
+        return cursorGrabbed;
     }
 
     public static String getTitle()

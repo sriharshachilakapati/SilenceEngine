@@ -60,8 +60,6 @@ public class CameraTest extends Game
         perspCam = new PerspCam();
 
         texture = Texture.fromResource("resources/texture.png");
-
-        Display.hideCursor();
     }
 
     public void resize()
@@ -98,23 +96,28 @@ public class CameraTest extends Game
             perspCam.moveDown(speed);
 
         if (Keyboard.isPressed(Keyboard.KEY_UP))
-            perspCam.rotateX(1);
-
-        if (Keyboard.isPressed(Keyboard.KEY_DOWN))
             perspCam.rotateX(-1);
 
+        if (Keyboard.isPressed(Keyboard.KEY_DOWN))
+            perspCam.rotateX(1);
+
         if (Keyboard.isPressed(Keyboard.KEY_LEFT))
-            perspCam.rotateY(1);
+            perspCam.rotateY(-1);
 
         if (Keyboard.isPressed(Keyboard.KEY_RIGHT))
-            perspCam.rotateY(-1);
+            perspCam.rotateY(1);
 
         // Mouse look!
         if (Keyboard.isPressed(Keyboard.KEY_SPACE))
         {
-            perspCam.rotateX(-Mouse.getDY() * speed);
-            perspCam.rotateY(-Mouse.getDX() * speed);
+            if (!Display.isCursorGrabbed())
+                Display.grabCursor();
+
+            perspCam.rotateX(Mouse.getDY() * speed);
+            perspCam.rotateY(Mouse.getDX() * speed);
         }
+        else
+            Display.showCursor();
     }
 
     public void render(float delta, Batcher batcher)
