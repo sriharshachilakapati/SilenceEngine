@@ -51,10 +51,11 @@ public class Model implements IResource
 
     public static Model load(String filename)
     {
-        if (filename.endsWith(".obj"))
-            return new OBJModel(filename);
+        FilePath resource = FilePath.getResourceFile(filename);
+        if (resource.exists())
+            return load(resource);
 
-        throw new SilenceException("The model type you are trying to load is unsupported.");
+        return load(FilePath.getExternalFile(filename));
     }
 
     public static Model load(FilePath filePath)
@@ -98,17 +99,20 @@ public class Model implements IResource
                     batcher.vertex(mesh.getVertices().get((int) face.vertexIndex.x));
                     batcher.normal(mesh.getNormals().get((int) face.normalIndex.x));
                     batcher.texCoord(mesh.getTexcoords().get((int) face.texcoordIndex.x));
-                    batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
+                    if (mesh.getMaterial().getDiffuseMap().getID() == Texture.EMPTY.getID())
+                        batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
 
                     batcher.vertex(mesh.getVertices().get((int) face.vertexIndex.y));
                     batcher.normal(mesh.getNormals().get((int) face.normalIndex.y));
                     batcher.texCoord(mesh.getTexcoords().get((int) face.texcoordIndex.y));
-                    batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
+                    if (mesh.getMaterial().getDiffuseMap().getID() == Texture.EMPTY.getID())
+                        batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
 
                     batcher.vertex(mesh.getVertices().get((int) face.vertexIndex.z));
                     batcher.normal(mesh.getNormals().get((int) face.normalIndex.z));
                     batcher.texCoord(mesh.getTexcoords().get((int) face.texcoordIndex.z));
-                    batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
+                    if (mesh.getMaterial().getDiffuseMap().getID() == Texture.EMPTY.getID())
+                        batcher.color(color.x, color.y, color.z, mesh.getMaterial().getDissolve());
                 }
             }
         }

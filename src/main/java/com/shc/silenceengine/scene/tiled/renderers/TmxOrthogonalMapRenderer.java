@@ -94,7 +94,7 @@ public class TmxOrthogonalMapRenderer extends TmxMapRenderer
 
                     Texture texture = textureMap.get(tileSet.getImage().getSource().getAbsolutePath());
 
-                    if (texture.getId() != current.getId())
+                    if (texture.getID() != current.getID())
                     {
                         batcher.end();
                         current = texture;

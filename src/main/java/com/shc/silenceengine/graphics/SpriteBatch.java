@@ -90,7 +90,7 @@ public class SpriteBatch
 
                 Texture t = sprite.getTexture();
 
-                if (t.getId() != texture.getId())
+                if (t.getID() != texture.getID())
                 {
                     batcher.end();
 
@@ -158,7 +158,7 @@ public class SpriteBatch
     private void sortSprites()
     {
         // Only sort the indices
-        indices.sort((i, j) -> sprites.get(i).getTexture().getId() < sprites.get(j).getTexture().getId() ? 1 : -1);
+        indices.sort((i, j) -> sprites.get(i).getTexture().getID() < sprites.get(j).getTexture().getID() ? 1 : -1);
     }
 
     public void addSprite(Sprite sprite, Vector2 position)

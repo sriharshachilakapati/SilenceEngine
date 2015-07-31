@@ -101,7 +101,7 @@ public class StaticMesh
             addVector(t3, texcoords);
 
             for (int i = 0; i < 3; i++)
-                addVector(color, colors);
+                addVector(mesh.getMaterial().getDiffuseMap().getID() == Texture.EMPTY.getID() ? color : Color.TRANSPARENT, colors);
         }
 
         vao = new VertexArray();

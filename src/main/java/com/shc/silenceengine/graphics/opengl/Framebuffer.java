@@ -85,7 +85,7 @@ public class Framebuffer
     {
         bind();
 
-        glFramebufferTexture2D(target.getValue(), attachment.getValue(), GL_TEXTURE_2D, texture.getId(), level);
+        glFramebufferTexture2D(target.getValue(), attachment.getValue(), GL_TEXTURE_2D, texture.getID(), level);
         GLError.check();
 
         glDrawBuffer(attachment.getValue());
@@ -96,7 +96,7 @@ public class Framebuffer
     {
         bind();
 
-        glFramebufferTextureLayer(target.getValue(), attachment.getValue(), texture.getId(), level, layer);
+        glFramebufferTextureLayer(target.getValue(), attachment.getValue(), texture.getID(), level, layer);
         GLError.check();
 
         glDrawBuffer(attachment.getValue());

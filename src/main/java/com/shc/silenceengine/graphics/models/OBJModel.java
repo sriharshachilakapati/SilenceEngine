@@ -142,7 +142,7 @@ public class OBJModel extends Model
         float x = Float.parseFloat(values[1]);
         float y = Float.parseFloat(values[2]);
 
-        texcoords.add(new Vector2(x, y));
+        texcoords.add(new Vector2(x, 1 - y));
     }
 
     private void parseFace(String line, Mesh mesh)
@@ -288,6 +288,10 @@ public class OBJModel extends Model
 
     private void parseMaterialDiffuseMap(FilePath mtlLib, String line, Material material)
     {
-        material.setDiffuseMap(Texture.fromFilePath(mtlLib.getParent().getChild(line.split(" ")[1].trim())));
+        String fileName = line.split(" ", 2)[1].trim();
+        FilePath filePath = fileName.contains(":") ? FilePath.getExternalFile(fileName)     // Absolute File
+                                                   : mtlLib.getParent().getChild(fileName); // Relative File
+
+        material.setDiffuseMap(Texture.fromFilePath(filePath));
     }
 }

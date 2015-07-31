@@ -49,7 +49,7 @@ public class SubTexture extends Texture
 
     public SubTexture(Texture parent, float minU, float minV, float maxU, float maxV)
     {
-        super(parent.getId());
+        super(parent.getID());
 
         this.parent = parent;
         this.minU = minU;

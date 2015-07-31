@@ -313,7 +313,7 @@ public class Texture implements IResource
         disposed = true;
     }
 
-    public int getId()
+    public int getID()
     {
         return id;
     }
@@ -356,7 +356,7 @@ public class Texture implements IResource
     @Override
     public int hashCode()
     {
-        int result = getId();
+        int result = getID();
         result = 31 * result + (getWidth() != +0.0f ? Float.floatToIntBits(getWidth()) : 0);
         result = 31 * result + (getHeight() != +0.0f ? Float.floatToIntBits(getHeight()) : 0);
         result = 31 * result + (isDisposed() ? 1 : 0);
@@ -371,7 +371,7 @@ public class Texture implements IResource
 
         Texture texture = (Texture) o;
 
-        return getId() == texture.getId() &&
+        return getID() == texture.getID() &&
                Float.compare(texture.getWidth(), getWidth()) == 0 &&
                Float.compare(texture.getHeight(), getHeight()) == 0 &&
                isDisposed() == texture.isDisposed();
