@@ -26,10 +26,10 @@ package com.shc.silenceengine.graphics.cameras;
 
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
+import com.shc.silenceengine.math.Transforms;
 import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Quaternion;
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.utils.TransformUtils;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -39,14 +39,18 @@ public class FPSCamera extends BaseCamera
 {
     // To limit the angle on the x axis
     private static final float ANGLE_LIMIT_X = 60;
-    private Matrix4    mProj;
-    private Matrix4    mView;
-    private Vector3    position;
+
+    private Matrix4 mProj;
+    private Matrix4 mView;
+
     private Quaternion rotation;
-    private Vector3    forward;
-    private Vector3    right;
-    private Vector3    up;
-    private float      angleX;
+
+    private Vector3 position;
+    private Vector3 forward;
+    private Vector3 right;
+    private Vector3 up;
+
+    private float angleX;
 
     public FPSCamera()
     {
@@ -55,7 +59,7 @@ public class FPSCamera extends BaseCamera
 
     public FPSCamera(float fovy, float aspect, float zNear, float zFar)
     {
-        mProj = TransformUtils.createPerspective(fovy, aspect, zNear, zFar).copy();
+        mProj = Transforms.createPerspective(fovy, aspect, zNear, zFar);
         mView = new Matrix4();
 
         position = new Vector3(0, 0, 1);
@@ -73,13 +77,13 @@ public class FPSCamera extends BaseCamera
 
     public FPSCamera lookAt(Vector3 point, Vector3 up)
     {
-        rotation = TransformUtils.createLookAtQuaternion(position, point, up, rotation);
+        rotation = Transforms.createLookAtQuaternion(position, point, up, rotation);
         return this;
     }
 
     public Vector3 getUp()
     {
-        return rotation.multiply(Vector3.AXIS_Y, up);
+        return rotation.multiplyInverse(Vector3.AXIS_Y, up);
     }
 
     public FPSCamera lookAt(Vector3 position, Vector3 point, Vector3 up)
@@ -100,7 +104,7 @@ public class FPSCamera extends BaseCamera
 
     public Vector3 getForward()
     {
-        return rotation.multiply(Vector3.AXIS_Z.negate(), forward);
+        return rotation.multiplyInverse(forward.set(Vector3.AXIS_Z).negateSelf(), forward);
     }
 
     public FPSCamera moveBackward(float amount)
@@ -115,7 +119,7 @@ public class FPSCamera extends BaseCamera
 
     public Vector3 getRight()
     {
-        return rotation.multiply(Vector3.AXIS_X, right);
+        return rotation.multiplyInverse(Vector3.AXIS_X, right);
     }
 
     public FPSCamera moveRight(float amount)
@@ -184,7 +188,7 @@ public class FPSCamera extends BaseCamera
 
     public FPSCamera initProjection(float fovy, float aspect, float zNear, float zFar)
     {
-        mProj = TransformUtils.createPerspective(fovy, aspect, zNear, zFar).copy();
+        Transforms.createPerspective(fovy, aspect, zNear, zFar, mProj);
         return this;
     }
 
@@ -195,7 +199,7 @@ public class FPSCamera extends BaseCamera
 
     public FPSCamera initProjection(float left, float right, float bottom, float top, float zNear, float zFar)
     {
-        mProj = TransformUtils.createFrustum(left, right, bottom, top, zNear, zFar).copy();
+        Transforms.createFrustum(left, right, bottom, top, zNear, zFar, mProj);
         return this;
     }
 
@@ -204,12 +208,14 @@ public class FPSCamera extends BaseCamera
         super.apply();
 
         Vector3 tempVec3 = Vector3.REUSABLE_STACK.pop();
+        Matrix4 tempMat4 = Matrix4.REUSABLE_STACK.pop();
 
         mView.initIdentity()
-                .multiplySelf(TransformUtils.createTranslation(tempVec3.set(position).negateSelf()))
-                .multiplySelf(TransformUtils.createRotation(rotation));
+                .multiplySelf(Transforms.createTranslation(tempVec3.set(position).negateSelf(), tempMat4))
+                .multiplySelf(Transforms.createRotation(rotation, tempMat4));
 
         Vector3.REUSABLE_STACK.push(tempVec3);
+        Matrix4.REUSABLE_STACK.push(tempMat4);
 
         // Enable Depth Testing
         GL3Context.enable(GL11.GL_DEPTH_TEST);
@@ -246,7 +252,6 @@ public class FPSCamera extends BaseCamera
     public FPSCamera setRotation(Quaternion rotation)
     {
         this.rotation.set(rotation);
-
         return this;
     }
 }

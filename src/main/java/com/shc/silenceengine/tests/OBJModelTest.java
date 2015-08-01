@@ -113,16 +113,16 @@ public class OBJModelTest extends Game
             cam.moveDown(delta);
 
         if (Keyboard.isPressed(Keyboard.KEY_UP))
-            cam.rotateX(1);
-
-        if (Keyboard.isPressed(Keyboard.KEY_DOWN))
             cam.rotateX(-1);
 
+        if (Keyboard.isPressed(Keyboard.KEY_DOWN))
+            cam.rotateX(1);
+
         if (Keyboard.isPressed(Keyboard.KEY_LEFT))
-            cam.rotateY(1);
+            cam.rotateY(-1);
 
         if (Keyboard.isPressed(Keyboard.KEY_RIGHT))
-            cam.rotateY(-1);
+            cam.rotateY(1);
 
         entity.rotate(90 * delta, 90 * delta, 90 * delta);
         cameraLight.setPosition(cam.getPosition());

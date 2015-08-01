@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.math;
 
+import com.shc.silenceengine.utils.MathUtils;
 import com.shc.silenceengine.utils.ReusableStack;
 
 /**
@@ -70,11 +71,11 @@ public class Quaternion
 
     public Quaternion set(Vector3 axis, float angle)
     {
-        angle = (float) Math.toRadians(angle) * 0.5f;
+        angle = angle / 2;
         axis = axis.normalize();
 
-        float sinAngle = (float) Math.sin(angle);
-        float cosAngle = (float) Math.cos(angle);
+        float sinAngle = MathUtils.sin(angle);
+        float cosAngle = MathUtils.cos(angle);
 
         x = axis.x * sinAngle;
         y = axis.y * sinAngle;
@@ -250,12 +251,15 @@ public class Quaternion
 
     public Quaternion invertSelf()
     {
-        float norm = (x * x + y * y + z * z + w * w);
+        float norm = lengthSquared();
 
-        x = +x / norm;
+        if (norm == 0)
+            return conjugateSelf();
+
+        x = -x / norm;
         y = -y / norm;
         z = -z / norm;
-        w = -w / norm;
+        w = +w / norm;
 
         return this;
     }

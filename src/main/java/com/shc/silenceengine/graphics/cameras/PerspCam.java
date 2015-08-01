@@ -29,7 +29,7 @@ import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Quaternion;
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.utils.TransformUtils;
+import com.shc.silenceengine.math.Transforms;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -54,7 +54,7 @@ public class PerspCam extends BaseCamera
 
     public PerspCam(float fovy, float aspect, float zNear, float zFar)
     {
-        mProj = TransformUtils.createPerspective(fovy, aspect, zNear, zFar).copy();
+        mProj = Transforms.createPerspective(fovy, aspect, zNear, zFar);
         mView = new Matrix4();
 
         position = new Vector3(0, 0, 1);
@@ -72,13 +72,13 @@ public class PerspCam extends BaseCamera
 
     public PerspCam lookAt(Vector3 point, Vector3 up)
     {
-        rotation = TransformUtils.createLookAtQuaternion(position, point, up, rotation);
+        rotation = Transforms.createLookAtQuaternion(position, point, up, rotation);
         return this;
     }
 
     public Vector3 getUp()
     {
-        return rotation.multiply(Vector3.AXIS_Y, up);
+        return rotation.multiplyInverse(up.set(Vector3.AXIS_Y), up);
     }
 
     public PerspCam lookAt(Vector3 position, Vector3 point, Vector3 up)
@@ -99,7 +99,7 @@ public class PerspCam extends BaseCamera
 
     public Vector3 getForward()
     {
-        return rotation.multiply(Vector3.AXIS_Z.negate(), forward);
+        return rotation.multiplyInverse(forward.set(Vector3.AXIS_Z).negateSelf(), forward);
     }
 
     public PerspCam moveBackward(float amount)
@@ -114,7 +114,7 @@ public class PerspCam extends BaseCamera
 
     public Vector3 getRight()
     {
-        return rotation.multiply(Vector3.AXIS_X, right);
+        return rotation.multiplyInverse(Vector3.AXIS_X, right);
     }
 
     public PerspCam moveRight(float amount)
@@ -174,7 +174,7 @@ public class PerspCam extends BaseCamera
 
     public PerspCam initProjection(float fovy, float aspect, float zNear, float zFar)
     {
-        mProj = TransformUtils.createPerspective(fovy, aspect, zNear, zFar).copy();
+        Transforms.createPerspective(fovy, aspect, zNear, zFar, mProj);
         return this;
     }
 
@@ -185,7 +185,7 @@ public class PerspCam extends BaseCamera
 
     public PerspCam initProjection(float left, float right, float bottom, float top, float zNear, float zFar)
     {
-        mProj = TransformUtils.createFrustum(left, right, bottom, top, zNear, zFar).copy();
+        Transforms.createFrustum(left, right, bottom, top, zNear, zFar, mProj);
         return this;
     }
 
@@ -194,12 +194,18 @@ public class PerspCam extends BaseCamera
         super.apply();
 
         Vector3 tempVec3 = Vector3.REUSABLE_STACK.pop();
+        Matrix4 tempMat4 = Matrix4.REUSABLE_STACK.pop();
+
+        Quaternion tempQuat = Quaternion.REUSABLE_STACK.pop();
 
         mView.initIdentity()
-                .multiplySelf(TransformUtils.createTranslation(tempVec3.set(position).negateSelf()))
-                .multiplySelf(TransformUtils.createRotation(rotation));
+                .multiplySelf(Transforms.createTranslation(tempVec3.set(position).negateSelf(), tempMat4))
+                .multiplySelf(Transforms.createRotation(rotation, tempMat4));
 
         Vector3.REUSABLE_STACK.push(tempVec3);
+        Matrix4.REUSABLE_STACK.push(tempMat4);
+
+        Quaternion.REUSABLE_STACK.push(tempQuat);
 
         // Enable Depth Testing
         GL3Context.enable(GL11.GL_DEPTH_TEST);
@@ -236,7 +242,6 @@ public class PerspCam extends BaseCamera
     public PerspCam setRotation(Quaternion rotation)
     {
         this.rotation.set(rotation);
-
         return this;
     }
 }

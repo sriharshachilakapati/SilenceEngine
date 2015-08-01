@@ -25,7 +25,6 @@
 package com.shc.silenceengine.math;
 
 import com.shc.silenceengine.utils.ReusableStack;
-import com.shc.silenceengine.utils.TransformUtils;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -59,7 +58,7 @@ public class Transform
 
     public Transform translateSelf(Vector3 v)
     {
-        tMatrix.multiplySelf(TransformUtils.createTranslation(v));
+        tMatrix.multiplySelf(Transforms.createTranslation(v));
         return this;
     }
 
@@ -81,7 +80,7 @@ public class Transform
 
     public Transform rotateSelf(Vector3 axis, float angle)
     {
-        tMatrix.multiplySelf(TransformUtils.createRotation(axis, angle));
+        tMatrix.multiplySelf(Transforms.createRotation(axis, angle));
         return this;
     }
 
@@ -95,7 +94,7 @@ public class Transform
         Quaternion temp = Quaternion.REUSABLE_STACK.pop();
 
         temp.set(rx, ry, rz);
-        tMatrix.multiplySelf(TransformUtils.createRotation(temp));
+        tMatrix.multiplySelf(Transforms.createRotation(temp));
 
         Quaternion.REUSABLE_STACK.push(temp);
         return this;
@@ -117,7 +116,7 @@ public class Transform
 
     public Transform scaleSelf(Vector3 scale)
     {
-        tMatrix.multiplySelf(TransformUtils.createScaling(scale));
+        tMatrix.multiplySelf(Transforms.createScaling(scale));
         return this;
     }
 
@@ -169,7 +168,7 @@ public class Transform
 
     public Transform applySelf(Quaternion q)
     {
-        return applySelf(TransformUtils.createRotation(q));
+        return applySelf(Transforms.createRotation(q));
     }
 
     public Transform applyInverse(Quaternion q)
@@ -179,7 +178,7 @@ public class Transform
 
     public Transform applyInverseSelf(Quaternion q)
     {
-        return applyInverseSelf(TransformUtils.createRotation(q));
+        return applyInverseSelf(Transforms.createRotation(q));
     }
 
     public Transform set(Transform t)

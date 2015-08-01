@@ -29,7 +29,7 @@ import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.utils.TransformUtils;
+import com.shc.silenceengine.math.Transforms;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -57,25 +57,25 @@ public class OrthoCam extends BaseCamera
     {
         width = right - left;
         height = bottom - top;
-        mProj = TransformUtils.createOrtho2d(left, right, bottom, top, 0, 100).copy();
+        mProj = Transforms.createOrtho2d(left, right, bottom, top, 0, 100);
         mView = new Matrix4().initIdentity();
     }
 
     public OrthoCam translate(Vector2 v)
     {
-        mView.multiplySelf(TransformUtils.createTranslation(new Vector3(v, 0)));
+        mView.multiplySelf(Transforms.createTranslation(new Vector3(v, 0)));
         return this;
     }
 
     public OrthoCam translateTo(float x, float y)
     {
-        mView.initIdentity().multiplySelf(TransformUtils.createTranslation(new Vector3(x, y, 0)));
+        mView.initIdentity().multiplySelf(Transforms.createTranslation(new Vector3(x, y, 0)));
         return this;
     }
 
     public OrthoCam translateTo(Vector2 v)
     {
-        mView.initIdentity().multiplySelf(TransformUtils.createTranslation(new Vector3(v, 0)));
+        mView.initIdentity().multiplySelf(Transforms.createTranslation(new Vector3(v, 0)));
         return this;
     }
 
@@ -95,13 +95,13 @@ public class OrthoCam extends BaseCamera
 
     public OrthoCam translate(float x, float y)
     {
-        mView.multiplySelf(TransformUtils.createTranslation(new Vector3(x, y, 0)));
+        mView.multiplySelf(Transforms.createTranslation(new Vector3(x, y, 0)));
         return this;
     }
 
     public OrthoCam rotate(Vector3 axis, float angle)
     {
-        mView.multiplySelf(TransformUtils.createRotation(axis, angle));
+        mView.multiplySelf(Transforms.createRotation(axis, angle));
         return this;
     }
 
@@ -114,7 +114,7 @@ public class OrthoCam extends BaseCamera
     {
         width = right - left;
         height = bottom - top;
-        mProj = TransformUtils.createOrtho2d(left, right, bottom, top, 0, 100).copy();
+        Transforms.createOrtho2d(left, right, bottom, top, 0, 100, mProj);
         return this;
     }
 
