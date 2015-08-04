@@ -141,7 +141,7 @@ public class Frustum
     public Frustum update(Matrix4 projection, Matrix4 view)
     {
         // Calculate the frustum matrix
-        frustumMatrix.set(view).multiplySelf(projection);
+        frustumMatrix.set(projection).multiplySelf(view);
 
         // Extract the frustum volume planes
         planes[LEFT].set(frustumMatrix.get(0, 3) + frustumMatrix.get(0, 0),

@@ -60,9 +60,9 @@ public class PerspCam extends BaseCamera
         position = new Vector3(0, 0, 1);
         rotation = new Quaternion();
 
-        forward = new Vector3();
-        right = new Vector3();
-        up = new Vector3();
+        forward = new Vector3(0, 0, -1);
+        right = new Vector3(0, 0, 1);
+        up = new Vector3(0, 1, 0);
     }
 
     public PerspCam lookAt(Vector3 point)
@@ -72,13 +72,13 @@ public class PerspCam extends BaseCamera
 
     public PerspCam lookAt(Vector3 point, Vector3 up)
     {
-        rotation = Transforms.createLookAtQuaternion(position, point, up, rotation);
+        Transforms.createLookAtQuaternion(position, point, up, rotation);
         return this;
     }
 
     public Vector3 getUp()
     {
-        return rotation.multiplyInverse(up.set(Vector3.AXIS_Y), up);
+        return rotation.multiply(up.set(Vector3.AXIS_Y), up).normalizeSelf();
     }
 
     public PerspCam lookAt(Vector3 position, Vector3 point, Vector3 up)
@@ -93,28 +93,28 @@ public class PerspCam extends BaseCamera
 
     public PerspCam move(Vector3 dir, float amount)
     {
-        position.addSelf(dir.normalize().scale(amount));
+        position.addSelf(dir.normalizeSelf().scaleSelf(amount));
         return this;
     }
 
     public Vector3 getForward()
     {
-        return rotation.multiplyInverse(forward.set(Vector3.AXIS_Z).negateSelf(), forward);
+        return rotation.multiply(forward.set(Vector3.AXIS_Z).negateSelf(), forward).normalizeSelf();
     }
 
     public PerspCam moveBackward(float amount)
     {
-        return move(getForward().negate(), amount);
+        return move(getForward().negateSelf(), amount);
     }
 
     public PerspCam moveLeft(float amount)
     {
-        return move(getRight().negate(), amount);
+        return move(getRight().negateSelf(), amount);
     }
 
     public Vector3 getRight()
     {
-        return rotation.multiplyInverse(Vector3.AXIS_X, right);
+        return rotation.multiply(Vector3.AXIS_X, right).normalizeSelf();
     }
 
     public PerspCam moveRight(float amount)
@@ -199,8 +199,8 @@ public class PerspCam extends BaseCamera
         Quaternion tempQuat = Quaternion.REUSABLE_STACK.pop();
 
         mView.initIdentity()
-                .multiplySelf(Transforms.createTranslation(tempVec3.set(position).negateSelf(), tempMat4))
-                .multiplySelf(Transforms.createRotation(rotation, tempMat4));
+                .multiplySelf(Transforms.createRotation(tempQuat.set(rotation).invertSelf(), tempMat4))
+                .multiplySelf(Transforms.createTranslation(tempVec3.set(position).negateSelf(), tempMat4));
 
         Vector3.REUSABLE_STACK.push(tempVec3);
         Matrix4.REUSABLE_STACK.push(tempMat4);

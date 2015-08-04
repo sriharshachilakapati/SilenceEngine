@@ -40,6 +40,28 @@ public class Matrix4
 
     private FloatBuffer buffer;
 
+    public Matrix4(Vector4 c0, Vector4 c1, Vector4 c2, Vector4 c3)
+    {
+        this();
+
+        m[0][0] = c0.x;
+        m[1][0] = c1.x;
+        m[2][0] = c2.x;
+        m[3][0] = c3.x;
+        m[0][1] = c0.y;
+        m[1][1] = c1.y;
+        m[2][1] = c2.y;
+        m[3][1] = c3.y;
+        m[0][2] = c0.z;
+        m[1][2] = c1.z;
+        m[2][2] = c2.z;
+        m[3][2] = c3.z;
+        m[0][3] = c0.w;
+        m[1][3] = c1.w;
+        m[2][3] = c2.w;
+        m[3][3] = c3.w;
+    }
+
     public Matrix4(Matrix3 m)
     {
         this();
@@ -173,14 +195,12 @@ public class Matrix4
         // creating a temporary float array every frame.
         Matrix4 temp = Matrix4.REUSABLE_STACK.pop().initZero();
 
-        for (int i = 0; i < 4; i++)
+        for (int r = 0; r < 4; r++)
         {
-            for (int j = 0; j < 4; j++)
+            for (int c = 0; c < 4; c++)
             {
                 for (int k = 0; k < 4; k++)
-                {
-                    temp.set(i, j, temp.get(i, j) + (this.m[i][k] * m.get(k, j)));
-                }
+                    temp.set(c, r, temp.get(c, r) + this.m[k][r] * m.get(c, k));
             }
         }
 

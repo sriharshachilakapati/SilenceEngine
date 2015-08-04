@@ -58,13 +58,18 @@ public class Transform
 
     public Transform translateSelf(Vector3 v)
     {
-        tMatrix.multiplySelf(Transforms.createTranslation(v));
+        Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
+        tMatrix.set(Transforms.createTranslation(v, temp).multiplySelf(tMatrix));
+        Matrix4.REUSABLE_STACK.push(temp);
+
         return this;
     }
 
     public Transform applySelf(Matrix4 matrix)
     {
-        tMatrix.multiplySelf(matrix);
+        Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
+        tMatrix.set(temp.set(matrix).multiplySelf(tMatrix));
+        Matrix4.REUSABLE_STACK.push(temp);
         return this;
     }
 
@@ -80,7 +85,10 @@ public class Transform
 
     public Transform rotateSelf(Vector3 axis, float angle)
     {
-        tMatrix.multiplySelf(Transforms.createRotation(axis, angle));
+        Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
+        tMatrix.set(Transforms.createRotation(axis, angle, temp).multiplySelf(tMatrix));
+        Matrix4.REUSABLE_STACK.push(temp);
+
         return this;
     }
 
@@ -92,9 +100,11 @@ public class Transform
     public Transform rotateSelf(float rx, float ry, float rz)
     {
         Quaternion temp = Quaternion.REUSABLE_STACK.pop();
-
         temp.set(rx, ry, rz);
-        tMatrix.multiplySelf(Transforms.createRotation(temp));
+
+        Matrix4 tMat = Matrix4.REUSABLE_STACK.pop();
+        tMatrix.set(Transforms.createRotation(temp, tMat).multiplySelf(tMatrix));
+        Matrix4.REUSABLE_STACK.push(tMat);
 
         Quaternion.REUSABLE_STACK.push(temp);
         return this;
@@ -116,7 +126,10 @@ public class Transform
 
     public Transform scaleSelf(Vector3 scale)
     {
-        tMatrix.multiplySelf(Transforms.createScaling(scale));
+        Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
+        tMatrix.set(Transforms.createScaling(scale, temp).multiplySelf(tMatrix));
+        Matrix4.REUSABLE_STACK.push(temp);
+
         return this;
     }
 
@@ -168,7 +181,11 @@ public class Transform
 
     public Transform applySelf(Quaternion q)
     {
-        return applySelf(Transforms.createRotation(q));
+        Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
+        applySelf(Transforms.createRotation(q, temp));
+
+        Matrix4.REUSABLE_STACK.push(temp);
+        return this;
     }
 
     public Transform applyInverse(Quaternion q)
@@ -178,7 +195,11 @@ public class Transform
 
     public Transform applyInverseSelf(Quaternion q)
     {
-        return applyInverseSelf(Transforms.createRotation(q));
+        Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
+        applyInverseSelf(Transforms.createRotation(q, temp));
+
+        Matrix4.REUSABLE_STACK.push(temp);
+        return this;
     }
 
     public Transform set(Transform t)

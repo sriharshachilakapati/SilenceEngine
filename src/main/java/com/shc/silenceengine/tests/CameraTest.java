@@ -96,16 +96,16 @@ public class CameraTest extends Game
             perspCam.moveDown(speed);
 
         if (Keyboard.isPressed(Keyboard.KEY_UP))
-            perspCam.rotateX(-1);
-
-        if (Keyboard.isPressed(Keyboard.KEY_DOWN))
             perspCam.rotateX(1);
 
+        if (Keyboard.isPressed(Keyboard.KEY_DOWN))
+            perspCam.rotateX(-1);
+
         if (Keyboard.isPressed(Keyboard.KEY_LEFT))
-            perspCam.rotateY(-1);
+            perspCam.rotateY(1);
 
         if (Keyboard.isPressed(Keyboard.KEY_RIGHT))
-            perspCam.rotateY(1);
+            perspCam.rotateY(-1);
 
         // Mouse look!
         if (Keyboard.isPressed(Keyboard.KEY_SPACE))

@@ -210,14 +210,12 @@ public class Matrix3
         // creating a temporary float array every frame.
         Matrix3 temp = Matrix3.REUSABLE_STACK.pop().initZero();
 
-        for (int i = 0; i < 3; i++)
+        for (int r = 0; r < 3; r++)
         {
-            for (int j = 0; j < 3; j++)
+            for (int c = 0; c < 3; c++)
             {
                 for (int k = 0; k < 3; k++)
-                {
-                    temp.set(i, j, temp.get(i, j) + (this.m[i][k] * m.get(k, j)));
-                }
+                    temp.set(c, r, temp.get(c, r) + this.m[k][r] * m.get(c, k));
             }
         }
 
