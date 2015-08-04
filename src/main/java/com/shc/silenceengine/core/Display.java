@@ -178,6 +178,11 @@ public final class Display
             window.setRefreshCallback(displayWindow.getRefreshCallback());
             window.setSizeCallback(displayWindow.getSizeCallback());
         }
+        else
+        {
+            window.setSizeCallback(Display::glfwSizeCallback);
+            window.setPositionCallback(Display::glfwPositionCallback);
+        }
     }
 
     private static void clearHints()
