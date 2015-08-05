@@ -83,7 +83,7 @@ public class FPSCamera extends BaseCamera
 
     public Vector3 getUp()
     {
-        return rotation.multiplyInverse(Vector3.AXIS_Y, up);
+        return rotation.multiply(Vector3.AXIS_Y, up);
     }
 
     public FPSCamera lookAt(Vector3 position, Vector3 point, Vector3 up)
@@ -104,7 +104,7 @@ public class FPSCamera extends BaseCamera
 
     public Vector3 getForward()
     {
-        return rotation.multiplyInverse(forward.set(Vector3.AXIS_Z).negateSelf(), forward);
+        return rotation.multiply(forward.set(Vector3.AXIS_Z).negateSelf(), forward);
     }
 
     public FPSCamera moveBackward(float amount)
@@ -119,7 +119,7 @@ public class FPSCamera extends BaseCamera
 
     public Vector3 getRight()
     {
-        return rotation.multiplyInverse(Vector3.AXIS_X, right);
+        return rotation.multiply(Vector3.AXIS_X, right);
     }
 
     public FPSCamera moveRight(float amount)
@@ -210,12 +210,16 @@ public class FPSCamera extends BaseCamera
         Vector3 tempVec3 = Vector3.REUSABLE_STACK.pop();
         Matrix4 tempMat4 = Matrix4.REUSABLE_STACK.pop();
 
+        Quaternion tempQuat = Quaternion.REUSABLE_STACK.pop();
+
         mView.initIdentity()
-                .multiplySelf(Transforms.createTranslation(tempVec3.set(position).negateSelf(), tempMat4))
-                .multiplySelf(Transforms.createRotation(rotation, tempMat4));
+                .multiplySelf(Transforms.createRotation(tempQuat.set(rotation).invertSelf(), tempMat4))
+                .multiplySelf(Transforms.createTranslation(tempVec3.set(position).negateSelf(), tempMat4));
 
         Vector3.REUSABLE_STACK.push(tempVec3);
         Matrix4.REUSABLE_STACK.push(tempMat4);
+
+        Quaternion.REUSABLE_STACK.push(tempQuat);
 
         // Enable Depth Testing
         GL3Context.enable(GL11.GL_DEPTH_TEST);
