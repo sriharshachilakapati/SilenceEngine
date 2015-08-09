@@ -33,7 +33,7 @@ import com.shc.silenceengine.math.Matrix4;
 public abstract class BaseCamera
 {
     public static BaseCamera CURRENT = new NullCamera();
-    protected Frustum frustum = new Frustum();
+    protected     Frustum    frustum = new Frustum();
 
     public void apply()
     {

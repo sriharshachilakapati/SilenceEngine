@@ -308,14 +308,14 @@ public class ResourceLoader
         return (((loaded.keySet().size() + 1) * 100) / toBeLoaded.keySet().size());
     }
 
-    public void setLogo(FilePath logo)
-    {
-        this.logo = Texture.fromFilePath(logo);
-    }
-
     public Texture getLogo()
     {
         return logo;
+    }
+
+    public void setLogo(FilePath logo)
+    {
+        this.logo = Texture.fromFilePath(logo);
     }
 
     public void setProgressRenderCallback(IProgressRenderCallback progressRenderCallback)

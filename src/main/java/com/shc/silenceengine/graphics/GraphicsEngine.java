@@ -34,8 +34,8 @@ import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.graphics.programs.DefaultProgram;
 import com.shc.silenceengine.graphics.programs.DirectionalLightProgram;
 import com.shc.silenceengine.graphics.programs.PointLightProgram;
-import org.lwjgl.opengl.ContextCapabilities;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLCapabilities;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -219,7 +219,7 @@ public class GraphicsEngine implements IEngine
         return spriteBatch;
     }
 
-    public ContextCapabilities getGLCapabilities()
+    public GLCapabilities getGLCapabilities()
     {
         return GL.getCapabilities();
     }

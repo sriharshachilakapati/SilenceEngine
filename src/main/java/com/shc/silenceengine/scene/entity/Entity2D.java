@@ -270,7 +270,7 @@ public class Entity2D implements IUpdatable
 
     /**
      * Moves this object's center to a specified point with a specific speed. Note that the velocity used is independent
-     *  of vertical or horizontal velocities of this object.
+     * of vertical or horizontal velocities of this object.
      *
      * @param nx    The new x-position
      * @param ny    The new y-position

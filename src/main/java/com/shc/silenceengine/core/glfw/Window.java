@@ -32,7 +32,7 @@ import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector4;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.GL;
 
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
@@ -755,7 +755,7 @@ public class Window
     public void makeCurrent()
     {
         glfwMakeContextCurrent(handle);
-        GLContext.createFromCurrent();
+        GL.createCapabilities();
 
         Vector2 size = getSize();
         GL3Context.viewport(0, 0, size.x, size.y);
