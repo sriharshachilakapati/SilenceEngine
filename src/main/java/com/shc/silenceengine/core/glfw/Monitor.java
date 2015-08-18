@@ -26,7 +26,7 @@ package com.shc.silenceengine.core.glfw;
 
 import com.shc.silenceengine.core.glfw.callbacks.IMonitorCallback;
 import com.shc.silenceengine.math.Vector2;
-import org.lwjgl.BufferUtils;
+import com.shc.silenceengine.utils.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWMonitorCallback;
@@ -177,6 +177,7 @@ public class Monitor
                 videoModes.add(new VideoMode(width, height, redBits, greenBits, blueBits, refreshRate));
             }
 
+            BufferUtils.freeBuffer(count);
             videoModes = Collections.unmodifiableList(videoModes);
         }
 
@@ -288,6 +289,10 @@ public class Monitor
 
         ByteBuffer buffer = ramp.buffer();
         glfwSetGammaRamp(handle, buffer);
+
+        BufferUtils.freeBuffer(rBuffer);
+        BufferUtils.freeBuffer(gBuffer);
+        BufferUtils.freeBuffer(bBuffer);
     }
 
     /**
@@ -303,11 +308,16 @@ public class Monitor
      */
     public Vector2 getPhysicalSize()
     {
-        IntBuffer width = BufferUtils.createIntBuffer(1);
-        IntBuffer height = BufferUtils.createIntBuffer(1);
-        glfwGetMonitorPhysicalSize(handle, width, height);
+        IntBuffer sizeBuffer = org.lwjgl.BufferUtils.createIntBuffer(2);
 
-        return new Vector2(width.get(), height.get());
+        long addressWidth = BufferUtils.memAddress(sizeBuffer);
+        long addressHeight = addressWidth + Integer.BYTES;
+        nglfwGetMonitorPhysicalSize(handle, addressWidth, addressHeight);
+
+        Vector2 size = new Vector2(sizeBuffer.get(0), sizeBuffer.get(1));
+        BufferUtils.freeBuffer(sizeBuffer);
+
+        return size;
     }
 
     /**
@@ -318,11 +328,16 @@ public class Monitor
      */
     public Vector2 getVirtualPosition()
     {
-        IntBuffer xPos = BufferUtils.createIntBuffer(1);
-        IntBuffer yPos = BufferUtils.createIntBuffer(1);
-        glfwGetMonitorPos(handle, xPos, yPos);
+        IntBuffer posBuffer = BufferUtils.createIntBuffer(2);
 
-        return new Vector2(xPos.get(), yPos.get());
+        long posX = BufferUtils.memAddress(posBuffer);
+        long posY = posX + Integer.BYTES;
+
+        nglfwGetMonitorPos(handle, posX, posY);
+        Vector2 position = new Vector2(posBuffer.get(0), posBuffer.get(1));
+
+        BufferUtils.freeBuffer(posBuffer);
+        return position;
     }
 
     @Override

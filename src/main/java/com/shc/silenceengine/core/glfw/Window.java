@@ -30,7 +30,6 @@ import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector4;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 
@@ -40,7 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.system.MemoryUtil.*;
+import static com.shc.silenceengine.utils.BufferUtils.*;
 
 /**
  * <p> This class is an object oriented wrapper for GLFWwindow structure, which encapsulates both the window and the
@@ -654,10 +653,13 @@ public class Window
      */
     public Vector2 getCursorPos()
     {
-        DoubleBuffer pos = BufferUtils.createDoubleBuffer(2);
+        DoubleBuffer pos = createDoubleBuffer(2);
         nglfwGetCursorPos(handle, memAddress(pos), memAddress(pos) + Double.BYTES);
 
-        return new Vector2((float) pos.get(0), (float) pos.get(1));
+        Vector2 cursorPos = new Vector2((float) pos.get(0), (float) pos.get(1));
+        freeBuffer(pos);
+
+        return cursorPos;
     }
 
     /**
@@ -876,10 +878,13 @@ public class Window
      */
     public Vector2 getPosition()
     {
-        IntBuffer pos = BufferUtils.createIntBuffer(2);
+        IntBuffer pos = createIntBuffer(2);
         nglfwGetWindowPos(handle, memAddress(pos), memAddress(pos) + Integer.BYTES);
 
-        return position.set(pos.get(0), pos.get(1));
+        position.set(pos.get(0), pos.get(1));
+        freeBuffer(pos);
+
+        return position;
     }
 
     /**
@@ -926,10 +931,13 @@ public class Window
      */
     public Vector2 getSize()
     {
-        IntBuffer size = BufferUtils.createIntBuffer(2);
+        IntBuffer size = createIntBuffer(2);
         nglfwGetWindowSize(handle, memAddress(size), memAddress(size) + Integer.BYTES);
 
-        return this.size.set(size.get(0), size.get(1));
+        this.size.set(size.get(0), size.get(1));
+        freeBuffer(size);
+
+        return this.size;
     }
 
     /**
@@ -976,10 +984,13 @@ public class Window
      */
     public Vector2 getFramebufferSize()
     {
-        IntBuffer size = BufferUtils.createIntBuffer(2);
+        IntBuffer size = createIntBuffer(2);
         nglfwGetFramebufferSize(handle, memAddress(size), memAddress(size) + Integer.BYTES);
 
-        return framebufferSize.set(size.get(0), size.get(1));
+        framebufferSize.set(size.get(0), size.get(1));
+        freeBuffer(size);
+
+        return framebufferSize;
     }
 
     /**
@@ -1043,7 +1054,7 @@ public class Window
      */
     public Vector4 getFrameSize()
     {
-        IntBuffer size = BufferUtils.createIntBuffer(4);
+        IntBuffer size = createIntBuffer(4);
 
         long left = memAddress(size);
         long top = left + Integer.BYTES;
@@ -1052,7 +1063,10 @@ public class Window
 
         nglfwGetWindowFrameSize(handle, left, top, right, bottom);
 
-        return new Vector4(size.get(0), size.get(1), size.get(2), size.get(3));
+        Vector4 frameSize = new Vector4(size.get(0), size.get(1), size.get(2), size.get(3));
+        freeBuffer(size);
+
+        return frameSize;
     }
 
     /**
