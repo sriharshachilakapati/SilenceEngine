@@ -80,26 +80,31 @@ public class NativesLoader
                 case WINDOWS_32:
                     loadLibrary("lwjgl32.dll");
                     loadLibrary("OpenAL32.dll");
+                    loadLibrary("jemalloc32.dll");
                     break;
 
                 case WINDOWS_64:
                     loadLibrary("lwjgl.dll");
                     loadLibrary("OpenAL.dll");
+                    loadLibrary("jemalloc.dll");
                     break;
 
                 case MACOSX:
                     loadLibrary("liblwjgl.dylib");
                     loadLibrary("libopenal.dylib");
+                    loadLibrary("libjemalloc.dylib");
                     break;
 
                 case LINUX_32:
                     loadLibrary("liblwjgl32.so");
                     loadLibrary("libopenal32.so");
+                    loadLibrary("libjemalloc32.so");
                     break;
 
                 case LINUX_64:
                     loadLibrary("liblwjgl.so");
                     loadLibrary("libopenal.so");
+                    loadLibrary("libjemalloc.so");
                     break;
 
                 case UNKNOWN:
