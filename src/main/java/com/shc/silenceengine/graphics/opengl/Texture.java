@@ -197,6 +197,12 @@ public class Texture implements IResource
         CURRENT = this;
     }
 
+    public void bind(int unit)
+    {
+        setActiveUnit(unit);
+        bind();
+    }
+
     public void setFilter(int min, int mag)
     {
         bind();
