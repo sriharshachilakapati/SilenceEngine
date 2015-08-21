@@ -65,9 +65,6 @@ import com.shc.silenceengine.utils.IDGenerator;
  */
 public class Entity2D implements IUpdatable
 {
-    Vector2 temp  = new Vector2();
-    Vector2 temp2 = new Vector2();
-
     // The sprite
     private Sprite sprite;
 
@@ -349,13 +346,13 @@ public class Entity2D implements IUpdatable
      */
     public void render(float delta, SpriteBatch batch)
     {
-        temp.set(getPosition());
-        temp2.set(getVelocity());
-        temp2.normalizeSelf();
-        temp2.scaleSelf(delta);
-        temp.addSelf(temp2);
+        Vector2 temp = Vector2.REUSABLE_STACK.pop();
+        
+        // The correct position is 'originalPos + (norm(velocity) * delta)' to get smooth movement.
+        temp.set(getVelocity()).normalizeSelf().scaleSelf(delta).addSelf(getPosition());
 
         batch.addSprite(sprite, temp);
+        Vector2.REUSABLE_STACK.push(temp);
     }
 
     /**

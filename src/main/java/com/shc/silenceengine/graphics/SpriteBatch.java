@@ -60,6 +60,8 @@ public class SpriteBatch
 
         sprites.clear();
         indices.clear();
+
+        positions.forEach(Vector2.REUSABLE_STACK::push);
         positions.clear();
 
         active = true;
@@ -141,6 +143,8 @@ public class SpriteBatch
 
         sprites.clear();
         indices.clear();
+
+        positions.forEach(Vector2.REUSABLE_STACK::push);
         positions.clear();
 
         originalTexture.bind();
@@ -164,7 +168,7 @@ public class SpriteBatch
     public void addSprite(Sprite sprite, Vector2 position)
     {
         sprites.add(sprite);
-        positions.add(position);
+        positions.add(Vector2.REUSABLE_STACK.pop().set(position));
         indices.add(sprites.size() - 1);
     }
 }
