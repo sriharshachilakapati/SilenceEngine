@@ -42,11 +42,10 @@ public class Ellipse extends Polygon
         this(new Vector2(x, y), rx, ry);
     }
 
-    public Ellipse(Vector2 position, float rx, float ry)
+    public Ellipse(Vector2 center, float rx, float ry)
     {
         updateVertices(rx, ry);
-
-        setPosition(position);
+        setCenter(center);
     }
 
     private void updateVertices(float rx, float ry)
