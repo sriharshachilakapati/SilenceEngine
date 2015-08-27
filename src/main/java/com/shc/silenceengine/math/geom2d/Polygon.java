@@ -237,13 +237,13 @@ public class Polygon
 
     public void rotate(float angle, float originX, float originY)
     {
+        rotation += angle;
+        
         if (angle == 0 || this instanceof Circle)
             return;
 
         for (Vector2 vertex : vertices)
             vertex.subtractSelf(originX, originY).rotateSelf(angle).addSelf(originX, originY);
-
-        rotation += angle;
     }
 
     public void translate(float x, float y)
