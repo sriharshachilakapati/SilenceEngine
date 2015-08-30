@@ -40,6 +40,16 @@ public class Circle extends Ellipse
     {
         this(1);
     }
+    
+    public Circle(Vector2 center)
+    {
+        super(center, 1, 1);
+    }
+    
+    public Circle(Vector2 center, float radius)
+    {
+        super(center, radius, radius);
+    }
 
     /**
      * Constructs a circle with a center position and a radius.
