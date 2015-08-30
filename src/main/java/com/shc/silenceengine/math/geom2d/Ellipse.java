@@ -56,7 +56,7 @@ public class Ellipse extends Polygon
         float y = getPosition().y;
 
         for (int i = 0; i < 360; i++)
-            addVertex(new Vector2(x + MathUtils.cos(i) * rx, y + MathUtils.sin(i) * ry));
+            addVertex(new Vector2(x + rx + MathUtils.cos(i) * rx, y + ry + MathUtils.sin(i) * ry));
     }
 
     public float getRadiusX()
