@@ -40,7 +40,7 @@ import java.util.List;
  * @author Sri Harsha Chilakapati
  * @author Josh "ShadowLordAlpha"
  */
-public class TrueTypeFont implements IResource
+public class TrueTypeFont implements IResource, IFont
 {
     public static final int STYLE_NORMAL = Font.PLAIN;
     public static final int STYLE_BOLD   = Font.BOLD;
@@ -209,11 +209,7 @@ public class TrueTypeFont implements IResource
         fontTexture = pages.toArray(fontTexture);
     }
 
-    public void drawString(Batcher b, String text, float x, float y)
-    {
-        drawString(b, text, x, y, Color.WHITE);
-    }
-
+    @Override
     public void drawString(Batcher b, String text, float x, float y, Color col)
     {
         // Don't draw anything if the string is null or is empty. Also removes all trailing whitespace
@@ -287,10 +283,10 @@ public class TrueTypeFont implements IResource
         current.bind();
     }
 
-    public int getWidth(String str)
+    public float getWidth(String str)
     {
-        int width = 0;
-        int lineWidth = 0;
+        float width = 0;
+        float lineWidth = 0;
 
         for (char ch : str.toCharArray())
         {
@@ -350,7 +346,7 @@ public class TrueTypeFont implements IResource
             texture.dispose();
     }
 
-    public int getHeight()
+    public float getHeight()
     {
         return fontMetrics.getHeight();
     }

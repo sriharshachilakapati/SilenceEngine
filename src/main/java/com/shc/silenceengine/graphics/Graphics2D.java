@@ -45,10 +45,10 @@ public class Graphics2D
 {
     private static Graphics2D instance;
 
-    private OrthoCam     camera;
-    private Paint        paint;
-    private TrueTypeFont font;
-    private Transform    transform;
+    private OrthoCam  camera;
+    private Paint     paint;
+    private IFont     font;
+    private Transform transform;
 
     /* Utility Methods */
     private BaseCamera originalCamera;
@@ -490,12 +490,12 @@ public class Graphics2D
         this.paint = paint;
     }
 
-    public TrueTypeFont getFont()
+    public IFont getFont()
     {
         return font;
     }
 
-    public void setFont(TrueTypeFont font)
+    public void setFont(IFont font)
     {
         this.font = font;
     }
