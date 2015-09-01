@@ -48,6 +48,7 @@ public class Circle extends Polygon
 
     public Circle(Vector2 center, float r)
     {
+        this.radius = r;
         updateVertices(r);
         setCenter(center);
     }
