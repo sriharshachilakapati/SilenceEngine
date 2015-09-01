@@ -25,47 +25,42 @@
 package com.shc.silenceengine.math.geom2d;
 
 import com.shc.silenceengine.math.Vector2;
+import com.shc.silenceengine.utils.MathUtils;
 
 /**
  * Represents a Circle Polygon.
  *
  * @author Sri Harsha Chilakapati
  */
-public class Circle extends Ellipse
+public class Circle extends Polygon
 {
-    /**
-     * Constructs a point-circle, with center as origin and radius as 1
-     */
-    public Circle()
+    private float radius;
+
+    public Circle(float r)
     {
-        this(1);
-    }
-    
-    public Circle(Vector2 center)
-    {
-        super(center, 1, 1);
-    }
-    
-    public Circle(Vector2 center, float radius)
-    {
-        super(center, radius, radius);
+        this(0, 0, r);
     }
 
-    /**
-     * Constructs a circle with a center position and a radius.
-     *
-     * @param x      The center x-coordinate
-     * @param y      The center y-coordinate
-     * @param radius The radius of the circle
-     */
-    public Circle(float x, float y, float radius)
+    public Circle(float x, float y, float r)
     {
-        super(x, y, radius, radius);
+        this(new Vector2(x, y), r);
     }
 
-    public Circle(float radius)
+    public Circle(Vector2 center, float r)
     {
-        this(0, 0, radius);
+        updateVertices(r);
+        setCenter(center);
+    }
+
+    private void updateVertices(float r)
+    {
+        clearVertices();
+
+        float x = getPosition().x;
+        float y = getPosition().y;
+
+        for (int i = 0; i < 360; i++)
+            addVertex(new Vector2(x + r + MathUtils.cos(i) * r, y + r + MathUtils.sin(i) * r));
     }
 
     /**
@@ -137,12 +132,12 @@ public class Circle extends Ellipse
 
     public float getRadius()
     {
-        return getRadiusX();
+        return radius;
     }
 
     public void setRadius(float radius)
     {
-        setRadiusX(radius);
-        setRadiusY(radius);
+        this.radius = radius;
+        updateVertices(radius);
     }
 }
