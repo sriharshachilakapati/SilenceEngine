@@ -38,8 +38,8 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.lwjgl.glfw.GLFW.*;
 import static com.shc.silenceengine.utils.BufferUtils.*;
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * <p> This class is an object oriented wrapper for GLFWwindow structure, which encapsulates both the window and the

@@ -30,13 +30,13 @@ package com.shc.silenceengine.graphics;
 public interface IFont
 {
     void drawString(Batcher b, String string, float x, float y, Color color);
-    
+
     default void drawString(Batcher b, String string, float x, float y)
     {
         drawString(b, string, x, y, Color.WHITE);
     }
-    
+
     float getWidth(String string);
-    
+
     float getHeight();
 }

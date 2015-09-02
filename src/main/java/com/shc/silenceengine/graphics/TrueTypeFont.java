@@ -305,6 +305,11 @@ public class TrueTypeFont implements IResource, IFont
         return width;
     }
 
+    public float getHeight()
+    {
+        return fontMetrics.getHeight();
+    }
+
     public TrueTypeFont derive(float size)
     {
         return new TrueTypeFont(awtFont.deriveFont(size));
@@ -344,11 +349,6 @@ public class TrueTypeFont implements IResource, IFont
     {
         for (Texture texture : fontTexture)
             texture.dispose();
-    }
-
-    public float getHeight()
-    {
-        return fontMetrics.getHeight();
     }
 
     private static class FontChar

@@ -238,7 +238,7 @@ public class Polygon
     public void rotate(float angle, float originX, float originY)
     {
         rotation += angle;
-        
+
         if (angle == 0 || this instanceof Circle)
             return;
 

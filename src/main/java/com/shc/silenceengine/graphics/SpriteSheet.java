@@ -35,7 +35,7 @@ public class SpriteSheet
 
     private float cellWidth;
     private float cellHeight;
-    
+
     private Texture[][] cells;
 
     public SpriteSheet(Texture texture, float cellWidth, float cellHeight)
@@ -44,7 +44,7 @@ public class SpriteSheet
 
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
-        
+
         cells = new Texture[(int) (texture.getWidth() / cellWidth)][(int) (texture.getHeight() / cellHeight)];
     }
 
@@ -52,10 +52,10 @@ public class SpriteSheet
     {
         if (row >= cells.length)
             throw new ArithmeticException("Cannot get past the last row");
-        
+
         if (column >= cells[0].length)
             throw new ArithmeticException("Cannot get past the last column");
-        
+
         if (cells[row][column] == null)
         {
             float minU = (column * cellWidth + 0.5f) / texture.getWidth();
@@ -65,7 +65,7 @@ public class SpriteSheet
 
             cells[row][column] = texture.getSubTexture(minU, minV, maxU, maxV, cellWidth, cellHeight);
         }
-        
+
         return cells[row][column];
     }
 

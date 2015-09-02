@@ -347,7 +347,7 @@ public class Entity2D implements IUpdatable
     public void render(float delta, SpriteBatch batch)
     {
         Vector2 temp = Vector2.REUSABLE_STACK.pop();
-        
+
         // The correct position is 'originalPos + (norm(velocity) * delta)' to get smooth movement.
         temp.set(getVelocity()).normalizeSelf().scaleSelf(delta).addSelf(getPosition());
 
