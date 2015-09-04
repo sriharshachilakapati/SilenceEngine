@@ -213,7 +213,7 @@ public class Entity3D implements IUpdatable
         float y = position.y;
         float z = position.z;
 
-        int distance = (int) Math.sqrt((double) ((x - nx) * (x - nx) + (y - ny) * (y - ny) + (z - nz) * (z - nz)));
+        float distance = (float) Math.sqrt((double) ((x - nx) * (x - nx) + (y - ny) * (y - ny) + (z - nz) * (z - nz)));
 
         float vel = Math.min(distance, speed);
 

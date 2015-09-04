@@ -239,8 +239,7 @@ public class Entity2D implements IUpdatable
         float x = position.x;
         float y = position.y;
 
-        int distance = (int) Math.sqrt((double) ((x - nx) * (x - nx) + (y - ny) * (y - ny)));
-
+        float distance = (float) Math.sqrt((double) ((x - nx) * (x - nx) + (y - ny) * (y - ny)));
         float vel = Math.min(distance, speed);
 
         if (x > nx)
@@ -283,8 +282,7 @@ public class Entity2D implements IUpdatable
         float x = getCenter().x;
         float y = getCenter().y;
 
-        int distance = (int) Math.sqrt((double) ((x - nx) * (x - nx) + (y - ny) * (y - ny)));
-
+        float distance = (float) Math.sqrt((double) ((x - nx) * (x - nx) + (y - ny) * (y - ny)));
         float vel = Math.min(distance, speed);
 
         if (x > nx)
