@@ -122,7 +122,6 @@ public class Batcher
         initGLHandles();
     }
 
-
     /**
      * Initialises VAOs and VBOs and creates the data store to store the entire batch.
      */
@@ -194,6 +193,8 @@ public class Batcher
 
         flush();
         unmapBuffers();
+
+        transform.reset();
     }
 
     /**
@@ -227,12 +228,6 @@ public class Batcher
 
         Program.CURRENT.prepareFrame();
 
-        // Flip the buffers
-        vBuffer.flip();
-        cBuffer.flip();
-        tBuffer.flip();
-        nBuffer.flip();
-
         // Bind the VAO
         vao.bind();
         vao.enableAttributeArray(vertexLocation);
@@ -251,12 +246,6 @@ public class Batcher
 
         GL3Context.bindVertexArray(null);
 
-        // Clear the buffers
-        vBuffer.clear();
-        cBuffer.clear();
-        tBuffer.clear();
-        nBuffer.clear();
-
         // Clear the vertex count
         vertexCount = 0;
         colorCount = 0;
@@ -265,8 +254,6 @@ public class Batcher
 
         // Map the buffers again
         mapBuffers();
-
-        transform.reset();
     }
 
     private void fillBuffers()
@@ -276,25 +263,15 @@ public class Batcher
 
         // Fill the color buffers
         while (colorCount < vertexCount)
-        {
-            cBuffer.putFloat(col.getR()).putFloat(col.getG()).putFloat(col.getB()).putFloat(col.getA());
-            colorCount++;
-        }
+            color(col);
 
         // Fill the texcoord buffers
         while (texCoordCount < vertexCount)
-        {
-            tBuffer.putFloat(0).putFloat(0);
-            texCoordCount++;
-        }
+            texCoord(0, 0);
 
         // Fill the normal buffers
         while (normalCount < vertexCount)
-        {
-            // Junk normal
-            nBuffer.putFloat(0).putFloat(0).putFloat(0).putFloat(0);
-            normalCount++;
-        }
+            normal(0, 0, 0, 0);
     }
 
     /**
@@ -338,6 +315,12 @@ public class Batcher
         transform.applySelf(m);
     }
 
+    public void setTransform(Matrix4 m)
+    {
+        flush();
+        transform.reset().applySelf(m);
+    }
+
     public void vertex(float x, float y)
     {
         vertex(x, y, 0, 1);
@@ -348,7 +331,11 @@ public class Batcher
         flushOnOverflow(1);
         fillBuffers();
 
-        vBuffer.putFloat(x).putFloat(y).putFloat(z).putFloat(w);
+        vBuffer.putFloat(vertexCount * NUM_VERTEX_COMPONENTS * Float.BYTES, x)
+                .putFloat(vertexCount * NUM_VERTEX_COMPONENTS * Float.BYTES + 4, y)
+                .putFloat(vertexCount * NUM_VERTEX_COMPONENTS * Float.BYTES + 8, z)
+                .putFloat(vertexCount * NUM_VERTEX_COMPONENTS * Float.BYTES + 12, w);
+
         vertexCount++;
     }
 
@@ -391,7 +378,11 @@ public class Batcher
     public void color(float r, float g, float b, float a)
     {
         // Add the specified color
-        cBuffer.putFloat(r).putFloat(g).putFloat(b).putFloat(a);
+        cBuffer.putFloat(colorCount * NUM_COLOR_COMPONENTS * Float.BYTES, r)
+                .putFloat(colorCount * NUM_COLOR_COMPONENTS * Float.BYTES + 4, g)
+                .putFloat(colorCount * NUM_COLOR_COMPONENTS * Float.BYTES + 8, b)
+                .putFloat(colorCount * NUM_COLOR_COMPONENTS * Float.BYTES + 12, a);
+
         colorCount++;
     }
 
@@ -403,7 +394,9 @@ public class Batcher
     public void texCoord(float u, float v)
     {
         // Add the specified texcoord
-        tBuffer.putFloat(u).putFloat(v);
+        tBuffer.putFloat(texCoordCount * NUM_TEXCOORD_COMPONENTS * Float.BYTES, u)
+                .putFloat(texCoordCount * NUM_TEXCOORD_COMPONENTS * Float.BYTES + 4, v);
+
         texCoordCount++;
     }
 
@@ -414,7 +407,11 @@ public class Batcher
 
     public void normal(float x, float y, float z, float w)
     {
-        nBuffer.putFloat(x).putFloat(y).putFloat(z).putFloat(w);
+        nBuffer.putFloat(normalCount * NUM_NORMAL_COMPONENTS * Float.BYTES, x)
+                .putFloat(normalCount * NUM_NORMAL_COMPONENTS * Float.BYTES + 4, y)
+                .putFloat(normalCount * NUM_NORMAL_COMPONENTS * Float.BYTES + 8, z)
+                .putFloat(normalCount * NUM_NORMAL_COMPONENTS * Float.BYTES + 12, w);
+
         normalCount++;
     }
 
@@ -423,12 +420,12 @@ public class Batcher
         normal(n.getX(), n.getY(), n.getZ(), 0);
     }
 
-    /* Draw Texture */
-
     public void drawTexture2d(Texture texture, Vector2 p)
     {
         drawTexture2d(texture, p, Color.TRANSPARENT);
     }
+
+    /* Draw Texture */
 
     public void drawTexture2d(Texture texture, Vector2 p, Color color)
     {
@@ -472,6 +469,12 @@ public class Batcher
     public Transform getTransform()
     {
         return transform;
+    }
+
+    public void setTransform(Transform t)
+    {
+        flush();
+        transform.set(t);
     }
 
     public void dispose()
