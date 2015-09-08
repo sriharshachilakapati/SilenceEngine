@@ -151,4 +151,52 @@ public class Cuboid extends Polyhedron
 
         updateVertices();
     }
+
+    public float getIntersectionWidth(Cuboid aabb)
+    {
+        if (aabb.getRotationX() != 0 || aabb.getRotationY() != 0 || aabb.getRotationZ() != 0)
+            aabb = aabb.getBounds();
+
+        Cuboid self = (getRotationX() == 0 && getRotationY() == 0 && getRotationZ() == 0) ? this : getBounds();
+
+        float tx1 = self.getPosition().x - self.getWidth() / 2;
+        float rx1 = aabb.getPosition().x - aabb.getWidth() / 2;
+
+        float tx2 = tx1 + self.getWidth();
+        float rx2 = rx1 + aabb.getWidth();
+
+        return tx2 > rx2 ? rx2 - tx1 : tx2 - rx1;
+    }
+
+    public float getIntersectionHeight(Cuboid aabb)
+    {
+        if (aabb.getRotationX() != 0 || aabb.getRotationY() != 0 || aabb.getRotationZ() != 0)
+            aabb = aabb.getBounds();
+
+        Cuboid self = (getRotationX() == 0 && getRotationY() == 0 && getRotationZ() == 0) ? this : getBounds();
+
+        float ty1 = self.getPosition().y - self.getHeight() / 2;
+        float ry1 = aabb.getPosition().y - aabb.getHeight() / 2;
+
+        float ty2 = ty1 + self.getHeight();
+        float ry2 = ry1 + aabb.getHeight();
+
+        return ty2 > ry2 ? ry2 - ty1 : ty2 - ry1;
+    }
+
+    public float getIntersectionThickness(Cuboid aabb)
+    {
+        if (aabb.getRotationX() != 0 || aabb.getRotationY() != 0 || aabb.getRotationZ() != 0)
+            aabb = aabb.getBounds();
+
+        Cuboid self = (getRotationX() == 0 && getRotationY() == 0 && getRotationZ() == 0) ? this : getBounds();
+
+        float tz1 = self.getPosition().z - self.getThickness() / 2;
+        float rz1 = aabb.getPosition().z - aabb.getThickness() / 2;
+
+        float tz2 = tz1 + self.getThickness();
+        float rz2 = rz1 + aabb.getThickness();
+
+        return tz2 > rz2 ? rz2 - tz1 : tz2 - rz1;
+    }
 }

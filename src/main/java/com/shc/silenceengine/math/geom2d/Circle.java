@@ -133,7 +133,7 @@ public class Circle extends Polygon
 
     public float getRadius()
     {
-        return radius;
+        return getBounds().getWidth() / 2;
     }
 
     public void setRadius(float radius)
