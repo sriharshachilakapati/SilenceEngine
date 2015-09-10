@@ -66,6 +66,12 @@ public class Model implements IResource
         throw new SilenceException("The model type you are trying to load is unsupported.");
     }
 
+    public void render(Transform transform)
+    {
+        for (Mesh mesh : meshes)
+            SilenceEngine.graphics.getStaticMesh(mesh).render(transform);
+    }
+
     public void render(Batcher batcher, Transform transform)
     {
         Mesh m = getMeshes().get(0);
