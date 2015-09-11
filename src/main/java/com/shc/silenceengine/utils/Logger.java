@@ -30,6 +30,9 @@ import com.shc.silenceengine.io.FilePath;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -186,6 +189,36 @@ public final class Logger
         throw new SilenceException("FATAL Error occurred, cannot continue further");
     }
 
+    public static void trace(Throwable t)
+    {
+        if (redirectionCallback != null)
+            redirectionCallback.redirect(Level.TRACE, t);
+        else
+        {
+            Writer result = new StringWriter();
+            PrintWriter writer = new PrintWriter(result);
+            t.printStackTrace(writer);
+
+            if (printTimeStamps)
+            {
+                String timestamp = "[TRACE " + getTimeStamp() + "]";
+
+                for (PrintStream stream : printStreams)
+                    stream.println(timestamp);
+
+                if (printToConsole)
+                    System.err.println(timestamp);
+            }
+
+            String trace = result.toString();
+            for (PrintStream stream : printStreams)
+                stream.println(trace);
+
+            if (printToConsole)
+                System.err.println(trace);
+        }
+    }
+
     /**
      * Sets the format of time stamps printed with <code>info()</code>, <code>warn()</code> and <code>error()</code>.
      * This will not be used if {@link com.shc.silenceengine.utils.Logger#setPrintTimeStamps(boolean)
@@ -241,7 +274,8 @@ public final class Logger
     {
         INFO,
         WARNING,
-        ERROR
+        ERROR,
+        TRACE
     }
 
     public interface RedirectionCallback

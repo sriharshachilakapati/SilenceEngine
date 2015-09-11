@@ -181,7 +181,7 @@ public final class SilenceEngine implements IEngine
             }
             catch (Throwable ex)
             {
-                ex.printStackTrace();
+                Logger.trace(ex);
                 System.exit(-1);
             }
         });
