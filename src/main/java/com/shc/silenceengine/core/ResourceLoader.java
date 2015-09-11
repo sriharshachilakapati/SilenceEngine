@@ -83,34 +83,14 @@ public class ResourceLoader
 
     private static void textureLoadHelper(FilePath path, ResourceLoader loader)
     {
-        try
-        {
-            ResourceLoadEvent event = new ResourceLoadEvent();
-            loader.loadEvents.put(event);
-
-            event.info = "Loading texture: " + path.getPath();
-            event.percentage = loader.getProgress();
-
-            Texture texture = Texture.fromFilePath(path);
-            loader.loaded.put(path, texture);
-        }
-        catch (Exception e)
-        {
-            SilenceException.reThrow(e);
-        }
+        loader.putResource("texture", path, Texture.fromFilePath(path));
     }
 
     private static void soundLoadHelper(FilePath path, ResourceLoader loader)
     {
         try
         {
-            ResourceLoadEvent event = new ResourceLoadEvent();
-            loader.loadEvents.put(event);
-
-            event.info = "Loading sound: " + path.getPath();
-            event.percentage = loader.getProgress();
-            Sound sound = SilenceEngine.audio.getSound(path.getInputStream(), path.getExtension());
-            loader.loaded.put(path, sound);
+            loader.putResource("sound", path, SilenceEngine.audio.getSound(path.getInputStream(), path.getExtension()));
         }
         catch (Exception e)
         {
@@ -120,33 +100,13 @@ public class ResourceLoader
 
     private static void modelLoadHelper(FilePath path, ResourceLoader loader)
     {
-        try
-        {
-            ResourceLoadEvent event = new ResourceLoadEvent();
-            loader.loadEvents.put(event);
-
-            event.info = "Loading model: " + path.getPath();
-            event.percentage = loader.getProgress();
-
-            Model model = Model.load(path);
-            loader.loaded.put(path, model);
-        }
-        catch (Exception e)
-        {
-            SilenceException.reThrow(e);
-        }
+        loader.putResource("model", path, Model.load(path));
     }
 
     private static void fontLoadHelper(FilePath path, ResourceLoader loader)
     {
         try
         {
-            ResourceLoadEvent event = new ResourceLoadEvent();
-            loader.loadEvents.put(event);
-
-            event.info = "Loading font: " + path.getPath();
-            event.percentage = loader.getProgress();
-
             TrueTypeFont font;
 
             if (!path.exists() && !path.getExtension().equalsIgnoreCase("ttf"))
@@ -154,7 +114,25 @@ public class ResourceLoader
             else
                 font = new TrueTypeFont(path.getInputStream());
 
-            loader.loaded.put(path, font);
+            loader.putResource("font", path, font);
+        }
+        catch (Exception e)
+        {
+            SilenceException.reThrow(e);
+        }
+    }
+
+    public <T extends IResource> void putResource(String type, FilePath path, T resource)
+    {
+        try
+        {
+            ResourceLoadEvent event = new ResourceLoadEvent();
+            loadEvents.put(event);
+
+            event.info = "Loading " + type + ": " + path.getPath();
+            event.percentage = getProgress();
+
+            loaded.put(path, resource);
         }
         catch (Exception e)
         {
