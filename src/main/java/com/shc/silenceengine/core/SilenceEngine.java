@@ -125,6 +125,9 @@ public final class SilenceEngine implements IEngine
         collision.init();
         input.init();
 
+        // Default auto poll value
+        input.setAutoPoll(true);
+
         Logger.info("SilenceEngine version " + getVersion() + " was initialized successfully");
     }
 
@@ -134,7 +137,9 @@ public final class SilenceEngine implements IEngine
         graphics.beginFrame();
         audio.beginFrame();
         collision.beginFrame();
-        input.beginFrame();
+
+        if (input.isAutoPoll())
+            input.beginFrame();
     }
 
     @Override
@@ -143,7 +148,9 @@ public final class SilenceEngine implements IEngine
         graphics.endFrame();
         audio.endFrame();
         collision.endFrame();
-        input.endFrame();
+
+        if (input.isAutoPoll())
+            input.endFrame();
     }
 
     @Override

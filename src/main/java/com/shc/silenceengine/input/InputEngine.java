@@ -43,6 +43,8 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class InputEngine implements IEngine
 {
+    private boolean autoPoll;
+
     // The callbacks that post to the individual input classes
     private IKeyCallback            keyCallback            = Keyboard::glfwKeyCallback;
     private IMouseButtonCallback    mouseButtonCallback    = Mouse::glfwMouseButtonCallback;
@@ -207,5 +209,15 @@ public class InputEngine implements IEngine
 
             return RELEASE;
         }
+    }
+
+    public boolean isAutoPoll()
+    {
+        return autoPoll;
+    }
+
+    public void setAutoPoll(boolean autoPoll)
+    {
+        this.autoPoll = autoPoll;
     }
 }
