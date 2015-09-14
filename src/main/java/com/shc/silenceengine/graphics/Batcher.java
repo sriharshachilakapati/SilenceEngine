@@ -35,7 +35,7 @@ import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.Vector4;
-import org.lwjgl.BufferUtils;
+import com.shc.silenceengine.utils.BufferUtils;
 
 import java.nio.ByteBuffer;
 
@@ -68,12 +68,22 @@ public class Batcher
     public static final int SIZE_OF_TEXCOORD = Float.BYTES * NUM_TEXCOORD_COMPONENTS;
 
     // The maximum size of the batch is 1024^2 = 10,48,576 vertices
-    public static final int BATCH_SIZE = 1024 * 1024;
+    public static final int MAX_BATCH_SIZE = 1024 * 1024;
+
+    // The current size of the batch, starts at 128 vertices
+    public static int BATCH_SIZE = 128;
 
     // Active state of this batcher
     private boolean active = false;
 
-    // The buffers to store the collected data
+    // The original buffer addresses (These exist because JEMalloc cannot recognise
+    // the buffers once they are mapped with glMapBuffer)
+    private long vBufferAddress;
+    private long cBufferAddress;
+    private long tBufferAddress;
+    private long nBufferAddress;
+
+    // The mapped buffers to store the collected data
     private ByteBuffer vBuffer;
     private ByteBuffer cBuffer;
     private ByteBuffer tBuffer;
@@ -115,6 +125,12 @@ public class Batcher
         cBuffer = BufferUtils.createByteBuffer(BATCH_SIZE * SIZE_OF_COLOR);
         tBuffer = BufferUtils.createByteBuffer(BATCH_SIZE * SIZE_OF_TEXCOORD);
 
+        // Get the buffer addresses
+        vBufferAddress = BufferUtils.memAddress(vBuffer);
+        nBufferAddress = BufferUtils.memAddress(nBuffer);
+        cBufferAddress = BufferUtils.memAddress(cBuffer);
+        tBufferAddress = BufferUtils.memAddress(tBuffer);
+
         // Create the transformations
         transform = new Transform();
 
@@ -139,19 +155,19 @@ public class Batcher
 
         // Initialize vertex-buffer
         vboVert.bind();
-        vboVert.uploadData(BATCH_SIZE, BufferObject.Usage.STREAM_DRAW);
+        vboVert.uploadData(MAX_BATCH_SIZE, BufferObject.Usage.STREAM_DRAW);
 
         // Initialize color-buffer
         vboCol.bind();
-        vboCol.uploadData(BATCH_SIZE, BufferObject.Usage.STREAM_DRAW);
+        vboCol.uploadData(MAX_BATCH_SIZE, BufferObject.Usage.STREAM_DRAW);
 
         // Initialize texcoord-buffer
         vboTex.bind();
-        vboTex.uploadData(BATCH_SIZE, BufferObject.Usage.STREAM_DRAW);
+        vboTex.uploadData(MAX_BATCH_SIZE, BufferObject.Usage.STREAM_DRAW);
 
         // Initialize normal-buffer
         vboNorm.bind();
-        vboNorm.uploadData(BATCH_SIZE, BufferObject.Usage.STREAM_DRAW);
+        vboNorm.uploadData(MAX_BATCH_SIZE, BufferObject.Usage.STREAM_DRAW);
     }
 
     /**
@@ -328,7 +344,36 @@ public class Batcher
 
     public void vertex(float x, float y, float z, float w)
     {
-        flushOnOverflow(1);
+        if (vertexCount * SIZE_OF_VERTEX >= BATCH_SIZE)
+        {
+            if (BATCH_SIZE + 128 > MAX_BATCH_SIZE)
+            {
+                // Don't resize more than the max batch size
+                flush();
+            }
+            else
+            {
+                unmapBuffers();
+
+                // Increase the batch size by 128 vertices
+                BATCH_SIZE += 128;
+
+                // Resize the buffers
+                vBuffer = BufferUtils.resizeBuffer(vBufferAddress, BATCH_SIZE * SIZE_OF_VERTEX);
+                nBuffer = BufferUtils.resizeBuffer(nBufferAddress, BATCH_SIZE * SIZE_OF_NORMAL);
+                cBuffer = BufferUtils.resizeBuffer(cBufferAddress, BATCH_SIZE * SIZE_OF_COLOR);
+                tBuffer = BufferUtils.resizeBuffer(tBufferAddress, BATCH_SIZE * SIZE_OF_TEXCOORD);
+
+                // Regather the addresses of the buffers
+                vBufferAddress = BufferUtils.memAddress(vBuffer);
+                nBufferAddress = BufferUtils.memAddress(nBuffer);
+                cBufferAddress = BufferUtils.memAddress(cBuffer);
+                tBufferAddress = BufferUtils.memAddress(tBuffer);
+
+                mapBuffers();
+            }
+        }
+
         fillBuffers();
 
         vBuffer.putFloat(vertexCount * NUM_VERTEX_COMPONENTS * Float.BYTES, x)
@@ -341,7 +386,7 @@ public class Batcher
 
     public void flushOnOverflow(int capacity)
     {
-        if (vertexCount + capacity >= BATCH_SIZE)
+        if (vertexCount + capacity >= MAX_BATCH_SIZE)
             flush();
     }
 
@@ -479,12 +524,21 @@ public class Batcher
 
     public void dispose()
     {
+        if (isActive())
+            unmapBuffers();
+
         GL3Context.bindVertexArray(null);
         vao.dispose();
         GL3Context.bindVertexBuffer(null);
         vboVert.dispose();
         vboCol.dispose();
         vboTex.dispose();
+        vboNorm.dispose();
+
+        BufferUtils.freeBuffer(vBufferAddress);
+        BufferUtils.freeBuffer(nBufferAddress);
+        BufferUtils.freeBuffer(cBufferAddress);
+        BufferUtils.freeBuffer(tBufferAddress);
     }
 
     public int getVertexLocation()
