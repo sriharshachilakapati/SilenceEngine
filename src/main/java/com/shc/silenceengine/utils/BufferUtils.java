@@ -114,8 +114,18 @@ public final class BufferUtils
         nje_free(memAddress(buffer));
     }
 
+    public static void freeBuffer(long buffer)
+    {
+        nje_free(buffer);
+    }
+
     public static ByteBuffer resizeBuffer(Buffer buffer, int newSize)
     {
         return MemoryUtil.memByteBuffer(nje_realloc(memAddress(buffer), newSize), newSize);
+    }
+
+    public static ByteBuffer resizeBuffer(long buffer, int newSize)
+    {
+        return MemoryUtil.memByteBuffer(nje_realloc(buffer, newSize), newSize);
     }
 }
