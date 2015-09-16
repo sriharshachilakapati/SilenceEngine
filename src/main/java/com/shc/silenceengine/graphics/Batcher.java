@@ -397,7 +397,7 @@ public class Batcher
 
     public void vertex(float x, float y, float z, float w)
     {
-        if (vertexCount * SIZE_OF_VERTEX >= batchSize)
+        if (vertexCount >= batchSize)
         {
             if (batchSize >= maxBatchSize)
                 // Don't resize more than the max batch size
