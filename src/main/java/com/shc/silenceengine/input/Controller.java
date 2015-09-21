@@ -118,7 +118,32 @@ public class Controller
     public static final int XBOX_RIGHT_STICKER_Y  = 4;
     public static final int XBOX_RIGHT_STICKER_X  = 5;
 
-    // TODO: ADD MAPPINGS FOR PS3 AND PS4 CONTROLLERS ALSO
+    // PS3 Button constants
+    public static final int PS3_BUTTON_SELECT   = 0;
+    public static final int PS3_BUTTON_LEFT_JS  = 1;
+    public static final int PS3_BUTTON_RIGHT_JS = 2;
+    public static final int PS3_BUTTON_START    = 3;
+    public static final int PS3_DPAD_UP         = 4;
+    public static final int PS3_DPAD_RIGHT      = 5;
+    public static final int PS3_DPAD_DOWN       = 6;
+    public static final int PS3_DPAD_LEFT       = 7;
+    public static final int PS3_BUTTON_L2       = 8;
+    public static final int PS3_BUTTON_R2       = 9;
+    public static final int PS3_BUTTON_L1       = 10;
+    public static final int PS3_BUTTON_R1       = 11;
+    public static final int PS3_BUTTON_TRIANGLE = 12;
+    public static final int PS3_BUTTON_CIRCLE   = 13;
+    public static final int PS3_BUTTON_CROSS    = 14;
+    public static final int PS3_BUTTON_SQUARE   = 15;
+    public static final int PS3_BUTTON_PS       = 16;
+
+    // PS3 AXE constants
+    public static final int PS3_AXE_LS_X = 0;
+    public static final int PS3_AXE_LS_Y = 1;
+    public static final int PS3_AXE_RS_X = 2;
+    public static final int PS3_AXE_RS_Y = 3;
+
+    // TODO: Add PS4 controller mappings too
 
     private static Controller[] controllers;
 
