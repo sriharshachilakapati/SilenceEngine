@@ -488,19 +488,19 @@ public class Window
         initCustomCallbacks();
 
         // Create the callback functions that re-post the events
-        glfwCharCallback = GLFWCharCallback((window, codePoint) ->
+        glfwCharCallback = GLFWCharCallback.create((window, codePoint) ->
                 characterCallback.invoke(registeredWindows.get(window), codePoint));
 
-        glfwCharModsCallback = GLFWCharModsCallback((window, codePoint, mods) ->
+        glfwCharModsCallback = GLFWCharModsCallback.create((window, codePoint, mods) ->
         {
             characterModsCallback.invoke(registeredWindows.get(window), codePoint, mods);
             Keyboard.glfwCharModsCallback(registeredWindows.get(window), codePoint, mods);
         });
 
-        glfwCursorEnterCallback = GLFWCursorEnterCallback((window, entered) ->
+        glfwCursorEnterCallback = GLFWCursorEnterCallback.create((window, entered) ->
                 cursorEnterCallback.invoke(registeredWindows.get(window), entered != 0));
 
-        glfwCursorPosCallback = GLFWCursorPosCallback((win, xPos, yPos) ->
+        glfwCursorPosCallback = GLFWCursorPosCallback.create((win, xPos, yPos) ->
         {
             Window window = registeredWindows.get(win);
 
@@ -508,54 +508,54 @@ public class Window
             SilenceEngine.input.postMouseCursorPositionEvent(window, xPos, yPos);
         });
 
-        glfwDropCallback = GLFWDropCallback((window, count, names) ->
-                dropCallback.invoke(registeredWindows.get(window), Callbacks.dropCallbackNamesString(count, names)));
+        glfwDropCallback = GLFWDropCallback.create((window, count, names) ->
+                dropCallback.invoke(registeredWindows.get(window), GLFWDropCallback.getNames(count, names)));
 
-        glfwFramebufferSizeCallback = GLFWFramebufferSizeCallback((window, width, height) ->
+        glfwFramebufferSizeCallback = GLFWFramebufferSizeCallback.create((window, width, height) ->
                 framebufferSizeCallback.invoke(registeredWindows.get(window), width, height));
 
-        glfwKeyCallback = GLFWKeyCallback((win, key, scanCode, action, mods) ->
+        glfwKeyCallback = GLFWKeyCallback.create((win, key, scanCode, action, mods) ->
         {
             Window window = registeredWindows.get(win);
             keyCallback.invoke(window, key, scanCode, action, mods);
             SilenceEngine.input.postKeyEvent(window, key, scanCode, action, mods);
         });
 
-        glfwMouseButtonCallback = GLFWMouseButtonCallback((win, button, action, mods) ->
+        glfwMouseButtonCallback = GLFWMouseButtonCallback.create((win, button, action, mods) ->
         {
             Window window = registeredWindows.get(win);
             mouseButtonCallback.invoke(window, button, action, mods);
             SilenceEngine.input.postMouseButtonEvent(window, button, action, mods);
         });
 
-        glfwScrollCallback = GLFWScrollCallback((win, xOffset, yOffset) ->
+        glfwScrollCallback = GLFWScrollCallback.create((win, xOffset, yOffset) ->
         {
             Window window = registeredWindows.get(win);
             scrollCallback.invoke(window, xOffset, yOffset);
             SilenceEngine.input.postMouseScrollEvent(window, xOffset, yOffset);
         });
 
-        glfwWindowCloseCallback = GLFWWindowCloseCallback((window) ->
+        glfwWindowCloseCallback = GLFWWindowCloseCallback.create((window) ->
                         windowCloseCallback.invoke(registeredWindows.get(window))
         );
 
-        glfwWindowFocusCallback = GLFWWindowFocusCallback((window, focus) ->
+        glfwWindowFocusCallback = GLFWWindowFocusCallback.create((window, focus) ->
                         windowFocusCallback.invoke(registeredWindows.get(window), focus != 0)
         );
 
-        glfwWindowIconifyCallback = GLFWWindowIconifyCallback((window, iconify) ->
+        glfwWindowIconifyCallback = GLFWWindowIconifyCallback.create((window, iconify) ->
                         windowIconifyCallback.invoke(registeredWindows.get(window), iconify != 0)
         );
 
-        glfwWindowPosCallback = GLFWWindowPosCallback((window, xPos, yPos) ->
+        glfwWindowPosCallback = GLFWWindowPosCallback.create((window, xPos, yPos) ->
                         windowPositionCallback.invoke(registeredWindows.get(window), xPos, yPos)
         );
 
-        glfwWindowRefreshCallback = GLFWWindowRefreshCallback((window) ->
+        glfwWindowRefreshCallback = GLFWWindowRefreshCallback.create((window) ->
                         windowRefreshCallback.invoke(registeredWindows.get(window))
         );
 
-        glfwWindowSizeCallback = GLFWWindowSizeCallback((window, width, height) ->
+        glfwWindowSizeCallback = GLFWWindowSizeCallback.create((window, width, height) ->
                         windowSizeCallback.invoke(registeredWindows.get(window), width, height)
         );
 

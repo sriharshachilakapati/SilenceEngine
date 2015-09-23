@@ -27,7 +27,6 @@ package com.shc.silenceengine.core.glfw;
 import com.shc.silenceengine.core.glfw.callbacks.IErrorCallback;
 import com.shc.silenceengine.math.Vector3;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
@@ -78,9 +77,7 @@ public final class GLFW3
 
         // Error callback that does nothing
         setErrorCallback(null);
-        glfwErrorCallback = GLFWErrorCallback((error, description) ->
-                        errorCallback.invoke(error, Callbacks.errorCallbackDescriptionString(description))
-        );
+        glfwErrorCallback = GLFWErrorCallback.createString(errorCallback::invoke);
 
         // Register the callback
         glfwSetErrorCallback(glfwErrorCallback);

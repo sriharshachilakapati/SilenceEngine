@@ -119,7 +119,7 @@ public class Monitor
         if (glfwMonitorCallback != null)
             glfwMonitorCallback.release();
 
-        glfwMonitorCallback = GLFWMonitorCallback((monitor, event) ->
+        glfwMonitorCallback = GLFWMonitorCallback.create((monitor, event) ->
                         monitorCallback.invoke(registeredMonitors.get(monitor), event)
         );
 

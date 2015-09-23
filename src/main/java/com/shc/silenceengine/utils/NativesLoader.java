@@ -78,30 +78,35 @@ public class NativesLoader
             switch (SilenceEngine.getPlatform())
             {
                 case WINDOWS_32:
+                    loadLibrary("glfw32.dll");
                     loadLibrary("lwjgl32.dll");
                     loadLibrary("OpenAL32.dll");
                     loadLibrary("jemalloc32.dll");
                     break;
 
                 case WINDOWS_64:
+                    loadLibrary("glfw.dll");
                     loadLibrary("lwjgl.dll");
                     loadLibrary("OpenAL.dll");
                     loadLibrary("jemalloc.dll");
                     break;
 
                 case MACOSX:
+                    loadLibrary("libglfw.dylib");
                     loadLibrary("liblwjgl.dylib");
                     loadLibrary("libopenal.dylib");
                     loadLibrary("libjemalloc.dylib");
                     break;
 
                 case LINUX_32:
+                    loadLibrary("libglfw32.so");
                     loadLibrary("liblwjgl32.so");
                     loadLibrary("libopenal32.so");
                     loadLibrary("libjemalloc32.so");
                     break;
 
                 case LINUX_64:
+                    loadLibrary("libglfw.so");
                     loadLibrary("liblwjgl.so");
                     loadLibrary("libopenal.so");
                     loadLibrary("libjemalloc.so");
