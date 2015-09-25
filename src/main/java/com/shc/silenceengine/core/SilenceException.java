@@ -59,10 +59,18 @@ public class SilenceException extends RuntimeException
      */
     public static void reThrow(Throwable throwable)
     {
-        Writer result = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(result);
-        throwable.printStackTrace(printWriter);
+        // Just pass on if the throwable is of type SilenceException
+        if (throwable instanceof SilenceException)
+            throw (SilenceException) throwable;
+        else
+        {
+            // Or create a string with the stacktrace of the original exception
+            // and throw a new SilenceException with that as message.
+            Writer result = new StringWriter();
+            PrintWriter printWriter = new PrintWriter(result);
+            throwable.printStackTrace(printWriter);
 
-        throw new SilenceException(result.toString());
+            throw new SilenceException(result.toString());
+        }
     }
 }
