@@ -28,6 +28,7 @@ import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.FilePath;
 
+import java.io.IOException;
 import java.nio.file.Files;
 
 /**
@@ -64,12 +65,8 @@ public class NativesLoader
 
         try
         {
-            // Create temporary Directory
-            nativesDir = FilePath.getExternalFile(Files.createTempDirectory("SilenceEngine").toFile().getAbsolutePath());
-            nativesDir.deleteOnExit();
-
-            // Delete the temp dir on exit
-            nativesDir.deleteOnExit();
+            if (nativesDir == null)
+                createNativesDir();
 
             // Set the LWJGL library path
             System.setProperty("java.library.path", nativesDir.getPath());
@@ -124,6 +121,15 @@ public class NativesLoader
             SilenceException.reThrow(e);
             lwjglLoaded = false;
         }
+    }
+
+    private static void createNativesDir() throws IOException
+    {
+        // Create temporary Directory
+        nativesDir = FilePath.getExternalFile(Files.createTempDirectory("SilenceEngine").toFile().getAbsolutePath());
+
+        // Delete the temp dir on exit
+        nativesDir.deleteOnExit();
     }
 
     /**
@@ -200,6 +206,9 @@ public class NativesLoader
 
         try
         {
+            if (nativesDir == null)
+                createNativesDir();
+
             // Create a file in the DIR which deletes itself
             FilePath tmp = nativesDir.getChild(filename);
             tmp.deleteOnExit();
