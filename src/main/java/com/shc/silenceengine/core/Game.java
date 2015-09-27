@@ -32,6 +32,7 @@ import com.shc.silenceengine.utils.GameTimer;
 import com.shc.silenceengine.utils.Logger;
 import com.shc.silenceengine.utils.NativesLoader;
 import com.shc.silenceengine.utils.TimeUtils;
+import org.lwjgl.system.Configuration;
 
 /**
  * <p>The basic class for all the games made with SilenceEngine. Every game will simply extend this Game class, and call
@@ -226,7 +227,22 @@ public class Game implements IUpdatable
     {
         instance = this;
 
+        // Load the natives
         NativesLoader.loadLWJGL();
+
+        // LWJGL configuration
+        Configuration.DEBUG.set(DEVELOPMENT);
+        Configuration.DISABLE_CHECKS.set(!DEVELOPMENT);
+        Configuration.DEBUG_STREAM.set(true);
+
+        // Copy LWJGL logs to the logger
+        Configuration.setDebugStreamConsumer((logMessage) ->
+        {
+            if (logMessage.contains("Failed") || logMessage.contains("[GL]"))
+                Logger.warn(logMessage);
+            else
+                Logger.info(logMessage);
+        });
 
         // Initialize GLFW
         if (!GLFW3.init())
