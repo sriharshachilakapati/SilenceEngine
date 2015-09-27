@@ -82,11 +82,12 @@ public class Game implements IUpdatable
 
     // The game instance
     private static Game instance;
+
     /**
      * Specifies the development status of the game. Before distributing make sure to change this to false, leaving this
      * enabled causes the GLExceptions, if any, to be displayed to the user.
      */
-    public static boolean development = true;
+    public static boolean DEVELOPMENT = true;
 
     /**
      * @return number of updates done in last second

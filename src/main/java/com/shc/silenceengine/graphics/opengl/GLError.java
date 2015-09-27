@@ -64,7 +64,7 @@ public final class GLError
     public static void check(boolean force)
     {
         // We don't want to run GL checks
-        if (!force && !Game.development)
+        if (!force && !Game.DEVELOPMENT)
             return;
 
         switch (glGetError())

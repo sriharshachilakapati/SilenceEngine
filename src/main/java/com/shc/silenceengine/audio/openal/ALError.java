@@ -58,7 +58,7 @@ public final class ALError
      */
     public static void check(boolean force)
     {
-        if (!force && !Game.development)
+        if (!force && !Game.DEVELOPMENT)
             return;
 
         switch (alGetError())

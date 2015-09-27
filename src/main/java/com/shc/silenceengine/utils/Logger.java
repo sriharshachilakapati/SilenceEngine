@@ -97,7 +97,7 @@ public final class Logger
             redirectionCallback.redirect(Level.INFO, messages);
         else
         {
-            if (!Game.development)
+            if (!Game.DEVELOPMENT)
                 return;
 
             for (Object message : messages)
@@ -138,7 +138,7 @@ public final class Logger
         {
             for (Object message : messages)
             {
-                if (!Game.development)
+                if (!Game.DEVELOPMENT)
                     return;
 
                 String warning = ((printTimeStamps ? "[WARNING " + getTimeStamp() + "] " : "") + message)
@@ -170,7 +170,7 @@ public final class Logger
         {
             for (Object message : messages)
             {
-                if (!Game.development)
+                if (!Game.DEVELOPMENT)
                     return;
 
                 String error = ((printTimeStamps ? "[ERROR " + getTimeStamp() + "] " : "") + message)

@@ -60,7 +60,7 @@ public final class ALCError
      */
     public static void check(long device, boolean force)
     {
-        if (!force && !Game.development)
+        if (!force && !Game.DEVELOPMENT)
             return;
 
         switch (alcGetError(device))
