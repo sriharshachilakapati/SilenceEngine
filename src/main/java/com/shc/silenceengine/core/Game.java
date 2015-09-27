@@ -238,7 +238,7 @@ public class Game implements IUpdatable
         // Copy LWJGL logs to the logger
         Configuration.setDebugStreamConsumer((logMessage) ->
         {
-            if (logMessage.contains("Failed") || logMessage.contains("[GL]"))
+            if (logMessage.contains("Failed") || logMessage.contains("[GL]") || logMessage.contains("[AL]") || logMessage.contains("[CL]"))
                 Logger.warn(logMessage);
             else
                 Logger.info(logMessage);
