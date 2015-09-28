@@ -31,8 +31,6 @@ import com.shc.silenceengine.graphics.GraphicsEngine;
 import com.shc.silenceengine.input.InputEngine;
 import com.shc.silenceengine.math.Vector4;
 import com.shc.silenceengine.utils.Logger;
-import com.shc.silenceengine.utils.NativesLoader;
-import org.lwjgl.Sys;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -105,19 +103,12 @@ public final class SilenceEngine implements IEngine
             System.setProperty("java.awt.headless", "true");
         }
 
-        Logger.info("Initializing LWJGL library. Extracting natives");
-
-        // Load LWJGL natives
-        NativesLoader.loadLWJGL();
-
-        Logger.info("LWJGL version " + Sys.getVersion() + " is initialised");
-
         // Initialize GLFW
         if (!GLFW3.init())
             throw new SilenceException("Error initializing GLFW. Your system is unsupported.");
 
         // Set the error callback
-        GLFW3.setErrorCallback(((error, description) -> System.out.println(error + ": " + description)));
+        GLFW3.setErrorCallback(((error, description) -> Logger.error("[GLFW] Error code " + error + ": " + description)));
 
         // Initialize other engines
         graphics.init();

@@ -32,6 +32,7 @@ import com.shc.silenceengine.utils.GameTimer;
 import com.shc.silenceengine.utils.Logger;
 import com.shc.silenceengine.utils.NativesLoader;
 import com.shc.silenceengine.utils.TimeUtils;
+import org.lwjgl.Sys;
 import org.lwjgl.system.Configuration;
 
 /**
@@ -228,6 +229,7 @@ public class Game implements IUpdatable
         instance = this;
 
         // Load the natives
+        Logger.info("Initializing LWJGL library. Extracting natives.");
         NativesLoader.loadLWJGL();
 
         // LWJGL configuration
@@ -238,11 +240,15 @@ public class Game implements IUpdatable
         // Copy LWJGL logs to the logger
         Configuration.setDebugStreamConsumer((logMessage) ->
         {
+            logMessage = logMessage.trim().replaceAll("[\\r\\n]", "");
+
             if (logMessage.contains("Failed") || logMessage.contains("[GL]") || logMessage.contains("[AL]") || logMessage.contains("[CL]"))
                 Logger.warn(logMessage);
             else
                 Logger.info(logMessage);
         });
+
+        Logger.info("LWJGL version " + Sys.getVersion() + " is initialised");
 
         // Initialize GLFW
         if (!GLFW3.init())
