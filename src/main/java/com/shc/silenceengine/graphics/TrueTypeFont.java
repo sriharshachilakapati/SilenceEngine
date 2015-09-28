@@ -71,6 +71,14 @@ public class TrueTypeFont implements IResource, IFont
         this(new Font(name, style, size));
     }
 
+    public TrueTypeFont(TrueTypeFont font)
+    {
+        this.awtFont = font.awtFont;
+        this.antiAlias = font.antiAlias;
+
+        createSet();
+    }
+
     public TrueTypeFont(Font fnt)
     {
         this(fnt, true);
@@ -343,6 +351,11 @@ public class TrueTypeFont implements IResource, IFont
     public TrueTypeFont setStyle(int style)
     {
         return setSizeAndStyle(awtFont.getSize(), style);
+    }
+
+    public TrueTypeFont copy()
+    {
+        return new TrueTypeFont(this);
     }
 
     public void dispose()
