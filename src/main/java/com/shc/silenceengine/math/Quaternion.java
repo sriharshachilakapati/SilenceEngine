@@ -302,12 +302,24 @@ public class Quaternion
         float scale1, scale2;
 
         if ((1 - dot) > 0.1)
-            return lerpSelf(target, alpha);
+        {
+            Quaternion temp = REUSABLE_STACK.pop();
+
+            if (dot < 0.0f)
+                temp.set(-target.x, -target.y, -target.z, -target.w);
+            else
+                temp.set(target);
+
+            lerpSelf(temp, alpha);
+            REUSABLE_STACK.push(temp);
+
+            return this;
+        }
 
         scale1 = 1f - alpha;
         scale2 = alpha;
 
-        if (dot < 0.f)
+        if (dot < 0.0f)
             scale2 = -scale2;
 
         x = (scale1 * x) + (scale2 * target.x);
