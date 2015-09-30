@@ -24,7 +24,9 @@
 
 package com.shc.silenceengine.tests;
 
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.core.glfw.Cursor;
 import com.shc.silenceengine.core.glfw.GLFW3;
 import com.shc.silenceengine.core.glfw.Monitor;
 import com.shc.silenceengine.core.glfw.VideoMode;
@@ -35,9 +37,12 @@ import com.shc.silenceengine.graphics.cameras.PerspCam;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Shader;
+import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.utils.Logger;
 import com.shc.silenceengine.utils.NativesLoader;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
@@ -75,12 +80,24 @@ public class GLFWTest
         if (!GLFW3.init())
             throw new SilenceException("Failed to initialize GLFW3");
 
+        // Log the available monitors
+        for (Monitor monitor : Monitor.getMonitors())
+        {
+            Logger.info(monitor);
+
+            // Log the available videomodes of that monitor
+            monitor.getVideoModes().forEach(Logger::info);
+        }
+
+        // Log the gamma ramp of the monitor
+        Logger.info(Monitor.getPrimaryMonitor().getGammaRamp());
+
         // Set the window hints
         Window.setDefaultHints();
         Window.setHint(GLFW.GLFW_RESIZABLE, true);
         Window.setHint(GLFW.GLFW_VISIBLE, false);
         Window.setHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
-        Window.setHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 3);
+        Window.setHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, SilenceEngine.getPlatform() == SilenceEngine.Platform.MACOSX ? 2 : 3);
         Window.setHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, true);
         Window.setHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
 
@@ -119,6 +136,7 @@ public class GLFWTest
     private void renderLoop()
     {
         window.makeCurrent();
+        window.setCursor(new Cursor(Texture.fromFilePath(FilePath.getResourceFile("resources/cursor.png"))));
 
         Batcher batcher = new Batcher();
         initShaders();

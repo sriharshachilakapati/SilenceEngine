@@ -59,7 +59,7 @@ public final class AudioEngine implements IEngine
         OggReader.register();
 
         Logger.info("Audio Engine initialized successfully, with device "
-                    + ALC10.alcGetString(getALDevice().getPointer(), ALC10.ALC_DEVICE_SPECIFIER));
+                    + ALC10.alcGetString(getALDevice().address(), ALC10.ALC_DEVICE_SPECIFIER));
     }
 
     @Override

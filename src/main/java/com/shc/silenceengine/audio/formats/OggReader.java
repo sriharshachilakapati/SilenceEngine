@@ -98,8 +98,8 @@ public class OggReader implements ISoundReader
             throw new SilenceException("Error " + error.get(0) + ": decoding the OGG data");
 
         // Get the information about the OGG header
-        STBVorbisInfo info = new STBVorbisInfo();
-        stb_vorbis_get_info(handle, info.buffer());
+        STBVorbisInfo info = STBVorbisInfo.malloc();
+        stb_vorbis_get_info(handle, info);
 
         int channels = info.getChannels();
         sampleRate = info.getSampleRate();
@@ -116,6 +116,7 @@ public class OggReader implements ISoundReader
 
         // Close the stb_vorbis* handle
         stb_vorbis_close(handle);
+        info.free();
     }
 
     @Override

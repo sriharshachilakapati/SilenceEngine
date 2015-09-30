@@ -47,7 +47,7 @@ public final class ALCError
      */
     public static void check()
     {
-        check(ALContext.getInstance().getDevice().getPointer(), false);
+        check(ALContext.getInstance().getDevice().address(), false);
     }
 
     /**
@@ -92,7 +92,7 @@ public final class ALCError
      */
     public static void check(boolean force)
     {
-        check(ALContext.getInstance().getDevice().getPointer(), force);
+        check(ALContext.getInstance().getDevice().address(), force);
     }
 
     /**
@@ -103,7 +103,7 @@ public final class ALCError
      */
     public static void check(ALDevice device)
     {
-        check(device.getPointer());
+        check(device.address());
     }
 
     /**
@@ -127,7 +127,7 @@ public final class ALCError
      */
     public static void check(ALDevice device, boolean force)
     {
-        check(device.getPointer(), force);
+        check(device.address(), force);
     }
 
     /**
@@ -138,7 +138,7 @@ public final class ALCError
      */
     public static Value get()
     {
-        return get(ALContext.getInstance().getDevice().getPointer());
+        return get(ALContext.getInstance().getDevice().address());
     }
 
     /**
@@ -178,7 +178,7 @@ public final class ALCError
      */
     public static Value get(ALDevice device)
     {
-        return get(device.getPointer());
+        return get(device.address());
     }
 
     /**

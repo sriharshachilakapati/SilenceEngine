@@ -29,7 +29,6 @@ import com.shc.silenceengine.graphics.opengl.Texture;
 import org.lwjgl.glfw.GLFWimage;
 
 import java.awt.image.BufferedImage;
-import java.nio.ByteBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -81,11 +80,17 @@ public class Cursor
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
 
-        ByteBuffer pixels = GLFWimage.malloc(width, height, image.getImage2D(GL_RGBA, GL_UNSIGNED_BYTE));
-        handle = glfwCreateCursor(pixels, xHot, yHot);
+        GLFWimage glfWimage = GLFWimage.malloc();
+        glfWimage.setWidth(width);
+        glfWimage.setHeight(height);
+        glfWimage.setPixels(image.getImage2D(GL_RGBA, GL_UNSIGNED_BYTE));
+
+        handle = glfwCreateCursor(glfWimage, xHot, yHot);
 
         if (handle == NULL)
             throw new SilenceException("Unable to load cursor from texture");
+
+        glfWimage.free();
     }
 
     /**

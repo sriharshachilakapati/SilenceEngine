@@ -31,6 +31,7 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWMonitorCallback;
 import org.lwjgl.glfw.GLFWgammaramp;
+import org.lwjgl.glfw.GLFWvidmode;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -163,16 +164,18 @@ public class Monitor
             videoModes = new ArrayList<>();
 
             IntBuffer count = BufferUtils.createIntBuffer(1);
-            ByteBuffer modes = glfwGetVideoModes(handle, count);
+            GLFWvidmode.Buffer modes = glfwGetVideoModes(handle, count);
 
             for (int i = 0; i < count.get(0); i++)
             {
-                int width = modes.getInt();
-                int height = modes.getInt();
-                int redBits = modes.getInt();
-                int greenBits = modes.getInt();
-                int blueBits = modes.getInt();
-                int refreshRate = modes.getInt();
+                modes.position(i);
+
+                int width = modes.getWidth();
+                int height = modes.getHeight();
+                int redBits = modes.getRedBits();
+                int greenBits = modes.getGreenBits();
+                int blueBits = modes.getBlueBits();
+                int refreshRate = modes.getRefreshRate();
 
                 videoModes.add(new VideoMode(width, height, redBits, greenBits, blueBits, refreshRate));
             }
@@ -192,14 +195,14 @@ public class Monitor
      */
     public VideoMode getVideoMode()
     {
-        ByteBuffer mode = glfwGetVideoMode(handle);
+        GLFWvidmode mode = glfwGetVideoMode(handle);
 
-        int width = mode.getInt();
-        int height = mode.getInt();
-        int redBits = mode.getInt();
-        int greenBits = mode.getInt();
-        int blueBits = mode.getInt();
-        int refreshRate = mode.getInt();
+        int width = mode.getWidth();
+        int height = mode.getHeight();
+        int redBits = mode.getRedBits();
+        int greenBits = mode.getGreenBits();
+        int blueBits = mode.getBlueBits();
+        int refreshRate = mode.getRefreshRate();
 
         return new VideoMode(width, height, redBits, greenBits, blueBits, refreshRate);
     }
@@ -233,21 +236,20 @@ public class Monitor
      */
     public GammaRamp getGammaRamp()
     {
-        ByteBuffer gammaRamp = glfwGetGammaRamp(handle);
-        GLFWgammaramp ramp = new GLFWgammaramp(gammaRamp);
+        GLFWgammaramp gammaRamp = glfwGetGammaRamp(handle);
 
-        if (ramp.getPointer() == 0)
+        if (gammaRamp.address() == 0)
             return null;
 
-        int byteBufferSize = ramp.getSize() * Short.BYTES;
+        int byteBufferSize = gammaRamp.getSize() * Short.BYTES;
 
-        ShortBuffer rBuffer = ramp.getRed(byteBufferSize).asShortBuffer();
-        ShortBuffer gBuffer = ramp.getGreen(byteBufferSize).asShortBuffer();
-        ShortBuffer bBuffer = ramp.getBlue(byteBufferSize).asShortBuffer();
+        ShortBuffer rBuffer = gammaRamp.getRed(byteBufferSize).asShortBuffer();
+        ShortBuffer gBuffer = gammaRamp.getGreen(byteBufferSize).asShortBuffer();
+        ShortBuffer bBuffer = gammaRamp.getBlue(byteBufferSize).asShortBuffer();
 
-        short[] red = new short[ramp.getSize()];
-        short[] green = new short[ramp.getSize()];
-        short[] blue = new short[ramp.getSize()];
+        short[] red = new short[gammaRamp.getSize()];
+        short[] green = new short[gammaRamp.getSize()];
+        short[] blue = new short[gammaRamp.getSize()];
 
         int i = 0;
         while (rBuffer.hasRemaining())
@@ -272,7 +274,7 @@ public class Monitor
      */
     public void setGammaRamp(GammaRamp gammaRamp)
     {
-        GLFWgammaramp ramp = new GLFWgammaramp();
+        GLFWgammaramp ramp = GLFWgammaramp.malloc();
 
         ByteBuffer rBuffer = BufferUtils.createByteBuffer(gammaRamp.getSize() * Short.BYTES);
         ByteBuffer gBuffer = BufferUtils.createByteBuffer(gammaRamp.getSize() * Short.BYTES);
@@ -287,12 +289,13 @@ public class Monitor
         ramp.setBlue(bBuffer);
         ramp.setSize(gammaRamp.getSize());
 
-        ByteBuffer buffer = ramp.buffer();
-        glfwSetGammaRamp(handle, buffer);
+        glfwSetGammaRamp(handle, ramp);
 
         BufferUtils.freeBuffer(rBuffer);
         BufferUtils.freeBuffer(gBuffer);
         BufferUtils.freeBuffer(bBuffer);
+
+        ramp.free();
     }
 
     /**
