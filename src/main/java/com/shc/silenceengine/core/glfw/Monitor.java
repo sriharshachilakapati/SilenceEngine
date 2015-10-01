@@ -163,10 +163,9 @@ public class Monitor
         {
             videoModes = new ArrayList<>();
 
-            IntBuffer count = BufferUtils.createIntBuffer(1);
-            GLFWvidmode.Buffer modes = glfwGetVideoModes(handle, count);
+            GLFWvidmode.Buffer modes = glfwGetVideoModes(handle);
 
-            for (int i = 0; i < count.get(0); i++)
+            for (int i = 0; i < modes.capacity(); i++)
             {
                 modes.position(i);
 
@@ -180,7 +179,6 @@ public class Monitor
                 videoModes.add(new VideoMode(width, height, redBits, greenBits, blueBits, refreshRate));
             }
 
-            BufferUtils.freeBuffer(count);
             videoModes = Collections.unmodifiableList(videoModes);
         }
 
