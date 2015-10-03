@@ -54,5 +54,4 @@ It is also easier to use in development mode as we will check for OpenGL errors 
  - SilenceEngine website ([http://silenceengine.goharsha.com/](http://silenceengine.goharsha.com))
  - SilenceEngine forum ([http://silenceengine.goharsha.com/forum/](http://silenceengine.goharsha.com/forum/))
  - SilenceEngine JavaDocs (Less updated) ([http://silenceengine.goharsha.com/javadoc/](http://silenceengine.goharsha.com/javadoc/))
- - ScorpionHunter (SilenceEngine 2D Demo Game) ([https://github.com/sriharshachilakapati/ScorpionHunter/](https://github.com/sriharshachilakapati/ScorpionHunter/))
  - Blox (Incomplete, SilenceEngine 3D Demo Game) ([https://github.com/sriharshachilakapati/Blox/](https://github.com/sriharshachilakapati/Blox/))
