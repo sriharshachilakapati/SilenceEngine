@@ -26,7 +26,7 @@ package com.shc.silenceengine.core.glfw;
 
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import org.lwjgl.glfw.GLFWimage;
+import org.lwjgl.glfw.GLFWImage;
 
 import java.awt.image.BufferedImage;
 
@@ -80,7 +80,7 @@ public class Cursor
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
 
-        GLFWimage glfWimage = GLFWimage.malloc();
+        GLFWImage glfWimage = GLFWImage.malloc();
         glfWimage.setWidth(width);
         glfWimage.setHeight(height);
         glfWimage.setPixels(image.getImage2D(GL_RGBA, GL_UNSIGNED_BYTE));

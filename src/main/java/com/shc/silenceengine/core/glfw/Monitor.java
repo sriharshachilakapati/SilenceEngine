@@ -30,8 +30,8 @@ import com.shc.silenceengine.utils.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWMonitorCallback;
-import org.lwjgl.glfw.GLFWgammaramp;
-import org.lwjgl.glfw.GLFWvidmode;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWGammaRamp;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -163,7 +163,7 @@ public class Monitor
         {
             videoModes = new ArrayList<>();
 
-            GLFWvidmode.Buffer modes = glfwGetVideoModes(handle);
+            GLFWVidMode.Buffer modes = glfwGetVideoModes(handle);
 
             for (int i = 0; i < modes.capacity(); i++)
             {
@@ -193,7 +193,7 @@ public class Monitor
      */
     public VideoMode getVideoMode()
     {
-        GLFWvidmode mode = glfwGetVideoMode(handle);
+        GLFWVidMode mode = glfwGetVideoMode(handle);
 
         int width = mode.getWidth();
         int height = mode.getHeight();
@@ -234,7 +234,7 @@ public class Monitor
      */
     public GammaRamp getGammaRamp()
     {
-        GLFWgammaramp gammaRamp = glfwGetGammaRamp(handle);
+        GLFWGammaRamp gammaRamp = glfwGetGammaRamp(handle);
 
         if (gammaRamp.address() == 0)
             return null;
@@ -272,7 +272,7 @@ public class Monitor
      */
     public void setGammaRamp(GammaRamp gammaRamp)
     {
-        GLFWgammaramp ramp = GLFWgammaramp.malloc();
+        GLFWGammaRamp ramp = GLFWGammaRamp.malloc();
 
         ByteBuffer rBuffer = BufferUtils.createByteBuffer(gammaRamp.getSize() * Short.BYTES);
         ByteBuffer gBuffer = BufferUtils.createByteBuffer(gammaRamp.getSize() * Short.BYTES);
