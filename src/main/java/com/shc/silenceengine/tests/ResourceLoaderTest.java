@@ -30,25 +30,30 @@ import com.shc.silenceengine.core.ResourceLoader;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.Graphics2D;
 import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
-import com.shc.silenceengine.math.Vector2;
+import com.shc.silenceengine.io.FilePath;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class ResourceLoaderTest extends Game
 {
-    private Texture texture;
+    private Texture texture1;
+    private Texture texture2;
+
+    private int texture2ID;
 
     private TrueTypeFont font1;
     private TrueTypeFont font2;
 
     private OrthoCam cam;
 
-    private ResourceLoader resourceLoader;
+    private ResourceLoader loader1;
+    private ResourceLoader loader2;
 
     public static void main(String[] args)
     {
@@ -59,18 +64,18 @@ public class ResourceLoaderTest extends Game
     {
         SilenceEngine.graphics.setClearColor(Color.NAVY);
 
-        resourceLoader = new ResourceLoader();
-        resourceLoader.setProgressRenderCallback(this::customProgressRenderCallback);
+        loader1 = new ResourceLoader();
+        loader1.setProgressRenderCallback(this::customProgressRenderCallback);
 
-        int textureID = resourceLoader.loadResource(Texture.class, "resources/texture.png");
-        int fontID1 = resourceLoader.loadResource(TrueTypeFont.class, "Times New Roman");
-        int fontID2 = resourceLoader.loadResource(TrueTypeFont.class, "resources/FREEBSC_.ttf");
+        int textureID = loader1.loadResource(Texture.class, "resources/texture.png");
+        int fontID1 = loader1.loadResource(TrueTypeFont.class, "Times New Roman");
+        int fontID2 = loader1.loadResource(TrueTypeFont.class, "resources/FREEBSC_.ttf");
 
-        resourceLoader.startLoading();
+        loader1.startLoading();
 
-        texture = resourceLoader.getResource(textureID);
-        font1 = resourceLoader.getResource(fontID1);
-        font2 = resourceLoader.getResource(fontID2);
+        texture1 = loader1.getResource(textureID);
+        font1 = loader1.getResource(fontID1);
+        font2 = loader1.getResource(fontID2);
         font1.setSize(26);
         font2.setSizeAndStyle(48, TrueTypeFont.STYLE_BOLD | TrueTypeFont.STYLE_ITALIC);
 
@@ -86,26 +91,66 @@ public class ResourceLoaderTest extends Game
     {
         if (Keyboard.isPressed(Keyboard.KEY_ESCAPE))
             end();
+
+        if (Keyboard.isClicked(Keyboard.KEY_SPACE) && loader2 == null)
+        {
+            loader2 = new ResourceLoader();
+            texture2ID = loader2.loadResource(Texture.class, FilePath.getResourceFile("resources/tree2-final.png"));
+
+            // Start loading asynchronously, not blocking the main thread
+            loader2.startLoading(true);
+        }
     }
 
     public void render(float delta, Batcher batcher)
     {
         cam.apply();
 
-        batcher.drawTexture2d(texture, new Vector2(150, 150));
+        if (loader2 != null)
+        {
+            if (!loader2.isDone())
+            {
+                loader2.renderLoadingScreen();
+                return;
+            }
+            else
+                texture2 = loader2.getResource(texture2ID);
+        }
 
-        font1.drawString(batcher, "Times New Roman!!", 10, 10);
-        font2.drawString(batcher, "Free Booter Script", 10, 40, Color.GREEN);
+        Graphics2D g2d = SilenceEngine.graphics.getGraphics2D();
+
+        g2d.drawTexture(texture1, 150, 150);
+
+        if (texture2 != null)
+            g2d.drawTexture(texture2, 300, 200);
+
+        g2d.setFont(font1);
+        g2d.setColor(Color.WHITE);
+        g2d.drawString("Times New Roman!!", 10, 10);
+
+        g2d.setFont(font2);
+        g2d.setColor(Color.GREEN);
+        g2d.drawString("Free Booter Script", 10, 40);
+
+        if (loader2 == null)
+        {
+            g2d.setFont(font1);
+            g2d.setColor(Color.WHITE);
+            g2d.drawString("Press SPACE to load another texture", 10, 100);
+        }
     }
 
     public void dispose()
     {
-        resourceLoader.dispose();
+        loader1.dispose();
+
+        if (loader2 != null)
+            loader2.dispose();
     }
 
     private void customProgressRenderCallback(String info, float percentage)
     {
         System.out.println(percentage + "% => " + info);
-        resourceLoader.defaultRenderProgressCallback(info, percentage);
+        loader1.defaultRenderProgressCallback(info, percentage);
     }
 }

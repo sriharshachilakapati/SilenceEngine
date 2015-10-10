@@ -53,6 +53,11 @@ public class ResourceLoader
 {
     private static Map<Class<?>, IResourceLoadHelper> loadHelpers;
 
+    private float progress;
+    private float smoothedProgress = 0;
+
+    private String info;
+
     private BlockingQueue<ResourceLoadEvent> loadEvents;
 
     private Map<FilePath, Class<?>>  toBeLoaded;
@@ -68,11 +73,15 @@ public class ResourceLoader
 
     public ResourceLoader()
     {
+        Display.setHints();
+        loaderWindow = new Window(Display.getWindow());
+        Window.setDefaultHints();
+
         toBeLoaded = new HashMap<>();
         idMap = new HashMap<>();
         loaded = new HashMap<>();
-        setLogo(FilePath.getResourceFile("resources/logo.png"));
 
+        setLogo(FilePath.getResourceFile("resources/logo.png"));
         progressRenderCallback = this::defaultRenderProgressCallback;
     }
 
@@ -130,7 +139,7 @@ public class ResourceLoader
             loadEvents.put(event);
 
             event.info = "Loading " + type + ": " + path.getPath();
-            event.percentage = getProgress();
+            event.percentage = (((loaded.keySet().size() + 1) * 100) / toBeLoaded.keySet().size());
 
             loaded.put(path, resource);
         }
@@ -153,6 +162,7 @@ public class ResourceLoader
 
         // Draw using Graphics2D
         Graphics2D g2d = SilenceEngine.graphics.getGraphics2D();
+        g2d.setFont(TrueTypeFont.DEFAULT);
 
         // Draw the logo in the center
         float logoX = Display.getWidth() / 2 - logo.getWidth() / 2;
@@ -190,23 +200,52 @@ public class ResourceLoader
 
     public void startLoading()
     {
+        startLoading(false);
+    }
+
+    public void startLoading(boolean async)
+    {
         if (toBeLoaded.keySet().size() == 0)
             return;
 
-        float smoothedProgress = 0;
-
+        info = "Initializing";
+        progress = 0;
+        smoothedProgress = 0;
         loadEvents = new ArrayBlockingQueue<>(toBeLoaded.keySet().size());
-
-        Display.setHints();
-        loaderWindow = new Window(Display.getWindow());
 
         Thread loaderThread = new Thread(this::asyncLoadResources);
         loaderThread.start();
 
-        float progress = 0;
-        String info = "Initializing";
+        if (!async)
+        {
+            while (!isDone())
+            {
+                try
+                {
+                    SilenceEngine.graphics.beginFrame();
 
-        while (smoothedProgress < 100)
+                    GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
+                    SilenceEngine.graphics.getGraphics2D().getCamera().initProjection(Display.getWidth(), Display.getHeight());
+
+                    renderLoadingScreen();
+                    SilenceEngine.graphics.endFrame();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public boolean isDone()
+    {
+        return smoothedProgress == 100;
+    }
+
+    public void renderLoadingScreen()
+    {
+        if (smoothedProgress < 100)
         {
             try
             {
@@ -223,27 +262,14 @@ public class ResourceLoader
                     }
                 }
 
-                SilenceEngine.graphics.beginFrame();
-
-                GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
-                SilenceEngine.graphics.getGraphics2D().getCamera().initProjection(Display.getWidth(), Display.getHeight());
-
                 smoothedProgress = MathUtils.clamp(++smoothedProgress, 0, progress);
                 progressRenderCallback.invoke(info, smoothedProgress);
-
-                // End an engine frame
-                SilenceEngine.graphics.endFrame();
-
-                Thread.sleep(1000 / Game.getTargetUPS());
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                SilenceException.reThrow(e);
             }
         }
-
-        loaderWindow.destroy();
-        Window.setDefaultHints();
     }
 
     private void asyncLoadResources()
@@ -281,9 +307,9 @@ public class ResourceLoader
         return loadResource(clazz, FilePath.getResourceFile(path));
     }
 
-    private float getProgress()
+    public float getProgress()
     {
-        return (((loaded.keySet().size() + 1) * 100) / toBeLoaded.keySet().size());
+        return smoothedProgress;
     }
 
     public Texture getLogo()
@@ -309,6 +335,8 @@ public class ResourceLoader
         loaded.clear();
         toBeLoaded.clear();
         logo.dispose();
+
+        loaderWindow.destroy();
     }
 
     @FunctionalInterface
