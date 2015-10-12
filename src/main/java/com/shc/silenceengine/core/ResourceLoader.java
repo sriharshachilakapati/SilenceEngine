@@ -245,30 +245,27 @@ public class ResourceLoader
 
     public void renderLoadingScreen()
     {
-        if (smoothedProgress < 100)
+        try
         {
-            try
+            if (loadEvents.peek() != null)
             {
-                if (loadEvents.peek() != null)
+                ResourceLoadEvent event = loadEvents.peek();
+
+                if (smoothedProgress >= progress)
                 {
-                    ResourceLoadEvent event = loadEvents.peek();
+                    progress = event.percentage;
+                    info = event.info;
 
-                    if (smoothedProgress >= progress)
-                    {
-                        progress = event.percentage;
-                        info = event.info;
-
-                        loadEvents.take();
-                    }
+                    loadEvents.take();
                 }
+            }
 
-                smoothedProgress = MathUtils.clamp(++smoothedProgress, 0, progress);
-                progressRenderCallback.invoke(info, smoothedProgress);
-            }
-            catch (Exception e)
-            {
-                SilenceException.reThrow(e);
-            }
+            smoothedProgress = MathUtils.clamp(++smoothedProgress, 0, progress);
+            progressRenderCallback.invoke(info, smoothedProgress);
+        }
+        catch (Exception e)
+        {
+            SilenceException.reThrow(e);
         }
     }
 

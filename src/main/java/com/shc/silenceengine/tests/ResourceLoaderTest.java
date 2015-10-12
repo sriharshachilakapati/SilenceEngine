@@ -95,6 +95,8 @@ public class ResourceLoaderTest extends Game
         if (Keyboard.isClicked(Keyboard.KEY_SPACE) && loader2 == null)
         {
             loader2 = new ResourceLoader();
+            loader2.setProgressRenderCallback(this::customProgressRenderCallback);
+
             texture2ID = loader2.loadResource(Texture.class, FilePath.getResourceFile("resources/tree2-final.png"));
 
             // Start loading asynchronously, not blocking the main thread
@@ -136,7 +138,7 @@ public class ResourceLoaderTest extends Game
         {
             g2d.setFont(font1);
             g2d.setColor(Color.WHITE);
-            g2d.drawString("Press SPACE to load another texture", 10, 100);
+            g2d.drawString("Press SPACE to load another texture", 10, 110);
         }
     }
 
