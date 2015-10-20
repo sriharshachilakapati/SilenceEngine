@@ -116,6 +116,9 @@ public class Entity3D implements IUpdatable
         if (isDestroyed())
             return;
 
+        if (model instanceof IUpdatable)
+            ((IUpdatable) model).update(delta);
+
         update(delta);
 
         if (velocity == Vector3.ZERO)
