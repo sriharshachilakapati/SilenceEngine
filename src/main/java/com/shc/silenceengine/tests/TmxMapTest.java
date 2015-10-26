@@ -68,7 +68,7 @@ public class TmxMapTest extends Game
         Logger.setPrintTimeStamps(false);
         Logger.addLogStream(FilePath.getExternalFile(System.getProperty("user.home") + "/TmxMapTest.log"));
 
-        TmxMap map = new TmxMap(FilePath.getResourceFile("resources/example-isometric.tmx"));
+        TmxMap map = new TmxMap(FilePath.getResourceFile("resources/example.tmx"));
 
         printHeader("Map");
         Logger.info("Version:          " + map.getVersion());
@@ -233,6 +233,8 @@ public class TmxMapTest extends Game
 
         Display.setTitle("SilenceEngine TmxMapTest | FPS: " + getFPS() +
                          " | UPS: " + getUPS() + " | RC: " + SilenceEngine.graphics.renderCallsPerFrame);
+
+        renderer.update(delta);
     }
 
     @Override

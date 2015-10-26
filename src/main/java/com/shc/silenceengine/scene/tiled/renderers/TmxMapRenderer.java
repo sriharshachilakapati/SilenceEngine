@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.scene.tiled.renderers;
 
+import com.shc.silenceengine.core.IUpdatable;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.opengl.Primitive;
@@ -34,6 +35,9 @@ import com.shc.silenceengine.scene.tiled.TmxTileSet;
 import com.shc.silenceengine.scene.tiled.layers.TmxImageLayer;
 import com.shc.silenceengine.scene.tiled.layers.TmxMapLayer;
 import com.shc.silenceengine.scene.tiled.layers.TmxTileLayer;
+import com.shc.silenceengine.scene.tiled.tiles.TmxAnimationFrame;
+import com.shc.silenceengine.scene.tiled.tiles.TmxTile;
+import com.shc.silenceengine.utils.TimeUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,14 +45,16 @@ import java.util.Map;
 /**
  * @author Sri Harsha Chilakapati
  */
-public abstract class TmxMapRenderer
+public abstract class TmxMapRenderer implements IUpdatable
 {
     protected TmxMap               map;
     protected Map<String, Texture> textureMap;
+    protected Map<TmxTile, TileAnimator> tileAnimators;
 
     public TmxMapRenderer(TmxMap map)
     {
         textureMap = new HashMap<>();
+        tileAnimators = new HashMap<>();
 
         this.map = map;
 
@@ -58,6 +64,15 @@ public abstract class TmxMapRenderer
 
             if (!textureMap.containsKey(path.getAbsolutePath()))
                 textureMap.put(path.getAbsolutePath(), Texture.fromFilePath(path));
+
+            for (TmxTile tile : tileSet.getTiles())
+            {
+                if (tile.isAnimated())
+                {
+                    TileAnimator animator = new TileAnimator(tile);
+                    tileAnimators.put(tile, animator);
+                }
+            }
         }
 
         for (TmxImageLayer imageLayer : map.getImageLayers())
@@ -81,6 +96,12 @@ public abstract class TmxMapRenderer
 
         throw new SilenceException("A TmxMapRenderer has not yet been implemented for "
                                    + map.getOrientation() + " orientation");
+    }
+
+    public void update(float delta)
+    {
+        for (TileAnimator animator : tileAnimators.values())
+            animator.update(delta);
     }
 
     public void render(Batcher batcher)
@@ -164,5 +185,36 @@ public abstract class TmxMapRenderer
     public TmxMap getMap()
     {
         return map;
+    }
+
+    protected static class TileAnimator
+    {
+        private TmxTile tile;
+
+        private int   currentFrameIndex;
+        private float elapsedDuration;
+
+        public TileAnimator(TmxTile tile)
+        {
+            this.tile = tile;
+            elapsedDuration = 0;
+            currentFrameIndex = 0;
+        }
+
+        public void update(float delta)
+        {
+            elapsedDuration += TimeUtils.convert(delta, TimeUtils.getDefaultTimeUnit(), TimeUtils.Unit.MILLIS);
+
+            if (elapsedDuration >= tile.getFrames().get(currentFrameIndex).getDuration())
+            {
+                currentFrameIndex = (currentFrameIndex + 1) % tile.getFrames().size();
+                elapsedDuration = 0;
+            }
+        }
+
+        public TmxAnimationFrame getCurrentFrame()
+        {
+            return tile.getFrames().get(currentFrameIndex);
+        }
     }
 }

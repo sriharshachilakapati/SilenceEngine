@@ -32,6 +32,7 @@ import com.shc.silenceengine.scene.tiled.TmxTileSet;
 import com.shc.silenceengine.scene.tiled.layers.TmxImageLayer;
 import com.shc.silenceengine.scene.tiled.layers.TmxTileLayer;
 import com.shc.silenceengine.scene.tiled.tiles.TmxMapTile;
+import com.shc.silenceengine.scene.tiled.tiles.TmxTile;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -91,6 +92,7 @@ public class TmxOrthogonalMapRenderer extends TmxMapRenderer
                         continue;
 
                     TmxTileSet tileSet = map.getTileset(mapTile.getTileSetID());
+                    TmxTile tile = tileSet.getTile(mapTile.getGID() - tileSet.getFirstGID());
 
                     Texture texture = textureMap.get(tileSet.getImage().getSource().getAbsolutePath());
 
@@ -102,10 +104,14 @@ public class TmxOrthogonalMapRenderer extends TmxMapRenderer
                         batcher.begin(Primitive.TRIANGLES);
                     }
 
+                    int tileID = mapTile.getGID() - tileSet.getFirstGID();
+                    if (tile.isAnimated())
+                        tileID = tileAnimators.get(tile).getCurrentFrame().getTileID();
+
                     int numColsPerRow = tileSet.getImage().getWidth() / tileSet.getTileWidth();
 
-                    int tileSetCol = (mapTile.getGID() - tileSet.getFirstGID()) % numColsPerRow;
-                    int tileSetRow = (mapTile.getGID() - tileSet.getFirstGID()) / numColsPerRow;
+                    int tileSetCol = tileID % numColsPerRow;
+                    int tileSetRow = tileID / numColsPerRow;
 
                     float tileWidth = map.getTileWidth();
                     float tileHeight = map.getTileHeight();
