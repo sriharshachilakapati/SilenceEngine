@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="25" height="20" tilewidth="32" tileheight="32" nextobjectid="2">
- <tileset firstgid="1" name="grass-tiles-2-small" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="grass-tiles-2-small" tilewidth="32" tileheight="32" tilecount="72">
   <image source="grass-tiles-2-small.png" width="384" height="192"/>
  </tileset>
- <tileset firstgid="73" name="tree2-final" tilewidth="32" tileheight="32">
+ <tileset firstgid="73" name="tree2-final" tilewidth="32" tileheight="32" tilecount="64">
   <image source="tree2-final.png" width="256" height="256"/>
  </tileset>
- <tileset firstgid="137" name="littleshrooms_0" tilewidth="32" tileheight="32">
+ <tileset firstgid="137" name="littleshrooms_0" tilewidth="32" tileheight="32" tilecount="1">
   <image source="littleshrooms_0.png" width="32" height="40"/>
  </tileset>
- <tileset firstgid="138" name="qubodup-bush_berries_0" tilewidth="32" tileheight="32">
+ <tileset firstgid="138" name="qubodup-bush_berries_0" tilewidth="32" tileheight="32" tilecount="1">
   <image source="qubodup-bush_berries_0.png" width="32" height="32"/>
  </tileset>
- <tileset firstgid="139" name="tree2-final" tilewidth="256" tileheight="256">
+ <tileset firstgid="139" name="tree2-final" tilewidth="256" tileheight="256" tilecount="1">
   <image source="tree2-final.png" width="256" height="256"/>
+ </tileset>
+ <tileset firstgid="140" name="coin_sprinkle" tilewidth="32" tileheight="32" tilecount="2">
+  <image source="coin_sprinkle.png" width="64" height="32"/>
+  <tile id="0">
+   <animation>
+    <frame tileid="0" duration="50"/>
+    <frame tileid="1" duration="50"/>
+   </animation>
+  </tile>
  </tileset>
  <layer name="Background" width="25" height="20">
   <data>
@@ -531,6 +540,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="140"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -580,6 +590,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="140"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -716,9 +727,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="140"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -750,6 +759,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="140"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -796,8 +806,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="140"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -993,7 +1002,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="140"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>

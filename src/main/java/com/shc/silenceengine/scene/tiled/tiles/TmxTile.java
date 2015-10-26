@@ -75,20 +75,18 @@ public class TmxTile
         {
             animated = true;
 
-            Node frameNode = nodes.item(0).getFirstChild();
+            NodeList tiles = ((Element) nodes.item(0)).getElementsByTagName("frame");
 
-            while (frameNode != null)
+            for (int i = 0; i < tiles.getLength(); i++)
             {
-                Element frame = (Element) frameNode;
+                Element frame = (Element) tiles.item(i);
 
                 int tileID = Integer.parseInt(frame.getAttribute("tileid"));
                 int duration = Integer.parseInt(frame.getAttribute("duration"));
 
-                TmxAnimationFrame animation = new TmxAnimationFrame(tileID, totalDuration);
+                TmxAnimationFrame animation = new TmxAnimationFrame(tileID, duration);
                 frames.add(animation);
                 totalDuration += duration;
-
-                frameNode = frameNode.getNextSibling();
             }
         }
     }

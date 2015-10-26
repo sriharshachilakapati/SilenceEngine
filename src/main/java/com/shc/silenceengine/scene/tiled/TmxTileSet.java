@@ -142,16 +142,14 @@ public class TmxTileSet
         nodes = element.getElementsByTagName("tile");
         if (nodes.getLength() > 0)
         {
-            Node tileNode = nodes.item(0);
-
-            while (tileNode != null)
+            for (int i = 0; i < nodes.getLength(); i++)
             {
+                Node tileNode = nodes.item(i);
+
                 TmxTile tile = new TmxTile();
                 tile.parse(tileNode);
 
                 tiles.get(tile.getID()).parse(tileNode);
-
-                tileNode = tileNode.getNextSibling();
             }
         }
 
