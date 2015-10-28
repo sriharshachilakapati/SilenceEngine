@@ -29,9 +29,9 @@ import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.utils.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWGammaRamp;
 import org.lwjgl.glfw.GLFWMonitorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.glfw.GLFWGammaRamp;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;

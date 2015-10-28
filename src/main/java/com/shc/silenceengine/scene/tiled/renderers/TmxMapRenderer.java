@@ -47,8 +47,8 @@ import java.util.Map;
  */
 public abstract class TmxMapRenderer implements IUpdatable
 {
-    protected TmxMap               map;
-    protected Map<String, Texture> textureMap;
+    protected TmxMap                     map;
+    protected Map<String, Texture>       textureMap;
     protected Map<TmxTile, TileAnimator> tileAnimators;
 
     public TmxMapRenderer(TmxMap map)

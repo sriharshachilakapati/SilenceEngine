@@ -183,6 +183,16 @@ public class InputEngine implements IEngine
         postMouseCursorPositionEvent(Display.getWindow(), x, y);
     }
 
+    public boolean isAutoPoll()
+    {
+        return autoPoll;
+    }
+
+    public void setAutoPoll(boolean autoPoll)
+    {
+        this.autoPoll = autoPoll;
+    }
+
     public enum Action
     {
         PRESS(GLFW_PRESS),
@@ -209,15 +219,5 @@ public class InputEngine implements IEngine
 
             return RELEASE;
         }
-    }
-
-    public boolean isAutoPoll()
-    {
-        return autoPoll;
-    }
-
-    public void setAutoPoll(boolean autoPoll)
-    {
-        this.autoPoll = autoPoll;
     }
 }
