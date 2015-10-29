@@ -31,7 +31,8 @@ import com.shc.silenceengine.graphics.cameras.BaseCamera;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Shader;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.utils.FileUtils;
+import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.utils.ShaderProcessor;
 
 import static org.lwjgl.opengl.GL20.*;
 
@@ -46,11 +47,11 @@ public class PointLightProgram extends Program
     private PointLightProgram()
     {
         Shader vs = new Shader(GL_VERTEX_SHADER);
-        vs.source(FileUtils.readLinesToString(FileUtils.getResource("resources/point-light.vert")));
+        vs.source(ShaderProcessor.process(FilePath.getResourceFile("resources/point-light.vert")));
         vs.compile();
 
         Shader fs = new Shader(GL_FRAGMENT_SHADER);
-        fs.source(FileUtils.readLinesToString(FileUtils.getResource("resources/point-light.frag")));
+        fs.source(ShaderProcessor.process(FilePath.getResourceFile("resources/point-light.frag")));
         fs.compile();
 
         attach(vs);

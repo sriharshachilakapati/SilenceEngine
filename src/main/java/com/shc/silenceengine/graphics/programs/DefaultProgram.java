@@ -31,7 +31,8 @@ import com.shc.silenceengine.graphics.opengl.GL3Context;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Shader;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.utils.FileUtils;
+import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.utils.ShaderProcessor;
 import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL20.*;
@@ -47,11 +48,11 @@ public class DefaultProgram extends Program
     private DefaultProgram()
     {
         Shader vs = new Shader(GL_VERTEX_SHADER);
-        vs.source(FileUtils.readLinesToString(FileUtils.getResource("resources/default-shader.vert")));
+        vs.source(ShaderProcessor.process(FilePath.getResourceFile("resources/default-shader.vert")));
         vs.compile();
 
         Shader fs = new Shader(GL_FRAGMENT_SHADER);
-        fs.source(FileUtils.readLinesToString(FileUtils.getResource("resources/default-shader.frag")));
+        fs.source(ShaderProcessor.process(FilePath.getResourceFile("resources/default-shader.frag")));
         fs.compile();
 
         attach(vs);
