@@ -30,6 +30,7 @@ import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Material;
+import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Transform;
@@ -82,7 +83,7 @@ public class Model implements IResource
         m.getMaterial().getDiffuseMap().bind();
 
         if (transform != null) batcher.applyTransform(transform);
-        batcher.begin();
+        batcher.begin(m.isWireFrame() ? Primitive.LINES : Primitive.TRIANGLES);
         {
             for (Mesh mesh : getMeshes())
             {
@@ -95,7 +96,7 @@ public class Model implements IResource
 
                     m = mesh;
                     if (transform != null) batcher.applyTransform(transform);
-                    batcher.begin();
+                    batcher.begin(m.isWireFrame() ? Primitive.LINES : Primitive.TRIANGLES);
                 }
 
                 Color color = mesh.getMaterial().getDiffuse();
@@ -158,5 +159,15 @@ public class Model implements IResource
     public void setPrefersStatic(boolean prefersStatic)
     {
         meshes.forEach(m -> m.setPreferStatic(prefersStatic));
+    }
+
+    public boolean isWireFrame()
+    {
+        return meshes.stream().filter(Mesh::isWireFrame).count() > 0;
+    }
+
+    public void setWireFrame(boolean wireFrame)
+    {
+        meshes.forEach(m -> m.setWireFrame(wireFrame));
     }
 }

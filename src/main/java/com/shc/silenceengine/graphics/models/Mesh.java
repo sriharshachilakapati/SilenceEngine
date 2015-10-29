@@ -49,6 +49,7 @@ public class Mesh
     private int id;
 
     private boolean preferStatic;
+    private boolean wireFrame;
 
     public Mesh()
     {
@@ -62,6 +63,7 @@ public class Mesh
         id = IDGenerator.generate();
 
         preferStatic = false;
+        wireFrame = false;
     }
 
     public Material getMaterial()
@@ -112,5 +114,37 @@ public class Mesh
     public void setPreferStatic(boolean preferStatic)
     {
         this.preferStatic = preferStatic;
+    }
+
+    public boolean isWireFrame()
+    {
+        return wireFrame;
+    }
+
+    public void setWireFrame(boolean wireFrame)
+    {
+        this.wireFrame = wireFrame;
+    }
+
+    @Override
+    public boolean equals(Object object)
+    {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+
+        Mesh mesh = (Mesh) object;
+
+        return id == mesh.getID() &&
+               preferStatic == mesh.prefersStatic() &&
+               isWireFrame() == mesh.isWireFrame();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = id;
+        result = 31 * result + (preferStatic ? 1 : 0);
+        result = 31 * result + (isWireFrame() ? 1 : 0);
+        return result;
     }
 }

@@ -124,6 +124,8 @@ public class OBJModelTest extends Game
         if (Keyboard.isPressed(Keyboard.KEY_RIGHT))
             cam.rotateY(1);
 
+        model.setWireFrame(Keyboard.isPressed(Keyboard.KEY_SPACE));
+
         entity.rotate(90 * delta, 90 * delta, 90 * delta);
         cameraLight.setPosition(cam.getPosition());
 

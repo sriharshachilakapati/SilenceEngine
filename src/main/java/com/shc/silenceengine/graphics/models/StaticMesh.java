@@ -62,6 +62,8 @@ public class StaticMesh
 
     private int numVertices;
 
+    private boolean wireFrame;
+
     public StaticMesh(Mesh mesh)
     {
         List<Float> vertices = new ArrayList<>();
@@ -118,6 +120,8 @@ public class StaticMesh
 
         cbo = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
         cbo.uploadData(wrapBuffer(colors), BufferObject.Usage.STATIC_DRAW);
+
+        wireFrame = mesh.isWireFrame();
     }
 
     private void addVector(Vector3 v, List<Float> list)
@@ -191,7 +195,7 @@ public class StaticMesh
         vao.pointAttribute(batcher.getTexCoordLocation(), 2, GL11.GL_FLOAT, tbo);
 
         // Make a draw call
-        GL3Context.drawArrays(vao, Primitive.TRIANGLES, 0, numVertices);
+        GL3Context.drawArrays(vao, wireFrame ? Primitive.LINES : Primitive.TRIANGLES, 0, numVertices);
 
         // Disable the attribute locations
         vao.disableAttributeArray(batcher.getVertexLocation());
