@@ -22,28 +22,16 @@
  * SOFTWARE.
  */
 
-#version 330 core
-
-uniform mat4 mTransform;
-uniform mat4 camProj;
-uniform mat4 camView;
-
-layout(location = 0) in vec4 pos;
-layout(location = 1) in vec4 col;
-layout(location = 2) in vec2 tex;
-layout(location = 3) in vec4 norm;
-
-out vec4 vColor;
-out vec2 vTexCoords;
-out vec4 vNormal;
-out vec4 vPosition;
-
-void main()
+/**
+ * The Material structure stores the details about the material
+ */
+struct Material
 {
-    vColor      = col;
-    vTexCoords  = tex;
-    vNormal     = norm;
-    vPosition   = pos;
+    vec4 ambientColor;
+    vec4 diffuseColor;
+    vec4 specularColor;
 
-    gl_Position = camProj * camView * mTransform * pos;
-}
+    float dissolve;
+    float specularPower;
+    float illumination;
+};

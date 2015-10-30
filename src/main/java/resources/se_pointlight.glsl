@@ -22,86 +22,57 @@
  * SOFTWARE.
  */
 
-#version 330 core
-
 //@include once se_material.glsl
 
-// The light structure
-struct Light
+struct PointLight
 {
-    vec3 direction;
-    vec4 color;
     float intensity;
+    float range;
+    vec3 position;
+    vec4 color;
 };
 
-uniform mat4 mTransform;
-uniform mat4 camProj;
-uniform mat4 camView;
-
-uniform sampler2D textureID;
-uniform Material material;
-uniform Light light;
-
-in vec4 vColor;
-in vec4 vNormal;
-in vec4 vPosition;
-in vec2 vTexCoords;
-
-layout(location = 0) out vec4 fragColor;
-
-vec4 getBaseColor()
+vec4 se_calculate_point_light(mat4 worldMatrix, mat4 modelMatrix, vec4 position, vec4 normal, PointLight light, Material material)
 {
-    // Create the texture color
-    vec4 texColor = texture(textureID, vTexCoords);
-    vec4 baseColor = vec4(min(texColor.rgb + vColor.rgb, vec3(1.0)), texColor.a * vColor.a);
-    return baseColor;
-}
-
-vec4 getDirectionalLight()
-{
-    // The matrices for transforming into different spaces
-    mat4 modelMatrix = mTransform;
+    mat4 lightMatrix = worldMatrix;
     mat3 normalMatrix = transpose(inverse(mat3(modelMatrix)));
 
-    // The transformed normal and position
-    vec3 normal = normalMatrix * vNormal.xyz;
-    vec3 position = vec3(modelMatrix * vPosition);
+    // The necessary information to calculate the point light
+    vec3 surfaceNormal = normalMatrix * normal.xyz;
+    vec3 surfacePosition = (modelMatrix * position).xyz;
+    vec3 surfaceToLight = vec3(lightMatrix * vec4(light.position, 1)) - surfacePosition;
+    vec3 surfaceToEye = normalize(reflect(-normalize(surfaceToLight), surfaceNormal));
 
-    // The individual components of light
+    // Check if the object is out of range
+    if (length(surfaceToLight) > light.range)
+        return vec4(0.0);
+
+    // The different components of light
     vec4 ambientLight = vec4(0.0);
     vec4 diffuseLight = vec4(0.0);
     vec4 specularLight = vec4(0.0);
 
     // Invert the normal for lighting the second side
     if (!gl_FrontFacing)
-        normal = -normal;
+        surfaceNormal = -surfaceNormal;
 
-    // Calculate the ambient light
+    // Calculate the ambient light first
     ambientLight = light.color * material.ambientColor;
 
     // Calculate the diffuse light
-    float diffuseFactor = dot(normalize(normal), -light.direction);
+    float diffuseFactor = clamp(max(0.0, dot(surfaceNormal, normalize(surfaceToLight))), 0.0, 1.0);
 
     if (diffuseFactor > 0.0)
     {
         diffuseLight = light.color * material.diffuseColor * diffuseFactor;
 
         // Calculate the specular light
-        vec3 vertexToEye = normalize(vPosition.xyz - position);
-        vec3 lightReflect = normalize(reflect(light.direction, normal));
+        float specularFactor = pow(max(0.0, dot(normalize(surfaceToLight), surfaceToEye)), material.specularPower);
 
-        float specularFactor = dot(vertexToEye, lightReflect);
-        specularFactor = pow(specularFactor, material.specularPower);
-
-        if (specularFactor > 0)
-            specularLight = light.color * specularFactor;
+        if (specularFactor > 0.0)
+            specularLight = light.color * material.specularColor * specularFactor;
     }
 
-    // Calculate the final directional light
+    // Calculate the final point light
     return (ambientLight + diffuseLight + specularLight) * light.intensity;
-}
-
-void main()
-{
-    fragColor = getBaseColor() * getDirectionalLight();
 }

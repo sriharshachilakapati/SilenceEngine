@@ -26,6 +26,9 @@ package com.shc.silenceengine.utils;
 
 import com.shc.silenceengine.io.FilePath;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Sri Harsha Chilakapati
  */
@@ -37,6 +40,11 @@ public final class ShaderProcessor
 
     public static String process(FilePath codePath)
     {
+        return process(codePath, new ArrayList<>());
+    }
+
+    private static String process(FilePath codePath, List<String> included)
+    {
         StringBuilder builder = new StringBuilder();
         String[] lines = FileUtils.readLinesToStringArray(codePath);
 
@@ -44,15 +52,34 @@ public final class ShaderProcessor
         {
             for (int line = 0; line < lines.length; line++)
             {
-                if (lines[line].trim().startsWith("//@include"))
+                if (lines[line].trim().startsWith("//@include once"))
                 {
                     // Include the sources
-                    FilePath includePath = codePath.getParent().getChild(lines[line].replace("//@include", "").trim());
-                    builder.append(process(includePath));
+                    String include = lines[line].replace("//@include once", "").trim();
+
+                    if (!included.contains(include))
+                    {
+                        FilePath includePath = codePath.getParent().getChild(include);
+                        builder.append(process(includePath, included));
+
+                        // Add a #line pragma at the end to get correct line numbers
+                        // if there are any errors in the shader code.
+                        builder.append("\n#line ").append(line + 1).append("\n");
+
+                        included.add(include);
+                    }
+                }
+                else if (lines[line].trim().startsWith("//@include"))
+                {
+                    // Include the sources
+                    String include = lines[line].replace("//@include", "").trim();
+                    FilePath includePath = codePath.getParent().getChild(include);
+                    builder.append(process(includePath, included));
 
                     // Add a #line pragma at the end to get correct line numbers
                     // if there are any errors in the shader code.
                     builder.append("\n#line ").append(line + 1).append("\n");
+                    included.add(include);
                 }
                 else
                     builder.append(lines[line]).append("\n");

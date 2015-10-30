@@ -24,28 +24,8 @@
 
 #version 330 core
 
-/**
- * The Material structure stores the details about the material
- */
-struct Material
-{
-    vec4 ambientColor;
-    vec4 diffuseColor;
-    vec4 specularColor;
-
-    float dissolve;
-    float specularPower;
-    float illumination;
-};
-
-// The light structure
-struct Light
-{
-    float intensity;
-    float range;
-    vec3 position;
-    vec4 color;
-};
+//@include once se_pointlight.glsl
+//@include once se_material.glsl
 
 uniform mat4 mTransform;
 uniform mat4 camProj;
@@ -53,7 +33,7 @@ uniform mat4 camView;
 
 uniform sampler2D textureID;
 uniform Material material;
-uniform Light light;
+uniform PointLight light;
 
 in vec4 vColor;
 in vec4 vNormal;
@@ -70,54 +50,11 @@ vec4 getBaseColor()
     return baseColor;
 }
 
-vec4 getPointLight()
-{
-    // The matrices for transforming into different spaces
-    mat4 modelMatrix = camProj * camView * mTransform;
-    mat4 lightMatrix = camProj * camView;
-    mat3 normalMatrix = transpose(inverse(mat3(modelMatrix)));
-
-    // The necessary information to calculate the point light
-    vec3 normal = normalize(normalMatrix * vNormal.xyz);
-    vec3 surfacePosition = (modelMatrix * vPosition).xyz;
-    vec3 surfaceToLight = vec3(lightMatrix * vec4(light.position, 1)) - surfacePosition;
-    vec3 surfaceToEye = normalize(reflect(-normalize(surfaceToLight), normal));
-
-    // Check if the object is out of range
-    if (length(surfaceToLight) > light.range)
-        return vec4(0.0);
-
-    // The different components of light
-    vec4 ambientLight = vec4(0.0);
-    vec4 diffuseLight = vec4(0.0);
-    vec4 specularLight = vec4(0.0);
-
-    // Invert the normal for lighting the second side
-    if (!gl_FrontFacing)
-        normal = -normal;
-
-    // Calculate the ambient light first
-    ambientLight = light.color * material.ambientColor;
-
-    // Calculate the diffuse light
-    float diffuseFactor = clamp(max(0.0, dot(normal, normalize(surfaceToLight))), 0.0, 1.0);
-
-    if (diffuseFactor > 0.0)
-    {
-        diffuseLight = light.color * material.diffuseColor * diffuseFactor;
-
-        // Calculate the specular light
-        float specularFactor = pow(max(0.0, dot(normalize(surfaceToLight), surfaceToEye)), material.specularPower);
-
-        if (specularFactor > 0.0)
-            specularLight = light.color * material.specularColor * specularFactor;
-    }
-
-    // Calculate the final point light
-    return (ambientLight + diffuseLight + specularLight) * light.intensity;
-}
-
 void main()
 {
-    fragColor = getBaseColor() * getPointLight();
+    mat4 world = camProj * camView;
+    mat4 model = mTransform;
+
+    vec4 pointLight = se_calculate_point_light(world, model, vPosition, vNormal, light, material);
+    fragColor = getBaseColor() * pointLight;
 }
