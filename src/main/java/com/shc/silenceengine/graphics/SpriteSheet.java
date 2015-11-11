@@ -50,23 +50,23 @@ public class SpriteSheet
 
     public Texture getCell(int row, int column)
     {
-        if (row >= cells.length)
+        if (row >= cells[0].length)
             throw new ArithmeticException("Cannot get past the last row");
 
-        if (column >= cells[0].length)
+        if (column >= cells.length)
             throw new ArithmeticException("Cannot get past the last column");
 
-        if (cells[row][column] == null)
+        if (cells[column][row] == null)
         {
             float minU = (column * cellWidth + 0.5f) / texture.getWidth();
             float minV = (row * cellHeight + 0.5f) / texture.getHeight();
             float maxU = ((column + 1) * cellWidth - 1.5f) / texture.getWidth();
             float maxV = ((row + 1) * cellHeight - 1.5f) / texture.getHeight();
 
-            cells[row][column] = texture.getSubTexture(minU, minV, maxU, maxV, cellWidth, cellHeight);
+            cells[column][row] = texture.getSubTexture(minU, minV, maxU, maxV, cellWidth, cellHeight);
         }
 
-        return cells[row][column];
+        return cells[column][row];
     }
 
     public Texture getTexture()
