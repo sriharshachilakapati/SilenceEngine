@@ -28,6 +28,7 @@ import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Sprite;
+import com.shc.silenceengine.graphics.SpriteSheet;
 import com.shc.silenceengine.graphics.cameras.PerspCam;
 import com.shc.silenceengine.graphics.models.BillBoardModel;
 import com.shc.silenceengine.graphics.models.Model;
@@ -47,10 +48,16 @@ import com.shc.silenceengine.utils.TimeUtils;
 public class BillBoardModelTest extends Game
 {
     private PerspCam cam;
-    private Model    model;
+
+    private Model model;
+    private Model model2;
+
+    private SpriteSheet sheet;
+
     private Entity3D entity;
 
     private Scene3D scene;
+
     private long usedMemory = 0;
 
     public static void main(String[] args)
@@ -69,20 +76,23 @@ public class BillBoardModelTest extends Game
         cam = new PerspCam().initProjection(70, Display.getAspectRatio(), 0.01f, 100f);
         cam.setPosition(new Vector3(0, 0, 0.5f));
 
-        Texture t1 = Texture.fromFilePath(FilePath.getResourceFile("resources/texture.png"));
-        Texture t2 = Texture.fromFilePath(FilePath.getResourceFile("resources/texture2.png"));
+        sheet = new SpriteSheet(Texture.fromFilePath(FilePath.getResourceFile("resources/coin_sprinkle.png")), 32, 32);
 
         Sprite sprite = new Sprite();
-        sprite.getAnimation().addFrame(t1, 0.25f, TimeUtils.Unit.SECONDS);
-        sprite.getAnimation().addFrame(t2, 0.25f, TimeUtils.Unit.SECONDS);
+        sprite.getAnimation().addFrame(sheet.getCell(0, 0), 0.25f, TimeUtils.Unit.SECONDS);
+        sprite.getAnimation().addFrame(sheet.getCell(0, 1), 0.25f, TimeUtils.Unit.SECONDS);
         sprite.getAnimation().setEndCallback(sprite.getAnimation()::start);
         sprite.getAnimation().start();
 
-        model = new BillBoardModel(sprite, 0.8f, 0.8f);
+        model = new BillBoardModel(sprite, 0.2f, 0.2f);
+        model2 = new BillBoardModel(Texture.fromFilePath(FilePath.getResourceFile("resources/texture.png")), 0.8f, 0.8f);
 
         scene = new Scene3D();
-        // Add the ModelEntity to the scene
+
+        // Add the entity to the scene
         scene.addChild(entity = new Entity3D(model, new Cuboid(Vector3.ZERO, 1, 1, 1)));
+        entity.setPosition(new Vector3(0, 0, 0.2f));
+        scene.addChild(new Entity3D(model2, new Cuboid(Vector3.ZERO, 1, 1, 1)));
     }
 
     public void resize()
@@ -139,7 +149,7 @@ public class BillBoardModelTest extends Game
         else
             Display.showCursor();
 
-        entity.rotate(90 * delta, 90 * delta, 90 * delta);
+        entity.rotate(0, 0, 90 * delta);
         scene.update(delta);
 
         // Calculate the new memory used again
@@ -158,5 +168,7 @@ public class BillBoardModelTest extends Game
     public void dispose()
     {
         model.dispose();
+        model2.dispose();
+        sheet.getTexture().dispose();
     }
 }

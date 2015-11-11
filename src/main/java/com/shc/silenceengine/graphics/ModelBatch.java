@@ -26,6 +26,7 @@ package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.graphics.models.BillBoardModel;
 import com.shc.silenceengine.graphics.models.Face;
 import com.shc.silenceengine.graphics.models.Mesh;
 import com.shc.silenceengine.graphics.models.Model;
@@ -53,6 +54,10 @@ public class ModelBatch
     private List<Transform>  staticMeshTransforms;
     private List<Integer>    staticMeshIndices;
 
+    private List<BillBoardModel> billboardModels;
+    private List<Transform>      billboardModelTransforms;
+    private List<Integer>        billboardModelIndices;
+
     private Transform transform;
 
     private boolean active;
@@ -66,6 +71,10 @@ public class ModelBatch
         staticMeshes = new ArrayList<>();
         staticMeshTransforms = new ArrayList<>();
         staticMeshIndices = new ArrayList<>();
+
+        billboardModels = new ArrayList<>();
+        billboardModelTransforms = new ArrayList<>();
+        billboardModelIndices = new ArrayList<>();
     }
 
     public void begin()
@@ -77,6 +86,10 @@ public class ModelBatch
     {
         if (active)
             throw new SilenceException("ModelBatch already active");
+
+        billboardModels.clear();
+        billboardModelTransforms.clear();
+        billboardModelIndices.clear();
 
         meshes.clear();
         transforms.clear();
@@ -95,10 +108,10 @@ public class ModelBatch
     {
         sortMeshes();
 
+        Batcher batcher = SilenceEngine.graphics.getBatcher();
+
         if (meshes.size() > 0)
         {
-            Batcher batcher = SilenceEngine.graphics.getBatcher();
-
             Material originalMaterial = SilenceEngine.graphics.getCurrentMaterial();
             Texture originalTexture = Texture.CURRENT;
 
@@ -188,12 +201,42 @@ public class ModelBatch
         staticMeshes.clear();
         staticMeshTransforms.clear();
         staticMeshIndices.clear();
+
+        if (billboardModels.size() > 0)
+            billboardModelIndices.forEach(i -> billboardModels.get(i).render(batcher, billboardModelTransforms.get(i)));
+
+        billboardModels.clear();
+        billboardModelTransforms.clear();
+        billboardModelIndices.clear();
     }
 
     private void sortMeshes()
     {
         // Only sort the indices
         indices.sort((i, j) -> meshes.get(i).getMaterial().getID() - meshes.get(j).getMaterial().getID());
+
+        billboardModelIndices.sort((i, j) ->
+        {
+            Transform transformI = billboardModelTransforms.get(i);
+            Transform transformJ = billboardModelTransforms.get(j);
+
+            Vector3 originI = Vector3.REUSABLE_STACK.pop().set(0, 0, 0).multiplySelf(transformI.getMatrix());
+            Vector3 originJ = Vector3.REUSABLE_STACK.pop().set(0, 0, 0).multiplySelf(transformJ.getMatrix());
+
+            float distanceI = Vector3.ZERO.distance(originI);
+            float distanceJ = Vector3.ZERO.distance(originJ);
+
+            Vector3.REUSABLE_STACK.push(originI);
+            Vector3.REUSABLE_STACK.push(originJ);
+
+            if (distanceI < distanceJ)
+                return -1;
+
+            if (distanceI > distanceJ)
+                return 1;
+
+            return 0;
+        });
     }
 
     public void end()
@@ -207,7 +250,14 @@ public class ModelBatch
 
     public void addModel(Model model, Transform transform)
     {
-        model.getMeshes().forEach(m -> addMesh(m, transform));
+        if (model instanceof BillBoardModel)
+        {
+            billboardModels.add((BillBoardModel) model);
+            billboardModelTransforms.add(transform);
+            billboardModelIndices.add(billboardModels.size() - 1);
+        }
+        else
+            model.getMeshes().forEach(m -> addMesh(m, transform));
     }
 
     public void addMesh(Mesh mesh, Transform transform)
