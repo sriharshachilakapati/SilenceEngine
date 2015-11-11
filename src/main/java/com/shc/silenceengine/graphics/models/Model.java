@@ -31,6 +31,7 @@ import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Material;
 import com.shc.silenceengine.graphics.opengl.Primitive;
+import com.shc.silenceengine.graphics.opengl.SubTexture;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Transform;
@@ -136,13 +137,16 @@ public class Model implements IResource
             Material material = mesh.getMaterial();
 
             if (material.getDiffuseMap() != Texture.EMPTY)
-                material.getDiffuseMap().dispose();
+                if (!(material.getDiffuseMap() instanceof SubTexture))
+                    material.getDiffuseMap().dispose();
 
             if (material.getNormalMap() != Texture.EMPTY)
-                material.getNormalMap().dispose();
+                if (!(material.getNormalMap() instanceof SubTexture))
+                    material.getNormalMap().dispose();
 
             if (material.getSpecularMap() != Texture.EMPTY)
-                material.getSpecularMap().dispose();
+                if (!(material.getSpecularMap() instanceof SubTexture))
+                    material.getSpecularMap().dispose();
         }
     }
 
