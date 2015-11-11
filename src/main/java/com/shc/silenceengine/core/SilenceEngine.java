@@ -82,12 +82,12 @@ public final class SilenceEngine implements IEngine
 
     public static String getVersion()
     {
-        return "0.3.2b";
+        return "0.4.1b";
     }
 
     public static Vector4 getVersionVector()
     {
-        return new Vector4(0, 3, 2, 'b');
+        return new Vector4(0, 4, 1, 'b');
     }
 
     @Override
