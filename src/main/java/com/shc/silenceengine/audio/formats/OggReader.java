@@ -101,8 +101,8 @@ public class OggReader implements ISoundReader
         STBVorbisInfo info = STBVorbisInfo.malloc();
         stb_vorbis_get_info(handle, info);
 
-        int channels = info.getChannels();
-        sampleRate = info.getSampleRate();
+        int channels = info.channels();
+        sampleRate = info.sample_rate();
 
         format = channels == 1 ? ALFormat.MONO_16 : ALFormat.STEREO_16;
 

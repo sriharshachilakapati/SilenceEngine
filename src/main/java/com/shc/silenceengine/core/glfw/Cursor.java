@@ -81,9 +81,9 @@ public class Cursor
         int height = (int) image.getHeight();
 
         GLFWImage glfWimage = GLFWImage.malloc();
-        glfWimage.setWidth(width);
-        glfWimage.setHeight(height);
-        glfWimage.setPixels(image.getImage2D(GL_RGBA, GL_UNSIGNED_BYTE));
+        glfWimage.width(width);
+        glfWimage.height(height);
+        glfWimage.pixels(image.getImage2D(GL_RGBA, GL_UNSIGNED_BYTE));
 
         handle = glfwCreateCursor(glfWimage, xHot, yHot);
 

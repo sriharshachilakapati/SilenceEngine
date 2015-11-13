@@ -32,7 +32,7 @@ import com.shc.silenceengine.utils.GameTimer;
 import com.shc.silenceengine.utils.Logger;
 import com.shc.silenceengine.utils.NativesLoader;
 import com.shc.silenceengine.utils.TimeUtils;
-import org.lwjgl.Sys;
+import org.lwjgl.Version;
 import org.lwjgl.system.Configuration;
 
 /**
@@ -248,7 +248,7 @@ public class Game implements IUpdatable
                 Logger.info(logMessage);
         });
 
-        Logger.info("LWJGL version " + Sys.getVersion() + " is initialised");
+        Logger.info("LWJGL version " + Version.getVersion() + " is initialised");
 
         // Initialize GLFW
         if (!GLFW3.init())
