@@ -103,5 +103,10 @@ vec4 getDirectionalLight()
 
 void main()
 {
-    fragColor = getBaseColor() * getDirectionalLight();
+    vec4 baseColor = getBaseColor();
+
+    if (baseColor.a == 0)
+        discard;
+
+    fragColor = baseColor * getDirectionalLight();
 }

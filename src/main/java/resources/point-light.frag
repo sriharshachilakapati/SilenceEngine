@@ -52,9 +52,13 @@ vec4 getBaseColor()
 
 void main()
 {
+    vec4 baseColor = getBaseColor();
+    if (baseColor.a == 0)
+        discard;
+
     mat4 world = camProj * camView;
     mat4 model = mTransform;
 
     vec4 pointLight = se_calculate_point_light(world, model, vPosition, vNormal, light, material);
-    fragColor = getBaseColor() * pointLight;
+    fragColor = baseColor * pointLight;
 }

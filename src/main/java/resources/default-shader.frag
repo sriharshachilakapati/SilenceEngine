@@ -36,7 +36,11 @@ void main()
 {
     vec4 texColor = texture(textureID, vTexCoords);
 
-    fragColor = vec4(min(texColor.rgb + vColor.rgb, vec3(1.0)), texColor.a * vColor.a);
+    vec4 finalColor = vec4(min(texColor.rgb + vColor.rgb, vec3(1.0)), texColor.a * vColor.a);
 
-    fragColor *= ambient;
+    // Discard if the alpha is zero
+    if (finalColor.a == 0)
+        discard;
+
+    fragColor = finalColor * ambient;
 }
