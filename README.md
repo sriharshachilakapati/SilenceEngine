@@ -1,8 +1,4 @@
-#SilenceEngine
-
 ![logo](http://silenceengine.goharsha.com/img/logo_wide.png)
-
-A 2D/3D Game Engine written on top of LWJGL3
 
 ##What is SilenceEngine?
 
