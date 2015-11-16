@@ -1,6 +1,6 @@
 #SilenceEngine
 
-![logo](http://silenceengine.goharsha.com/img/logo.png)
+![logo](http://silenceengine.goharsha.com/img/logo_wide.png)
 
 A 2D/3D Game Engine written on top of LWJGL3
 
@@ -27,7 +27,7 @@ The main feature of SilenceEngine is it's simplicity, and it greatly reduces the
 - __Automatic Collision Detection__:
 
     SilenceEngine features with automatic collision detection. All you need to do is give your entities a collision shape, and register the classes in the collider, and the collisions, along with collision response is done for you, in both 2D and 3D. The `CollisionEngine` uses _SAT_ (Separating Axis Theorem) to determine collisions, and hence you get your collision response with good accuracy.
-    
+
 - __Tiled MAP Editor Support__:
 
     SilenceEngine has support for loading and rendering maps made with the [Tiled Map Editor](http://mapeditor.org/). Currently supports automatically rendering of Orthogonal and Isometric maps, but the support will soon increase to all other map formats. The parser can parse any TMX format (even compressed) though.
@@ -48,7 +48,7 @@ It is also easier to use in development mode as we will check for OpenGL errors 
 
  - This is licenced under MIT licence, which you can find [here](http://choosealicense.com/licenses/mit/).
  - This game engine is written on top of [LWJGL 3](http://lwjgl.org). You can find it's licence [here](https://github.com/LWJGL/lwjgl3/blob/master/doc/LICENSE.txt).
- 
+
 ##Links
 
  - SilenceEngine website ([http://silenceengine.goharsha.com/](http://silenceengine.goharsha.com))
