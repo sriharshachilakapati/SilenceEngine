@@ -313,10 +313,10 @@ public class FilePath
     public InputStream getInputStream() throws IOException
     {
         if (isDirectory())
-            throw new SilenceException("Cannot read from a directory.");
+            throw new SilenceException("Cannot read from a directory. " + path);
 
         if (!exists())
-            throw new SilenceException("Cannot read from a non existing file.");
+            throw new SilenceException("Cannot read from a non existing file. " + path);
 
         InputStream inputStream = null;
 
