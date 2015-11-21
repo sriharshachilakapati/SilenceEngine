@@ -32,6 +32,7 @@ import com.shc.silenceengine.graphics.Paint;
 import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.models.Model;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
+import com.shc.silenceengine.graphics.opengl.SubTexture;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.IDGenerator;
@@ -81,7 +82,8 @@ public class ResourceLoader
         idMap = new HashMap<>();
         loaded = new HashMap<>();
 
-        setLogo(FilePath.getResourceFile("resources/logo.png"));
+        setLogo(FilePath.getResourceFile("resources/logo_dark.png"));
+        logo = logo.getSubTexture(0, 0, 1, 1, logo.getWidth() / 1.5f, logo.getHeight() / 1.5f);
         progressRenderCallback = this::defaultRenderProgressCallback;
     }
 
@@ -331,7 +333,9 @@ public class ResourceLoader
         idMap.clear();
         loaded.clear();
         toBeLoaded.clear();
-        logo.dispose();
+
+        if (!logo.isDisposed() && !(logo instanceof SubTexture))
+            logo.dispose();
 
         loaderWindow.destroy();
     }
