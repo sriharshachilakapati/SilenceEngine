@@ -37,4 +37,5 @@ jar {
     include("resources/**.vert")
     include("resources/**.glsl")
     include("resources/logo.png")
+    include("resources/logo_dark.png")
 }
