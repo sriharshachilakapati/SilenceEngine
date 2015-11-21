@@ -68,6 +68,7 @@ public class ResourceLoader
 
     private Window  loaderWindow;
     private Texture logo;
+    private boolean ownsLogo;
 
     private Paint progressPaint;
     private Paint progressPaint2;
@@ -319,6 +320,28 @@ public class ResourceLoader
     public void setLogo(FilePath logo)
     {
         this.logo = Texture.fromFilePath(logo);
+        this.ownsLogo = true;
+    }
+
+    public void setLogo(Texture logo)
+    {
+        if (this.ownsLogo && !this.logo.isDisposed())
+        {
+            if (this.logo.getID() == logo.getID())
+            {
+                // Set the object still since the new logo might be a SubTexture
+                this.logo = logo;
+                return;
+            }
+
+            while (this.logo instanceof SubTexture)
+                this.logo = ((SubTexture) this.logo).getParent();
+
+            this.logo.dispose();
+        }
+
+        this.logo = logo;
+        this.ownsLogo = false;
     }
 
     public void setProgressRenderCallback(IProgressRenderCallback progressRenderCallback)
@@ -334,8 +357,13 @@ public class ResourceLoader
         loaded.clear();
         toBeLoaded.clear();
 
-        if (!logo.isDisposed() && !(logo instanceof SubTexture))
+        if (ownsLogo && !logo.isDisposed())
+        {
+            while (logo instanceof SubTexture)
+                logo = ((SubTexture) logo).getParent();
+
             logo.dispose();
+        }
 
         loaderWindow.destroy();
     }
