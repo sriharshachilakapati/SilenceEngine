@@ -215,7 +215,6 @@ public class Game implements IUpdatable
             SilenceEngine.getInstance().dispose();
 
             Logger.info("This game has been terminated successfully");
-            System.exit(0);
         }
 
         running = false;
@@ -298,11 +297,13 @@ public class Game implements IUpdatable
             // Start a frame in the game loop
             SilenceEngine.getInstance().beginFrame();
 
-            if (Display.isCloseRequested() || !isRunning())
+            if (Display.isCloseRequested())
             {
                 Game.end();
                 break;
             }
+
+            if (!isRunning()) break;
 
             if (Display.wasResized())
             {
@@ -336,6 +337,8 @@ public class Game implements IUpdatable
                     if (gameState != null)
                         gameState.update((float) frameTime);
 
+                    if (!isRunning()) break;
+
                     GameTimer.updateTimers((float) frameTime);
                 }
                 SilenceEngine.input.endFrame();
@@ -358,6 +361,9 @@ public class Game implements IUpdatable
 
             if (gameState != null)
                 gameState.render(lagOffset, SilenceEngine.graphics.getBatcher());
+
+            if (!isRunning())
+                break;
 
             framesProcessed++;
 
