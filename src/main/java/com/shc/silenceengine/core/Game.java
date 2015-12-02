@@ -24,14 +24,11 @@
 
 package com.shc.silenceengine.core;
 
+import com.shc.silenceengine.core.gameloops.FixedCatchingUpGameLoop;
 import com.shc.silenceengine.core.glfw.GLFW3;
 import com.shc.silenceengine.graphics.Batcher;
-import com.shc.silenceengine.graphics.Graphics2D;
-import com.shc.silenceengine.graphics.opengl.GL3Context;
-import com.shc.silenceengine.utils.GameTimer;
 import com.shc.silenceengine.utils.Logger;
 import com.shc.silenceengine.utils.NativesLoader;
-import com.shc.silenceengine.utils.TimeUtils;
 import org.lwjgl.Version;
 import org.lwjgl.system.Configuration;
 
@@ -70,17 +67,8 @@ import org.lwjgl.system.Configuration;
  */
 public class Game implements IUpdatable
 {
-    // Is the game running?
-    private static boolean running = false;
-
-    // Game logic rate
-    private static int ups       = 60;
-    private static int targetUPS = 60;
-
-    // Game frame rate
-    private static int fps = 60;
-
-    private static GameState gameState;
+    private GameState gameState;
+    private GameLoop  gameLoop;
 
     // The game instance
     private static Game instance;
@@ -96,7 +84,7 @@ public class Game implements IUpdatable
      */
     public static int getUPS()
     {
-        return ups;
+        return instance.gameLoop.getUpdatesPerSecond();
     }
 
     /**
@@ -104,7 +92,7 @@ public class Game implements IUpdatable
      */
     public static int getFPS()
     {
-        return fps;
+        return instance.gameLoop.getFramesPerSecond();
     }
 
     /**
@@ -112,7 +100,10 @@ public class Game implements IUpdatable
      */
     public static int getTargetUPS()
     {
-        return targetUPS;
+        if (getInstance().gameLoop instanceof FixedCatchingUpGameLoop)
+            ((FixedCatchingUpGameLoop) getInstance().gameLoop).getTargetUpdatesPerSecond();
+
+        return Integer.MAX_VALUE;
     }
 
     /**
@@ -122,7 +113,8 @@ public class Game implements IUpdatable
      */
     public static void setTargetUPS(int targetUPS)
     {
-        Game.targetUPS = targetUPS;
+        if (getInstance().gameLoop instanceof FixedCatchingUpGameLoop)
+            ((FixedCatchingUpGameLoop) getInstance().gameLoop).setTargetUpdatesPerSecond(targetUPS);
     }
 
     /**
@@ -132,7 +124,7 @@ public class Game implements IUpdatable
      */
     public static GameState getGameState()
     {
-        return gameState;
+        return getInstance().gameState;
     }
 
     /**
@@ -142,13 +134,13 @@ public class Game implements IUpdatable
      */
     public static void setGameState(GameState gameState)
     {
-        if (Game.gameState != null)
-            Game.gameState.onLeave();
+        if (getGameState() != null)
+            getGameState().onLeave();
 
-        Game.gameState = gameState;
+        Game.getInstance().gameState = gameState;
 
-        if (Game.gameState != null)
-            Game.gameState.onEnter();
+        if (getGameState() != null)
+            getGameState().onEnter();
 
         Runtime.getRuntime().gc();
     }
@@ -188,7 +180,7 @@ public class Game implements IUpdatable
      */
     public static boolean isRunning()
     {
-        return running;
+        return getInstance().gameLoop.isRunning();
     }
 
     /**
@@ -202,30 +194,39 @@ public class Game implements IUpdatable
     }
 
     /**
+     * Returns the game loop used by this game.
+     *
+     * @return The GameLoop that is running this game.
+     */
+    public static GameLoop getGameLoop()
+    {
+        return getInstance().gameLoop;
+    }
+
+    /**
      * Kills the running game!
      */
     public static void end()
     {
-        if (!running)
-        {
-            Logger.info("Disposing the Game resources");
+        if (getInstance().gameLoop.isRunning())
+            getInstance().gameLoop.stop();
+    }
 
-            instance.dispose();
-
-            SilenceEngine.getInstance().dispose();
-
-            Logger.info("This game has been terminated successfully");
-        }
-
-        running = false;
+    public void start()
+    {
+        start(new FixedCatchingUpGameLoop()
+                .setMaxSkippedFrames(10)
+                .setTargetUpdatesPerSecond(60));
     }
 
     /**
      * Starts the game. Initiates the game life-cycle and starts the main game-loop.
      */
-    public void start()
+    public void start(GameLoop gameLoop)
     {
         instance = this;
+        gameLoop.setGame(this);
+        this.gameLoop = gameLoop;
 
         // Load the natives
         Logger.info("Initializing LWJGL library. Extracting natives.");
@@ -263,125 +264,7 @@ public class Game implements IUpdatable
         // Initialize SilenceEngine
         SilenceEngine.getInstance().init();
 
-        // Initialize the Game
-        Logger.info("Initializing the Game resources");
-        init();
-        Runtime.getRuntime().gc();
-        Logger.info("Game initialized successfully, proceeding to the main loop");
-
-        // GameLoop constants
-        final double second = TimeUtils.convert(1, TimeUtils.Unit.SECONDS, TimeUtils.getDefaultTimeUnit());
-        final double frameTime = second / targetUPS;
-        final double maxFrameSkips = 10;
-
-        double currentTime;
-        double previousTime;
-        double elapsed;
-
-        double lag = 0;
-
-        double lastUPSUpdate = 0;
-        double lastFPSUpdate = 0;
-
-        int updatesProcessed = 0;
-        int framesProcessed = 0;
-        int skippedFrames = 0;
-
-        previousTime = TimeUtils.currentTime();
-
-        running = true;
-
-        // The Game Loop
-        while (true)
-        {
-            // Start a frame in the game loop
-            SilenceEngine.getInstance().beginFrame();
-
-            if (Display.isCloseRequested())
-            {
-                Game.end();
-                break;
-            }
-
-            if (!isRunning()) break;
-
-            if (Display.wasResized())
-            {
-                GL3Context.viewport(0, 0, Display.getWidth(), Display.getHeight());
-                Graphics2D.getInstance().getCamera().initProjection(Display.getWidth(), Display.getHeight());
-                resize();
-
-                if (gameState != null)
-                    gameState.resize();
-            }
-
-            currentTime = TimeUtils.currentTime();
-            elapsed = currentTime - previousTime;
-
-            lag += elapsed;
-
-            while (lag > frameTime && skippedFrames < maxFrameSkips)
-            {
-                if (Display.wasDirty())
-                {
-                    // End the old frame and start a new frame
-                    SilenceEngine.getInstance().endFrame();
-                    SilenceEngine.getInstance().beginFrame();
-                }
-
-                // Input needs to be updated even faster!
-                SilenceEngine.input.beginFrame();
-                {
-                    update((float) frameTime);
-
-                    if (gameState != null)
-                        gameState.update((float) frameTime);
-
-                    if (!isRunning()) break;
-
-                    GameTimer.updateTimers((float) frameTime);
-                }
-                SilenceEngine.input.endFrame();
-
-                updatesProcessed++;
-                lag -= frameTime;
-
-                skippedFrames++;
-
-                if (currentTime - lastUPSUpdate >= second)
-                {
-                    ups = updatesProcessed;
-                    updatesProcessed = 0;
-                    lastUPSUpdate = currentTime;
-                }
-            }
-
-            float lagOffset = (float) (lag / frameTime);
-            render(lagOffset, SilenceEngine.graphics.getBatcher());
-
-            if (gameState != null)
-                gameState.render(lagOffset, SilenceEngine.graphics.getBatcher());
-
-            if (!isRunning())
-                break;
-
-            framesProcessed++;
-
-            if (currentTime - lastFPSUpdate >= second)
-            {
-                fps = framesProcessed;
-                framesProcessed = 0;
-                lastFPSUpdate = currentTime;
-            }
-
-            SilenceEngine.getInstance().endFrame();
-
-            skippedFrames = 0;
-
-            previousTime = currentTime;
-        }
-
-        Game.end();
+        gameLoop.start();
     }
 
     /**
