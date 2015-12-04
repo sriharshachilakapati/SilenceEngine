@@ -92,7 +92,7 @@ public final class ALContext
     public void dispose()
     {
         getContext().destroy();
-        getDevice().destroy();
+        getDevice().close();
     }
 
     /**
