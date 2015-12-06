@@ -273,6 +273,9 @@ public class Texture implements IResource
             throw new SilenceException("Error resizing image");
 
         image2d(newPixels, GL_FLOAT, GL_RGBA, (int) newWidth, (int) newHeight, GL_RGBA8);
+
+        width = newWidth;
+        height = newHeight;
     }
 
     public SubTexture getSubTexture(float minU, float minV, float maxU, float maxV)
