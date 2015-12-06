@@ -43,6 +43,7 @@ import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.stb.STBImage.*;
+import static org.lwjgl.stb.STBImageResize.stbir_resize_float;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -259,6 +260,19 @@ public class Texture implements IResource
         GLError.check();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, r);
         GLError.check();
+    }
+
+    public void resize(float newWidth, float newHeight)
+    {
+        bind();
+
+        ByteBuffer oldPixels = getImage2D(GL_RGBA);
+        ByteBuffer newPixels = BufferUtils.createByteBuffer(oldPixels.capacity());
+
+        if (stbir_resize_float(oldPixels, (int) width, (int) height, 0, newPixels, (int) newWidth, (int) newHeight, 0, 4) == 0)
+            throw new SilenceException("Error resizing image");
+
+        image2d(newPixels, GL_FLOAT, GL_RGBA, (int) newWidth, (int) newHeight, GL_RGBA8);
     }
 
     public SubTexture getSubTexture(float minU, float minV, float maxU, float maxV)
