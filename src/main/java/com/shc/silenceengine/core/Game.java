@@ -212,6 +212,10 @@ public class Game implements IUpdatable
             getInstance().gameLoop.stop();
     }
 
+    /**
+     * Starts the game. Initiates the game life-cycle and starts the main game-loop. This uses the
+     * {@link FixedCatchingUpGameLoop} with the max frameskip of 10 and updates the logic at 60 times per second.
+     */
     public void start()
     {
         start(new FixedCatchingUpGameLoop()
@@ -221,6 +225,8 @@ public class Game implements IUpdatable
 
     /**
      * Starts the game. Initiates the game life-cycle and starts the main game-loop.
+     *
+     * @param gameLoop The GameLoop implementation to be used.
      */
     public void start(GameLoop gameLoop)
     {
