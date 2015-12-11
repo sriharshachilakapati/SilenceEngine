@@ -41,6 +41,7 @@ import static org.lwjgl.glfw.GLFW.*;
  * create the Display, the display creation will be handled automatically by the Game class.
  *
  * @author Sri Harsha Chilakapati
+ * @author lclc98
  */
 public final class Display
 {
@@ -516,6 +517,11 @@ public final class Display
 
     public static void setFullScreen(boolean fullScreen)
     {
+        setFullScreen(fullScreen, Monitor.getPrimaryMonitor());
+    }
+
+    public static void setFullScreen(boolean fullScreen, Monitor newMonitor)
+    {
         if (Display.fullScreen == fullScreen)
             return;
 
@@ -524,7 +530,7 @@ public final class Display
         if (fullScreen)
         {
             if (monitor == null)
-                monitor = Monitor.getPrimaryMonitor();
+                monitor = newMonitor;
 
             if (videoMode == null)
                 videoMode = monitor.getVideoMode();

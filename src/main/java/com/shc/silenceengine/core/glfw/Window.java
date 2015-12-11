@@ -99,6 +99,7 @@ import static org.lwjgl.glfw.GLFW.*;
  * objects, they have to be recreated for every context.</p>
  *
  * @author Sri Harsha Chilakapati
+ * @author lclc98
  * @see Monitor
  * @see VideoMode
  * @see Cursor
@@ -1589,5 +1590,44 @@ public class Window
         this.windowSizeCallback = callback;
 
         return previousCallback;
+    }
+
+    /**
+     * This methods returns the current monitor that this window is on. If the window is over multiple screen it will pick
+     * the one that has more of the window on the monitor. In the case of being equal it will pick the monitor that is
+     * called first.
+     *
+     * @return The monitor that the window is on.
+     */
+    public Monitor getCurrentMonitor()
+    {
+        int bestoverlap = 0;
+        Monitor currentMonitor = null;
+
+        int wx = (int) getPosition().x;
+        int wy = (int) getPosition().y;
+
+        int ww = (int) getSize().x;
+        int wh = (int) getSize().y;
+
+        for (Monitor monitor : Monitor.getMonitors())
+        {
+            Vector2 vPos = monitor.getVirtualPosition();
+            VideoMode vMode = monitor.getVideoMode();
+            int mx = (int) vPos.x;
+            int my = (int) vPos.y;
+            int mw = vMode.getWidth();
+            int mh = vMode.getHeight();
+
+            int overlap = Math.max(0, Math.min(wx + ww, mx + mw) - Math.max(wx, mx)) * Math.max(0, Math.min(wy + wh, my + mh) - Math.max(wy, my));
+
+            if (bestoverlap < overlap)
+            {
+                bestoverlap = overlap;
+                currentMonitor = monitor;
+            }
+        }
+
+        return currentMonitor;
     }
 }
