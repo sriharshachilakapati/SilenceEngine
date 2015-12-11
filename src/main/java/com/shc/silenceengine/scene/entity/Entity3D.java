@@ -71,7 +71,10 @@ public class Entity3D implements IUpdatable
     private Transform  transform;
     private Polyhedron polyhedron;
 
-    private int id;
+    /**
+     * The ID of an entity, used to differentiate between different instances.
+     */
+    protected int id;
 
     private Model model;
 

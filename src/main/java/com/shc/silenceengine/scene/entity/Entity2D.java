@@ -76,7 +76,11 @@ public class Entity2D implements IUpdatable
     // Depth here indicates the ordering of entity rendering.
     // The higher the depth, the first the object is rendered.
     private int depth;
-    private int id;
+
+    /**
+     * The ID of an entity, used to differentiate between different instances.
+     */
+    protected int id;
 
     // Whether this entity is destroyed
     private boolean destroyed;
