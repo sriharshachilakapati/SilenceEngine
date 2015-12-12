@@ -162,7 +162,7 @@ public class SpriteBatch
     private void sortSprites()
     {
         // Only sort the indices
-        indices.sort((i, j) -> sprites.get(i).getTexture().getID() < sprites.get(j).getTexture().getID() ? 1 : -1);
+        indices.sort((i, j) -> sprites.get(i).getTexture().getID() - sprites.get(j).getTexture().getID());
     }
 
     public void addSprite(Sprite sprite, Vector2 position)
