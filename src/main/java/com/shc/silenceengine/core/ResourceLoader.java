@@ -32,11 +32,13 @@ import com.shc.silenceengine.graphics.Paint;
 import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.models.Model;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
+import com.shc.silenceengine.graphics.opengl.GLError;
 import com.shc.silenceengine.graphics.opengl.SubTexture;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.IDGenerator;
 import com.shc.silenceengine.utils.MathUtils;
+import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -281,6 +283,16 @@ public class ResourceLoader
             Class<?> clazz = toBeLoaded.get(path);
             loadHelpers.get(clazz).load(path, this);
         }
+
+        // The GL commands are stored in buffers before execution,
+        // and the driver decides when to execute them. These calls
+        // force the driver to execute the buffers and flush them.
+        // This is necessary before we try to read the resources on
+        // the main thread, especially on AMD cards.
+        GL11.glFinish();
+        GLError.check();
+        GL11.glFlush();
+        GLError.check();
     }
 
     @SuppressWarnings("unchecked")
