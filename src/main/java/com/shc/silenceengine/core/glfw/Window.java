@@ -32,6 +32,7 @@ import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector4;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLCapabilities;
 
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
@@ -153,6 +154,8 @@ public class Window
     private IWindowPositionCallback  windowPositionCallback;
     private IWindowRefreshCallback   windowRefreshCallback;
     private IWindowSizeCallback      windowSizeCallback;
+
+    private GLCapabilities windowCapabilities;
 
     /**
      * Creates a window which is 800 by 600 in dimensions with the title "SilenceEngine Window".
@@ -758,7 +761,11 @@ public class Window
     public void makeCurrent()
     {
         glfwMakeContextCurrent(handle);
-        GL.createCapabilities();
+
+        if (windowCapabilities == null)
+            windowCapabilities = GL.createCapabilities();
+        else
+            GL.setCapabilities(windowCapabilities);
 
         Vector2 size = getSize();
         GL3Context.viewport(0, 0, size.x, size.y);
@@ -1629,5 +1636,16 @@ public class Window
         }
 
         return currentMonitor;
+    }
+
+    /**
+     * Returns the GL capabilities instance of this window. If the window haven't been made current even once, then this
+     * method returns {@code null} to the caller.
+     *
+     * @return The GLCapabilities instance.
+     */
+    public GLCapabilities getCapabilities()
+    {
+        return windowCapabilities;
     }
 }
