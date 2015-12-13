@@ -44,6 +44,8 @@ public class Sprite implements IUpdatable
     private float scaleY;
     private float rotation;
 
+    private Color tint;
+
     public Sprite()
     {
         this(new Animation(), 1, 1, 0);
@@ -73,6 +75,8 @@ public class Sprite implements IUpdatable
         this.scaleX = scaleX;
         this.scaleY = scaleY;
         this.rotation = rotation;
+        
+        tint = new Color(Color.TRANSPARENT);
     }
 
     public Sprite(Texture texture, float scaleX, float scaleY, float rotation)
@@ -167,5 +171,15 @@ public class Sprite implements IUpdatable
     public int getID()
     {
         return id;
+    }
+
+    public Color getTint()
+    {
+        return tint;
+    }
+
+    public void setTint(Color tint)
+    {
+        this.tint.set(tint);
     }
 }

@@ -28,6 +28,7 @@ import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Sprite;
 import com.shc.silenceengine.graphics.SpriteBatch;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
@@ -152,7 +153,8 @@ public class SpriteBatchTest extends Game
             sprites.get(i).set((MathUtils.random_range(0, 2) == 0) ? sprite1 : sprite2)
                     .setScaleX(MathUtils.random_range(1, 3))
                     .setScaleY(MathUtils.random_range(1, 3))
-                    .setRotation(MathUtils.random(360));
+                    .setRotation(MathUtils.random(360))
+                    .setTint(Color.random());
         }
 
         int i = 0;
