@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.graphics;
 
+import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.Vector4;
 import com.shc.silenceengine.utils.MathUtils;
 import com.shc.silenceengine.utils.ReusableStack;
@@ -184,6 +185,16 @@ public class Color extends Vector4
     public static final Color YELLOW_GREEN        = new Color(0x9ACD32);
 
     public static final Color TRANSPARENT = new Color(0x00000000);
+
+    public Color(Vector4 color)
+    {
+        this(color.x, color.y, color.z, color.w);
+    }
+
+    public Color(Vector3 color)
+    {
+        this(color.x, color.y, color.z);
+    }
 
     public Color()
     {
