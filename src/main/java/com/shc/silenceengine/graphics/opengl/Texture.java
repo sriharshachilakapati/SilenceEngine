@@ -216,9 +216,14 @@ public class Texture implements IResource
 
     public void image2d(ByteBuffer data, int type, int format, int width, int height, int internalFormat)
     {
+        image2d(data, 0, type, format, width, height, internalFormat);
+    }
+
+    public void image2d(ByteBuffer data, int level, int type, int format, int width, int height, int internalFormat)
+    {
         bind();
 
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
+        glTexImage2D(GL_TEXTURE_2D, level, internalFormat, width, height, 0, format, type, data);
         GLError.check();
 
         this.width = width;
