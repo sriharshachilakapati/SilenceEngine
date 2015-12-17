@@ -29,11 +29,13 @@ import com.shc.silenceengine.core.IEngine;
 import com.shc.silenceengine.graphics.models.Mesh;
 import com.shc.silenceengine.graphics.models.StaticMesh;
 import com.shc.silenceengine.graphics.opengl.GL3Context;
+import com.shc.silenceengine.graphics.opengl.GLError;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.graphics.programs.DefaultProgram;
 import com.shc.silenceengine.graphics.programs.DirectionalLightProgram;
 import com.shc.silenceengine.graphics.programs.PointLightProgram;
+import com.shc.silenceengine.utils.Logger;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
 
@@ -71,6 +73,9 @@ public class GraphicsEngine implements IEngine
     public void init()
     {
         Display.create();
+
+        Logger.info("Clearing out OpenGL errors");
+        while (GLError.get() != GLError.Value.NO_ERROR);
 
         // Use the default material
         useMaterial(DEFAULT_MATERIAL);
