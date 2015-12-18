@@ -26,7 +26,7 @@ package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.audio.AudioEngine;
 import com.shc.silenceengine.collision.CollisionEngine;
-import com.shc.silenceengine.core.glfw.GLFW3;
+import com.shc.silenceengine.backend.lwjgl3.glfw.GLFW3;
 import com.shc.silenceengine.graphics.GraphicsEngine;
 import com.shc.silenceengine.input.InputEngine;
 import com.shc.silenceengine.math.Vector4;

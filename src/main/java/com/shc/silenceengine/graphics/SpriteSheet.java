@@ -24,7 +24,7 @@
 
 package com.shc.silenceengine.graphics;
 
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 
 /**
  * @author Sri Harsha Chilakapati

@@ -24,12 +24,12 @@
 
 package com.shc.silenceengine.graphics;
 
-import com.shc.silenceengine.graphics.opengl.BufferObject;
-import com.shc.silenceengine.graphics.opengl.GL3Context;
-import com.shc.silenceengine.graphics.opengl.Primitive;
-import com.shc.silenceengine.graphics.opengl.Program;
-import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.graphics.opengl.VertexArray;
+import com.shc.silenceengine.backend.lwjgl3.opengl.BufferObject;
+import com.shc.silenceengine.backend.lwjgl3.opengl.GL3Context;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Primitive;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Program;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.VertexArray;
 import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector2;

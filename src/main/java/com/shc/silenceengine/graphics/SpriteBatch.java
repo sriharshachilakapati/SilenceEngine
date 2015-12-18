@@ -26,8 +26,8 @@ package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
-import com.shc.silenceengine.graphics.opengl.Primitive;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Primitive;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.math.Vector2;
 
 import java.util.ArrayList;

@@ -32,7 +32,7 @@ import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Sprite;
 import com.shc.silenceengine.graphics.SpriteBatch;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.utils.GameTimer;

@@ -24,14 +24,14 @@
 
 package com.shc.silenceengine.core;
 
-import com.shc.silenceengine.core.glfw.Cursor;
-import com.shc.silenceengine.core.glfw.GLFW3;
-import com.shc.silenceengine.core.glfw.Monitor;
-import com.shc.silenceengine.core.glfw.VideoMode;
-import com.shc.silenceengine.core.glfw.Window;
-import com.shc.silenceengine.graphics.opengl.Program;
-import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.graphics.opengl.VertexArray;
+import com.shc.silenceengine.backend.lwjgl3.glfw.Cursor;
+import com.shc.silenceengine.backend.lwjgl3.glfw.GLFW3;
+import com.shc.silenceengine.backend.lwjgl3.glfw.Monitor;
+import com.shc.silenceengine.backend.lwjgl3.glfw.VideoMode;
+import com.shc.silenceengine.backend.lwjgl3.glfw.Window;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Program;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.VertexArray;
 import com.shc.silenceengine.math.Vector2;
 
 import static org.lwjgl.glfw.GLFW.*;

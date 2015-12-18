@@ -30,9 +30,9 @@ import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Material;
-import com.shc.silenceengine.graphics.opengl.Primitive;
-import com.shc.silenceengine.graphics.opengl.SubTexture;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Primitive;
+import com.shc.silenceengine.backend.lwjgl3.opengl.SubTexture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Transform;
 

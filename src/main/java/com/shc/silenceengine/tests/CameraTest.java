@@ -29,7 +29,7 @@ import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.cameras.PerspCam;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Transform;

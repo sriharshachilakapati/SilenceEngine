@@ -24,8 +24,8 @@
 
 package com.shc.silenceengine.audio;
 
-import com.shc.silenceengine.audio.openal.ALBuffer;
-import com.shc.silenceengine.audio.openal.ALSource;
+import com.shc.silenceengine.backend.lwjgl3.openal.ALBuffer;
+import com.shc.silenceengine.backend.lwjgl3.openal.ALSource;
 import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.utils.FileUtils;

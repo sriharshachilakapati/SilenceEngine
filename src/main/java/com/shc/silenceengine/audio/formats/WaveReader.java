@@ -25,7 +25,7 @@
 package com.shc.silenceengine.audio.formats;
 
 import com.shc.silenceengine.audio.ISoundReader;
-import com.shc.silenceengine.audio.openal.ALFormat;
+import com.shc.silenceengine.backend.lwjgl3.openal.ALFormat;
 import com.shc.silenceengine.core.SilenceException;
 
 import javax.sound.sampled.AudioFormat;

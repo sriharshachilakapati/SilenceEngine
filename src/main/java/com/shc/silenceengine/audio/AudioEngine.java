@@ -26,7 +26,7 @@ package com.shc.silenceengine.audio;
 
 import com.shc.silenceengine.audio.formats.OggReader;
 import com.shc.silenceengine.audio.formats.WaveReader;
-import com.shc.silenceengine.audio.openal.ALContext;
+import com.shc.silenceengine.backend.lwjgl3.openal.ALContext;
 import com.shc.silenceengine.core.IEngine;
 import com.shc.silenceengine.utils.Logger;
 import org.lwjgl.openal.ALC10;

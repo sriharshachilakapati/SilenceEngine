@@ -25,7 +25,7 @@
 package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.core.gameloops.FixedCatchingUpGameLoop;
-import com.shc.silenceengine.core.glfw.GLFW3;
+import com.shc.silenceengine.backend.lwjgl3.glfw.GLFW3;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.utils.Logger;
 import com.shc.silenceengine.utils.NativesLoader;

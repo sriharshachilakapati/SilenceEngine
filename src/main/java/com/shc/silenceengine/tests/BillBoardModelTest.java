@@ -32,7 +32,7 @@ import com.shc.silenceengine.graphics.SpriteSheet;
 import com.shc.silenceengine.graphics.cameras.PerspCam;
 import com.shc.silenceengine.graphics.models.BillBoardModel;
 import com.shc.silenceengine.graphics.models.Model;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.io.FilePath;

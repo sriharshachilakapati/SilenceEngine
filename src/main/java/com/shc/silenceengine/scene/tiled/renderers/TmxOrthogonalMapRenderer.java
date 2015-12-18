@@ -25,8 +25,8 @@
 package com.shc.silenceengine.scene.tiled.renderers;
 
 import com.shc.silenceengine.graphics.Batcher;
-import com.shc.silenceengine.graphics.opengl.Primitive;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Primitive;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.scene.tiled.TmxMap;
 import com.shc.silenceengine.scene.tiled.TmxTileSet;
 import com.shc.silenceengine.scene.tiled.layers.TmxImageLayer;

@@ -26,7 +26,7 @@ package com.shc.silenceengine.utils;
 
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.opengl.Primitive;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Primitive;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.geom2d.Polygon;

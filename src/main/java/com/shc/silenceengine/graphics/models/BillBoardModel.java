@@ -27,7 +27,7 @@ package com.shc.silenceengine.graphics.models;
 import com.shc.silenceengine.core.IUpdatable;
 import com.shc.silenceengine.graphics.Animation;
 import com.shc.silenceengine.graphics.Sprite;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 

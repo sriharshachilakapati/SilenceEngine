@@ -25,16 +25,16 @@
 package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.audio.Sound;
-import com.shc.silenceengine.core.glfw.Window;
+import com.shc.silenceengine.backend.lwjgl3.glfw.Window;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Graphics2D;
 import com.shc.silenceengine.graphics.Paint;
 import com.shc.silenceengine.graphics.TrueTypeFont;
 import com.shc.silenceengine.graphics.models.Model;
-import com.shc.silenceengine.graphics.opengl.GL3Context;
-import com.shc.silenceengine.graphics.opengl.GLError;
-import com.shc.silenceengine.graphics.opengl.SubTexture;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.GL3Context;
+import com.shc.silenceengine.backend.lwjgl3.opengl.GLError;
+import com.shc.silenceengine.backend.lwjgl3.opengl.SubTexture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.IDGenerator;
 import com.shc.silenceengine.utils.MathUtils;

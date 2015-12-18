@@ -30,7 +30,7 @@ import com.shc.silenceengine.core.GameLoop;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.Graphics2D;
-import com.shc.silenceengine.graphics.opengl.GL3Context;
+import com.shc.silenceengine.backend.lwjgl3.opengl.GL3Context;
 import com.shc.silenceengine.utils.GameTimer;
 import com.shc.silenceengine.utils.Logger;
 import com.shc.silenceengine.utils.TimeUtils;

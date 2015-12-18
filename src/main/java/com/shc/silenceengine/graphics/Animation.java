@@ -25,7 +25,7 @@
 package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.core.IUpdatable;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.utils.TimeUtils;
 
 import java.util.ArrayList;

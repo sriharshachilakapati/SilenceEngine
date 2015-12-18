@@ -25,7 +25,7 @@
 package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.core.IUpdatable;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.utils.IDGenerator;
 import com.shc.silenceengine.utils.TimeUtils;
 
@@ -75,7 +75,7 @@ public class Sprite implements IUpdatable
         this.scaleX = scaleX;
         this.scaleY = scaleY;
         this.rotation = rotation;
-        
+
         tint = new Color(Color.TRANSPARENT);
     }
 

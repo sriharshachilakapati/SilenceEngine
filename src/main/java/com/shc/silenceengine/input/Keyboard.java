@@ -25,7 +25,7 @@
 package com.shc.silenceengine.input;
 
 import com.shc.silenceengine.core.SilenceException;
-import com.shc.silenceengine.core.glfw.Window;
+import com.shc.silenceengine.backend.lwjgl3.glfw.Window;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

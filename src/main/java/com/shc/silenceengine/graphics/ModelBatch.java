@@ -31,7 +31,7 @@ import com.shc.silenceengine.graphics.models.Face;
 import com.shc.silenceengine.graphics.models.Mesh;
 import com.shc.silenceengine.graphics.models.Model;
 import com.shc.silenceengine.graphics.models.StaticMesh;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector3;

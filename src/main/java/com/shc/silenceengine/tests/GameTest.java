@@ -28,7 +28,7 @@ import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.opengl.GL3Context;
+import com.shc.silenceengine.backend.lwjgl3.opengl.GL3Context;
 import com.shc.silenceengine.input.Keyboard;
 
 /**

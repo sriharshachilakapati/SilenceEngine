@@ -26,8 +26,8 @@ package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.core.SilenceException;
-import com.shc.silenceengine.graphics.opengl.Primitive;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Primitive;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 
 import java.awt.*;
 import java.awt.Graphics2D;

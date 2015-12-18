@@ -30,7 +30,7 @@ import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
-import com.shc.silenceengine.graphics.opengl.GL3Context;
+import com.shc.silenceengine.backend.lwjgl3.opengl.GL3Context;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.geom2d.Circle;
 import com.shc.silenceengine.math.geom2d.Rectangle;

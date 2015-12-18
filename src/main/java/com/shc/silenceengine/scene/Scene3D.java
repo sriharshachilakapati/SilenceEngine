@@ -28,7 +28,7 @@ import com.shc.silenceengine.core.IUpdatable;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.ModelBatch;
 import com.shc.silenceengine.graphics.cameras.BaseCamera;
-import com.shc.silenceengine.graphics.opengl.GL3Context;
+import com.shc.silenceengine.backend.lwjgl3.opengl.GL3Context;
 import com.shc.silenceengine.math.Frustum;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.scene.entity.Entity3D;

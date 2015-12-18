@@ -28,9 +28,9 @@ import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.graphics.Material;
 import com.shc.silenceengine.graphics.cameras.BaseCamera;
-import com.shc.silenceengine.graphics.opengl.Program;
-import com.shc.silenceengine.graphics.opengl.Shader;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Program;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Shader;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.ShaderProcessor;
 

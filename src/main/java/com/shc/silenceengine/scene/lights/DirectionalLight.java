@@ -25,7 +25,7 @@
 package com.shc.silenceengine.scene.lights;
 
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.opengl.Program;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Program;
 import com.shc.silenceengine.graphics.programs.DirectionalLightProgram;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.scene.SceneComponent;

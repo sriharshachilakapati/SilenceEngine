@@ -27,11 +27,11 @@ package com.shc.silenceengine.input;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.IEngine;
 import com.shc.silenceengine.core.SilenceEngine;
-import com.shc.silenceengine.core.glfw.Window;
-import com.shc.silenceengine.core.glfw.callbacks.ICursorPositionCallback;
-import com.shc.silenceengine.core.glfw.callbacks.IKeyCallback;
-import com.shc.silenceengine.core.glfw.callbacks.IMouseButtonCallback;
-import com.shc.silenceengine.core.glfw.callbacks.IScrollCallback;
+import com.shc.silenceengine.backend.lwjgl3.glfw.Window;
+import com.shc.silenceengine.backend.lwjgl3.glfw.callbacks.ICursorPositionCallback;
+import com.shc.silenceengine.backend.lwjgl3.glfw.callbacks.IKeyCallback;
+import com.shc.silenceengine.backend.lwjgl3.glfw.callbacks.IMouseButtonCallback;
+import com.shc.silenceengine.backend.lwjgl3.glfw.callbacks.IScrollCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
 

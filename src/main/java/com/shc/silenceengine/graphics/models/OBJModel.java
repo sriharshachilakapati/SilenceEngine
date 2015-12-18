@@ -26,7 +26,7 @@ package com.shc.silenceengine.graphics.models;
 
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Material;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
