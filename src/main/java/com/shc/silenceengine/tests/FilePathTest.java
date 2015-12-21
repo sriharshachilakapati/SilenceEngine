@@ -84,11 +84,15 @@ public class FilePathTest
         Logger.info("\nTrying to delete the newly created file\n");
         newFile.delete();
         logFilePath(newFile);
+
+        Logger.info("\nTrying to locate a resource in library JAR\n");
+        logFilePath(FilePath.getResourceFile("glfw.dll"));
+        logFilePath(FilePath.getResourceFile("org/lwjgl/"));
     }
 
     private static void logFilePath(FilePath path)
     {
-        Logger.info(String.format(">> Path='%-35s' Name='%-25s' Extension='.%-4s' Type='%s' Directory=%-5s Exists=%-5s Size=%-8d Bytes",
+        Logger.info(String.format(">> Path='%-85s' Name='%-25s' Extension='.%-4s' Type='%s' Directory=%-5s Exists=%-5s Size=%-8d Bytes",
                 path.getPath(), path.getName(), path.getExtension(), "" + path.getType(), "" + path.isDirectory(),
                 "" + path.exists(), path.sizeInBytes()));
     }
