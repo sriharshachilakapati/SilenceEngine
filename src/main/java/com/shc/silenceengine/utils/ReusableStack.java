@@ -37,12 +37,13 @@ import java.util.Deque;
 public final class ReusableStack<T>
 {
     private Deque<T> stack;
-    private Class<T> tClass;
 
-    public ReusableStack(Class<T> tClass)
+    private ObjectProvider<T> objectProvider;
+
+    public ReusableStack(ObjectProvider<T> objectProvider)
     {
         stack = new ArrayDeque<>();
-        this.tClass = tClass;
+        this.objectProvider = objectProvider;
     }
 
     public T pop()
@@ -50,7 +51,7 @@ public final class ReusableStack<T>
         if (stack.size() == 0)
             try
             {
-                stack.push(tClass.newInstance());
+                stack.push(objectProvider.createObject());
             }
             catch (Exception e)
             {
@@ -63,5 +64,10 @@ public final class ReusableStack<T>
     public void push(T value)
     {
         stack.push(value);
+    }
+
+    public interface ObjectProvider<T>
+    {
+        T createObject();
     }
 }

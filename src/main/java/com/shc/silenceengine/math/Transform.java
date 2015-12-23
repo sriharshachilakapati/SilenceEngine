@@ -31,7 +31,7 @@ import com.shc.silenceengine.utils.ReusableStack;
  */
 public class Transform
 {
-    public static final ReusableStack<Transform> REUSABLE_STACK = new ReusableStack<>(Transform.class);
+    public static final ReusableStack<Transform> REUSABLE_STACK = new ReusableStack<>(Transform::new);
 
     // The transformation matrix
     private Matrix4 tMatrix;

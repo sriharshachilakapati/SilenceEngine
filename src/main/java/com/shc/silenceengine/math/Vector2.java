@@ -36,7 +36,7 @@ public class Vector2
     public static final Vector2 AXIS_X = new Vector2(1, 0);
     public static final Vector2 AXIS_Y = new Vector2(0, 1);
 
-    public static final ReusableStack<Vector2> REUSABLE_STACK = new ReusableStack<>(Vector2.class);
+    public static final ReusableStack<Vector2> REUSABLE_STACK = new ReusableStack<>(Vector2::new);
 
     public float x, y;
 

@@ -36,7 +36,7 @@ import com.shc.silenceengine.utils.ReusableStack;
  */
 public class Color extends Vector4
 {
-    public static final ReusableStack<Color> REUSABLE_STACK = new ReusableStack<>(Color.class);
+    public static final ReusableStack<Color> REUSABLE_STACK = new ReusableStack<>(Color::new);
 
     // Primitive colors
     public static final Color BLACK = new Color(0x000000);

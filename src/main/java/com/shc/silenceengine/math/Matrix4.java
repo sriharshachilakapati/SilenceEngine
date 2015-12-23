@@ -34,7 +34,7 @@ import java.nio.FloatBuffer;
  */
 public class Matrix4
 {
-    public static final ReusableStack<Matrix4> REUSABLE_STACK = new ReusableStack<>(Matrix4.class);
+    public static final ReusableStack<Matrix4> REUSABLE_STACK = new ReusableStack<>(Matrix4::new);
 
     private float[][] m;
 

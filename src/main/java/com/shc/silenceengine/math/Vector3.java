@@ -37,7 +37,7 @@ public class Vector3
     public static final Vector3 AXIS_Y = new Vector3(0, 1, 0);
     public static final Vector3 AXIS_Z = new Vector3(0, 0, 1);
 
-    public static final ReusableStack<Vector3> REUSABLE_STACK = new ReusableStack<>(Vector3.class);
+    public static final ReusableStack<Vector3> REUSABLE_STACK = new ReusableStack<>(Vector3::new);
 
     public float x, y, z;
 

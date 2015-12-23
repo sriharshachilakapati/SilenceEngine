@@ -32,7 +32,7 @@ import com.shc.silenceengine.utils.ReusableStack;
  */
 public class Quaternion
 {
-    public static final ReusableStack<Quaternion> REUSABLE_STACK = new ReusableStack<>(Quaternion.class);
+    public static final ReusableStack<Quaternion> REUSABLE_STACK = new ReusableStack<>(Quaternion::new);
 
     public float x;
     public float y;

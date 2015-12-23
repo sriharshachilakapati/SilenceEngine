@@ -24,11 +24,15 @@
 
 package com.shc.silenceengine.math;
 
+import com.shc.silenceengine.utils.ReusableStack;
+
 /**
  * @author Sri Harsha Chilakapati
  */
 public class Plane
 {
+    public static final ReusableStack<Plane> REUSABLE_STACK = new ReusableStack<>(Plane::new);
+
     public Vector3 normal;
     public float   d;
 
