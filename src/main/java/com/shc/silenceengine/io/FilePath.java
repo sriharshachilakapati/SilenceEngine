@@ -328,6 +328,9 @@ public abstract class FilePath
      */
     public String getExtension()
     {
+        if (isDirectory())
+            return "";
+
         String[] parts = getPath().split("\\.(?=[^\\.]+$)");
         return parts.length > 1 ? parts[1] : "";
     }

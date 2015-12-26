@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -176,13 +177,23 @@ public class ResourceFilePath extends FilePath
         if (!exists())
             throw new SilenceException("Cannot list files in a non existing directory.");
 
-        if (getResourceType() == ResourceType.FILE)
-            return FilePath.getExternalFile(getIDEPath()).listFiles();
-
         List<FilePath> filePaths = new ArrayList<>();
 
-        List<JarEntry> entries = getJarEntries();
-        entries.forEach(e -> filePaths.add(FilePath.getResourceFile(e.getName())));
+        if (getResourceType() == ResourceType.FILE)
+        {
+            File file = new File(getIDEPath());
+
+            File[] children = file.listFiles();
+
+            if (children != null)
+                for (File child : children)
+                    filePaths.add(new ResourceFilePath(path + SEPARATOR + child.getPath().replace(file.getPath(), "")));
+        }
+        else
+        {
+            List<JarEntry> entries = getJarEntries();
+            entries.forEach(e -> filePaths.add(FilePath.getResourceFile(e.getName())));
+        }
 
         return Collections.unmodifiableList(filePaths);
     }
@@ -196,7 +207,7 @@ public class ResourceFilePath extends FilePath
 
         String urlString = url.toString();
 
-        return urlString.substring(urlString.indexOf('/') + 1);
+        return URLDecoder.decode(urlString.substring(urlString.indexOf('/') + 1), "UTF-8");
     }
 
     private List<JarEntry> getJarEntries() throws IOException
@@ -208,7 +219,7 @@ public class ResourceFilePath extends FilePath
             throw new SilenceException("Error, resource doesn't exist.");
 
         String jarUrl = url.toString();
-        String jarPath = jarUrl.substring(jarUrl.indexOf('/') + 1, jarUrl.indexOf('!'));
+        String jarPath = URLDecoder.decode(jarUrl.substring(jarUrl.indexOf('/') + 1, jarUrl.indexOf('!')), "UTF-8");
 
         // Now get the JarEntry for this path
         JarFile jarFile = new JarFile(new File(jarPath));
