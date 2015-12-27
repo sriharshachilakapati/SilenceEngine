@@ -182,4 +182,10 @@ public class Sprite implements IUpdatable
     {
         this.tint.set(tint);
     }
+
+    public void setSize(float width, float height)
+    {
+        scaleX = width / getTexture().getWidth();
+        scaleY = height / getTexture().getHeight();
+    }
 }
