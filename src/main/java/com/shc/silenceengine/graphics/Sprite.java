@@ -185,7 +185,7 @@ public class Sprite implements IUpdatable
 
     public void setSize(float width, float height)
     {
-        scaleX = width / (scaleX * getTexture().getWidth());
-        scaleY = height / (scaleY * getTexture().getHeight());
+        scaleX = width / getTexture().getWidth();
+        scaleY = height / getTexture().getHeight();
     }
 }

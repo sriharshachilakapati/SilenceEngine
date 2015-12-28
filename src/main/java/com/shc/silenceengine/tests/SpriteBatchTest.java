@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.tests;
 
+import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.core.Display;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
@@ -32,7 +33,6 @@ import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Sprite;
 import com.shc.silenceengine.graphics.SpriteBatch;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
-import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.utils.GameTimer;
@@ -58,8 +58,6 @@ public class SpriteBatchTest extends Game
     private Sprite sprite1;
     private Sprite sprite2;
 
-    private GameTimer timer;
-
     public static void main(String[] args)
     {
         new SpriteBatchTest().start();
@@ -76,6 +74,12 @@ public class SpriteBatchTest extends Game
 
         sprite1 = new Sprite(texture1);
         sprite2 = new Sprite(texture2);
+
+        sprite1.setSize(100, 100);
+        sprite1.setSize(400, 400);
+
+        sprite2.setSize(100, 100);
+        sprite2.setSize(200, 200);
 
         sprites = new ArrayList<>();
         positions = new ArrayList<>();
@@ -94,7 +98,7 @@ public class SpriteBatchTest extends Game
 
         defineSprites();
 
-        timer = new GameTimer(0.5, TimeUtils.Unit.SECONDS);
+        GameTimer timer = new GameTimer(0.5, TimeUtils.Unit.SECONDS);
         timer.setCallback(() ->
         {
             defineSprites();
@@ -151,8 +155,8 @@ public class SpriteBatchTest extends Game
         for (int i = 0; i < 10; i++)
         {
             sprites.get(i).set((MathUtils.random_range(0, 2) == 0) ? sprite1 : sprite2)
-                    .setScaleX(MathUtils.random_range(1, 3))
-                    .setScaleY(MathUtils.random_range(1, 3))
+//                    .setScaleX(MathUtils.random_range(1, 3))
+//                    .setScaleY(MathUtils.random_range(1, 3))
                     .setRotation(MathUtils.random(360))
                     .setTint(Color.random());
         }
