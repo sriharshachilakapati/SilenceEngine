@@ -26,10 +26,12 @@ package com.shc.silenceengine.audio;
 
 import com.shc.silenceengine.backend.lwjgl3.openal.ALFormat;
 import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.utils.Logger;
 import org.lwjgl.BufferUtils;
 
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -117,6 +119,12 @@ public interface ISoundReader
             // Get the constructor that accepts an InputStream and return a new instance.
             Constructor<? extends ISoundReader> constructor = readerClass.getDeclaredConstructor(InputStream.class);
             return constructor.newInstance(resource);
+        }
+        catch (InvocationTargetException e)
+        {
+            // Trace the target exception in case of InvocationTargetException
+            Logger.trace(e.getTargetException());
+            SilenceException.reThrow(e);
         }
         catch (Exception e)
         {
