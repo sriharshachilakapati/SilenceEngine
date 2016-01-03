@@ -102,23 +102,26 @@ public class SpriteBatch
                     batcher.begin(Primitive.TRIANGLES);
                 }
 
+                float width = t.getWidth() * sprite.getScaleX();
+                float height = t.getHeight() * sprite.getScaleY();
+
                 // Triangle 1
                 batcher.vertex(temp.set(-t.getWidth() / 2, -t.getHeight() / 2)  // Top-left
                         .rotateSelf(sprite.getRotation())
                         .scaleSelf(sprite.getScaleX(), sprite.getScaleY())
-                        .addSelf(position).addSelf(t.getWidth() / 2, t.getHeight() / 2));
+                        .addSelf(position).addSelf(width / 2, height / 2));
                 batcher.texCoord(t.getMinU(), t.getMinV());
                 batcher.color(sprite.getTint());
                 batcher.vertex(temp.set(t.getWidth() / 2, -t.getHeight() / 2)   // Top-right
                         .rotateSelf(sprite.getRotation())
                         .scaleSelf(sprite.getScaleX(), sprite.getScaleY())
-                        .addSelf(position).addSelf(t.getWidth() / 2, t.getHeight() / 2));
+                        .addSelf(position).addSelf(width / 2, height / 2));
                 batcher.texCoord(t.getMaxU(), t.getMinV());
                 batcher.color(sprite.getTint());
                 batcher.vertex(temp.set(-t.getWidth() / 2, t.getHeight() / 2)   // Bottom-left
                         .rotateSelf(sprite.getRotation())
                         .scaleSelf(sprite.getScaleX(), sprite.getScaleY())
-                        .addSelf(position).addSelf(t.getWidth() / 2, t.getHeight() / 2));
+                        .addSelf(position).addSelf(width / 2, height / 2));
                 batcher.texCoord(t.getMinU(), t.getMaxV());
                 batcher.color(sprite.getTint());
 
@@ -126,19 +129,19 @@ public class SpriteBatch
                 batcher.vertex(temp.set(t.getWidth() / 2, -t.getHeight() / 2)   // Top-right
                         .rotateSelf(sprite.getRotation())
                         .scaleSelf(sprite.getScaleX(), sprite.getScaleY())
-                        .addSelf(position).addSelf(t.getWidth() / 2, t.getHeight() / 2));
+                        .addSelf(position).addSelf(width / 2, height / 2));
                 batcher.texCoord(t.getMaxU(), t.getMinV());
                 batcher.color(sprite.getTint());
                 batcher.vertex(temp.set(t.getWidth() / 2, t.getHeight() / 2)   // Bottom-right
                         .rotateSelf(sprite.getRotation())
                         .scaleSelf(sprite.getScaleX(), sprite.getScaleY())
-                        .addSelf(position).addSelf(t.getWidth() / 2, t.getHeight() / 2));
+                        .addSelf(position).addSelf(width / 2, height / 2));
                 batcher.texCoord(t.getMaxU(), t.getMaxV());
                 batcher.color(sprite.getTint());
                 batcher.vertex(temp.set(-t.getWidth() / 2, t.getHeight() / 2)   // Bottom-left
                         .rotateSelf(sprite.getRotation())
                         .scaleSelf(sprite.getScaleX(), sprite.getScaleY())
-                        .addSelf(position).addSelf(t.getWidth() / 2, t.getHeight() / 2));
+                        .addSelf(position).addSelf(width / 2, height / 2));
                 batcher.texCoord(t.getMinU(), t.getMaxV());
                 batcher.color(sprite.getTint());
             }
