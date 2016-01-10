@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.tests;
 
+import com.shc.silenceengine.backend.lwjgl3.Lwjgl3Starter;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.Logger;
 
@@ -36,6 +37,8 @@ public class FilePathTest
 {
     public static void main(String[] args) throws IOException
     {
+        Lwjgl3Starter.start();
+
         Logger.setPrintTimeStamps(false);
         Logger.addLogStream(FilePath.getExternalFile(System.getProperty("java.io.tmpdir") + "/FilePathTest.log"));
 

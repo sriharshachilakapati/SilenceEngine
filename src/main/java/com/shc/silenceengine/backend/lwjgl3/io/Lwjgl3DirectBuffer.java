@@ -78,7 +78,7 @@ public class Lwjgl3DirectBuffer extends DirectBuffer
     }
 
     @Override
-    public DirectBuffer writeInt(int byteIndex, byte value)
+    public DirectBuffer writeByte(int byteIndex, byte value)
     {
         nativeBuffer.put(byteIndex, value);
         return this;

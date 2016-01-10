@@ -44,4 +44,8 @@ public abstract class BackendIO
     public abstract DirectBuffer create(int sizeInBytes);
 
     public abstract void free(DirectBuffer directBuffer);
+
+    public abstract FilePath createResourceFilePath(String path);
+
+    public abstract FilePath createExternalFilePath(String path);
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Sri Harsha Chilakapati
+ * Copyright (c) 2014-2016 Sri Harsha Chilakapati
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.utils;
+package com.shc.silenceengine.backend.lwjgl3.utils;
 
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
@@ -40,7 +40,7 @@ import java.nio.file.Files;
  *
  * @author Sri Harsha Chilakapati
  */
-public class NativesLoader
+public class Lwjgl3NativesLoader
 {
     private static FilePath nativesDir;
     private static boolean  lwjglLoaded;

@@ -58,7 +58,7 @@ public abstract class DirectBuffer
 
     public abstract DirectBuffer writeShort(int byteIndex, short value);
 
-    public abstract DirectBuffer writeInt(int byteIndex, byte value);
+    public abstract DirectBuffer writeByte(int byteIndex, byte value);
 
     public abstract int readInt(int byteIndex);
 

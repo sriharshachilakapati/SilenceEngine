@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Sri Harsha Chilakapati
+ * Copyright (c) 2014-2016 Sri Harsha Chilakapati
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,10 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.io;
+package com.shc.silenceengine.backend.lwjgl3.io;
 
 import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.Logger;
 
 import java.io.File;
@@ -40,9 +41,9 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class ExternalFilePath extends FilePath
+public class Lwjgl3ExternalFilePath extends FilePath
 {
-    public ExternalFilePath(String path)
+    public Lwjgl3ExternalFilePath(String path)
     {
         super(path, Type.EXTERNAL);
     }
@@ -75,6 +76,33 @@ public class ExternalFilePath extends FilePath
     public OutputStream getOutputStream() throws IOException
     {
         return Files.newOutputStream(Paths.get(getPath()));
+    }
+
+    @Override
+    public void copyTo(FilePath path) throws IOException
+    {
+        boolean thisIsDirectory = this.isDirectory();
+        boolean pathIsDirectory = path.isDirectory();
+
+        if (thisIsDirectory && !pathIsDirectory)
+            throw new SilenceException("Cannot copy a directory into a file.");
+
+        if (!thisIsDirectory && pathIsDirectory)
+            throw new SilenceException("Cannot copy a file into a directory.");
+
+        if (!exists())
+            throw new SilenceException("Cannot copy a non existing file.");
+
+        byte[] buffer = new byte[1024];
+        int length;
+
+        try (InputStream inputStream = getInputStream(); OutputStream outputStream = path.getOutputStream())
+        {
+            while ((length = inputStream.read(buffer)) > 0)
+            {
+                outputStream.write(buffer, 0, length);
+            }
+        }
     }
 
     @Override
@@ -156,7 +184,7 @@ public class ExternalFilePath extends FilePath
 
         if (children != null)
             for (File child : children)
-                list.add(new ExternalFilePath(path + SEPARATOR + child.getPath().replace(file.getPath(), "")));
+                list.add(new Lwjgl3ExternalFilePath(path + SEPARATOR + child.getPath().replace(file.getPath(), "")));
 
         return Collections.unmodifiableList(list);
     }

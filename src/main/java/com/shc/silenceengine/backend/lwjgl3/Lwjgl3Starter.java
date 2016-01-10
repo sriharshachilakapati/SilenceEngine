@@ -26,6 +26,7 @@ package com.shc.silenceengine.backend.lwjgl3;
 
 import com.shc.silenceengine.backend.lwjgl3.io.Lwjgl3IO;
 import com.shc.silenceengine.io.BackendIO;
+import com.shc.silenceengine.backend.lwjgl3.utils.Lwjgl3NativesLoader;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -35,5 +36,7 @@ public class Lwjgl3Starter
     public static void start()
     {
         BackendIO.set(new Lwjgl3IO());
+
+        Lwjgl3NativesLoader.loadLWJGL();
     }
 }

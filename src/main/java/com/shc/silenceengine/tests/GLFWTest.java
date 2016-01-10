@@ -24,26 +24,26 @@
 
 package com.shc.silenceengine.tests;
 
-import com.shc.silenceengine.core.SilenceEngine;
-import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.backend.lwjgl3.Lwjgl3Starter;
 import com.shc.silenceengine.backend.lwjgl3.glfw.Cursor;
 import com.shc.silenceengine.backend.lwjgl3.glfw.GLFW3;
 import com.shc.silenceengine.backend.lwjgl3.glfw.Monitor;
 import com.shc.silenceengine.backend.lwjgl3.glfw.VideoMode;
 import com.shc.silenceengine.backend.lwjgl3.glfw.Window;
-import com.shc.silenceengine.graphics.Batcher;
-import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.cameras.PerspCam;
 import com.shc.silenceengine.backend.lwjgl3.opengl.GL3Context;
 import com.shc.silenceengine.backend.lwjgl3.opengl.Program;
 import com.shc.silenceengine.backend.lwjgl3.opengl.Shader;
 import com.shc.silenceengine.backend.lwjgl3.opengl.Texture;
+import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.cameras.PerspCam;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.utils.Logger;
-import com.shc.silenceengine.utils.NativesLoader;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -75,7 +75,7 @@ public class GLFWTest
 
     private void run()
     {
-        NativesLoader.loadLWJGL();
+        Lwjgl3Starter.start();
 
         if (!GLFW3.init())
             throw new SilenceException("Failed to initialize GLFW3");

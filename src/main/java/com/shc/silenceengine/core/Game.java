@@ -24,11 +24,11 @@
 
 package com.shc.silenceengine.core;
 
-import com.shc.silenceengine.core.gameloops.FixedCatchingUpGameLoop;
+import com.shc.silenceengine.backend.lwjgl3.Lwjgl3Starter;
 import com.shc.silenceengine.backend.lwjgl3.glfw.GLFW3;
+import com.shc.silenceengine.core.gameloops.FixedCatchingUpGameLoop;
 import com.shc.silenceengine.graphics.Batcher;
 import com.shc.silenceengine.utils.Logger;
-import com.shc.silenceengine.utils.NativesLoader;
 import org.lwjgl.Version;
 import org.lwjgl.system.Configuration;
 
@@ -236,7 +236,7 @@ public class Game implements IUpdatable
 
         // Load the natives
         Logger.info("Initializing LWJGL library. Extracting natives.");
-        NativesLoader.loadLWJGL();
+        Lwjgl3Starter.start();  // For now, will be refactored soon
 
         // LWJGL configuration
         Configuration.DEBUG.set(DEVELOPMENT);

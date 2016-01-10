@@ -60,8 +60,6 @@ import java.util.jar.JarFile;
  * instance of {@link JarFile} is created using reflection, and it's entries are used to access the attributes.</p>
  *
  * @author Sri Harsha Chilakapati
- * @see ResourceFilePath
- * @see ExternalFilePath
  */
 public abstract class FilePath
 {
@@ -101,7 +99,7 @@ public abstract class FilePath
      */
     public static FilePath getExternalFile(String path)
     {
-        return new ExternalFilePath(path);
+        return BackendIO.get().createExternalFilePath(path);
     }
 
     /**
@@ -116,7 +114,7 @@ public abstract class FilePath
      */
     public static FilePath getResourceFile(String path)
     {
-        return new ResourceFilePath(path);
+        return BackendIO.get().createResourceFilePath(path);
     }
 
     /**
@@ -194,31 +192,7 @@ public abstract class FilePath
      * @throws IOException      If an I/O error occurs.
      * @throws SilenceException If either this or the destination are directories, or if this path doesn't exist.
      */
-    public void copyTo(FilePath path) throws IOException
-    {
-        boolean thisIsDirectory = this.isDirectory();
-        boolean pathIsDirectory = path.isDirectory();
-
-        if (thisIsDirectory && !pathIsDirectory)
-            throw new SilenceException("Cannot copy a directory into a file.");
-
-        if (!thisIsDirectory && pathIsDirectory)
-            throw new SilenceException("Cannot copy a file into a directory.");
-
-        if (!exists())
-            throw new SilenceException("Cannot copy a non existing file.");
-
-        byte[] buffer = new byte[1024];
-        int length;
-
-        try (InputStream inputStream = getInputStream(); OutputStream outputStream = path.getOutputStream())
-        {
-            while ((length = inputStream.read(buffer)) > 0)
-            {
-                outputStream.write(buffer, 0, length);
-            }
-        }
-    }
+    public abstract void copyTo(FilePath path) throws IOException;
 
     /**
      * Moves this path to another path, overwriting the destination if something exists there already.
@@ -247,8 +221,8 @@ public abstract class FilePath
         for (int i = 1; i < parts.length - 1; i++)
             path += SEPARATOR + parts[i] + SEPARATOR;
 
-        return type == Type.RESOURCE ? new ResourceFilePath(path + SEPARATOR)
-                                     : new ExternalFilePath(path + SEPARATOR);
+        return type == Type.RESOURCE ? BackendIO.get().createResourceFilePath(path + SEPARATOR)
+                                     : BackendIO.get().createExternalFilePath(path + SEPARATOR);
     }
 
     /**
@@ -283,8 +257,8 @@ public abstract class FilePath
         if (!exists())
             throw new SilenceException("Cannot get a child for a non existing directory.");
 
-        return type == Type.RESOURCE ? new ResourceFilePath(this.path + SEPARATOR + path)
-                                     : new ExternalFilePath(this.path + SEPARATOR + path);
+        return type == Type.RESOURCE ? BackendIO.get().createResourceFilePath(this.path + SEPARATOR + path)
+                                     : BackendIO.get().createExternalFilePath(this.path + SEPARATOR + path);
     }
 
     /**
