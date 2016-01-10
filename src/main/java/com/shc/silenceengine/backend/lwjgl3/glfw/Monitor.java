@@ -238,11 +238,11 @@ public class Monitor
         if (gammaRamp.address() == 0)
             return null;
 
-        int byteBufferSize = gammaRamp.size() * Short.BYTES;
+        int shortBufferSize = gammaRamp.size();
 
-        ShortBuffer rBuffer = gammaRamp.red(byteBufferSize);
-        ShortBuffer gBuffer = gammaRamp.green(byteBufferSize);
-        ShortBuffer bBuffer = gammaRamp.blue(byteBufferSize);
+        ShortBuffer rBuffer = gammaRamp.red(shortBufferSize);
+        ShortBuffer gBuffer = gammaRamp.green(shortBufferSize);
+        ShortBuffer bBuffer = gammaRamp.blue(shortBufferSize);
 
         short[] red = new short[gammaRamp.size()];
         short[] green = new short[gammaRamp.size()];
