@@ -247,7 +247,7 @@ public class Lwjgl3ResourceFilePath extends FilePath
             throw new SilenceException("Error, resource doesn't exist.");
 
         String jarUrl = url.toString();
-        String jarPath = URLDecoder.decode(jarUrl.substring(jarUrl.indexOf('/') + 1, jarUrl.indexOf('!')), "UTF-8");
+        String jarPath = URLDecoder.decode(jarUrl.substring(jarUrl.indexOf('/'), jarUrl.indexOf('!')), "UTF-8");
 
         // Now get the JarEntry for this path
         JarFile jarFile = new JarFile(new File(jarPath));
