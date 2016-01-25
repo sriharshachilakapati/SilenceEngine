@@ -28,6 +28,7 @@ import com.shc.silenceengine.backend.lwjgl3.Lwjgl3Starter;
 import com.shc.silenceengine.backend.lwjgl3.glfw.GLFW3;
 import com.shc.silenceengine.core.gameloops.FixedCatchingUpGameLoop;
 import com.shc.silenceengine.graphics.Batcher;
+import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.utils.Logger;
 import org.lwjgl.Version;
 import org.lwjgl.system.Configuration;
@@ -69,6 +70,8 @@ public class Game implements IUpdatable
 {
     private GameState gameState;
     private GameLoop  gameLoop;
+
+    protected Vector2 defaultResolution = new Vector2(800, 600);
 
     // The game instance
     private static Game instance;
@@ -261,7 +264,7 @@ public class Game implements IUpdatable
             throw new SilenceException("Error initializing GLFW. Your system is unsupported.");
 
         // Default Display properties
-        Display.setSize(800, 600);
+        Display.setSize((int)defaultResolution.getX(), (int)defaultResolution.getY());
         Display.centerOnScreen();
 
         // The preInit() method, called before anything else is loaded
