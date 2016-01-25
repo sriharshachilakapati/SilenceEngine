@@ -71,7 +71,7 @@ public class Game implements IUpdatable
     private GameState gameState;
     private GameLoop  gameLoop;
 
-    private Vector2 defaultResolution = new Vector2(800, 600);
+    protected Vector2 defaultResolution = new Vector2(800, 600);
 
     // The game instance
     private static Game instance;
