@@ -24,8 +24,8 @@
 
 package com.shc.silenceengine.backend.lwjgl3;
 
-import com.shc.silenceengine.backend.lwjgl3.io.Lwjgl3IO;
-import com.shc.silenceengine.io.BackendIO;
+import com.shc.silenceengine.backend.lwjgl3.io.Lwjgl3IODevice;
+import com.shc.silenceengine.io.IODevice;
 import com.shc.silenceengine.backend.lwjgl3.utils.Lwjgl3NativesLoader;
 
 /**
@@ -35,7 +35,7 @@ public class Lwjgl3Starter
 {
     public static void start()
     {
-        BackendIO.set(new Lwjgl3IO());
+        IODevice.set(new Lwjgl3IODevice());
 
         Lwjgl3NativesLoader.loadLWJGL();
     }

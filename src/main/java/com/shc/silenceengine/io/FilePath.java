@@ -99,7 +99,7 @@ public abstract class FilePath
      */
     public static FilePath getExternalFile(String path)
     {
-        return BackendIO.get().createExternalFilePath(path);
+        return IODevice.get().createExternalFilePath(path);
     }
 
     /**
@@ -114,7 +114,7 @@ public abstract class FilePath
      */
     public static FilePath getResourceFile(String path)
     {
-        return BackendIO.get().createResourceFilePath(path);
+        return IODevice.get().createResourceFilePath(path);
     }
 
     /**
@@ -221,8 +221,8 @@ public abstract class FilePath
         for (int i = 1; i < parts.length - 1; i++)
             path += SEPARATOR + parts[i] + SEPARATOR;
 
-        return type == Type.RESOURCE ? BackendIO.get().createResourceFilePath(path + SEPARATOR)
-                                     : BackendIO.get().createExternalFilePath(path + SEPARATOR);
+        return type == Type.RESOURCE ? IODevice.get().createResourceFilePath(path + SEPARATOR)
+                                     : IODevice.get().createExternalFilePath(path + SEPARATOR);
     }
 
     /**
@@ -257,8 +257,8 @@ public abstract class FilePath
         if (!exists())
             throw new SilenceException("Cannot get a child for a non existing directory.");
 
-        return type == Type.RESOURCE ? BackendIO.get().createResourceFilePath(this.path + SEPARATOR + path)
-                                     : BackendIO.get().createExternalFilePath(this.path + SEPARATOR + path);
+        return type == Type.RESOURCE ? IODevice.get().createResourceFilePath(this.path + SEPARATOR + path)
+                                     : IODevice.get().createExternalFilePath(this.path + SEPARATOR + path);
     }
 
     /**

@@ -24,14 +24,14 @@
 
 package com.shc.silenceengine.backend.lwjgl3.io;
 
-import com.shc.silenceengine.io.BackendIO;
+import com.shc.silenceengine.io.IODevice;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.FilePath;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Lwjgl3IO extends BackendIO
+public class Lwjgl3IODevice extends IODevice
 {
     @Override
     public DirectBuffer create(int sizeInBytes)

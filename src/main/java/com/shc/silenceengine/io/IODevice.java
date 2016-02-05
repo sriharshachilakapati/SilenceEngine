@@ -27,16 +27,16 @@ package com.shc.silenceengine.io;
 /**
  * @author Sri Harsha Chilakapati
  */
-public abstract class BackendIO
+public abstract class IODevice
 {
-    private static BackendIO BACKEND;
+    private static IODevice BACKEND;
 
-    public static void set(BackendIO backend)
+    public static void set(IODevice backend)
     {
         BACKEND = backend;
     }
 
-    public static BackendIO get()
+    public static IODevice get()
     {
         return BACKEND;
     }

@@ -40,12 +40,12 @@ public abstract class DirectBuffer
 
     public static DirectBuffer create(int sizeInBytes)
     {
-        return BackendIO.get().create(sizeInBytes);
+        return IODevice.get().create(sizeInBytes);
     }
 
     public static void free(DirectBuffer buffer)
     {
-        BackendIO.get().free(buffer);
+        IODevice.get().free(buffer);
     }
 
     public abstract DirectBuffer writeInt(int byteIndex, int value);
