@@ -27,6 +27,7 @@ package com.shc.silenceengine.backend.lwjgl3.utils;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.FilePath;
+import org.lwjgl.system.Configuration;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -75,6 +76,11 @@ public class Lwjgl3NativesLoader
             switch (SilenceEngine.getPlatform())
             {
                 case WINDOWS_32:
+                    Configuration.LIBRARY_NAME_GLFW.set("glfw32");
+                    Configuration.LIBRARY_NAME_LWJGL.set("lwjgl32");
+                    Configuration.LIBRARY_NAME_OPENAL.set("OpenAL32");
+                    Configuration.LIBRARY_NAME_JEMALLOC.set("jemalloc32");
+
                     loadLibrary("glfw32.dll");
                     loadLibrary("lwjgl32.dll");
                     loadLibrary("OpenAL32.dll");
@@ -82,6 +88,11 @@ public class Lwjgl3NativesLoader
                     break;
 
                 case WINDOWS_64:
+                    Configuration.LIBRARY_NAME_GLFW.set("glfw");
+                    Configuration.LIBRARY_NAME_LWJGL.set("lwjgl");
+                    Configuration.LIBRARY_NAME_OPENAL.set("OpenAL");
+                    Configuration.LIBRARY_NAME_JEMALLOC.set("jemalloc");
+
                     loadLibrary("glfw.dll");
                     loadLibrary("lwjgl.dll");
                     loadLibrary("OpenAL.dll");
@@ -89,6 +100,11 @@ public class Lwjgl3NativesLoader
                     break;
 
                 case MACOSX:
+                    Configuration.LIBRARY_NAME_GLFW.set("libglfw");
+                    Configuration.LIBRARY_NAME_LWJGL.set("liblwjgl");
+                    Configuration.LIBRARY_NAME_OPENAL.set("libopenal");
+                    Configuration.LIBRARY_NAME_JEMALLOC.set("libjemalloc");
+
                     loadLibrary("libglfw.dylib");
                     loadLibrary("liblwjgl.dylib");
                     loadLibrary("libopenal.dylib");
@@ -96,6 +112,11 @@ public class Lwjgl3NativesLoader
                     break;
 
                 case LINUX_32:
+                    Configuration.LIBRARY_NAME_GLFW.set("libglfw32");
+                    Configuration.LIBRARY_NAME_LWJGL.set("liblwjgl32");
+                    Configuration.LIBRARY_NAME_OPENAL.set("libopenal32");
+                    Configuration.LIBRARY_NAME_JEMALLOC.set("libjemalloc32");
+
                     loadLibrary("libglfw32.so");
                     loadLibrary("liblwjgl32.so");
                     loadLibrary("libopenal32.so");
@@ -103,6 +124,11 @@ public class Lwjgl3NativesLoader
                     break;
 
                 case LINUX_64:
+                    Configuration.LIBRARY_NAME_GLFW.set("libglfw");
+                    Configuration.LIBRARY_NAME_LWJGL.set("liblwjgl");
+                    Configuration.LIBRARY_NAME_OPENAL.set("libopenal");
+                    Configuration.LIBRARY_NAME_JEMALLOC.set("libjemalloc");
+
                     loadLibrary("libglfw.so");
                     loadLibrary("liblwjgl.so");
                     loadLibrary("libopenal.so");
