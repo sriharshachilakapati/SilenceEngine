@@ -27,6 +27,7 @@ package com.shc.silenceengine.backend.lwjgl3.io;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.Logger;
+import com.shc.silenceengine.core.SilenceEngine;
 
 import java.io.File;
 import java.io.IOException;
@@ -235,7 +236,12 @@ public class Lwjgl3ResourceFilePath extends FilePath
 
         String urlString = url.toString();
 
-        return URLDecoder.decode(urlString.substring(urlString.indexOf('/') + 1), "UTF-8");
+        SilenceEngine.Platform platform = SilenceEngine.getPlatform();
+
+        if (platform == SilenceEngine.Platform.WINDOWS_32 || platform == SilenceEngine.Platform.WINDOWS_64)
+            return URLDecoder.decode(urlString.substring(urlString.indexOf('/') + 1), "UTF-8");
+        else
+            return "/" + URLDecoder.decode(urlString.substring(urlString.indexOf('/') + 1), "UTF-8");
     }
 
     private List<JarEntry> getJarEntries() throws IOException
