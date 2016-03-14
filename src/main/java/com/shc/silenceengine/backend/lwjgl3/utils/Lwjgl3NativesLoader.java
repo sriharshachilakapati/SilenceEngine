@@ -112,10 +112,10 @@ public class Lwjgl3NativesLoader
                     break;
 
                 case LINUX_32:
-                    Configuration.LIBRARY_NAME_GLFW.set("libglfw32");
-                    Configuration.LIBRARY_NAME_LWJGL.set("liblwjgl32");
-                    Configuration.LIBRARY_NAME_OPENAL.set("libopenal32");
-                    Configuration.LIBRARY_NAME_JEMALLOC.set("libjemalloc32");
+                    Configuration.LIBRARY_NAME_GLFW.set("glfw32");
+                    Configuration.LIBRARY_NAME_LWJGL.set("lwjgl32");
+                    Configuration.LIBRARY_NAME_OPENAL.set("openal32");
+                    Configuration.LIBRARY_NAME_JEMALLOC.set("jemalloc32");
 
                     loadLibrary("libglfw32.so");
                     loadLibrary("liblwjgl32.so");
@@ -124,10 +124,10 @@ public class Lwjgl3NativesLoader
                     break;
 
                 case LINUX_64:
-                    Configuration.LIBRARY_NAME_GLFW.set("libglfw");
-                    Configuration.LIBRARY_NAME_LWJGL.set("liblwjgl");
-                    Configuration.LIBRARY_NAME_OPENAL.set("libopenal");
-                    Configuration.LIBRARY_NAME_JEMALLOC.set("libjemalloc");
+                    Configuration.LIBRARY_NAME_GLFW.set("glfw");
+                    Configuration.LIBRARY_NAME_LWJGL.set("lwjgl");
+                    Configuration.LIBRARY_NAME_OPENAL.set("openal");
+                    Configuration.LIBRARY_NAME_JEMALLOC.set("jemalloc");
 
                     loadLibrary("libglfw.so");
                     loadLibrary("liblwjgl.so");
