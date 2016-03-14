@@ -1,0 +1,54 @@
+apply plugin: 'java'
+apply plugin: 'gwt'
+apply plugin: 'jetty'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+gwt {
+    minHeapSize = "512M";
+    maxHeapSize = "1024M";
+
+    gwtVersion = '2.8.0-beta1'
+    modules 'com.shc.silenceengine.tests.GwtTests'
+    devModules 'com.shc.silenceengine.tests.GwtTests'
+}
+
+javadoc {
+    options.addStringOption("sourcepath", "")
+}
+
+dependencies {
+    providedCompile 'com.google.gwt:gwt-user:2.8.0-beta1'
+    providedCompile 'com.google.gwt:gwt-servlet:2.8.0-beta1'
+
+    providedCompile project(":silenceengine")
+    providedCompile project(":backend-gwt")
+    providedCompile project(":tests")
+}
+
+task run(type: JettyRunWar) {
+    dependsOn war
+    webApp=war.archivePath
+    daemon=true
+}
+
+task superDev(type: de.richsource.gradle.plugins.gwt.GwtSuperDev) {
+    dependsOn run
+    doFirst {
+    	gwt.modules = gwt.devModules
+    }
+}
+
+war {
+    from sourceSets.main.resources
+}
+
+task addSource << {
+	sourceSets.main.compileClasspath += files(project(':silenceengine').sourceSets.main.allSource)
+    sourceSets.main.compileClasspath += files(project(':backend-gwt').sourceSets.main.allSource)
+    sourceSets.main.compileClasspath += files(project(':tests').sourceSets.main.allSource)
+}
+
+tasks.compileGwt.dependsOn(addSource)
+tasks.draftCompileGwt.dependsOn(addSource)

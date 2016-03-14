@@ -1,1 +1,1 @@
-rootProject.name = 'SilenceEngine'
+include 'silenceengine', 'backend-lwjgl', 'backend-gwt', 'tests', 'tests-lwjgl', 'tests-gwt'

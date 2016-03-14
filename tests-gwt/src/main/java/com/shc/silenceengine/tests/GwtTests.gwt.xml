@@ -1,0 +1,16 @@
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0//EN"
+        "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
+<module rename-to='testsgwt'>
+
+    <inherits name='com.google.gwt.user.User'/>
+    <inherits name='com.shc.SilenceEngine'/>
+    <inherits name='com.shc.silenceengine.backend.GwtBackend'/>
+    <inherits name='com.shc.silenceengine.Tests'/>
+
+    <entry-point class='com.shc.silenceengine.tests.gwt.TestLauncher'/>
+
+    <inherits name='com.google.gwt.user.theme.dark.Dark'/>
+
+    <source path='gwt'/>
+
+</module>

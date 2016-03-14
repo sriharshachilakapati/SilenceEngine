@@ -1,41 +1,42 @@
-apply plugin: 'java'
-apply plugin: 'eclipse'
+buildscript {
+    repositories {
+        jcenter()
+    }
 
-// Source sets in the project, specify source directories
-sourceSets {
-    main {
-        java.srcDir("${projectDir}/src/main/java/")
-        resources.srcDir("${projectDir}/src/main/java/")
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
     }
 }
 
-// Dependencies for the project are stored in the libs directory
-dependencies {
-    compile fileTree(dir: "libs", includes: ["*.jar"])
-    runtime fileTree(dir: "libs", includes: ["*.jar"])
+allprojects {
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+    apply plugin: 'maven'
+    apply plugin: 'java'
 
-    // Using this because the resources are in source code
-    runtime fileTree(dir: "${projectDir}/src/main/java/", includes: ["*"])
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    }
 }
 
-// Exclude the tests from JavaDoc
-javadoc {
-    exclude("com/shc/silenceengine/tests/**")
-
-    // Add MathJax to the header, so that we can render math inside documentation.
-    javadoc.options.header = '<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>'
+project(":backend-gwt") {
+    dependencies {
+        compile project(":silenceengine")
+        compile 'com.goharsha:webgl4j:0.2.8'
+        compile 'com.google.gwt:gwt-user:2.7.0'
+    }
 }
 
-// Control what goes into the JAR
-jar {
-    // Include all the classes except the tests
-    include("com/shc/silenceengine/**")
-    exclude("com/shc/silenceengine/tests/**")
+project(":backend-lwjgl") {
+    project.ext.lwjglVersion = "3.0.0-SNAPSHOT"
 
-    // Only include the logo and the shader sources
-    include("resources/**.frag")
-    include("resources/**.vert")
-    include("resources/**.glsl")
-    include("resources/logo.png")
-    include("resources/logo_dark.png")
+    dependencies {
+        compile project(":silenceengine")
+        compile "org.lwjgl:lwjgl:${lwjglVersion}"
+        compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-windows"
+        compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-linux"
+        compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
+    }
 }

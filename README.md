@@ -1,6 +1,6 @@
 ![logo](http://silenceengine.goharsha.com/img/logo_wide.png)
 
-##What is SilenceEngine?
+## What is SilenceEngine?
 
 SilenceEngine is a 2D/3D game engine that takes care of low level aspects of game development like graphics, input handling, asset loading and collision detection for you, meaning you only need to make your game. It lets you focus on the game play and game design, by doing most of the hard work for you.
 
@@ -34,18 +34,18 @@ The main feature of SilenceEngine is it's simplicity, and it greatly reduces the
 
 The above list is only half what SilenceEngine offers to you. It is currently in heavy development, and more features are yet to arrive. In the meanwhile, take a look at the source code, and the example games to get an idea of how to use this engine.
 
-##Is it only for games?
+## Is it only for games?
 
 Perhaps not, you can create any form of OpenGL application using SilenceEngine. It provides you with OpenGL classes in the `com.shc.silenceengine.graphics.opengl` package, which cleanly wraps the OpenGL functions into Java classes, making them more easy to use. All you have to take care of is that you must call the `dispose()` on those objects when you no longer need them.
 
 It is also easier to use in development mode as we will check for OpenGL errors after every call to the OpenGL functions and report you the errors, if any exist, in the form of `GLException` allowing you to get rid of the errors quickly and easily. By the way, everything in SilenceEngine is modern, and there is no deprecated stuff. I'm proud to say that this engine only uses OpenGL 3.3 (no deprecated OpenGL).
 
-##Licence
+## Licence
 
  - This is licenced under MIT licence, which you can find [here](http://choosealicense.com/licenses/mit/).
  - This game engine is written on top of [LWJGL 3](http://lwjgl.org). You can find it's licence [here](https://github.com/LWJGL/lwjgl3/blob/master/doc/LICENSE.txt).
 
-##Links
+## Links
 
  - SilenceEngine website ([http://silenceengine.goharsha.com/](http://silenceengine.goharsha.com))
  - SilenceEngine forum ([http://silenceengine.goharsha.com/forum/](http://silenceengine.goharsha.com/forum/))
