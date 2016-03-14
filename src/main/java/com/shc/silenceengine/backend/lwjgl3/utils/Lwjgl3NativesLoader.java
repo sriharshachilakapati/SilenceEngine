@@ -100,10 +100,10 @@ public class Lwjgl3NativesLoader
                     break;
 
                 case MACOSX:
-                    Configuration.LIBRARY_NAME_GLFW.set("libglfw");
-                    Configuration.LIBRARY_NAME_LWJGL.set("liblwjgl");
-                    Configuration.LIBRARY_NAME_OPENAL.set("libopenal");
-                    Configuration.LIBRARY_NAME_JEMALLOC.set("libjemalloc");
+                    Configuration.LIBRARY_NAME_GLFW.set("glfw");
+                    Configuration.LIBRARY_NAME_LWJGL.set("lwjgl");
+                    Configuration.LIBRARY_NAME_OPENAL.set("openal");
+                    Configuration.LIBRARY_NAME_JEMALLOC.set("jemalloc");
 
                     loadLibrary("libglfw.dylib");
                     loadLibrary("liblwjgl.dylib");
