@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2016 Sri Harsha Chilakapati
+ * Copyright (c) 2014-2015 Sri Harsha Chilakapati
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,22 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.tests.gwt;
+package com.shc.silenceengine.io;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.shc.silenceengine.backend.gwt.GwtRuntime;
-
-public class TestLauncher implements EntryPoint
+/**
+ * @author Sri Harsha Chilakapati
+ */
+public final class PrimitiveSize
 {
-    @Override
-    public void onModuleLoad()
+    public static final int BYTE   = 1;
+    public static final int INT    = Integer.SIZE / Byte.SIZE;
+    public static final int CHAR   = Character.SIZE / Byte.SIZE;
+    public static final int FLOAT  = Float.SIZE / Byte.SIZE;
+    public static final int DOUBLE = Double.SIZE / Byte.SIZE;
+    public static final int LONG   = Long.SIZE / Byte.SIZE;
+    public static final int SHORT  = Short.SIZE / Byte.SIZE;
+
+    private PrimitiveSize()
     {
-        GwtRuntime.start();
     }
 }

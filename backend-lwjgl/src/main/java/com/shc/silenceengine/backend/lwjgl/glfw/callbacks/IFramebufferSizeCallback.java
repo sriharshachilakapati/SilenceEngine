@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2016 Sri Harsha Chilakapati
+ * Copyright (c) 2014-2015 Sri Harsha Chilakapati
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,27 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.tests.gwt;
+package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.shc.silenceengine.backend.gwt.GwtRuntime;
+import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 
-public class TestLauncher implements EntryPoint
+/**
+ * Functional Interface describing the signature of the <code>GLFWframebuffersizefun</code> in Java 8 environment. To
+ * set a frame buffer size callback on a window, use the function <code>setFramebufferSizeCallback()</code> on a
+ * <code>Window</code> object.
+ *
+ * @author Sri Harsha Chilakapati
+ */
+@FunctionalInterface
+public interface IFramebufferSizeCallback
 {
-    @Override
-    public void onModuleLoad()
-    {
-        GwtRuntime.start();
-    }
+    /**
+     * The signature of the <code>GLFWframebuffersizefun</code> method. This method is invoked by GLFW to notify you
+     * that the size of the window framebuffer is changed.
+     *
+     * @param window The Window that received the event.
+     * @param width  The new width, in pixels, of the framebuffer.
+     * @param height The new height, in pixels, of the framebuffer.
+     */
+    void invoke(Window window, int width, int height);
 }

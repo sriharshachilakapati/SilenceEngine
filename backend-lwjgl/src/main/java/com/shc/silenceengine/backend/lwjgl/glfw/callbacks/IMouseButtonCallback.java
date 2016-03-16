@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2016 Sri Harsha Chilakapati
+ * Copyright (c) 2014-2015 Sri Harsha Chilakapati
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,27 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.tests.gwt;
+package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.shc.silenceengine.backend.gwt.GwtRuntime;
+import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 
-public class TestLauncher implements EntryPoint
+/**
+ * Functional Interface describing the signature of the <code>GLFWmousebuttonfun</code> in Java 8 environment. To set a
+ * mouse button callback on a window, use the function <code>setMouseButtonCallback()</code> on a <code>Window</code>
+ * object.
+ *
+ * @author Sri Harsha Chilakapati
+ */
+public interface IMouseButtonCallback
 {
-    @Override
-    public void onModuleLoad()
-    {
-        GwtRuntime.start();
-    }
+    /**
+     * The signature of the <code>GLFWmousebuttonfun</code> method. This method is invoked by GLFW to notify you
+     * whenever a mouse button input has occurred.
+     *
+     * @param window The Window that received the event.
+     * @param button The code of the mouse button that was used.
+     * @param action <code>GLFW_PRESS, GLFW_RELEASE</code> or <code>GLFW_REPEAT</code>.
+     * @param mods   Bit field describing which modifier keys were held down.
+     */
+    void invoke(Window window, int button, int action, int mods);
 }

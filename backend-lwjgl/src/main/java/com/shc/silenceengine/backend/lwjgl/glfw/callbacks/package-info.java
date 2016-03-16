@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2016 Sri Harsha Chilakapati
+ * Copyright (c) 2014-2015 Sri Harsha Chilakapati
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,13 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.tests.gwt;
-
-import com.google.gwt.core.client.EntryPoint;
-import com.shc.silenceengine.backend.gwt.GwtRuntime;
-
-public class TestLauncher implements EntryPoint
-{
-    @Override
-    public void onModuleLoad()
-    {
-        GwtRuntime.start();
-    }
-}
+/**
+ * This package contains the functional interfaces for the GLFW function callback types. These interfaces are present
+ * here because the LWJGL's callback interfaces confuse the newbies with their usage of <code>long</code> for all
+ * pointer types. These callbacks use the Java classes that wrap the GLFW types instead of using the primitive
+ * <code>long</code> for all the pointers. The conversion happens from the LWJGL's interfaces happen internally to the
+ * GLFW classes.
+ *
+ * @author Sri Harsha Chilakapati
+ */
+package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;

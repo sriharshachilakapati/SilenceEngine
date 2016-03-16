@@ -21,11 +21,17 @@ allprojects {
     }
 }
 
+project(":silenceengine") {
+    dependencies {
+        compile 'com.google.gwt:gwt-user:2.8.0-beta1'
+    }
+}
+
 project(":backend-gwt") {
     dependencies {
         compile project(":silenceengine")
         compile 'com.goharsha:webgl4j:0.2.8'
-        compile 'com.google.gwt:gwt-user:2.7.0'
+        compile 'com.google.gwt:gwt-user:2.8.0-beta1'
     }
 }
 

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2016 Sri Harsha Chilakapati
+ * Copyright (c) 2014-2015 Sri Harsha Chilakapati
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,12 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.tests.gwt;
+package com.shc.silenceengine.core;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.shc.silenceengine.backend.gwt.GwtRuntime;
-
-public class TestLauncher implements EntryPoint
+/**
+ * @author Sri Harsha Chilakapati
+ */
+public interface IResource
 {
-    @Override
-    public void onModuleLoad()
-    {
-        GwtRuntime.start();
-    }
+    void dispose();
 }

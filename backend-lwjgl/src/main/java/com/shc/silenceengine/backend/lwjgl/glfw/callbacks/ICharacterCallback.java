@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2016 Sri Harsha Chilakapati
+ * Copyright (c) 2014-2015 Sri Harsha Chilakapati
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,26 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.tests.gwt;
+package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.shc.silenceengine.backend.gwt.GwtRuntime;
+import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 
-public class TestLauncher implements EntryPoint
+/**
+ * Functional Interface describing the signature of the <code>GLFWcharfun</code> in Java 8 environment. To set a
+ * character callback on a window, use the function <code>setCharacterCallback()</code> on a <code>Window</code>
+ * object.
+ *
+ * @author Sri Harsha Chilakapati
+ */
+@FunctionalInterface
+public interface ICharacterCallback
 {
-    @Override
-    public void onModuleLoad()
-    {
-        GwtRuntime.start();
-    }
+    /**
+     * The signature of the <code>GLFWcharfun</code> method. This method is invoked by GLFW to notify the character
+     * input event.
+     *
+     * @param window    The Window that received the event.
+     * @param codePoint The Unicode code point of the character.
+     */
+    void invoke(Window window, int codePoint);
 }

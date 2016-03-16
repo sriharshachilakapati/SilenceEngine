@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2016 Sri Harsha Chilakapati
+ * Copyright (c) 2014-2015 Sri Harsha Chilakapati
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,11 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.tests.gwt;
-
-import com.google.gwt.core.client.EntryPoint;
-import com.shc.silenceengine.backend.gwt.GwtRuntime;
-
-public class TestLauncher implements EntryPoint
-{
-    @Override
-    public void onModuleLoad()
-    {
-        GwtRuntime.start();
-    }
-}
+/**
+ * This package consists the object oriented wrapper classes that wrap the GLFW functions. This makes it very easy to
+ * use GLFW windows in your game. The {@link com.shc.silenceengine.backend.lwjgl.LwjglDisplayDevice} class is also
+ * based on the {@link com.shc.silenceengine.backend.lwjgl.glfw.Window} class defined in this package.
+ *
+ * @author Sri Harsha Chilakapati
+ */
+package com.shc.silenceengine.backend.lwjgl.glfw;

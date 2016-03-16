@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2016 Sri Harsha Chilakapati
+ * Copyright (c) 2014-2015 Sri Harsha Chilakapati
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,24 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.tests.gwt;
+package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.shc.silenceengine.backend.gwt.GwtRuntime;
+import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 
-public class TestLauncher implements EntryPoint
+/**
+ * Functional Interface describing the signature of the <code>GLFWwindowclosefun</code> in Java 8 environment. To set a
+ * close callback on a window, use the function <code>setCloseCallback()</code> on a <code>Window</code> object.
+ *
+ * @author Sri Harsha Chilakapati
+ */
+@FunctionalInterface
+public interface IWindowCloseCallback
 {
-    @Override
-    public void onModuleLoad()
-    {
-        GwtRuntime.start();
-    }
+    /**
+     * The signature of the <code>GLFWwindowclosefun</code> method. This method is invoked by GLFW to notify you when
+     * the user clicked on the window close button.
+     *
+     * @param window The Window that received the event.
+     */
+    void invoke(Window window);
 }

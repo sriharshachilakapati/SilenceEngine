@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2016 Sri Harsha Chilakapati
+ * Copyright (c) 2014-2015 Sri Harsha Chilakapati
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,35 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.tests.gwt;
+package com.shc.silenceengine.graphics.opengl;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.shc.silenceengine.backend.gwt.GwtRuntime;
+import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
-public class TestLauncher implements EntryPoint
+/**
+ * Primitives are used for rendering VertexArrays or other objects to the screen. The most common is TRIANGLES. For more
+ * information read <a href="https://github.com/sriharshachilakapati/SilenceEngine/wiki/Working-with-the-Batcher#the-primitive">here</a>.
+ *
+ * @author Sri Harsha Chilakapati
+ */
+public enum Primitive
 {
-    @Override
-    public void onModuleLoad()
+    POINTS(GL_POINTS),
+    LINES(GL_LINES),
+    LINE_LOOP(GL_LINE_LOOP),
+    LINE_STRIP(GL_LINE_STRIP),
+    TRIANGLES(GL_TRIANGLES),
+    TRIANGLE_FAN(GL_TRIANGLE_FAN),
+    TRIANGLE_STRIP(GL_TRIANGLE_STRIP);
+
+    private int glPrimitive;
+
+    Primitive(int glPrimitive)
     {
-        GwtRuntime.start();
+        this.glPrimitive = glPrimitive;
+    }
+
+    public int getGlPrimitive()
+    {
+        return glPrimitive;
     }
 }
