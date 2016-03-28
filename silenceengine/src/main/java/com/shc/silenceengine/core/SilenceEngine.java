@@ -29,4 +29,15 @@ public final class SilenceEngine
      * The {@link IODevice} that handles IO operations.
      */
     public static IODevice io;
+
+    public enum Platform
+    {
+        WINDOWS_32,
+        WINDOWS_64,
+        LINUX_32,
+        LINUX_64,
+        MACOSX,
+        HTML5,
+        UNKNOWN
+    }
 }

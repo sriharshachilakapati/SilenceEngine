@@ -13,6 +13,15 @@ import com.shc.silenceengine.io.FilePath;
 public interface IDisplayDevice
 {
     /**
+     * Returns the platform that the display device is opened on.
+     *
+     * @return The platform enum value for the running platform.
+     */
+    @PlatformDesktop
+    @PlatformHTML5
+    SilenceEngine.Platform getPlatform();
+
+    /**
      * Changes the size of the display on the screen.
      *
      * @param width  The new width.

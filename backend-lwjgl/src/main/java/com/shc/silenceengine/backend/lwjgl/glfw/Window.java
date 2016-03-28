@@ -25,6 +25,8 @@
 package com.shc.silenceengine.backend.lwjgl.glfw;
 
 import com.shc.silenceengine.backend.lwjgl.glfw.callbacks.*;
+import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector4;
 import org.lwjgl.BufferUtils;
@@ -32,12 +34,14 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
 
+import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 /**
@@ -759,6 +763,17 @@ public class Window
             GL.setCapabilities(windowCapabilities);
     }
 
+    public void setMonitor(Monitor monitor)
+    {
+        setMonitor(monitor, monitor.getVideoMode());
+    }
+
+    public void setMonitor(Monitor monitor, VideoMode videoMode)
+    {
+        this.monitor = monitor;
+        glfwSetWindowMonitor(handle, monitor.getHandle(), 0, 0, videoMode.getWidth(), videoMode.getHeight(), videoMode.getRefreshRate());
+    }
+
     /**
      * This method swaps the front and back buffers of the specified window. If the swap interval is greater than zero,
      * the GPU driver waits the specified number of screen updates before swapping the buffers.
@@ -776,6 +791,46 @@ public class Window
     public boolean shouldClose()
     {
         return glfwWindowShouldClose(handle) == 1;
+    }
+
+    public void maximize()
+    {
+        glfwMaximizeWindow(handle);
+    }
+
+    /**
+     * Sets the icon for the window.
+     *
+     * @param image The texture to be used as an icon.
+     */
+    public void setIcon(Texture image)
+    {
+        int width = (int) image.getWidth();
+        int height = (int) image.getHeight();
+
+        GLFWImage.Buffer glfwImages = GLFWImage.calloc(1);
+        GLFWImage glfwImage = glfwImages.get(0);
+        glfwImage.width(width);
+        glfwImage.height(height);
+
+        ByteBuffer data = BufferUtils.createByteBuffer(16 * width * height);
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+        glfwImage.pixels(data);
+
+        glfwSetWindowIcon(handle, glfwImages);
+
+        glfwImages.free();
+    }
+
+    /**
+     * Sets the icon for the window.
+     *
+     * @param image The image to be used as an icon.
+     */
+    public void setIcon(FilePath image)
+    {
+        // TODO: Implement this
     }
 
     /**

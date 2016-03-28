@@ -6,6 +6,7 @@ import com.google.gwt.dom.client.StyleElement;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.shc.silenceengine.core.IDisplayDevice;
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.webgl4j.client.WebGL10;
 import com.shc.webgl4j.client.WebGL20;
@@ -98,6 +99,12 @@ public class GwtDisplayDevice implements IDisplayDevice
 
         // Insert the CSS into head of the page
         Document.get().getHead().appendChild(style);
+    }
+
+    @Override
+    public SilenceEngine.Platform getPlatform()
+    {
+        return SilenceEngine.Platform.HTML5;
     }
 
     @Override
