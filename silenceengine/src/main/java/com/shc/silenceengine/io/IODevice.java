@@ -36,4 +36,8 @@ public interface IODevice
     FilePath createResourceFilePath(String path);
 
     FilePath createExternalFilePath(String path);
+
+    FileReader getFileReader();
+
+    ImageReader getImageReader();
 }

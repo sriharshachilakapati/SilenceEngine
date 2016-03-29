@@ -24,15 +24,20 @@
 
 package com.shc.silenceengine.backend.lwjgl;
 
-import com.shc.silenceengine.io.IODevice;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.io.FileReader;
+import com.shc.silenceengine.io.IODevice;
+import com.shc.silenceengine.io.ImageReader;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class LwjglIODevice implements IODevice
 {
+    private FileReader  fileReader  = new LwjglFileReader();
+    private ImageReader imageReader = new LwjglImageReader();
+
     @Override
     public DirectBuffer create(int sizeInBytes)
     {
@@ -55,5 +60,17 @@ public class LwjglIODevice implements IODevice
     public FilePath createExternalFilePath(String path)
     {
         return new LwjglExternalFilePath(path);
+    }
+
+    @Override
+    public FileReader getFileReader()
+    {
+        return fileReader;
+    }
+
+    @Override
+    public ImageReader getImageReader()
+    {
+        return imageReader;
     }
 }

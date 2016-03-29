@@ -14,6 +14,14 @@ public class GwtDirectBuffer extends DirectBuffer
     private ArrayBuffer buffer;
     private DataView    view;
 
+    public GwtDirectBuffer(ArrayBuffer data)
+    {
+        super(data.byteLength());
+
+        this.buffer = data;
+        view = DataViewNative.create(buffer);
+    }
+
     public GwtDirectBuffer(int sizeInBytes)
     {
         super(sizeInBytes);
