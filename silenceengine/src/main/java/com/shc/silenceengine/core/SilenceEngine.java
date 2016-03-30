@@ -34,7 +34,6 @@ public final class SilenceEngine
     {
         WINDOWS_32,
         WINDOWS_64,
-        LINUX_32,
         LINUX_64,
         MACOSX,
         HTML5,

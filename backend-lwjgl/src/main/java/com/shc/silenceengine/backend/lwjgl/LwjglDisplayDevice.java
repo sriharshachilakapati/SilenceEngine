@@ -47,7 +47,7 @@ public class LwjglDisplayDevice implements IDisplayDevice
             platform = Platform.UNKNOWN;
 
             if (isWindows) platform = is64Bit ? Platform.WINDOWS_64 : Platform.WINDOWS_32;
-            if (isLinux) platform = is64Bit ? Platform.LINUX_64 : Platform.LINUX_32;
+            if (isLinux) platform = is64Bit ? Platform.LINUX_64 : Platform.UNKNOWN;
             if (isMac) platform = Platform.MACOSX;
         }
 
@@ -115,6 +115,6 @@ public class LwjglDisplayDevice implements IDisplayDevice
     @Override
     public void setIcon(FilePath filePath)
     {
-        // TODO: Implement this feature
+        window.setIcon(filePath);
     }
 }

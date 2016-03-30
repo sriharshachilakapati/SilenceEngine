@@ -25,14 +25,12 @@
 package com.shc.silenceengine.backend.lwjgl.glfw;
 
 import com.shc.silenceengine.core.SilenceException;
-import com.shc.silenceengine.graphics.opengl.Texture;
-import org.lwjgl.BufferUtils;
+import com.shc.silenceengine.graphics.Image;
 import org.lwjgl.glfw.GLFWImage;
 
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 /**
@@ -46,14 +44,14 @@ public class Cursor
     private long handle;
 
     /**
-     * Constructs a cursor object using the pixels from an OpenGL Texture object and also the location of the pointer
-     * hot point in the image pixels retrieved from the OpenGL Texture.
+     * Constructs a cursor object using the pixels from an Image object and also the location of the pointer hot point
+     * in the image pixels retrieved from the OpenGL Texture.
      *
-     * @param image The OpenGL Texture object to retrieve the image data from.
+     * @param image The Image object to retrieve the image data from.
      * @param xHot  The x-coordinate of the cursor hotspot in pixels.
      * @param yHot  The y-coordinate of the cursor hotspot in pixels.
      */
-    public Cursor(Texture image, int xHot, int yHot)
+    public Cursor(Image image, int xHot, int yHot)
     {
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
@@ -62,9 +60,7 @@ public class Cursor
         glfWimage.width(width);
         glfWimage.height(height);
 
-        ByteBuffer data = BufferUtils.createByteBuffer(16 * width * height);
-        glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
+        ByteBuffer data = (ByteBuffer) image.getImageData().nativeBuffer();
         glfWimage.pixels(data);
 
         handle = glfwCreateCursor(glfWimage, xHot, yHot);
@@ -76,11 +72,11 @@ public class Cursor
     }
 
     /**
-     * Constructs a cursor object using the pixels from an OpenGL Texture object.
+     * Constructs a cursor object using the pixels from an Image object.
      *
-     * @param image The OpenGL Texture object to retrieve the image data from.
+     * @param image The Image object to retrieve the image data from.
      */
-    public Cursor(Texture image)
+    public Cursor(Image image)
     {
         this(image, 0, 0);
     }

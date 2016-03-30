@@ -4,8 +4,10 @@ import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.io.FileReader;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -13,7 +15,7 @@ import java.io.InputStream;
 public class LwjglFileReader extends FileReader
 {
     @Override
-    public void readFile(FilePath file, OnComplete onComplete)
+    public void readBinaryFile(FilePath file, OnComplete<DirectBuffer> onComplete)
     {
         new Thread(() ->
         {
@@ -44,6 +46,33 @@ public class LwjglFileReader extends FileReader
                     directBuffer.writeByte(i, bytes[i]);
 
                 onComplete.invoke(directBuffer);
+            }
+            catch (Exception e)
+            {
+                // TODO: ADD LOGGER
+//                SilenceException.reThrow(e);
+            }
+
+        }).start();
+    }
+
+    @Override
+    public void readTextFile(FilePath file, OnComplete<String> onComplete)
+    {
+        new Thread(() ->
+        {
+            try (
+                    InputStream inputStream = ((LwjglFilePath) file).getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))
+            )
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+
+                String line = null;
+                while ((line = bufferedReader.readLine()) != null)
+                    stringBuilder.append(line).append("\n");
+
+                onComplete.invoke(stringBuilder.toString());
             }
             catch (Exception e)
             {

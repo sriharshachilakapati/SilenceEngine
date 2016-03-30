@@ -25,7 +25,8 @@
 package com.shc.silenceengine.backend.lwjgl.glfw;
 
 import com.shc.silenceengine.backend.lwjgl.glfw.callbacks.*;
-import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.graphics.Image;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector4;
@@ -41,7 +42,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 /**
@@ -801,20 +801,19 @@ public class Window
     /**
      * Sets the icon for the window.
      *
-     * @param image The texture to be used as an icon.
+     * @param image The image to be used as an icon.
      */
-    public void setIcon(Texture image)
+    public void setIcon(Image image)
     {
-        int width = (int) image.getWidth();
-        int height = (int) image.getHeight();
+        int width = image.getWidth();
+        int height = image.getHeight();
 
         GLFWImage.Buffer glfwImages = GLFWImage.calloc(1);
         GLFWImage glfwImage = glfwImages.get(0);
         glfwImage.width(width);
         glfwImage.height(height);
 
-        ByteBuffer data = BufferUtils.createByteBuffer(16 * width * height);
-        glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        ByteBuffer data = (ByteBuffer) image.getImageData().nativeBuffer();
 
         glfwImage.pixels(data);
 
@@ -826,11 +825,11 @@ public class Window
     /**
      * Sets the icon for the window.
      *
-     * @param image The image to be used as an icon.
+     * @param imagePath The image to be used as an icon.
      */
-    public void setIcon(FilePath image)
+    public void setIcon(FilePath imagePath)
     {
-        // TODO: Implement this
+        SilenceEngine.io.getImageReader().readImage(imagePath, this::setIcon);
     }
 
     /**

@@ -6,10 +6,12 @@ package com.shc.silenceengine.io;
 public abstract class FileReader
 {
     @FunctionalInterface
-    public interface OnComplete
+    public interface OnComplete<T>
     {
-        void invoke(DirectBuffer data);
+        void invoke(T data);
     }
 
-    public abstract void readFile(FilePath file, OnComplete onComplete);
+    public abstract void readBinaryFile(FilePath file, OnComplete<DirectBuffer> onComplete);
+
+    public abstract void readTextFile(FilePath file, OnComplete<String> onComplete);
 }
