@@ -2,6 +2,7 @@ package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.graphics.IGraphicsDevice;
 import com.shc.silenceengine.io.IODevice;
+import com.shc.silenceengine.logging.ILogDevice;
 
 /**
  * The SilenceEngine class is the core of the entire engine, and contains all the devices for a platform that we are
@@ -29,6 +30,11 @@ public final class SilenceEngine
      * The {@link IODevice} that handles IO operations.
      */
     public static IODevice io;
+
+    /**
+     * The {@link ILogDevice} that handles logging.
+     */
+    public static ILogDevice log;
 
     public enum Platform
     {

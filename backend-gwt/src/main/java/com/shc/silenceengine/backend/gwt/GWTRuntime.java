@@ -16,6 +16,7 @@ public final class GwtRuntime
 
     public static void start()
     {
+        SilenceEngine.log = new GwtLogDevice();
         SilenceEngine.display = new GwtDisplayDevice();
         SilenceEngine.io = new GwtIODevice();
         SilenceEngine.graphics = new GwtGraphicsDevice();

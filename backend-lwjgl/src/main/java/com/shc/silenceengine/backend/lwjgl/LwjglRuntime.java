@@ -15,6 +15,7 @@ public final class LwjglRuntime
 
     public static void start()
     {
+        SilenceEngine.log = new LwjglLogDevice();
         SilenceEngine.io = new LwjglIODevice();
         SilenceEngine.display = new LwjglDisplayDevice();
         SilenceEngine.graphics = new LwjglGraphicsDevice();
