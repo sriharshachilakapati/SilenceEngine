@@ -19,7 +19,7 @@ import com.shc.webgl4j.client.WebGLContext;
  */
 public class GwtDisplayDevice implements IDisplayDevice
 {
-    private Canvas       canvas;
+    public  Canvas       canvas;
     private WebGLContext context;
 
     private String title;

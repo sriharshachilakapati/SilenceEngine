@@ -1,6 +1,7 @@
 package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.graphics.IGraphicsDevice;
+import com.shc.silenceengine.input.InputDevice;
 import com.shc.silenceengine.io.IODevice;
 import com.shc.silenceengine.logging.ILogDevice;
 
@@ -30,6 +31,11 @@ public final class SilenceEngine
      * The {@link IODevice} that handles IO operations.
      */
     public static IODevice io;
+
+    /**
+     * The {@link InputDevice} that handles game input.
+     */
+    public static InputDevice input;
 
     /**
      * The {@link ILogDevice} that handles logging.
