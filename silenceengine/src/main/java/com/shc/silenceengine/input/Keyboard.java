@@ -146,37 +146,38 @@ public final class Keyboard
      * Alphabet keys.
      */
     public static final int
-            KEY_A = 77,
-            KEY_B = 78,
-            KEY_C = 79,
-            KEY_D = 80,
-            KEY_E = 81,
-            KEY_F = 82,
-            KEY_G = 83,
-            KEY_H = 84,
-            KEY_I = 85,
-            KEY_J = 86,
-            KEY_K = 87,
-            KEY_L = 88,
-            KEY_M = 89,
-            KEY_N = 90,
-            KEY_O = 91,
-            KEY_P = 92,
-            KEY_Q = 93,
-            KEY_R = 94,
-            KEY_S = 95,
-            KEY_T = 96,
-            KEY_U = 97,
-            KEY_V = 98,
-            KEY_W = 99,
-            KEY_X = 100,
-            KEY_Y = 101,
-            KEY_Z = 102;
+            KEY_A     = 77,
+            KEY_B     = 78,
+            KEY_C     = 79,
+            KEY_D     = 80,
+            KEY_E     = 81,
+            KEY_F     = 82,
+            KEY_G     = 83,
+            KEY_H     = 84,
+            KEY_I     = 85,
+            KEY_J     = 86,
+            KEY_K     = 87,
+            KEY_L     = 88,
+            KEY_M     = 89,
+            KEY_N     = 90,
+            KEY_O     = 91,
+            KEY_P     = 92,
+            KEY_Q     = 93,
+            KEY_R     = 94,
+            KEY_S     = 95,
+            KEY_T     = 96,
+            KEY_U     = 97,
+            KEY_V     = 98,
+            KEY_W     = 99,
+            KEY_X     = 100,
+            KEY_Y     = 101,
+            KEY_Z     = 102,
+            KEY_SPACE = 103;
 
     /**
      * Total number of keys.
      */
-    public static final int NUM_KEYS  = 103;
+    public static final int NUM_KEYS  = 104;
     public static final int KEY_FIRST = 1;
     public static final int KEY_LAST  = NUM_KEYS - 1;
 

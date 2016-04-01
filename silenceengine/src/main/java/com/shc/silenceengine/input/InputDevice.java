@@ -20,4 +20,10 @@ public abstract class InputDevice
     {
         Mouse.eventButtonStates[button] = isDown;
     }
+
+    public void update()
+    {
+        Keyboard.update();
+        Mouse.update();
+    }
 }

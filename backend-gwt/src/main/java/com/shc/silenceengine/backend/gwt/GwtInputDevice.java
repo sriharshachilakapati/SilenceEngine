@@ -193,6 +193,7 @@ public class GwtInputDevice extends InputDevice
         keysMap.put(KeyCodes.KEY_X, Keyboard.KEY_X);
         keysMap.put(KeyCodes.KEY_Y, Keyboard.KEY_Y);
         keysMap.put(KeyCodes.KEY_Z, Keyboard.KEY_Z);
+        keysMap.put(KeyCodes.KEY_SPACE, Keyboard.KEY_SPACE);
 
         // Short circuit some keys
         keyShortCircuitMap.put(Keyboard.KEY_ENTER, Keyboard.KEY_KP_ENTER);

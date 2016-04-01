@@ -183,6 +183,7 @@ public class LwjglInputDevice extends InputDevice
         keyMap.put(GLFW_KEY_X, KEY_X);
         keyMap.put(GLFW_KEY_Y, KEY_Y);
         keyMap.put(GLFW_KEY_Z, KEY_Z);
+        keyMap.put(GLFW_KEY_SPACE, KEY_SPACE);
     }
 
     private int translateKeyCode(int nativeCode)
