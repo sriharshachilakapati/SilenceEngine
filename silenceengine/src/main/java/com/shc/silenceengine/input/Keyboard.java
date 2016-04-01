@@ -181,6 +181,8 @@ public final class Keyboard
     public static final int KEY_FIRST = 1;
     public static final int KEY_LAST  = NUM_KEYS - 1;
 
+    private static boolean isAnyKeyDown;
+
     private static ButtonState[] keyStates = new ButtonState[NUM_KEYS];
 
     static boolean[] eventKeyStates = new boolean[NUM_KEYS];
@@ -200,6 +202,8 @@ public final class Keyboard
 
     static void update()
     {
+        isAnyKeyDown = false;
+
         for (int i = KEY_FIRST; i <= KEY_LAST; i++)
         {
             if (keyStates[i] == ButtonState.PRESSED)
@@ -212,6 +216,9 @@ public final class Keyboard
             else
                 // Set the key state to released if the event state is false. Otherwise keep it intact.
                 keyStates[i] = eventKeyStates[i] ? keyStates[i] : ButtonState.RELEASED;
+
+            if (keyStates[i] != ButtonState.RELEASED)
+                isAnyKeyDown = true;
         }
     }
 
@@ -233,5 +240,15 @@ public final class Keyboard
     public static ButtonState getKeyState(int key)
     {
         return keyStates[key];
+    }
+
+    public static boolean isAnyKeyDown()
+    {
+        return isAnyKeyDown;
+    }
+
+    public static boolean isNoKeyDown()
+    {
+        return !isAnyKeyDown;
     }
 }
