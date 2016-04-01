@@ -30,7 +30,7 @@ public class Image
         if (pixel == null)
             throw new IllegalArgumentException("pixel cannot be null.");
 
-        int start = width * y + x;
+        int start = 4 * (width * y + x);
 
         imageData.write(start, pixel.x)
                 .write(start + 1, pixel.y)
@@ -45,7 +45,7 @@ public class Image
         if (pixelOut == null)
             throw new IllegalArgumentException("pixelOut cannot be null.");
 
-        int start = width * y + x;
+        int start = 4 * (width * y + x);
 
         pixelOut.x = imageData.read(start);
         pixelOut.y = imageData.read(start + 1);

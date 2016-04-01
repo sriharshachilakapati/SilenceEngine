@@ -1,5 +1,7 @@
 package com.shc.silenceengine.backend.gwt;
 
+import com.google.gwt.animation.client.AnimationScheduler;
+import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
 
 /**
@@ -21,5 +23,17 @@ public final class GwtRuntime
         SilenceEngine.input = new GwtInputDevice();
         SilenceEngine.io = new GwtIODevice();
         SilenceEngine.graphics = new GwtGraphicsDevice();
+
+        Game.INSTANCE.init();
+
+        AnimationScheduler.get().requestAnimationFrame(GwtRuntime::frameLoop);
+    }
+
+    private static void frameLoop(double timestamp)
+    {
+        SilenceEngine.gameLoop.performLoopFrame();
+
+        // Request another frame
+        AnimationScheduler.get().requestAnimationFrame(GwtRuntime::frameLoop);
     }
 }

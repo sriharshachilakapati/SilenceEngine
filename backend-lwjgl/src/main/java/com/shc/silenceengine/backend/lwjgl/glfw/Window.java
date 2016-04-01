@@ -26,6 +26,7 @@ package com.shc.silenceengine.backend.lwjgl.glfw;
 
 import com.shc.silenceengine.backend.lwjgl.glfw.callbacks.*;
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Image;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Vector2;
@@ -103,7 +104,6 @@ import static org.lwjgl.system.MemoryUtil.*;
  *
  * @author Sri Harsha Chilakapati
  * @author lclc98
- *
  * @see Monitor
  * @see VideoMode
  * @see Cursor
@@ -538,27 +538,27 @@ public class Window
         });
 
         glfwWindowCloseCallback = GLFWWindowCloseCallback.create((window) ->
-                        windowCloseCallback.invoke(registeredWindows.get(window))
+                windowCloseCallback.invoke(registeredWindows.get(window))
         );
 
         glfwWindowFocusCallback = GLFWWindowFocusCallback.create((window, focus) ->
-                        windowFocusCallback.invoke(registeredWindows.get(window), focus != 0)
+                windowFocusCallback.invoke(registeredWindows.get(window), focus != 0)
         );
 
         glfwWindowIconifyCallback = GLFWWindowIconifyCallback.create((window, iconify) ->
-                        windowIconifyCallback.invoke(registeredWindows.get(window), iconify != 0)
+                windowIconifyCallback.invoke(registeredWindows.get(window), iconify != 0)
         );
 
         glfwWindowPosCallback = GLFWWindowPosCallback.create((window, xPos, yPos) ->
-                        windowPositionCallback.invoke(registeredWindows.get(window), xPos, yPos)
+                windowPositionCallback.invoke(registeredWindows.get(window), xPos, yPos)
         );
 
         glfwWindowRefreshCallback = GLFWWindowRefreshCallback.create((window) ->
-                        windowRefreshCallback.invoke(registeredWindows.get(window))
+                windowRefreshCallback.invoke(registeredWindows.get(window))
         );
 
         glfwWindowSizeCallback = GLFWWindowSizeCallback.create((window, width, height) ->
-                        windowSizeCallback.invoke(registeredWindows.get(window), width, height)
+                windowSizeCallback.invoke(registeredWindows.get(window), width, height)
         );
 
         // Register native callbacks
@@ -763,11 +763,6 @@ public class Window
             GL.setCapabilities(windowCapabilities);
     }
 
-    public void setMonitor(Monitor monitor)
-    {
-        setMonitor(monitor, monitor.getVideoMode());
-    }
-
     public void setMonitor(Monitor monitor, VideoMode videoMode)
     {
         this.monitor = monitor;
@@ -813,8 +808,31 @@ public class Window
         glfwImage.width(width);
         glfwImage.height(height);
 
-        ByteBuffer data = (ByteBuffer) image.getImageData().nativeBuffer();
+        ByteBuffer data = BufferUtils.createByteBuffer(width * height * 4);
 
+        Color color = Color.REUSABLE_STACK.pop();
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                image.getPixel(x, y, color);
+
+                float r = (color.x * 255f);
+                float g = (color.y * 255f);
+                float b = (color.z * 255f);
+                float a = ((1 - color.w) * 255f);
+
+                data.put((byte) r)
+                        .put((byte) g)
+                        .put((byte) b)
+                        .put((byte) a);
+            }
+        }
+
+        Color.REUSABLE_STACK.push(color);
+
+        data.flip();
         glfwImage.pixels(data);
 
         glfwSetWindowIcon(handle, glfwImages);
@@ -1116,6 +1134,11 @@ public class Window
     public Monitor getMonitor()
     {
         return monitor;
+    }
+
+    public void setMonitor(Monitor monitor)
+    {
+        setMonitor(monitor, monitor.getVideoMode());
     }
 
     /**
@@ -1630,9 +1653,9 @@ public class Window
     }
 
     /**
-     * This methods returns the current monitor that this window is on. If the window is over multiple screen it will pick
-     * the one that has more of the window on the monitor. In the case of being equal it will pick the monitor that is
-     * called first.
+     * This methods returns the current monitor that this window is on. If the window is over multiple screen it will
+     * pick the one that has more of the window on the monitor. In the case of being equal it will pick the monitor that
+     * is called first.
      *
      * @return The monitor that the window is on.
      */

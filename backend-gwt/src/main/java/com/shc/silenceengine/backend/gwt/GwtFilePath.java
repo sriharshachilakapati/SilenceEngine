@@ -34,7 +34,14 @@ public class GwtFilePath extends FilePath
 
         request.setOnReadyStateChange(xhr -> {
             if (request.getReadyState() == XMLHttpRequest.DONE)
-                size = Integer.parseInt(request.getResponseHeader("Content-Length"));
+                try
+                {
+                    size = Integer.parseInt(request.getResponseHeader("Content-Length"));
+                }
+                catch (Exception e)
+                {
+                    size = 0;
+                }
         });
 
         request.send();

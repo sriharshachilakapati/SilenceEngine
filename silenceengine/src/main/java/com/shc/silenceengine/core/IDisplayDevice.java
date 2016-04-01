@@ -101,4 +101,11 @@ public interface IDisplayDevice
     @PlatformDesktop
     @PlatformHTML5
     void setIcon(FilePath filePath);
+
+    /**
+     * Makes the desktop window close, and the game to exit. This is not honoured in HTML5 platform, as the game can
+     * only be terminated by the user closing the tab.
+     */
+    @PlatformDesktop
+    void close();
 }

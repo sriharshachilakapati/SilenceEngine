@@ -8,7 +8,6 @@ import com.shc.silenceengine.io.ImageReader;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.stb.STBImage.*;
@@ -33,18 +32,17 @@ public class LwjglImageReader extends ImageReader
                 throw new SilenceException("Failed to load image: " + stbi_failure_reason());
 
             Image image = new Image(width.get(0), height.get(0));
-            FloatBuffer pixels = imageBuffer.asFloatBuffer();
 
-            for (int x = 0; x < image.getWidth(); x++)
+            for (int y = 0; y < image.getHeight(); y++)
             {
-                for (int y = 0; y < image.getHeight(); y++)
+                for (int x = 0; x < image.getWidth(); x++)
                 {
-                    int start = y * height.get(0) + x;
+                    int start = 4 * (y * image.getWidth() + x);
 
-                    float r = pixels.get(start);
-                    float g = pixels.get(start + 1);
-                    float b = pixels.get(start + 2);
-                    float a = pixels.get(start + 3);
+                    float r = (imageBuffer.get(start) & 0xff) / 255f;
+                    float g = (imageBuffer.get(start + 1) & 0xff) / 255f;
+                    float b = (imageBuffer.get(start + 2) & 0xff) / 255f;
+                    float a = 1 - (imageBuffer.get(start + 3) & 0xff) / 255f;
 
                     image.setPixel(x, y, new Color(r, g, b, a));
                 }

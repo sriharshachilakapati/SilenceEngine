@@ -1,8 +1,10 @@
 package com.shc.silenceengine.backend.lwjgl;
 
+import com.shc.silenceengine.backend.lwjgl.glfw.GLFW3;
 import com.shc.silenceengine.backend.lwjgl.glfw.Monitor;
 import com.shc.silenceengine.backend.lwjgl.glfw.VideoMode;
 import com.shc.silenceengine.backend.lwjgl.glfw.Window;
+import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.IDisplayDevice;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Vector2;
@@ -22,13 +24,19 @@ public class LwjglDisplayDevice implements IDisplayDevice
 
     public LwjglDisplayDevice()
     {
+        GLFW3.init();
+        GLFW3.setSwapInterval(1);
+
         Window.setHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
         Window.setHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
         Window.setHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
         Window.setHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
 
         window = new Window(800, 600, "SilenceEngine Window");
+        centerOnScreen();
         window.show();
+
+        window.setSizeCallback((window1, width, height) -> Game.INSTANCE.resized());
     }
 
     @Override
@@ -74,7 +82,7 @@ public class LwjglDisplayDevice implements IDisplayDevice
     {
         VideoMode mode = Monitor.getPrimaryMonitor().getVideoMode();
 
-        Vector2 windowPosition = window.getPosition();
+        Vector2 windowPosition = window.getSize();
 
         windowPosition.x = (mode.getWidth() - windowPosition.x) / 2;
         windowPosition.y = (mode.getHeight() - windowPosition.y) / 2;
@@ -116,5 +124,17 @@ public class LwjglDisplayDevice implements IDisplayDevice
     public void setIcon(FilePath filePath)
     {
         window.setIcon(filePath);
+    }
+
+    @Override
+    public void close()
+    {
+        window.setShouldClose(true);
+    }
+
+    void cleanUp()
+    {
+        window.destroy();
+        GLFW3.terminate();
     }
 }

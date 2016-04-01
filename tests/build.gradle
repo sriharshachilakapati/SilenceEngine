@@ -1,6 +1,5 @@
 jar {
     from project(":silenceengine").sourceSets.main.allSource
-    from project(":backend-gwt").sourceSets.main.allSource
     from project(":tests").sourceSets.main.allSource
 }
 

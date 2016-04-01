@@ -8,7 +8,7 @@ buildscript {
     }
 }
 
-allprojects {
+subprojects {
     apply plugin: 'eclipse'
     apply plugin: 'idea'
     apply plugin: 'maven'
@@ -45,5 +45,18 @@ project(":backend-lwjgl") {
         compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-windows"
         compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-linux"
         compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
+    }
+}
+
+project(":tests") {
+    dependencies {
+        compile project(":silenceengine")
+    }
+}
+
+project(":tests-gwt") {
+    dependencies {
+        compile project(":tests")
+        compile project(":backend-gwt")
     }
 }

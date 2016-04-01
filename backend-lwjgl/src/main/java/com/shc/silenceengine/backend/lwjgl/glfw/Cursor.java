@@ -25,7 +25,9 @@
 package com.shc.silenceengine.backend.lwjgl.glfw;
 
 import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Image;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWImage;
 
 import java.nio.ByteBuffer;
@@ -53,22 +55,46 @@ public class Cursor
      */
     public Cursor(Image image, int xHot, int yHot)
     {
-        int width = (int) image.getWidth();
-        int height = (int) image.getHeight();
+        int width = image.getWidth();
+        int height = image.getHeight();
 
-        GLFWImage glfWimage = GLFWImage.malloc();
-        glfWimage.width(width);
-        glfWimage.height(height);
+        GLFWImage glfwImage = GLFWImage.calloc();
+        glfwImage.width(width);
+        glfwImage.height(height);
 
-        ByteBuffer data = (ByteBuffer) image.getImageData().nativeBuffer();
-        glfWimage.pixels(data);
+        ByteBuffer data = BufferUtils.createByteBuffer(width * height * 4);
 
-        handle = glfwCreateCursor(glfWimage, xHot, yHot);
+        Color color = Color.REUSABLE_STACK.pop();
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                image.getPixel(x, y, color);
+
+                float r = (color.x * 255f);
+                float g = (color.y * 255f);
+                float b = (color.z * 255f);
+                float a = ((1 - color.w) * 255f);
+
+                data.put((byte) r)
+                        .put((byte) g)
+                        .put((byte) b)
+                        .put((byte) a);
+            }
+        }
+
+        Color.REUSABLE_STACK.push(color);
+
+        data.flip();
+        glfwImage.pixels(data);
+
+        handle = glfwCreateCursor(glfwImage, xHot, yHot);
 
         if (handle == NULL)
             throw new SilenceException("Unable to load cursor from texture");
 
-        glfWimage.free();
+        glfwImage.free();
     }
 
     /**

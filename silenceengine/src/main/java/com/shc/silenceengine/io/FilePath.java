@@ -66,7 +66,10 @@ public abstract class FilePath
      */
     protected FilePath(String path, Type type)
     {
-        this.path = path.replaceAll("\\\\", "" + SEPARATOR).replaceAll("/+", "" + SEPARATOR).trim();
+        if (path.startsWith("http") || path.startsWith("ftp"))
+            this.path = path;
+        else
+            this.path = path.replaceAll("\\\\", "" + SEPARATOR).replaceAll("/+", "" + SEPARATOR).trim();
         this.type = type;
 
         if (type == Type.RESOURCE && this.path.startsWith("/"))

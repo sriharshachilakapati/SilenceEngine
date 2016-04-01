@@ -18,6 +18,11 @@ public final class SilenceEngine
     }
 
     /**
+     * The {@link IGameLoop} that generates events in the game.
+     */
+    public static IGameLoop gameLoop;
+
+    /**
      * The {@link IDisplayDevice} that handles the display, that is the window thing.
      */
     public static IDisplayDevice display;

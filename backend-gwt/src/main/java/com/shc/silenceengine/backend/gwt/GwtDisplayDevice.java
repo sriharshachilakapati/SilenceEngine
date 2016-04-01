@@ -5,6 +5,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.StyleElement;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.IDisplayDevice;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
@@ -112,6 +113,8 @@ public class GwtDisplayDevice implements IDisplayDevice
     {
         canvas.setCoordinateSpaceWidth(width);
         canvas.setCoordinateSpaceHeight(height);
+
+        Game.INSTANCE.resized();
     }
 
     @Override
@@ -121,6 +124,8 @@ public class GwtDisplayDevice implements IDisplayDevice
             context.requestFullscreen();
         else
             WebGLContext.exitFullscreen();
+
+        Game.INSTANCE.resized();
     }
 
     @Override
@@ -149,7 +154,7 @@ public class GwtDisplayDevice implements IDisplayDevice
         var head = $doc.getElementsByTagName("head")[0];
 
         // Remove existing favicons
-        var links = head.getElementsByName("link");
+        var links = head.getElementsByTagName("link");
 
         for (var i = 0; i < links.length; i++)
         {
@@ -184,5 +189,10 @@ public class GwtDisplayDevice implements IDisplayDevice
     public void setIcon(FilePath filePath)
     {
         setIcon(filePath.getPath());
+    }
+
+    @Override
+    public void close()
+    {
     }
 }
