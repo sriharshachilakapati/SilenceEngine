@@ -18,6 +18,7 @@ public final class GwtRuntime
     {
         SilenceEngine.log = new GwtLogDevice();
         SilenceEngine.display = new GwtDisplayDevice();
+        SilenceEngine.input = new GwtInputDevice();
         SilenceEngine.io = new GwtIODevice();
         SilenceEngine.graphics = new GwtGraphicsDevice();
     }

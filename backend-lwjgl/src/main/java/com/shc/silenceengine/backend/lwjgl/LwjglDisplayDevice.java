@@ -17,7 +17,7 @@ import static com.shc.silenceengine.core.SilenceEngine.*;
  */
 public class LwjglDisplayDevice implements IDisplayDevice
 {
-    private Window   window;
+    public  Window   window;
     private Platform platform;
 
     public LwjglDisplayDevice()

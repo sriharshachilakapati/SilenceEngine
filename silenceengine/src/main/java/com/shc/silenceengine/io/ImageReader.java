@@ -16,7 +16,7 @@ public abstract class ImageReader
 
     public void readImage(FilePath filePath, OnComplete onComplete)
     {
-        SilenceEngine.io.getFileReader().readFile(filePath, directBuffer ->
+        SilenceEngine.io.getFileReader().readBinaryFile(filePath, directBuffer ->
                 readImage(directBuffer, onComplete));
     }
 

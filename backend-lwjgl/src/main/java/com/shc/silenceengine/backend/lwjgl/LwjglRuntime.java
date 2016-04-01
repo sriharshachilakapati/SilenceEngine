@@ -18,6 +18,7 @@ public final class LwjglRuntime
         SilenceEngine.log = new LwjglLogDevice();
         SilenceEngine.io = new LwjglIODevice();
         SilenceEngine.display = new LwjglDisplayDevice();
+        SilenceEngine.input = new LwjglInputDevice();
         SilenceEngine.graphics = new LwjglGraphicsDevice();
     }
 }

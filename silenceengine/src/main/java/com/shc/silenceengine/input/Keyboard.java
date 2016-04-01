@@ -92,89 +92,91 @@ public final class Keyboard
      * Special keys.
      */
     public static final int
-            KEY_TAB         = 38,
-            KEY_BACKSPACE   = 39,
-            KEY_ENTER       = 40,
-            KEY_LEFT_SHIFT  = 41,
-            KEY_RIGHT_SHIFT = 42,
-            KEY_LEFT_CTRL   = 43,
-            KEY_RIGHT_CTRL  = 44,
-            KEY_LEFT_ALT    = 45,
-            KEY_RIGHT_ALT   = 46,
-            KEY_LEFT_SUPER  = 47,
-            KEY_RIGHT_SUPER = 48,
-            KEY_INSERT      = 49,
-            KEY_DELETE      = 50,
-            KEY_HOME        = 51,
-            KEY_END         = 52,
-            KEY_PAGEUP      = 53,
-            KEY_PAGEDOWN    = 54;
+            KEY_TAB          = 38,
+            KEY_BACKSPACE    = 39,
+            KEY_ENTER        = 40,
+            KEY_LEFT_SHIFT   = 41,
+            KEY_RIGHT_SHIFT  = 42,
+            KEY_LEFT_CTRL    = 43,
+            KEY_RIGHT_CTRL   = 44,
+            KEY_LEFT_ALT     = 45,
+            KEY_RIGHT_ALT    = 46,
+            KEY_LEFT_SUPER   = 47,
+            KEY_RIGHT_SUPER  = 48,
+            KEY_INSERT       = 49,
+            KEY_DELETE       = 50,
+            KEY_HOME         = 51,
+            KEY_END          = 52,
+            KEY_PAGEUP       = 53,
+            KEY_PAGEDOWN     = 54,
+            KEY_PRINT_SCREEN = 55,
+            KEY_PAUSE_BREAK  = 56;
 
     /**
      * Keypad keys.
      */
     public static final int
-            KEY_KP_0        = 55,
-            KEY_KP_1        = 56,
-            KEY_KP_2        = 57,
-            KEY_KP_3        = 58,
-            KEY_KP_4        = 59,
-            KEY_KP_5        = 60,
-            KEY_KP_6        = 61,
-            KEY_KP_7        = 62,
-            KEY_KP_8        = 63,
-            KEY_KP_9        = 64,
-            KEY_KP_SLASH    = 65,
-            KEY_KP_ASTERISK = 66,
-            KEY_KP_MINUS    = 67,
-            KEY_KP_PLUS     = 68,
-            KEY_KP_ENTER    = 69,
-            KEY_KP_PERIOD   = 70;
+            KEY_KP_0        = 57,
+            KEY_KP_1        = 58,
+            KEY_KP_2        = 59,
+            KEY_KP_3        = 60,
+            KEY_KP_4        = 61,
+            KEY_KP_5        = 62,
+            KEY_KP_6        = 63,
+            KEY_KP_7        = 64,
+            KEY_KP_8        = 65,
+            KEY_KP_9        = 66,
+            KEY_KP_SLASH    = 67,
+            KEY_KP_ASTERISK = 68,
+            KEY_KP_MINUS    = 69,
+            KEY_KP_PLUS     = 70,
+            KEY_KP_ENTER    = 71,
+            KEY_KP_PERIOD   = 72;
 
     /**
      * Arrow keys.
      */
     public static final int
-            KEY_UP    = 71,
-            KEY_DOWN  = 72,
-            KEY_LEFT  = 73,
-            KEY_RIGHT = 74;
+            KEY_UP    = 73,
+            KEY_DOWN  = 74,
+            KEY_LEFT  = 75,
+            KEY_RIGHT = 76;
 
     /**
      * Alphabet keys.
      */
     public static final int
-            KEY_A = 75,
-            KEY_B = 76,
-            KEY_C = 77,
-            KEY_D = 78,
-            KEY_E = 79,
-            KEY_F = 80,
-            KEY_G = 81,
-            KEY_H = 82,
-            KEY_I = 83,
-            KEY_J = 84,
-            KEY_K = 85,
-            KEY_L = 86,
-            KEY_M = 87,
-            KEY_N = 88,
-            KEY_O = 89,
-            KEY_P = 90,
-            KEY_Q = 91,
-            KEY_R = 92,
-            KEY_S = 93,
-            KEY_T = 94,
-            KEY_U = 95,
-            KEY_V = 96,
-            KEY_W = 97,
-            KEY_X = 98,
-            KEY_Y = 99,
-            KEY_Z = 100;
+            KEY_A = 77,
+            KEY_B = 78,
+            KEY_C = 79,
+            KEY_D = 80,
+            KEY_E = 81,
+            KEY_F = 82,
+            KEY_G = 83,
+            KEY_H = 84,
+            KEY_I = 85,
+            KEY_J = 86,
+            KEY_K = 87,
+            KEY_L = 88,
+            KEY_M = 89,
+            KEY_N = 90,
+            KEY_O = 91,
+            KEY_P = 92,
+            KEY_Q = 93,
+            KEY_R = 94,
+            KEY_S = 95,
+            KEY_T = 96,
+            KEY_U = 97,
+            KEY_V = 98,
+            KEY_W = 99,
+            KEY_X = 100,
+            KEY_Y = 101,
+            KEY_Z = 102;
 
     /**
      * Total number of keys.
      */
-    public static final int NUM_KEYS  = 101;
+    public static final int NUM_KEYS  = 103;
     public static final int KEY_FIRST = 1;
     public static final int KEY_LAST  = NUM_KEYS - 1;
 

@@ -140,6 +140,8 @@ public class GwtInputDevice extends InputDevice
         keysMap.put(KeyCodes.KEY_END, Keyboard.KEY_END);
         keysMap.put(KeyCodes.KEY_PAGEUP, Keyboard.KEY_PAGEUP);
         keysMap.put(KeyCodes.KEY_PAGEDOWN, Keyboard.KEY_PAGEDOWN);
+        keysMap.put(KeyCodes.KEY_PAUSE, Keyboard.KEY_PAUSE_BREAK);
+        keysMap.put(KeyCodes.KEY_PRINT_SCREEN, Keyboard.KEY_PRINT_SCREEN);
 
         // Keypad keys
         keysMap.put(KeyCodes.KEY_NUM_ZERO, Keyboard.KEY_KP_0);
