@@ -2,6 +2,8 @@ package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.io.FilePath;
 
@@ -32,5 +34,14 @@ public class TestGame extends Game
 
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE))
             SilenceEngine.log.getRootLogger().info("Space down");
+
+        if (Keyboard.isKeyTapped(Keyboard.KEY_F))
+            SilenceEngine.display.setFullscreen(!SilenceEngine.display.isFullscreen());
+    }
+
+    @Override
+    public void render(float delta)
+    {
+        GLContext.clearColor(Color.CORN_FLOWER_BLUE);
     }
 }

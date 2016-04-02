@@ -63,7 +63,7 @@ public final class GLContext
      */
     public static void clearColor(Color color)
     {
-        clearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        clearColor(color.r, color.g, color.b, color.a);
     }
 
     /**

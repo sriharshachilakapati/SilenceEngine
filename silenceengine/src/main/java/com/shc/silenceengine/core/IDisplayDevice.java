@@ -3,6 +3,7 @@ package com.shc.silenceengine.core;
 import com.shc.silenceengine.annotations.PlatformDesktop;
 import com.shc.silenceengine.annotations.PlatformHTML5;
 import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.utils.TimeUtils;
 
 /**
  * The interface that abstracts the display between multiple platforms. SilenceEngine will only support one display per
@@ -32,8 +33,39 @@ public interface IDisplayDevice
     void setSize(int width, int height);
 
     /**
-     * Changes the fullscreen state of the display. The size is ignored, and the resolution is chosen to be the maximum
-     * resolution available on the device.
+     * Returns whether the display is actually in fullscreen mode.
+     *
+     * @return The state of fullscreen display.
+     */
+    @PlatformDesktop
+    @PlatformHTML5
+    boolean isFullscreen();
+
+    /**
+     * <p>Changes the fullscreen state of the display. The size is ignored, and the resolution is chosen to be the
+     * maximum resolution available on the device.</p>
+     *
+     * <h3>GWT Platform Notes:</h3>
+     *
+     * <p>On the HTML5 platform, the change takes some time to happen, as it is based on some hacks. Web browsers
+     * require that fullscreen change request should be done only upon user interaction, and cancels any requests that
+     * are made without user interaction, such as switching to fullscreen mode while initialization.</p>
+     *
+     * <p>To prevent this issue, and switch to fullscreen mode at any cost, SilenceEngine uses a hack, it delays the
+     * request until a user event happens, like a key press, mouse click, or even mouse move.</p>
+     *
+     * <p>To make it feel natural, you have to call it only after the init methods. You should also only use method in
+     * an if clause that checks user input. For example, the following is valid:</p>
+     *
+     * <pre>
+     *     if (Keyboard.isKeyTapped(Keyboard.KEY_ENTER)
+     *           &amp;&amp; Keyboard.isKeyDown(Keyboard.KEY_LEFT_ALT))
+     *         SilenceEngine.display.setFullscreen(true);
+     * </pre>
+     *
+     * <p>In the above case this is smooth enough that we check on key tap (usually the immediate frame) and request it,
+     * then the request is considered when the key goes up. But it is considered a bad practice to just call this method
+     * without checking for user input.</p>
      *
      * @param fullscreen The new state of fullscreen.
      */
@@ -75,16 +107,6 @@ public interface IDisplayDevice
     int getHeight();
 
     /**
-     * Sets the display title. On desktop, the title will be the window title, and on HTML5, it will change the title
-     * of the page that is displayed on the tab.
-     *
-     * @param title The new title string to use.
-     */
-    @PlatformDesktop
-    @PlatformHTML5
-    void setTitle(String title);
-
-    /**
      * Returns the title of the display.
      *
      * @return The title of the display.
@@ -92,6 +114,16 @@ public interface IDisplayDevice
     @PlatformDesktop
     @PlatformHTML5
     String getTitle();
+
+    /**
+     * Sets the display title. On desktop, the title will be the window title, and on HTML5, it will change the title of
+     * the page that is displayed on the tab.
+     *
+     * @param title The new title string to use.
+     */
+    @PlatformDesktop
+    @PlatformHTML5
+    void setTitle(String title);
 
     /**
      * Sets the icon of the display. Must point to an image (PNG, BMP, JPEG are supported). For HTML5, use a .ICO file.
@@ -108,4 +140,14 @@ public interface IDisplayDevice
      */
     @PlatformDesktop
     void close();
+
+    /**
+     * Returns the current timestamp in nanoseconds. Normally you don't want to use this method, and instead, use the
+     * {@link TimeUtils} class instead, it offers more customization.
+     *
+     * @return The current timestamp in nanoseconds.
+     */
+    @PlatformDesktop
+    @PlatformHTML5
+    double nanoTime();
 }

@@ -26,6 +26,7 @@ package com.shc.silenceengine.graphics.opengl;
 
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.io.DirectFloatBuffer;
 import com.shc.silenceengine.math.Matrix3;
 import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Vector2;
@@ -50,6 +51,9 @@ public class Program
     private Map<String, Integer> uniformLocations;
     private Map<String, Integer> attributeLocations;
 
+    private static DirectFloatBuffer m3Buffer;
+    private static DirectFloatBuffer m4Buffer;
+
     public Program()
     {
         id = SilenceEngine.graphics.glCreateProgram();
@@ -57,6 +61,12 @@ public class Program
 
         uniformLocations = new HashMap<>();
         attributeLocations = new HashMap<>();
+
+        if (m3Buffer == null)
+            m3Buffer = new DirectFloatBuffer(9);
+
+        if (m4Buffer == null)
+            m4Buffer = new DirectFloatBuffer(16);
     }
 
     public void attach(Shader shader)
@@ -168,7 +178,7 @@ public class Program
 
     public void setUniform(int location, Vector2 value)
     {
-        setUniform(location, value.getX(), value.getY());
+        setUniform(location, value.x, value.y);
     }
 
     public void setUniform(int location, float... values)
@@ -202,37 +212,37 @@ public class Program
 
     public void setUniform(int location, Vector3 value)
     {
-        setUniform(location, value.getX(), value.getY(), value.getZ());
+        setUniform(location, value.x, value.y, value.z);
     }
 
     public void setUniform(int location, Color value)
     {
-        setUniform(location, (Vector4) value);
+        setUniform(location, value.r, value.g, value.b, value.a);
     }
 
     public void setUniform(int location, Vector4 value)
     {
-        setUniform(location, value.getX(), value.getY(), value.getZ(), value.getW());
+        setUniform(location, value.x, value.y, value.z, value.w);
     }
 
     public void setUniform(String name, Vector2 value)
     {
-        setUniform(name, value.getX(), value.getY());
+        setUniform(name, value.x, value.y);
     }
 
     public void setUniform(String name, Vector3 value)
     {
-        setUniform(name, value.getX(), value.getY(), value.getZ());
+        setUniform(name, value.x, value.y, value.z);
     }
 
     public void setUniform(String name, Vector4 value)
     {
-        setUniform(name, value.getX(), value.getY(), value.getZ(), value.getW());
+        setUniform(name, value.x, value.y, value.z, value.w);
     }
 
     public void setUniform(String name, Color value)
     {
-        setUniform(name, (Vector4) value);
+        setUniform(name, value.r, value.g, value.b, value.a);
     }
 
     public void setUniform(int location, Matrix3 value)
@@ -244,7 +254,7 @@ public class Program
     {
         use();
 
-        SilenceEngine.graphics.glUniformMatrix3fv(location, transpose, value.getAsFloatBuffer());
+        SilenceEngine.graphics.glUniformMatrix3fv(location, transpose, value.storeInto(m3Buffer));
 
         GLError.check();
     }
@@ -258,7 +268,7 @@ public class Program
     {
         use();
 
-        SilenceEngine.graphics.glUniformMatrix4fv(location, transpose, value.getAsFloatBuffer());
+        SilenceEngine.graphics.glUniformMatrix4fv(location, transpose, value.storeInto(m4Buffer));
         GLError.check();
     }
 

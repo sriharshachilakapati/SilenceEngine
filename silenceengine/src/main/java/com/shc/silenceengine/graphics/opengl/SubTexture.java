@@ -44,7 +44,7 @@ public class SubTexture extends Texture
 
     public SubTexture(Texture parent, Vector2 min, Vector2 max)
     {
-        this(parent, min.getX(), min.getY(), max.getX(), max.getY());
+        this(parent, min.x, min.y, max.x, max.y);
     }
 
     public SubTexture(Texture parent, float minU, float minV, float maxU, float maxV)

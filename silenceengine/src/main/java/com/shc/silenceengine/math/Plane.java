@@ -53,7 +53,7 @@ public class Plane
         this.d = d;
 
         float length = normal.length();
-        normal.scaleSelf(1 / length);
+        normal.scale(1 / length);
         this.d /= length;
     }
 
@@ -123,7 +123,7 @@ public class Plane
         this.d = d;
 
         float length = normal.length();
-        normal.scaleSelf(1 / length);
+        normal.scale(1 / length);
         this.d /= length;
 
         return this;
@@ -154,7 +154,9 @@ public class Plane
         Plane plane = (Plane) o;
 
         return Float.compare(plane.d, d) == 0 &&
-               normal.equals(plane.normal);
+               normal.x == plane.normal.x &&
+                normal.y == plane.normal.y &&
+                normal.z == plane.normal.z;
     }
 
     @Override

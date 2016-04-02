@@ -72,10 +72,10 @@ public class Cursor
             {
                 image.getPixel(x, y, color);
 
-                float r = (color.x * 255f);
-                float g = (color.y * 255f);
-                float b = (color.z * 255f);
-                float a = ((1 - color.w) * 255f);
+                float r = (color.r * 255f);
+                float g = (color.g * 255f);
+                float b = (color.b * 255f);
+                float a = ((1 - color.a) * 255f);
 
                 data.put((byte) r)
                         .put((byte) g)

@@ -60,17 +60,17 @@ public class Vector3
 
     public Vector3(Vector2 v, float z)
     {
-        this(v.getX(), v.getY(), z);
+        this(v.x, v.y, z);
     }
 
     public Vector3(float x, Vector2 v)
     {
-        this(x, v.getX(), v.getY());
+        this(x, v.x, v.y);
     }
 
     public Vector3(Vector3 v)
     {
-        this(v.getX(), v.getY(), v.getZ());
+        this(v.x, v.y, v.z);
     }
 
     public Vector3(Vector4 v)
@@ -78,60 +78,12 @@ public class Vector3
         this(v.x, v.y, v.z);
     }
 
-    public float getX()
-    {
-        return x;
-    }
-
-    public Vector3 setX(float x)
-    {
-        this.x = x;
-        return this;
-    }
-
-    public float getY()
-    {
-        return y;
-    }
-
-    public Vector3 setY(float y)
-    {
-        this.y = y;
-        return this;
-    }
-
-    public float getZ()
-    {
-        return z;
-    }
-
-    public Vector3 setZ(float z)
-    {
-        this.z = z;
-        return this;
-    }
-
-    public Vector3 add(Vector3 v)
-    {
-        return add(v.x, v.y, v.z);
-    }
-
-    public Vector3 add(float x, float y, float z)
-    {
-        return copy().addSelf(x, y, z);
-    }
-
     public Vector3 add(Vector2 v, float z)
     {
         return add(v.x, v.y, z);
     }
 
-    public Vector3 addSelf(Vector2 v, float z)
-    {
-        return addSelf(v.x, v.y, z);
-    }
-
-    public Vector3 addSelf(float x, float y, float z)
+    public Vector3 add(float x, float y, float z)
     {
         return set(this.x + x, this.y + y, this.z + z);
     }
@@ -150,14 +102,9 @@ public class Vector3
         return add(x, v.x, v.y);
     }
 
-    public Vector3 addSelf(float x, Vector2 v)
+    public Vector3 subtract(float x, float y, float z)
     {
-        return addSelf(x, v.x, v.y);
-    }
-
-    public Vector3 subtractSelf(float x, float y, float z)
-    {
-        return addSelf(-x, -y, -z);
+        return add(-x, -y, -z);
     }
 
     public Vector3 subtract(Vector3 v)
@@ -165,57 +112,17 @@ public class Vector3
         return add(-v.x, -v.y, -v.z);
     }
 
-    public Vector3 subtractSelf(Vector3 v)
-    {
-        return addSelf(-v.x, -v.y, -v.z);
-    }
-
     public Vector3 subtract(Vector2 v, float z)
     {
-        return subtract(v.x, v.y, z);
-    }
-
-    public Vector3 subtract(float x, float y, float z)
-    {
-        return add(-x, -y, -z);
-    }
-
-    public Vector3 subtractSelf(Vector2 v, float z)
-    {
-        return addSelf(-v.x, -v.y, z);
+        return add(-v.x, -v.y, z);
     }
 
     public Vector3 subtract(float x, Vector2 v)
     {
-        return subtract(x, v.x, v.y);
-    }
-
-    public Vector3 subtractSelf(float x, Vector2 v)
-    {
-        return addSelf(-x, -v.x, -v.y);
-    }
-
-    public Vector3 scale(float s)
-    {
-        return scale(s, s, s);
-    }
-
-    public Vector3 scale(float sx, float sy, float sz)
-    {
-        return copy().scaleSelf(sx, sy, sz);
-    }
-
-    public Vector3 cross(Vector3 v)
-    {
-        return cross(v.x, v.y, v.z);
+        return add(-x, -v.x, -v.y);
     }
 
     public Vector3 cross(float vx, float vy, float vz)
-    {
-        return copy().crossSelf(vx, vy, vz);
-    }
-
-    public Vector3 crossSelf(float vx, float vy, float vz)
     {
         float x = this.x * vz - this.z * vy;
         float y = this.z * vx - this.x * vz;
@@ -229,17 +136,12 @@ public class Vector3
         return new Vector3(this);
     }
 
-    public Vector3 crossSelf(Vector3 v)
+    public Vector3 cross(Vector3 v)
     {
-        return crossSelf(v.x, v.y, v.z);
+        return cross(v.x, v.y, v.z);
     }
 
     public Vector3 normalize()
-    {
-        return copy().normalizeSelf();
-    }
-
-    public Vector3 normalizeSelf()
     {
         float l = length();
 
@@ -260,11 +162,6 @@ public class Vector3
     }
 
     public Vector3 negate()
-    {
-        return new Vector3(-x, -y, -z);
-    }
-
-    public Vector3 negateSelf()
     {
         return set(-x, -y, -z);
     }
@@ -315,11 +212,6 @@ public class Vector3
 
     public Vector3 rotate(Vector3 axis, float angle)
     {
-        return copy().rotateSelf(axis, angle);
-    }
-
-    public Vector3 rotateSelf(Vector3 axis, float angle)
-    {
         Quaternion temp = Quaternion.REUSABLE_STACK.pop();
 
         temp.set(axis, angle);
@@ -332,26 +224,21 @@ public class Vector3
 
     public Vector3 lerp(Vector3 target, float alpha)
     {
-        return copy().lerpSelf(target, alpha);
-    }
-
-    public Vector3 lerpSelf(Vector3 target, float alpha)
-    {
         Vector3 temp = Vector3.REUSABLE_STACK.pop();
-        scaleSelf(1f - alpha).addSelf(temp.set(target).scaleSelf(alpha));
+        scale(1f - alpha).add(temp.set(target).scale(alpha));
         Vector3.REUSABLE_STACK.push(temp);
 
         return this;
     }
 
-    public Vector3 addSelf(Vector3 v)
+    public Vector3 add(Vector3 v)
     {
-        return addSelf(v.x, v.y, v.z);
+        return add(v.x, v.y, v.z);
     }
 
-    public Vector3 scaleSelf(float s)
+    public Vector3 scale(float s)
     {
-        return scaleSelf(s, s, s);
+        return scale(s, s, s);
     }
 
     public Vector3 set(Vector3 v)
@@ -359,17 +246,12 @@ public class Vector3
         return set(v.x, v.y, v.z);
     }
 
-    public Vector3 scaleSelf(float sx, float sy, float sz)
+    public Vector3 scale(float sx, float sy, float sz)
     {
         return set(x * sx, y * sy, z * sz);
     }
 
     public Vector3 multiply(Matrix3 m)
-    {
-        return copy().multiplySelf(m);
-    }
-
-    public Vector3 multiplySelf(Matrix3 m)
     {
         float rx = x * m.get(0, 0) + y * m.get(0, 1) + z * m.get(0, 2);
         float ry = x * m.get(1, 0) + y * m.get(1, 1) + z * m.get(1, 2);
@@ -379,11 +261,6 @@ public class Vector3
     }
 
     public Vector3 multiply(Matrix4 m)
-    {
-        return copy().multiplySelf(m);
-    }
-
-    public Vector3 multiplySelf(Matrix4 m)
     {
         float rx = x * m.get(0, 0) + y * m.get(1, 0) + z * m.get(2, 0) + 1 * m.get(3, 0);
         float ry = x * m.get(0, 1) + y * m.get(1, 1) + z * m.get(2, 1) + 1 * m.get(3, 1);
@@ -395,84 +272,6 @@ public class Vector3
     public Vector3 set(float v)
     {
         return set(v, v, v);
-    }
-
-    public float getR()
-    {
-        return x;
-    }
-
-    public Vector3 setR(float r)
-    {
-        x = r;
-        return this;
-    }
-
-    public float getG()
-    {
-        return y;
-    }
-
-    public Vector3 setG(float g)
-    {
-        y = g;
-        return this;
-    }
-
-    public float getB()
-    {
-        return z;
-    }
-
-    public Vector3 setB(float b)
-    {
-        z = b;
-        return this;
-    }
-
-    public Vector2 getXX()
-    {
-        return new Vector2(x, x);
-    }
-
-    public Vector2 getXY()
-    {
-        return new Vector2(x, y);
-    }
-
-    public Vector2 getXZ()
-    {
-        return new Vector2(x, z);
-    }
-
-    public Vector2 getYX()
-    {
-        return new Vector2(y, x);
-    }
-
-    public Vector2 getYY()
-    {
-        return new Vector2(y, y);
-    }
-
-    public Vector2 getYZ()
-    {
-        return new Vector2(y, z);
-    }
-
-    public Vector2 getZX()
-    {
-        return new Vector2(z, x);
-    }
-
-    public Vector2 getZY()
-    {
-        return new Vector2(z, y);
-    }
-
-    public Vector2 getZZ()
-    {
-        return new Vector2(z, z);
     }
 
     @Override

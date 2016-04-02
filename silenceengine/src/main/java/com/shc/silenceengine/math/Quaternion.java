@@ -113,16 +113,6 @@ public class Quaternion
 
     public Quaternion add(float x, float y, float z, float w)
     {
-        return copy().addSelf(x, y, z, w);
-    }
-
-    public Quaternion addSelf(Quaternion q)
-    {
-        return addSelf(q.x, q.y, q.z, q.w);
-    }
-
-    public Quaternion addSelf(float x, float y, float z, float w)
-    {
         return set(this.x + x, this.y + y, this.z + z, this.w + w);
     }
 
@@ -134,21 +124,6 @@ public class Quaternion
     public Quaternion subtract(float x, float y, float z, float w)
     {
         return add(-x, -y, -z, -w);
-    }
-
-    public Quaternion subtractSelf(Quaternion q)
-    {
-        return subtractSelf(q.x, q.y, q.z, q.w);
-    }
-
-    public Quaternion subtractSelf(float x, float y, float z, float w)
-    {
-        return addSelf(-x, -y, -z, -w);
-    }
-
-    public Quaternion normalize()
-    {
-        return copy().normalizeSelf();
     }
 
     public float length()
@@ -166,17 +141,7 @@ public class Quaternion
         return x * x + y * y + z * z + w * w;
     }
 
-    public Quaternion conjugate()
-    {
-        return copy().conjugateSelf();
-    }
-
-    public Quaternion multiply(Quaternion q)
-    {
-        return copy().multiplySelf(q);
-    }
-
-    public Quaternion normalizeSelf()
+    public Quaternion normalize()
     {
         float length = length();
 
@@ -186,32 +151,22 @@ public class Quaternion
         return set(x / length, y / length, z / length, w / length);
     }
 
-    public Quaternion multiplySelf(Quaternion q)
+    public Quaternion multiply(Quaternion q)
     {
         float nx = w * q.x + x * q.w + y * q.z - z * q.y;
         float ny = w * q.y + y * q.w + z * q.x - x * q.z;
         float nz = w * q.z + z * q.w + x * q.y - y * q.x;
         float nw = w * q.w - x * q.x - y * q.y - z * q.z;
 
-        return set(nx, ny, nz, nw).normalizeSelf();
-    }
-
-    public Vector3 multiplyInverse(Vector3 v)
-    {
-        return multiplyInverse(v, new Vector3());
+        return set(nx, ny, nz, nw).normalize();
     }
 
     public Vector3 multiplyInverse(Vector3 v, Vector3 dest)
     {
-        invertSelf().multiply(v, dest);
-        invertSelf();
+        invert().multiply(v, dest);
+        invert();
 
         return dest;
-    }
-
-    public Vector3 multiply(Vector3 v)
-    {
-        return multiply(v, new Vector3());
     }
 
     public Vector3 multiply(Vector3 v, Vector3 dest)
@@ -223,13 +178,13 @@ public class Quaternion
         Quaternion temp3 = Quaternion.REUSABLE_STACK.pop();
 
         float length = v.length();
-        v = temp.set(v).normalizeSelf();
+        v = temp.set(v).normalize();
 
-        Quaternion q1 = temp1.set(this).conjugateSelf().normalizeSelf();
+        Quaternion q1 = temp1.set(this).conjugate().normalize();
         Quaternion qv = temp2.set(v.x, v.y, v.z, 0);
         Quaternion q = this;
 
-        Quaternion res = temp3.set(q).normalizeSelf().multiplySelf(qv.multiplySelf(q1).normalizeSelf());
+        Quaternion res = temp3.set(q).normalize().multiply(qv.multiply(q1).normalize());
 
         dest.x = res.x;
         dest.y = res.y;
@@ -241,20 +196,15 @@ public class Quaternion
         Quaternion.REUSABLE_STACK.push(temp2);
         Quaternion.REUSABLE_STACK.push(temp3);
 
-        return dest.normalizeSelf().scaleSelf(length);
+        return dest.normalize().scale(length);
     }
 
     public Quaternion invert()
     {
-        return copy().invertSelf();
-    }
-
-    public Quaternion invertSelf()
-    {
         float norm = lengthSquared();
 
         if (norm == 0)
-            return conjugateSelf();
+            return conjugate();
 
         x = -x / norm;
         y = -y / norm;
@@ -264,24 +214,19 @@ public class Quaternion
         return this;
     }
 
-    public Quaternion conjugateSelf()
+    public Quaternion conjugate()
     {
         return set(-x, -y, -z, w);
     }
 
     public Quaternion lerp(Quaternion target, float alpha)
     {
-        return copy().lerpSelf(target, alpha);
-    }
-
-    public Quaternion lerpSelf(Quaternion target, float alpha)
-    {
         Vector4 temp1 = Vector4.REUSABLE_STACK.pop();
         Vector4 temp2 = Vector4.REUSABLE_STACK.pop();
 
         Vector4 start = temp1.set(x, y, z, w);
         Vector4 end = temp2.set(target.x, target.y, target.z, target.w);
-        Vector4 lerp = start.lerpSelf(end, alpha).normalizeSelf();
+        Vector4 lerp = start.lerp(end, alpha).normalize();
 
         set(lerp.x, lerp.y, lerp.z, lerp.w);
 
@@ -292,11 +237,6 @@ public class Quaternion
     }
 
     public Quaternion slerp(Quaternion target, float alpha)
-    {
-        return copy().slerpSelf(target, alpha);
-    }
-
-    public Quaternion slerpSelf(Quaternion target, float alpha)
     {
         final float dot = dot(target);
         float scale1, scale2;
@@ -310,7 +250,7 @@ public class Quaternion
             else
                 temp.set(target);
 
-            lerpSelf(temp, alpha);
+            lerp(temp, alpha);
             REUSABLE_STACK.push(temp);
 
             return this;
@@ -333,46 +273,6 @@ public class Quaternion
     public float dot(Quaternion q)
     {
         return x * q.x + y * q.y + z * q.z + w * q.w;
-    }
-
-    public float getX()
-    {
-        return x;
-    }
-
-    public void setX(float x)
-    {
-        this.x = x;
-    }
-
-    public float getY()
-    {
-        return y;
-    }
-
-    public void setY(float y)
-    {
-        this.y = y;
-    }
-
-    public float getZ()
-    {
-        return z;
-    }
-
-    public void setZ(float z)
-    {
-        this.z = z;
-    }
-
-    public float getW()
-    {
-        return w;
-    }
-
-    public void setW(float w)
-    {
-        this.w = w;
     }
 
     public Quaternion set()

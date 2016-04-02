@@ -34,7 +34,7 @@ import com.shc.silenceengine.utils.ReusableStack;
  *
  * @author Sri Harsha Chilakapati
  */
-public class Color extends Vector4
+public class Color
 {
     public static final ReusableStack<Color> REUSABLE_STACK = new ReusableStack<>(Color::new);
 
@@ -184,6 +184,8 @@ public class Color extends Vector4
     public static final Color YELLOW              = new Color(0xFFFF00);
     public static final Color YELLOW_GREEN        = new Color(0x9ACD32);
 
+    public float r, g, b, a;
+
     public static final Color TRANSPARENT = new Color(0x00000000);
 
     public Color(Vector4 color)
@@ -213,7 +215,7 @@ public class Color extends Vector4
 
     public Color(float c)
     {
-        set(c);
+        set(c, c, c, c);
     }
 
     public Color(float r, float g, float b)
@@ -228,37 +230,27 @@ public class Color extends Vector4
 
     public Color set(float r, float g, float b, float a)
     {
-        x = MathUtils.clamp(r, 0, 1);
-        y = MathUtils.clamp(g, 0, 1);
-        z = MathUtils.clamp(b, 0, 1);
-        w = MathUtils.clamp(a, 0, 1);
+        this.r = MathUtils.clamp(r, 0, 1);
+        this.r = MathUtils.clamp(g, 0, 1);
+        this.r = MathUtils.clamp(b, 0, 1);
+        this.r = MathUtils.clamp(a, 0, 1);
 
         return this;
     }
 
     public Color add(float r, float g, float b, float a)
     {
-        return new Color(x + r, y + g, z + b, w + a);
-    }
-
-    public Color addSelf(float r, float g, float b, float a)
-    {
-        return set(x + r, y + g, z + b, w + a);
+        return set(this.r + r, this.g + g, this.b + b, this.a + a);
     }
 
     public Color copy()
     {
-        return new Color(x, y, z, w);
+        return new Color(r, g, b, a);
     }
 
     public Color subtract(float r, float g, float b, float a)
     {
         return add(-r, -g, -b, -a);
-    }
-
-    public Color subtractSelf(float r, float g, float b, float a)
-    {
-        return addSelf(-r, -g, -b, -a);
     }
 
     public Color set(int rgba)
@@ -268,10 +260,10 @@ public class Color extends Vector4
         float b = (rgba & 0x000000FF) / 255f;
         float a = 1 - ((rgba & 0xFF000000) >> 24) / 255f;
 
-        setR(r);
-        setG(g);
-        setB(b);
-        setA(a);
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
 
         return this;
     }
@@ -283,17 +275,12 @@ public class Color extends Vector4
 
     public Color set(Color color)
     {
-        return set(color.x, color.y, color.z, color.w);
+        return set(color.r, color.g, color.b, color.a);
     }
 
     public Color add(Color c)
     {
-        return new Color(x + c.x, y + c.y, z + c.z, w + c.w);
-    }
-
-    public Color addSelf(Color c)
-    {
-        return set(x + c.x, y + c.y, z + c.z, w + c.w);
+        return set(this.r + c.r, this.g + c.g, this.b + c.b, this.a + c.a);
     }
 
     public Color add(float r, float g, float b)
@@ -301,19 +288,9 @@ public class Color extends Vector4
         return add(r, g, b, 1);
     }
 
-    public Color addSelf(float r, float g, float b)
-    {
-        return addSelf(r, g, b, 1);
-    }
-
     public Color subtract(Color c)
     {
-        return add(-c.x, -c.y, -c.z, -c.w);
-    }
-
-    public Color subtractSelf(Color c)
-    {
-        return addSelf(-c.x, -c.y, -c.z, -c.w);
+        return add(-c.r, -c.g, -c.b, -c.a);
     }
 
     public Color subtract(float r, float g, float b)
@@ -321,19 +298,9 @@ public class Color extends Vector4
         return subtract(r, g, b, 1);
     }
 
-    public Color subtractSelf(float r, float g, float b)
-    {
-        return subtractSelf(r, g, b, 1);
-    }
-
     public Color multiply(Color c)
     {
-        return new Color(x * c.x, y * c.y, z * c.z, w * c.w);
-    }
-
-    public Color multiplySelf(Color c)
-    {
-        return set(x * c.x, y * c.y, z * c.z, w * c.w);
+        return set(this.r * c.r, this.g * c.g, this.b * c.b, this.a * c.a);
     }
 
     public Color multiply(float r, float g, float b)
@@ -343,71 +310,23 @@ public class Color extends Vector4
 
     public Color multiply(float r, float g, float b, float a)
     {
-        return new Color(x * r, y * g, z * b, w * a);
-    }
-
-    public Color multiplySelf(float r, float g, float b)
-    {
-        return multiplySelf(r, g, b, 1);
-    }
-
-    public Color multiplySelf(float r, float g, float b, float a)
-    {
-        return set(x * r, y * g, z * b, w * a);
-    }
-
-    public Color lerpSelf(Color target, float alpha)
-    {
-        Color temp = Color.REUSABLE_STACK.pop();
-        scaleSelf(1f - alpha).addSelf(temp.set(target).scaleSelf(alpha));
-        Color.REUSABLE_STACK.push(temp);
-
-        return this;
+        return set(this.r * r, this.g * g, this.b * b, this.a * a);
     }
 
     public Color lerp(Color target, float alpha)
     {
-        return copy().lerpSelf(target, alpha);
+        Vector4 temp1 = Vector4.REUSABLE_STACK.pop();
+        Vector4 temp2 = Vector4.REUSABLE_STACK.pop();
+        set(temp1.set(this).scale(1f - alpha).add(temp2.set(target).scale(alpha)));
+        Vector4.REUSABLE_STACK.push(temp1);
+        Vector4.REUSABLE_STACK.push(temp2);
+
+        return this;
     }
 
-    public float getRed()
+    public Color set(Vector4 v)
     {
-        return getR();
-    }
-
-    public void setRed(float r)
-    {
-        setR(r);
-    }
-
-    public float getGreen()
-    {
-        return getG();
-    }
-
-    public void setGreen(float g)
-    {
-        setG(g);
-    }
-
-    public float getBlue()
-    {
-        return getB();
-    }
-
-    public void setBlue(float b)
-    {
-        setB(b);
-    }
-
-    public float getAlpha()
-    {
-        return getA();
-    }
-
-    public void setAlpha(float a)
-    {
-        setA(a);
+        return set(v.x, v.y, v.z, v.w);
     }
 
     public Color randomSelf()

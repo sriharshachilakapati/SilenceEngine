@@ -43,50 +43,39 @@ public class Transform
 
     public Transform translate(Vector2 v)
     {
-        return copy().translateSelf(v);
-    }
+        Vector3 temp = Vector3.REUSABLE_STACK.pop();
+        translate(temp.set(v.x, v.y, 0));
 
-    public Transform translateSelf(Vector2 v)
-    {
-        return translateSelf(new Vector3(v, 0));
+        Vector3.REUSABLE_STACK.push(temp);
+        return this;
     }
 
     public Transform copy()
     {
-        return new Transform().applySelf(tMatrix);
-    }
-
-    public Transform translateSelf(Vector3 v)
-    {
-        Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
-        tMatrix.set(Transforms.createTranslation(v, temp).multiplySelf(tMatrix));
-        Matrix4.REUSABLE_STACK.push(temp);
-
-        return this;
-    }
-
-    public Transform applySelf(Matrix4 matrix)
-    {
-        Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
-        tMatrix.set(temp.set(matrix).multiplySelf(tMatrix));
-        Matrix4.REUSABLE_STACK.push(temp);
-        return this;
+        return new Transform().apply(tMatrix);
     }
 
     public Transform translate(Vector3 v)
     {
-        return copy().translateSelf(v);
+        Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
+        tMatrix.set(Transforms.createTranslation(v, temp).multiply(tMatrix));
+        Matrix4.REUSABLE_STACK.push(temp);
+
+        return this;
+    }
+
+    public Transform apply(Matrix4 matrix)
+    {
+        Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
+        tMatrix.set(temp.set(matrix).multiply(tMatrix));
+        Matrix4.REUSABLE_STACK.push(temp);
+        return this;
     }
 
     public Transform rotate(Vector3 axis, float angle)
     {
-        return copy().rotateSelf(axis, angle);
-    }
-
-    public Transform rotateSelf(Vector3 axis, float angle)
-    {
         Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
-        tMatrix.set(Transforms.createRotation(axis, angle, temp).multiplySelf(tMatrix));
+        tMatrix.set(Transforms.createRotation(axis, angle, temp).multiply(tMatrix));
         Matrix4.REUSABLE_STACK.push(temp);
 
         return this;
@@ -94,16 +83,11 @@ public class Transform
 
     public Transform rotate(float rx, float ry, float rz)
     {
-        return copy().rotateSelf(rx, ry, rz);
-    }
-
-    public Transform rotateSelf(float rx, float ry, float rz)
-    {
         Quaternion temp = Quaternion.REUSABLE_STACK.pop();
         temp.set(rx, ry, rz);
 
         Matrix4 tMat = Matrix4.REUSABLE_STACK.pop();
-        tMatrix.set(Transforms.createRotation(temp, tMat).multiplySelf(tMatrix));
+        tMatrix.set(Transforms.createRotation(temp, tMat).multiply(tMatrix));
         Matrix4.REUSABLE_STACK.push(tMat);
 
         Quaternion.REUSABLE_STACK.push(temp);
@@ -112,40 +96,25 @@ public class Transform
 
     public Transform scale(Vector2 scale)
     {
-        return copy().scaleSelf(scale);
-    }
-
-    public Transform scaleSelf(Vector2 scale)
-    {
         Vector3 temp = Vector3.REUSABLE_STACK.pop();
-        scaleSelf(temp.set(scale.x, scale.y, 0));
+        scale(temp.set(scale.x, scale.y, 0));
         Vector3.REUSABLE_STACK.push(temp);
-
-        return this;
-    }
-
-    public Transform scaleSelf(Vector3 scale)
-    {
-        Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
-        tMatrix.set(Transforms.createScaling(scale, temp).multiplySelf(tMatrix));
-        Matrix4.REUSABLE_STACK.push(temp);
 
         return this;
     }
 
     public Transform scale(Vector3 scale)
     {
-        return copy().scaleSelf(scale);
+        Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
+        tMatrix.set(Transforms.createScaling(scale, temp).multiply(tMatrix));
+        Matrix4.REUSABLE_STACK.push(temp);
+
+        return this;
     }
 
     public Transform apply(Transform transform)
     {
-        return copy().applySelf(transform);
-    }
-
-    public Transform applySelf(Transform transform)
-    {
-        return applySelf(transform.getMatrix());
+        return apply(transform.getMatrix());
     }
 
     public Matrix4 getMatrix()
@@ -153,22 +122,12 @@ public class Transform
         return tMatrix;
     }
 
-    public Transform apply(Matrix4 matrix)
-    {
-        return copy().applySelf(matrix);
-    }
-
     public Transform applyInverse(Matrix4 matrix)
-    {
-        return copy().applyInverseSelf(matrix);
-    }
-
-    public Transform applyInverseSelf(Matrix4 matrix)
     {
         Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
 
-        temp.set(matrix).invertSelf();
-        applySelf(temp);
+        temp.set(matrix).invert();
+        apply(temp);
         Matrix4.REUSABLE_STACK.push(temp);
 
         return this;
@@ -176,13 +135,8 @@ public class Transform
 
     public Transform apply(Quaternion q)
     {
-        return copy().applySelf(q);
-    }
-
-    public Transform applySelf(Quaternion q)
-    {
         Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
-        applySelf(Transforms.createRotation(q, temp));
+        apply(Transforms.createRotation(q, temp));
 
         Matrix4.REUSABLE_STACK.push(temp);
         return this;
@@ -190,13 +144,8 @@ public class Transform
 
     public Transform applyInverse(Quaternion q)
     {
-        return copy().applyInverseSelf(q);
-    }
-
-    public Transform applyInverseSelf(Quaternion q)
-    {
         Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
-        applyInverseSelf(Transforms.createRotation(q, temp));
+        applyInverse(Transforms.createRotation(q, temp));
 
         Matrix4.REUSABLE_STACK.push(temp);
         return this;
@@ -204,7 +153,7 @@ public class Transform
 
     public Transform set(Transform t)
     {
-        return reset().applySelf(t);
+        return reset().apply(t);
     }
 
     public Transform reset()
@@ -215,12 +164,7 @@ public class Transform
 
     public Transform invert()
     {
-        return copy().invertSelf();
-    }
-
-    public Transform invertSelf()
-    {
-        tMatrix.invertSelf();
+        tMatrix.invert();
         return this;
     }
 }

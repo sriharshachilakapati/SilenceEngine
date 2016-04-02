@@ -36,8 +36,6 @@ public class Matrix4
 
     private float[][] m;
 
-    private DirectFloatBuffer buffer;
-
     public Matrix4(Vector4 c0, Vector4 c1, Vector4 c2, Vector4 c3)
     {
         this();
@@ -70,8 +68,6 @@ public class Matrix4
     {
         m = new float[4][4];
         initIdentity();
-
-        buffer = new DirectFloatBuffer(16);
     }
 
     public Matrix4(Matrix4 m)
@@ -148,11 +144,6 @@ public class Matrix4
 
     public Matrix4 add(Matrix4 m)
     {
-        return new Matrix4(this).addSelf(m);
-    }
-
-    public Matrix4 addSelf(Matrix4 m)
-    {
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
@@ -166,11 +157,6 @@ public class Matrix4
 
     public Matrix4 subtract(Matrix4 m)
     {
-        return new Matrix4(this).subtractSelf(m);
-    }
-
-    public Matrix4 subtractSelf(Matrix4 m)
-    {
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
@@ -183,11 +169,6 @@ public class Matrix4
     }
 
     public Matrix4 multiply(Matrix4 m)
-    {
-        return copy().multiplySelf(m);
-    }
-
-    public Matrix4 multiplySelf(Matrix4 m)
     {
         // Use a temporary matrix from the matrix stack instead of
         // creating a temporary float array every frame.
@@ -228,11 +209,6 @@ public class Matrix4
         return this;
     }
 
-    public Vector3 multiply(Vector3 v)
-    {
-        return multiply(v, new Vector3());
-    }
-
     public Vector3 multiply(Vector3 v, Vector3 dest)
     {
         float X = v.x;
@@ -254,11 +230,6 @@ public class Matrix4
         return dest.set(A * X + B * Y + C * Z + D * W,
                 E * X + F * Y + G * Z + H * W,
                 I * X + J * Y + K * Z + L * W);
-    }
-
-    public Vector4 multiply(Vector4 v)
-    {
-        return multiply(v, new Vector4());
     }
 
     /**
@@ -305,11 +276,6 @@ public class Matrix4
 
     public Matrix4 transpose()
     {
-        return copy().transposeSelf();
-    }
-
-    public Matrix4 transposeSelf()
-    {
         Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
 
         for (int i = 0; i < 4; i++)
@@ -327,11 +293,6 @@ public class Matrix4
     }
 
     public Matrix4 invert()
-    {
-        return copy().invertSelf();
-    }
-
-    public Matrix4 invertSelf()
     {
         float s = determinant();
 
@@ -380,7 +341,7 @@ public class Matrix4
                (m[0][2] * m[1][3] - m[0][3] * m[1][2]) * (m[2][0] * m[3][1] - m[2][1] * m[3][0]);
     }
 
-    public DirectFloatBuffer getAsFloatBuffer()
+    public DirectFloatBuffer storeInto(DirectFloatBuffer buffer)
     {
         int index = 0;
 
@@ -403,9 +364,8 @@ public class Matrix4
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
-            {
                 s.append(m[i][j]).append(' ');
-            }
+
             s.append('\n');
         }
 

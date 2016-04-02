@@ -27,18 +27,8 @@ package com.shc.silenceengine.math;
 import com.shc.silenceengine.utils.MathUtils;
 
 /**
- * <p> This class is the core of the SilenceEngine's GraphicsEngine, and does the job of creating transformation
- * matrices and transformation quaternions. All the other functions call-back to this class. There are two types of
- * functions in this class. </p>
- *
- * <p> The first type of functions accept a parameter called as <code>dest</code>, which is used to store the result in,
- * and the same result is returned by the function. If you passed <code>null</code> as the <code>dest</code> parameter
- * then a new instance of the the matrix or quaternion is created. </p>
- *
- * <p> The second type of functions doesn't accept any extra parameters, and just call the first above mentioned methods
- * with a new matrix or quaternion. Keep in mind, though, that using these methods often will cause a memory issue due
- * to GC pauses to collect large amounts of garbage. The work-around, is to use the <code>REUSABLE_STACK</code> of that
- * required class to generate a temporary instance. </p>
+ * <p>This class is the core of the SilenceEngine's GraphicsEngine, and does the job of creating transformation matrices
+ * and transformation quaternions. All the other functions call-back to this class.</p>
  *
  * <pre>
  *     Matrix4 temp1 = Matrix4.REUSABLE_STACK.pop();
@@ -53,9 +43,6 @@ import com.shc.silenceengine.utils.MathUtils;
  *     Matrix4.REUSABLE_STACK.push(temp2);
  * </pre>
  *
- * <p> It is always encouraged to use the above work-around as you can get full control on the result matrices and the
- * quaternions. Also, the first type of functions can be soon removed from the engine completely. </p>
- *
  * @author Sri Harsha Chilakapati
  */
 public final class Transforms
@@ -67,18 +54,6 @@ public final class Transforms
     {
     }
 
-    /**
-     * Constructs a transformation matrix that translates the world by a vector translation.
-     *
-     * @param translation The amount to translate on all the axes.
-     *
-     * @return The transformation that does translation.
-     */
-    public static Matrix4 createTranslation(Vector3 translation)
-    {
-        return createTranslation(translation, null);
-    }
-
     public static Matrix4 createTranslation(Vector3 translation, Matrix4 dest)
     {
         if (dest == null)
@@ -86,16 +61,11 @@ public final class Transforms
 
         Matrix4 result = dest.initIdentity();
 
-        result.set(3, 0, translation.getX())
-                .set(3, 1, translation.getY())
-                .set(3, 2, translation.getZ());
+        result.set(3, 0, translation.x)
+                .set(3, 1, translation.y)
+                .set(3, 2, translation.z);
 
         return result;
-    }
-
-    public static Matrix4 createScaling(Vector3 scale)
-    {
-        return createScaling(scale, null);
     }
 
     public static Matrix4 createScaling(Vector3 scale, Matrix4 dest)
@@ -105,16 +75,11 @@ public final class Transforms
 
         Matrix4 result = dest.initIdentity();
 
-        result.set(0, 0, scale.getX())
-                .set(1, 1, scale.getY())
-                .set(2, 2, scale.getZ());
+        result.set(0, 0, scale.x)
+                .set(1, 1, scale.y)
+                .set(2, 2, scale.z);
 
         return result;
-    }
-
-    public static Matrix4 createRotation(Vector3 axis, float angle)
-    {
-        return createRotation(axis, angle, null);
     }
 
     public static Matrix4 createRotation(Vector3 axis, float angle, Matrix4 dest)
@@ -127,8 +92,8 @@ public final class Transforms
         float c = MathUtils.cos(angle);
         float s = MathUtils.sin(angle);
 
-        Vector3 nAxis = Vector3.REUSABLE_STACK.pop().set(axis).normalizeSelf();
-        Vector3 tempV = Vector3.REUSABLE_STACK.pop().set(nAxis).scaleSelf(1f - c);
+        Vector3 nAxis = Vector3.REUSABLE_STACK.pop().set(axis).normalize();
+        Vector3 tempV = Vector3.REUSABLE_STACK.pop().set(nAxis).scale(1f - c);
 
         result.set(0, 0, c + tempV.x * nAxis.x)
                 .set(0, 1, tempV.x * nAxis.y + s * nAxis.z)
@@ -148,11 +113,6 @@ public final class Transforms
         return result;
     }
 
-    public static Matrix4 createOrtho2d(float left, float right, float bottom, float top, float zNear, float zFar)
-    {
-        return createOrtho2d(left, right, bottom, top, zNear, zFar, null);
-    }
-
     public static Matrix4 createOrtho2d(float left, float right, float bottom, float top, float zNear, float zFar, Matrix4 dest)
     {
         if (dest == null)
@@ -169,11 +129,6 @@ public final class Transforms
                 .set(3, 3, 1);
 
         return result;
-    }
-
-    public static Matrix4 createFrustum(float left, float right, float bottom, float top, float zNear, float zFar)
-    {
-        return createFrustum(left, right, bottom, top, zNear, zFar, null);
     }
 
     public static Matrix4 createFrustum(float left, float right, float bottom, float top, float zNear, float zFar, Matrix4 dest)
@@ -196,11 +151,6 @@ public final class Transforms
         return result;
     }
 
-    public static Matrix4 createPerspective(float fovy, float aspect, float zNear, float zFar)
-    {
-        return createPerspective(fovy, aspect, zNear, zFar, null);
-    }
-
     public static Matrix4 createPerspective(float fovy, float aspect, float zNear, float zFar, Matrix4 dest)
     {
         if (dest == null)
@@ -219,11 +169,6 @@ public final class Transforms
         return result;
     }
 
-    public static Matrix4 createLookAtMatrix(Vector3 eye, Vector3 center, Vector3 up)
-    {
-        return createLookAtMatrix(eye, center, up, null);
-    }
-
     public static Matrix4 createLookAtMatrix(Vector3 eye, Vector3 center, Vector3 up, Matrix4 dest)
     {
         if (dest == null)
@@ -235,9 +180,9 @@ public final class Transforms
         Vector3 s = Vector3.REUSABLE_STACK.pop();
         Vector3 u = Vector3.REUSABLE_STACK.pop();
 
-        f.set(center).subtractSelf(eye).normalizeSelf();
-        s.set(f).crossSelf(up).normalizeSelf();
-        u.set(s).crossSelf(f);
+        f.set(center).subtract(eye).normalize();
+        s.set(f).cross(up).normalize();
+        u.set(s).cross(f);
 
         result.set(0, 0, s.x)
                 .set(1, 0, s.y)
@@ -262,11 +207,6 @@ public final class Transforms
         return result;
     }
 
-    public static Quaternion createLookAtQuaternion(Vector3 eye, Vector3 center, Vector3 up)
-    {
-        return createLookAtQuaternion(eye, center, up, null);
-    }
-
     public static Quaternion createLookAtQuaternion(Vector3 eye, Vector3 center, Vector3 up, Quaternion dest)
     {
         if (dest == null)
@@ -275,8 +215,8 @@ public final class Transforms
         Vector3 temp1 = Vector3.REUSABLE_STACK.pop();
         Vector3 temp2 = Vector3.REUSABLE_STACK.pop();
 
-        Vector3 forward = temp1.set(center).subtractSelf(eye).normalizeSelf();
-        Vector3 negativeZ = temp2.set(Vector3.AXIS_Z).negateSelf();
+        Vector3 forward = temp1.set(center).subtract(eye).normalize();
+        Vector3 negativeZ = temp2.set(Vector3.AXIS_Z).negate();
 
         float dot = negativeZ.dot(forward);
 
@@ -297,7 +237,7 @@ public final class Transforms
         }
 
         float rotAngle = MathUtils.acos(dot);
-        Vector3 rotAxis = negativeZ.crossSelf(forward).normalizeSelf();
+        Vector3 rotAxis = negativeZ.cross(forward).normalize();
 
         dest.set(rotAxis, rotAngle);
 
@@ -307,17 +247,12 @@ public final class Transforms
         return dest;
     }
 
-    public static Matrix4 createRotation(Quaternion q)
-    {
-        return createRotation(q, null);
-    }
-
     public static Matrix4 createRotation(Quaternion q, Matrix4 dest)
     {
         if (dest == null)
             dest = new Matrix4();
 
-        q.normalizeSelf();
+        q.normalize();
 
         Matrix4 result = dest.initIdentity();
 

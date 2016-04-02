@@ -40,8 +40,6 @@ public class Matrix3
 
     private float[][] m;
 
-    private DirectFloatBuffer buffer;
-
     public Matrix3(Matrix3 m)
     {
         this();
@@ -52,8 +50,6 @@ public class Matrix3
     {
         m = new float[3][3];
         initIdentity();
-
-        buffer = new DirectFloatBuffer(9);
     }
 
     /**
@@ -148,25 +144,13 @@ public class Matrix3
     }
 
     /**
-     * Adds {@code m} to the clone of this {@code Matrix3} and returns the result.
-     *
-     * @param m The Matrix to add on to this Matrix
-     *
-     * @return The result of the addition.
-     */
-    public Matrix3 add(Matrix3 m)
-    {
-        return new Matrix3(this).addSelf(m);
-    }
-
-    /**
      * Adds {@code m} to this {@code Matrix3} and returns itself.
      *
      * @param m The {@code Matrix3} to add on to this {@code Matrix3}
      *
      * @return This {@code Matrix3}
      */
-    public Matrix3 addSelf(Matrix3 m)
+    public Matrix3 add(Matrix3 m)
     {
         for (int i = 0; i < 3; i++)
         {
@@ -181,11 +165,6 @@ public class Matrix3
 
     public Matrix3 subtract(Matrix3 m)
     {
-        return new Matrix3(this).subtractSelf(m);
-    }
-
-    public Matrix3 subtractSelf(Matrix3 m)
-    {
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 3; j++)
@@ -198,11 +177,6 @@ public class Matrix3
     }
 
     public Matrix3 multiply(Matrix3 m)
-    {
-        return new Matrix3(this).multiplySelf(m);
-    }
-
-    public Matrix3 multiplySelf(Matrix3 m)
     {
         // Use a temporary matrix from the matrix stack instead of
         // creating a temporary float array every frame.
@@ -252,11 +226,6 @@ public class Matrix3
 
     public Matrix3 transpose()
     {
-        return new Matrix3(this).transposeSelf();
-    }
-
-    public Matrix3 transposeSelf()
-    {
         Matrix3 temp = Matrix3.REUSABLE_STACK.pop();
 
         for (int i = 0; i < 3; i++)
@@ -273,22 +242,12 @@ public class Matrix3
         return this;
     }
 
-    public Vector3 multiply(Vector3 v)
-    {
-        return multiply(v, new Vector3());
-    }
-
     public Vector3 multiply(Vector3 v, Vector3 dest)
     {
-        return dest.set(m[0][0] * v.getX(), m[0][1] * v.getY(), m[0][2] * v.getZ());
+        return dest.set(m[0][0] * v.x, m[0][1] * v.y, m[0][2] * v.z);
     }
 
     public Matrix3 invert()
-    {
-        return copy().invertSelf();
-    }
-
-    public Matrix3 invertSelf()
     {
         float s = determinant();
 
@@ -330,16 +289,14 @@ public class Matrix3
                 (m[1][0] * m[0][1] * m[2][2]));
     }
 
-    public DirectFloatBuffer getAsFloatBuffer()
+    public DirectFloatBuffer storeInto(DirectFloatBuffer buffer)
     {
         int index = 0;
 
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 3; j++)
-            {
                 buffer.write(index++, get(i, j));
-            }
         }
 
         return buffer;
@@ -353,9 +310,8 @@ public class Matrix3
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 3; j++)
-            {
                 s.append(m[i][j]).append(' ');
-            }
+
             s.append('\n');
         }
 

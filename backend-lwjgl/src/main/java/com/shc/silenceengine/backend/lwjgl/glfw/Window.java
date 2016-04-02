@@ -766,7 +766,14 @@ public class Window
     public void setMonitor(Monitor monitor, VideoMode videoMode)
     {
         this.monitor = monitor;
-        glfwSetWindowMonitor(handle, monitor.getHandle(), 0, 0, videoMode.getWidth(), videoMode.getHeight(), videoMode.getRefreshRate());
+
+        if (videoMode == null)
+        {
+            Vector2 size = getSize();
+            videoMode = new VideoMode((int) size.x, (int) size.y, 32, 32, 32, 32);
+        }
+
+        glfwSetWindowMonitor(handle, monitor == null ? NULL : monitor.getHandle(), 0, 0, videoMode.getWidth(), videoMode.getHeight(), videoMode.getRefreshRate());
     }
 
     /**
@@ -818,10 +825,10 @@ public class Window
             {
                 image.getPixel(x, y, color);
 
-                float r = (color.x * 255f);
-                float g = (color.y * 255f);
-                float b = (color.z * 255f);
-                float a = ((1 - color.w) * 255f);
+                float r = (color.r * 255f);
+                float g = (color.g * 255f);
+                float b = (color.b * 255f);
+                float a = ((1 - color.a) * 255f);
 
                 data.put((byte) r)
                         .put((byte) g)
@@ -1065,10 +1072,10 @@ public class Window
         Vector2 framebufferSize = getFramebufferSize();
         Vector2 size = getSize();
 
-        temp.set(size).scaleSelf(1 / framebufferSize.x, 1 / framebufferSize.y);
+        temp.set(size).scale(1 / framebufferSize.x, 1 / framebufferSize.y);
 
         this.framebufferSize.set(fbSize);
-        size.set(fbSize).scaleSelf(temp.x, temp.y);
+        size.set(fbSize).scale(temp.x, temp.y);
 
         setSize(size);
 
@@ -1138,7 +1145,7 @@ public class Window
 
     public void setMonitor(Monitor monitor)
     {
-        setMonitor(monitor, monitor.getVideoMode());
+        setMonitor(monitor, monitor == null ? null : monitor.getVideoMode());
     }
 
     /**

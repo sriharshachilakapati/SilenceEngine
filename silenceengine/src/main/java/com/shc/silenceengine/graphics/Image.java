@@ -1,5 +1,6 @@
 package com.shc.silenceengine.graphics;
 
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.DirectFloatBuffer;
 
@@ -32,10 +33,10 @@ public class Image
 
         int start = 4 * (width * y + x);
 
-        imageData.write(start, pixel.x)
-                .write(start + 1, pixel.y)
-                .write(start + 2, pixel.z)
-                .write(start + 3, pixel.w);
+        imageData.write(start, pixel.r)
+                .write(start + 1, pixel.g)
+                .write(start + 2, pixel.b)
+                .write(start + 3, pixel.a);
 
         return this;
     }
@@ -47,10 +48,10 @@ public class Image
 
         int start = 4 * (width * y + x);
 
-        pixelOut.x = imageData.read(start);
-        pixelOut.y = imageData.read(start + 1);
-        pixelOut.z = imageData.read(start + 2);
-        pixelOut.w = imageData.read(start + 3);
+        pixelOut.r = imageData.read(start);
+        pixelOut.g = imageData.read(start + 1);
+        pixelOut.b = imageData.read(start + 2);
+        pixelOut.a = imageData.read(start + 3);
 
         return pixelOut;
     }
@@ -68,5 +69,10 @@ public class Image
     public DirectBuffer getImageData()
     {
         return imageData.getDirectBuffer();
+    }
+
+    public void free()
+    {
+        SilenceEngine.io.free(imageData.getDirectBuffer());
     }
 }

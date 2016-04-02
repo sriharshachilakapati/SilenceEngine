@@ -22,6 +22,11 @@ public class LwjglDisplayDevice implements IDisplayDevice
     public  Window   window;
     private Platform platform;
 
+    private int windowWidth, windowHeight;
+    private int windowPositionX, windowPositionY;
+
+    private boolean fullscreen;
+
     public LwjglDisplayDevice()
     {
         GLFW3.init();
@@ -32,11 +37,32 @@ public class LwjglDisplayDevice implements IDisplayDevice
         Window.setHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
         Window.setHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
 
-        window = new Window(800, 600, "SilenceEngine Window");
+        windowWidth = 800;
+        windowHeight = 600;
+
+        window = new Window(windowWidth, windowHeight, "SilenceEngine Window");
+
         centerOnScreen();
         window.show();
+        window.makeCurrent();
 
-        window.setSizeCallback((window1, width, height) -> Game.INSTANCE.resized());
+        window.setPositionCallback((window1, xPos, yPos) -> {
+            if (!fullscreen)
+            {
+                windowPositionX = xPos;
+                windowPositionY = yPos;
+            }
+        });
+
+        window.setSizeCallback((window1, width, height) -> {
+            if (!fullscreen)
+            {
+                windowWidth = width;
+                windowHeight = height;
+            }
+
+            Game.INSTANCE.resized();
+        });
     }
 
     @Override
@@ -66,15 +92,42 @@ public class LwjglDisplayDevice implements IDisplayDevice
     public void setSize(int width, int height)
     {
         window.setSize(width, height);
+
+        if (!fullscreen)
+        {
+            windowWidth = width;
+            windowHeight = height;
+        }
+    }
+
+    void cleanUp()
+    {
+        window.destroy();
+        GLFW3.terminate();
     }
 
     @Override
     public void setFullscreen(boolean fullscreen)
     {
         if (fullscreen)
+        {
+            this.fullscreen = true;
             window.setMonitor(Monitor.getPrimaryMonitor());
+        }
         else
+        {
             window.setMonitor(null);
+            window.setSize(windowWidth, windowHeight);
+            window.setPosition(windowPositionX, windowPositionY);
+
+            this.fullscreen = false;
+        }
+    }
+
+    @Override
+    public boolean isFullscreen()
+    {
+        return fullscreen;
     }
 
     @Override
@@ -88,12 +141,18 @@ public class LwjglDisplayDevice implements IDisplayDevice
         windowPosition.y = (mode.getHeight() - windowPosition.y) / 2;
 
         window.setPosition(windowPosition);
+
+        windowPositionX = (int) windowPosition.x;
+        windowPositionY = (int) windowPosition.y;
     }
 
     @Override
     public void setPosition(int x, int y)
     {
         window.setPosition(x, y);
+
+        windowPositionX = x;
+        windowPositionY = y;
     }
 
     @Override
@@ -132,9 +191,9 @@ public class LwjglDisplayDevice implements IDisplayDevice
         window.setShouldClose(true);
     }
 
-    void cleanUp()
+    @Override
+    public double nanoTime()
     {
-        window.destroy();
-        GLFW3.terminate();
+        return System.nanoTime();
     }
 }

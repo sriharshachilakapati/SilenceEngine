@@ -28,6 +28,7 @@ import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.Image;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.math.Vector2;
 
@@ -78,22 +79,22 @@ public class Texture implements IResource
 
     public static Texture fromColor(Color c, int width, int height)
     {
-        DirectBuffer buffer = DirectBuffer.create(width * height * 4);
+        Image image = new Image(width, height);
 
-        int index = 0;
+        for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
+                image.setPixel(x, y, c);
 
-        for (int i = 0; i < height; i++)
-        {
-            for (int j = 0; j < width; j++)
-            {
-                buffer.writeByte(index++, (byte) (c.getR() * 255f))
-                        .writeByte(index++, (byte) (c.getG() * 255f))
-                        .writeByte(index++, (byte) (c.getB() * 255f))
-                        .writeByte(index++, (byte) (c.getA() * 255f));
-            }
-        }
+        Texture texture = fromImage(image);
 
-        return fromDirectBuffer(buffer, width, height, 4);
+        image.free();
+
+        return texture;
+    }
+
+    public static Texture fromImage(Image image)
+    {
+        return fromDirectBuffer(image.getImageData(), image.getWidth(), image.getHeight(), 4);
     }
 
     public static Texture fromDirectBuffer(DirectBuffer buffer, int width, int height, int components)
@@ -102,7 +103,7 @@ public class Texture implements IResource
 
         texture.bind();
         texture.setFilter(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-        texture.image2d(buffer, GL_UNSIGNED_BYTE, components == 4 ? GL_RGBA : GL_RGB, width, height, GL_RGBA4);
+        texture.image2d(buffer, GL_FLOAT, components == 4 ? GL_RGBA : GL_RGB, width, height, GL_RGBA4);
         texture.generateMipMaps();
 
         return texture;

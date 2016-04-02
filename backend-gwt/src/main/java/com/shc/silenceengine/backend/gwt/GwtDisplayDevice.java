@@ -9,6 +9,8 @@ import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.IDisplayDevice;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
+import com.shc.webgl4j.client.OES_vertex_array_object;
+import com.shc.webgl4j.client.TimeUtil;
 import com.shc.webgl4j.client.WebGL10;
 import com.shc.webgl4j.client.WebGL20;
 import com.shc.webgl4j.client.WebGLContext;
@@ -25,6 +27,8 @@ public class GwtDisplayDevice implements IDisplayDevice
 
     private String title;
 
+    private boolean fullScreenRequested;
+
     public GwtDisplayDevice()
     {
         // Create the canvas
@@ -39,6 +43,7 @@ public class GwtDisplayDevice implements IDisplayDevice
 
         // Add the canvas to the page
         RootPanel.get().add(canvas);
+        canvas.setFocus(true);
 
         boolean webgl2 = WebGL20.isSupported();
 
@@ -47,6 +52,10 @@ public class GwtDisplayDevice implements IDisplayDevice
 
         // Create a WebGL context. (Prefer WebGL 2.0 over 1.0, but offer fallback)
         context = webgl2 ? WebGL20.createContext(canvas) : WebGL10.createContext(canvas);
+
+        if (!webgl2)
+            if (!OES_vertex_array_object.isSupported())
+                throw new UnsupportedOperationException("This browser lacks required OES_vertex_array_object extension.");
 
         // Clear the screen to black and set the viewport
         WebGL10.glViewport(0, 0, 800, 600);
@@ -100,6 +109,38 @@ public class GwtDisplayDevice implements IDisplayDevice
 
         // Insert the CSS into head of the page
         Document.get().getHead().appendChild(style);
+
+        // Fullscreen should be requested from an event handler, so if there is a request, we delay it till an event
+        // happens (this is usually fast enough, since happens just the next frame, or in the same frame if any user
+        // interaction event has happened).
+        canvas.addKeyDownHandler(event -> checkRequestFullscreen());
+        canvas.addKeyUpHandler(event -> checkRequestFullscreen());
+        canvas.addKeyPressHandler(event -> checkRequestFullscreen());
+        canvas.addMouseWheelHandler(event -> checkRequestFullscreen());
+        canvas.addMouseMoveHandler(event -> checkRequestFullscreen());
+        canvas.addMouseDownHandler(event -> checkRequestFullscreen());
+        canvas.addMouseUpHandler(event -> checkRequestFullscreen());
+        canvas.addTouchStartHandler(event -> checkRequestFullscreen());
+        canvas.addTouchEndHandler(event -> checkRequestFullscreen());
+        canvas.addTouchMoveHandler(event -> checkRequestFullscreen());
+        canvas.addTouchCancelHandler(event -> checkRequestFullscreen());
+    }
+
+    private void checkRequestFullscreen()
+    {
+        if (fullScreenRequested)
+        {
+            // If the display requested a fullscreen change,
+            context.requestFullscreen();
+
+            if (WebGLContext.isFullscreen())
+            {
+                fullScreenRequested = false;
+                Game.INSTANCE.resized();
+
+                canvas.setFocus(true);
+            }
+        }
     }
 
     @Override
@@ -115,39 +156,6 @@ public class GwtDisplayDevice implements IDisplayDevice
         canvas.setCoordinateSpaceHeight(height);
 
         Game.INSTANCE.resized();
-    }
-
-    @Override
-    public void setFullscreen(boolean fullscreen)
-    {
-        if (fullscreen)
-            context.requestFullscreen();
-        else
-            WebGLContext.exitFullscreen();
-
-        Game.INSTANCE.resized();
-    }
-
-    @Override
-    public void centerOnScreen()
-    {
-    }
-
-    @Override
-    public void setPosition(int x, int y)
-    {
-    }
-
-    @Override
-    public int getWidth()
-    {
-        return canvas.getCoordinateSpaceWidth();
-    }
-
-    @Override
-    public int getHeight()
-    {
-        return canvas.getCoordinateSpaceHeight();
     }
 
     private native void setIcon(String url) /*-{
@@ -173,6 +181,54 @@ public class GwtDisplayDevice implements IDisplayDevice
     }-*/;
 
     @Override
+    public void setFullscreen(boolean fullscreen)
+    {
+        if (fullscreen)
+        {
+            // We need to make sure that fullscreen is only requested from within event handler.
+            // Otherwise browsers will not accept our request.
+            fullScreenRequested = true;
+        }
+        else
+        {
+            WebGLContext.exitFullscreen();
+            fullScreenRequested = false;
+        }
+
+        Game.INSTANCE.resized();
+        canvas.setFocus(true);
+    }
+
+    @Override
+    public boolean isFullscreen()
+    {
+        return WebGLContext.isFullscreen();
+    }
+
+    @Override
+    public void centerOnScreen()
+    {
+    }
+
+    @Override
+    public void setPosition(int x, int y)
+    {
+    }
+
+    @Override
+    public int getWidth()
+    {
+        return canvas.getCoordinateSpaceWidth();
+    }
+
+    @Override
+    public int getHeight()
+    {
+        return canvas.getCoordinateSpaceHeight();
+    }
+
+
+    @Override
     public void setTitle(String title)
     {
         this.title = title;
@@ -194,5 +250,11 @@ public class GwtDisplayDevice implements IDisplayDevice
     @Override
     public void close()
     {
+    }
+
+    @Override
+    public double nanoTime()
+    {
+        return TimeUtil.currentNanos();
     }
 }

@@ -26,6 +26,9 @@ public final class GwtRuntime
 
         Game.INSTANCE.init();
 
+        // Prevent fullscreen requests in init
+        SilenceEngine.display.setFullscreen(false);
+
         AnimationScheduler.get().requestAnimationFrame(GwtRuntime::frameLoop);
     }
 
