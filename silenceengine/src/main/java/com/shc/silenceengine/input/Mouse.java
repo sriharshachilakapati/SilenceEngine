@@ -25,7 +25,7 @@ public final class Mouse
     public static final int BUTTON_LAST  = 8;
     public static final int NUM_BUTTONS  = BUTTON_LAST + 1;
 
-    private static ButtonState[] buttonStates = new ButtonState[NUM_BUTTONS];
+    private static InputState[] buttonStates = new InputState[NUM_BUTTONS];
 
     /**
      * The x-coordinate of Mouse cursor
@@ -69,42 +69,42 @@ public final class Mouse
     static void init()
     {
         for (int i = BUTTON_FIRST; i <= BUTTON_LAST; i++)
-            buttonStates[i] = ButtonState.RELEASED;
+            buttonStates[i] = InputState.RELEASED;
     }
 
     static void update()
     {
         for (int i = BUTTON_FIRST; i <= BUTTON_LAST; i++)
         {
-            if (buttonStates[i] == ButtonState.PRESSED)
+            if (buttonStates[i] == InputState.PRESSED)
                 // If the current button state is pressed, change it to waiting for release
-                buttonStates[i] = ButtonState.WAITING_FOR_RELEASE;
+                buttonStates[i] = InputState.WAITING_FOR_RELEASE;
 
-            if (buttonStates[i] == ButtonState.RELEASED)
+            if (buttonStates[i] == InputState.RELEASED)
                 // Set the button state to pressed or released depending on whether it's down or not
-                buttonStates[i] = eventButtonStates[i] ? ButtonState.PRESSED : ButtonState.RELEASED;
+                buttonStates[i] = eventButtonStates[i] ? InputState.PRESSED : InputState.RELEASED;
             else
                 // Set the button state to released if the event state is false. Otherwise keep it intact.
-                buttonStates[i] = eventButtonStates[i] ? buttonStates[i] : ButtonState.RELEASED;
+                buttonStates[i] = eventButtonStates[i] ? buttonStates[i] : InputState.RELEASED;
         }
     }
 
     public static boolean isButtonDown(int button)
     {
-        return buttonStates[button] != ButtonState.RELEASED;
+        return buttonStates[button] != InputState.RELEASED;
     }
 
     public static boolean isButtonUp(int button)
     {
-        return buttonStates[button] == ButtonState.RELEASED;
+        return buttonStates[button] == InputState.RELEASED;
     }
 
     public static boolean isButtonTapped(int button)
     {
-        return buttonStates[button] == ButtonState.PRESSED;
+        return buttonStates[button] == InputState.PRESSED;
     }
 
-    public static ButtonState getButtonState(int button)
+    public static InputState getButtonState(int button)
     {
         return buttonStates[button];
     }

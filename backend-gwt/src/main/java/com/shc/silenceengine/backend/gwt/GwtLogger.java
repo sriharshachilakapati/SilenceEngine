@@ -34,14 +34,14 @@ public class GwtLogger extends Logger
     }
 
     private static native void nInfo(String name, String message) /*-{
-        $wnd.console.log(name + ": " + message);
+        $wnd.console.log("[" + name + "] INFO: " + message);
     }-*/;
 
     private static native void nWarn(String name, String message) /*-{
-        $wnd.console.warn(name + ": " + message);
+        $wnd.console.warn("[" + name + "] WARN: " + + message);
     }-*/;
 
     private static native void nError(String name, String message) /*-{
-        $wnd.console.error(name + ": " + message);
+        $wnd.console.error("[" + name + "] ERROR: " + + message);
     }-*/;
 }

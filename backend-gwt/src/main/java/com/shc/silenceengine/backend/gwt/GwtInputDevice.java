@@ -1,6 +1,8 @@
 package com.shc.silenceengine.backend.gwt;
 
 import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.input.InputDevice;
@@ -51,6 +53,20 @@ public class GwtInputDevice extends InputDevice
             Mouse.deltaScrollY = dsy > 0 ? 1 : dsy == 0 ? 0 : -1;
             Mouse.deltaScrollX = 0;
         });
+
+        canvas.addTouchStartHandler(event -> postTouchEvents(event.getTargetTouches(), true));
+        canvas.addTouchMoveHandler(event -> postTouchEvents(event.getTargetTouches(), true));
+        canvas.addTouchEndHandler(event -> postTouchEvents(event.getTargetTouches(), false));
+        canvas.addTouchCancelHandler(event -> postTouchEvents(event.getTargetTouches(), false));
+    }
+
+    private void postTouchEvents(JsArray<Touch> touches, boolean isDown)
+    {
+        for (int i = 0; i < Math.min(touches.length(), com.shc.silenceengine.input.Touch.NUM_FINGERS); i++)
+        {
+            Touch touch = touches.get(i);
+            postTouchEvent(i + 1, isDown, touch.getClientX(), touch.getClientY());
+        }
     }
 
     @Override

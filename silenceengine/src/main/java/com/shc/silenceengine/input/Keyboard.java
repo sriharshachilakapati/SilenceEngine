@@ -183,7 +183,7 @@ public final class Keyboard
 
     private static boolean isAnyKeyDown;
 
-    private static ButtonState[] keyStates = new ButtonState[NUM_KEYS];
+    private static InputState[] keyStates = new InputState[NUM_KEYS];
 
     static boolean[] eventKeyStates = new boolean[NUM_KEYS];
 
@@ -197,7 +197,7 @@ public final class Keyboard
     static void init()
     {
         for (int i = KEY_FIRST; i <= KEY_LAST; i++)
-            keyStates[i] = ButtonState.RELEASED;
+            keyStates[i] = InputState.RELEASED;
     }
 
     static void update()
@@ -206,38 +206,38 @@ public final class Keyboard
 
         for (int i = KEY_FIRST; i <= KEY_LAST; i++)
         {
-            if (keyStates[i] == ButtonState.PRESSED)
+            if (keyStates[i] == InputState.PRESSED)
                 // If the current key state is pressed, change it to waiting for release
-                keyStates[i] = ButtonState.WAITING_FOR_RELEASE;
+                keyStates[i] = InputState.WAITING_FOR_RELEASE;
 
-            if (keyStates[i] == ButtonState.RELEASED)
+            if (keyStates[i] == InputState.RELEASED)
                 // Set the key state to pressed or released depending on whether it's down or not
-                keyStates[i] = eventKeyStates[i] ? ButtonState.PRESSED : ButtonState.RELEASED;
+                keyStates[i] = eventKeyStates[i] ? InputState.PRESSED : InputState.RELEASED;
             else
                 // Set the key state to released if the event state is false. Otherwise keep it intact.
-                keyStates[i] = eventKeyStates[i] ? keyStates[i] : ButtonState.RELEASED;
+                keyStates[i] = eventKeyStates[i] ? keyStates[i] : InputState.RELEASED;
 
-            if (keyStates[i] != ButtonState.RELEASED)
+            if (keyStates[i] != InputState.RELEASED)
                 isAnyKeyDown = true;
         }
     }
 
     public static boolean isKeyDown(int key)
     {
-        return keyStates[key] != ButtonState.RELEASED;
+        return keyStates[key] != InputState.RELEASED;
     }
 
     public static boolean isKeyUp(int key)
     {
-        return keyStates[key] == ButtonState.RELEASED;
+        return keyStates[key] == InputState.RELEASED;
     }
 
     public static boolean isKeyTapped(int key)
     {
-        return keyStates[key] == ButtonState.PRESSED;
+        return keyStates[key] == InputState.PRESSED;
     }
 
-    public static ButtonState getKeyState(int key)
+    public static InputState getKeyState(int key)
     {
         return keyStates[key];
     }

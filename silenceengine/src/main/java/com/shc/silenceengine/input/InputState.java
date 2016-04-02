@@ -3,7 +3,7 @@ package com.shc.silenceengine.input;
 /**
  * @author Sri Harsha Chilakapati
  */
-public enum ButtonState
+public enum InputState
 {
     PRESSED,
     RELEASED,
