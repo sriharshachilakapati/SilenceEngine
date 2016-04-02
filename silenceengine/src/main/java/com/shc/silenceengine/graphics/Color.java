@@ -231,9 +231,9 @@ public class Color
     public Color set(float r, float g, float b, float a)
     {
         this.r = MathUtils.clamp(r, 0, 1);
-        this.r = MathUtils.clamp(g, 0, 1);
-        this.r = MathUtils.clamp(b, 0, 1);
-        this.r = MathUtils.clamp(a, 0, 1);
+        this.g = MathUtils.clamp(g, 0, 1);
+        this.b = MathUtils.clamp(b, 0, 1);
+        this.a = MathUtils.clamp(a, 0, 1);
 
         return this;
     }
