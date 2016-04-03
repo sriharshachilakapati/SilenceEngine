@@ -81,10 +81,6 @@ public final class GLError
                 throw new GLException.InvalidFramebufferOperation();
             case GL_OUT_OF_MEMORY:
                 throw new GLException.OutOfMemory();
-            case GL_STACK_UNDERFLOW:
-                throw new GLException.StackUnderflow();
-            case GL_STACK_OVERFLOW:
-                throw new GLException.StackOverflow();
         }
     }
 
@@ -102,10 +98,6 @@ public final class GLError
                 return Value.INVALID_FRAMEBUFFER_OPERATION;
             case GL_OUT_OF_MEMORY:
                 return Value.OUT_OF_MEMORY;
-            case GL_STACK_UNDERFLOW:
-                return Value.STACK_UNDERFLOW;
-            case GL_STACK_OVERFLOW:
-                return Value.STACK_OVERFLOW;
         }
 
         return Value.NO_ERROR;

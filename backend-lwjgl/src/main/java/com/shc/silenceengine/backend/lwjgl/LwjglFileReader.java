@@ -1,8 +1,10 @@
 package com.shc.silenceengine.backend.lwjgl;
 
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.io.FileReader;
+import com.shc.silenceengine.utils.TaskManager;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -45,14 +47,12 @@ public class LwjglFileReader extends FileReader
                 for (int i = 0; i < bytes.length; i++)
                     directBuffer.writeByte(i, bytes[i]);
 
-                onComplete.invoke(directBuffer);
+                TaskManager.addUpdateTask(() -> onComplete.invoke(directBuffer));
             }
             catch (Exception e)
             {
-                // TODO: ADD LOGGER
-//                SilenceException.reThrow(e);
+                SilenceEngine.log.getRootLogger().error(e);
             }
-
         }).start();
     }
 
@@ -72,12 +72,11 @@ public class LwjglFileReader extends FileReader
                 while ((line = bufferedReader.readLine()) != null)
                     stringBuilder.append(line).append("\n");
 
-                onComplete.invoke(stringBuilder.toString());
+                TaskManager.addUpdateTask(() -> onComplete.invoke(stringBuilder.toString()));
             }
             catch (Exception e)
             {
-                // TODO: ADD LOGGER
-//                SilenceException.reThrow(e);
+                SilenceEngine.log.getRootLogger().error(e);
             }
 
         }).start();

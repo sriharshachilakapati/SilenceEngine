@@ -5,6 +5,7 @@ import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Image;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.ImageReader;
+import com.shc.silenceengine.utils.TaskManager;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
@@ -50,7 +51,7 @@ public class LwjglImageReader extends ImageReader
 
             stbi_image_free(imageBuffer);
 
-            onComplete.invoke(image);
+            TaskManager.addUpdateTask(() -> onComplete.invoke(image));
         }).start();
     }
 }

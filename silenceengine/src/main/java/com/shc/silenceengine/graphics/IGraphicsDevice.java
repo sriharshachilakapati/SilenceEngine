@@ -168,8 +168,6 @@ public interface IGraphicsDevice
         public static final int GL_INVALID_OPERATION             = 0x0502;
         public static final int GL_INVALID_FRAMEBUFFER_OPERATION = 0x0506;
         public static final int GL_OUT_OF_MEMORY                 = 0x0505;
-        public static final int GL_STACK_UNDERFLOW               = 0x0504; // FIXME: THIS IS ONLY PRESENT ON DESKTOP
-        public static final int GL_STACK_OVERFLOW                = 0x0503; // FIXME: THIS IS ONLY PRESENT ON DESKTOP
 
         public static final int GL_POINTS         = 0x0000;
         public static final int GL_LINES          = 0x0001;

@@ -116,30 +116,4 @@ public class GLException extends SilenceException
             super("There is not enough memory left to execute the command");
         }
     }
-
-    public static class StackUnderflow extends GLException
-    {
-        /**
-         * Generated Serial UID
-         */
-        private static final long serialVersionUID = 6029167882538662114L;
-
-        public StackUnderflow()
-        {
-            super("An attempt has been made to perform an operation that would cause an internal stack to underflow");
-        }
-    }
-
-    public static class StackOverflow extends GLException
-    {
-        /**
-         * Generated Serial UID
-         */
-        private static final long serialVersionUID = 3794676582619102610L;
-
-        public StackOverflow()
-        {
-            super("An attempt has been made to perform an operation that would cause an internal stack to overflow");
-        }
-    }
 }

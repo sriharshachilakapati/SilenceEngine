@@ -87,8 +87,7 @@ public class LwjglResourceFilePath extends LwjglFilePath
         }
         catch (IOException e)
         {
-            // TODO: ADD LOGGER
-//            Logger.trace(e);
+            SilenceEngine.log.getRootLogger().error(e);
         }
 
         return false;
@@ -164,8 +163,7 @@ public class LwjglResourceFilePath extends LwjglFilePath
         }
         catch (IOException e)
         {
-            // TODO: ADD LOGGER
-//            Logger.trace(e);
+            SilenceEngine.log.getRootLogger().error(e);
         }
 
         return -1;

@@ -61,13 +61,13 @@ public abstract class VAOImpl
         @Override
         public void glEnableVertexAttribArray(int index)
         {
-            // FIXME: THIS IS ONLY AVAILABLE IN DESKTOP GL
+            WebGL10.glEnableVertexAttribArray(index);
         }
 
         @Override
         public void glDisableVertexAttribArray(int index)
         {
-            // FIXME: THIS IS ONLY AVAILABLE IN DESKTOP GL
+            WebGL10.glDisableVertexAttribArray(index);
         }
 
         @Override
@@ -106,13 +106,13 @@ public abstract class VAOImpl
         @Override
         public void glEnableVertexAttribArray(int index)
         {
-            // FIXME: THIS IS ONLY AVAILABLE IN DESKTOP GL
+            WebGL10.glEnableVertexAttribArray(index);
         }
 
         @Override
         public void glDisableVertexAttribArray(int index)
         {
-            // FIXME: THIS IS ONLY AVAILABLE IN DESKTOP GL
+            WebGL10.glDisableVertexAttribArray(index);
         }
 
         @Override

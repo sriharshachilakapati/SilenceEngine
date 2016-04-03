@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.backend.lwjgl;
 
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.FilePath;
 
@@ -133,8 +134,7 @@ public class LwjglExternalFilePath extends LwjglFilePath
         }
         catch (IOException e)
         {
-            // TODO: ADD LOGGER
-//            Logger.trace(e);
+            SilenceEngine.log.getRootLogger().error(e);
         }
 
         return -1;

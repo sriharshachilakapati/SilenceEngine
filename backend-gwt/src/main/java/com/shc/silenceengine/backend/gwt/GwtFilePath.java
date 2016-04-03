@@ -64,7 +64,9 @@ public class GwtFilePath extends FilePath
     @Override
     public boolean isFile()
     {
-        return exists; // FIXME: Assuming it is a file if it exists
+        // XMLHttpRequest cannot be used with directories, so if it exists
+        // then it should be a directory
+        return exists;
     }
 
     @Override
