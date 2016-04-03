@@ -113,8 +113,6 @@ public final class GLError
         INVALID_VALUE,
         INVALID_OPERATION,
         INVALID_FRAMEBUFFER_OPERATION,
-        OUT_OF_MEMORY,
-        STACK_UNDERFLOW,
-        STACK_OVERFLOW
+        OUT_OF_MEMORY
     }
 }
