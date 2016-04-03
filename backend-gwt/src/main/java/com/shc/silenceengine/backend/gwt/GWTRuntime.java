@@ -16,7 +16,7 @@ public final class GwtRuntime
     {
     }
 
-    public static void start()
+    public static void start(Game game)
     {
         SilenceEngine.log = new GwtLogDevice();
         SilenceEngine.display = new GwtDisplayDevice();
@@ -24,7 +24,7 @@ public final class GwtRuntime
         SilenceEngine.io = new GwtIODevice();
         SilenceEngine.graphics = new GwtGraphicsDevice();
 
-        Game.INSTANCE.init();
+        game.init();
 
         // Prevent fullscreen requests in init
         SilenceEngine.display.setFullscreen(false);

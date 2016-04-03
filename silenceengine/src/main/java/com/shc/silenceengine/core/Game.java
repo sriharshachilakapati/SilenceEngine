@@ -1,19 +1,18 @@
 package com.shc.silenceengine.core;
 
-import com.shc.silenceengine.core.gameloops.VariableTimeSteppedLoop;
-
 /**
  * @author Sri Harsha Chilakapati
  */
 public abstract class Game
 {
     public static boolean DEVELOPMENT = true;
-    public static Game    INSTANCE;
 
     public Game()
     {
-        INSTANCE = this;
-        SilenceEngine.gameLoop = new VariableTimeSteppedLoop();
+        SilenceEngine.eventManager.addUpdateHandler(this::update);
+        SilenceEngine.eventManager.addRenderHandler(this::render);
+        SilenceEngine.eventManager.addResizeHandler(this::resized);
+        SilenceEngine.eventManager.addDisposeHandler(this::dispose);
     }
 
     public void init()

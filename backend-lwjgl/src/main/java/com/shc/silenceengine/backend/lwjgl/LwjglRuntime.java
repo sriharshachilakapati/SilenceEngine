@@ -16,7 +16,7 @@ public final class LwjglRuntime
     {
     }
 
-    public static void start()
+    public static void start(Game game)
     {
         SilenceEngine.log = new LwjglLogDevice();
         SilenceEngine.io = new LwjglIODevice();
@@ -26,7 +26,7 @@ public final class LwjglRuntime
 
         Window window = ((LwjglDisplayDevice) SilenceEngine.display).window;
 
-        Game.INSTANCE.init();
+        game.init();
 
         while (!window.shouldClose())
         {
@@ -35,7 +35,7 @@ public final class LwjglRuntime
             window.swapBuffers();
         }
 
-        Game.INSTANCE.dispose();
+        SilenceEngine.eventManager.raiseDisposeEvent();
 
         ((LwjglDisplayDevice) SilenceEngine.display).cleanUp();
     }

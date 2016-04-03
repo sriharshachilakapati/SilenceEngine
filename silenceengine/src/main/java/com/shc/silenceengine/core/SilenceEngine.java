@@ -1,5 +1,6 @@
 package com.shc.silenceengine.core;
 
+import com.shc.silenceengine.core.gameloops.VariableTimeSteppedLoop;
 import com.shc.silenceengine.graphics.IGraphicsDevice;
 import com.shc.silenceengine.input.InputDevice;
 import com.shc.silenceengine.io.IODevice;
@@ -20,7 +21,7 @@ public final class SilenceEngine
     /**
      * The {@link IGameLoop} that generates events in the game.
      */
-    public static IGameLoop gameLoop;
+    public static IGameLoop gameLoop = new VariableTimeSteppedLoop();
 
     /**
      * The {@link IDisplayDevice} that handles the display, that is the window thing.
@@ -46,6 +47,11 @@ public final class SilenceEngine
      * The {@link ILogDevice} that handles logging.
      */
     public static ILogDevice log;
+
+    /**
+     * The {@link EventManager} that handles the events in SilenceEngine.
+     */
+    public static EventManager eventManager = new EventManager();
 
     public enum Platform
     {

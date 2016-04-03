@@ -1,5 +1,7 @@
 package com.shc.silenceengine.input;
 
+import com.shc.silenceengine.core.SilenceEngine;
+
 /**
  * @author Sri Harsha Chilakapati
  */
@@ -14,6 +16,8 @@ public abstract class InputDevice
         Keyboard.init();
         Mouse.init();
         Touch.init();
+
+        SilenceEngine.eventManager.addUpdateHandler(this::update);
     }
 
     public void postKeyEvent(int key, boolean isDown)
@@ -32,7 +36,7 @@ public abstract class InputDevice
         Touch.eventPositions[finger].set(xPos, yPos);
     }
 
-    public void update()
+    private void update(float deltaTime)
     {
         Keyboard.update();
         Mouse.update();

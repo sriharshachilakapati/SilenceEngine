@@ -5,7 +5,6 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.StyleElement;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.IDisplayDevice;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
@@ -136,7 +135,7 @@ public class GwtDisplayDevice implements IDisplayDevice
             if (WebGLContext.isFullscreen())
             {
                 fullScreenRequested = false;
-                Game.INSTANCE.resized();
+                SilenceEngine.eventManager.raiseResizeEvent();
 
                 canvas.setFocus(true);
             }
@@ -155,7 +154,7 @@ public class GwtDisplayDevice implements IDisplayDevice
         canvas.setCoordinateSpaceWidth(width);
         canvas.setCoordinateSpaceHeight(height);
 
-        Game.INSTANCE.resized();
+        SilenceEngine.eventManager.raiseResizeEvent();
     }
 
     private native void setIcon(String url) /*-{
@@ -195,7 +194,7 @@ public class GwtDisplayDevice implements IDisplayDevice
             fullScreenRequested = false;
         }
 
-        Game.INSTANCE.resized();
+        SilenceEngine.eventManager.raiseResizeEvent();
         canvas.setFocus(true);
     }
 

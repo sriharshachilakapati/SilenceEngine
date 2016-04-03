@@ -26,7 +26,6 @@ package com.shc.silenceengine.tests.gwt;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.shc.silenceengine.backend.gwt.GwtRuntime;
-import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.tests.TestGame;
 
 public class TestLauncher implements EntryPoint
@@ -34,7 +33,6 @@ public class TestLauncher implements EntryPoint
     @Override
     public void onModuleLoad()
     {
-        Game.INSTANCE = new TestGame();
-        GwtRuntime.start();
+        GwtRuntime.start(new TestGame());
     }
 }

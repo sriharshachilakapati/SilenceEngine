@@ -4,8 +4,8 @@ import com.shc.silenceengine.backend.lwjgl.glfw.GLFW3;
 import com.shc.silenceengine.backend.lwjgl.glfw.Monitor;
 import com.shc.silenceengine.backend.lwjgl.glfw.VideoMode;
 import com.shc.silenceengine.backend.lwjgl.glfw.Window;
-import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.IDisplayDevice;
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Vector2;
 import org.lwjgl.glfw.GLFW;
@@ -61,8 +61,10 @@ public class LwjglDisplayDevice implements IDisplayDevice
                 windowHeight = height;
             }
 
-            Game.INSTANCE.resized();
+            SilenceEngine.eventManager.raiseResizeEvent();
         });
+
+        SilenceEngine.eventManager.raiseResizeEvent();
     }
 
     @Override
@@ -98,6 +100,8 @@ public class LwjglDisplayDevice implements IDisplayDevice
             windowWidth = width;
             windowHeight = height;
         }
+
+        SilenceEngine.eventManager.raiseResizeEvent();
     }
 
     void cleanUp()
@@ -122,6 +126,8 @@ public class LwjglDisplayDevice implements IDisplayDevice
 
             this.fullscreen = false;
         }
+
+        SilenceEngine.eventManager.raiseResizeEvent();
     }
 
     @Override
