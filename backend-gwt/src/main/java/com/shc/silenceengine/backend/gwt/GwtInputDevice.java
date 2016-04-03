@@ -62,11 +62,21 @@ public class GwtInputDevice extends InputDevice
 
     private void postTouchEvents(JsArray<Touch> touches, boolean isDown)
     {
-        for (int i = 0; i < Math.min(touches.length(), com.shc.silenceengine.input.Touch.NUM_FINGERS); i++)
+        int i, j;
+
+        // Browsers report only the available touches in a list. So update all the touches in the list accurately.
+        // We ignore the touches past finger 9 (only ten fingers are read).
+        for (i = 0, j = com.shc.silenceengine.input.Touch.FINGER_0;
+                i < touches.length() && j <= com.shc.silenceengine.input.Touch.FINGER_9; i++, j++)
         {
             Touch touch = touches.get(i);
-            postTouchEvent(i + 1, isDown, touch.getClientX(), touch.getClientY());
+            postTouchEvent(j, isDown, touch.getClientX(), touch.getClientY());
         }
+
+        // For all the remain fingers, set the finger down state to false. Otherwise they are reported as down
+        // continuously. This will fix that issue.
+        while (j <= com.shc.silenceengine.input.Touch.FINGER_9)
+            postTouchEvent(j++, false, 0, 0);
     }
 
     @Override

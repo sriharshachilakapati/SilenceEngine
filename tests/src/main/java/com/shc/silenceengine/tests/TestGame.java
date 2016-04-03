@@ -28,7 +28,8 @@ public class TestGame extends Game
 
         SilenceEngine.display.setTitle("Hello World!!");
 
-        SilenceEngine.input.setSimulateTouch(true);
+        if (SilenceEngine.display.getPlatform() != SilenceEngine.Platform.HTML5)
+            SilenceEngine.input.setSimulateTouch(true);
     }
 
     @Override
