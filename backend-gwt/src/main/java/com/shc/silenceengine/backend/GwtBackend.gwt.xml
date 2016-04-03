@@ -7,6 +7,7 @@
     <inherits name="com.google.gwt.xml.XML"/>
 
     <inherits name="com.shc.webgl4j.client"/>
+    <inherits name="com.shc.gwtal.client"/>
     <inherits name="com.shc.SilenceEngine"/>
 
     <source path='gwt'/>

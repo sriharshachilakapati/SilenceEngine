@@ -65,6 +65,8 @@ public class LwjglDisplayDevice implements IDisplayDevice
         });
 
         SilenceEngine.eventManager.raiseResizeEvent();
+
+        SilenceEngine.eventManager.addDisposeHandler(this::cleanUp);
     }
 
     @Override
@@ -104,7 +106,7 @@ public class LwjglDisplayDevice implements IDisplayDevice
         SilenceEngine.eventManager.raiseResizeEvent();
     }
 
-    void cleanUp()
+    private void cleanUp()
     {
         window.destroy();
         GLFW3.terminate();

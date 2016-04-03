@@ -23,6 +23,7 @@ public final class LwjglRuntime
         SilenceEngine.display = new LwjglDisplayDevice();
         SilenceEngine.input = new LwjglInputDevice();
         SilenceEngine.graphics = new LwjglGraphicsDevice();
+        SilenceEngine.audio = new LwjglAudioDevice();
 
         Window window = ((LwjglDisplayDevice) SilenceEngine.display).window;
 
@@ -36,7 +37,5 @@ public final class LwjglRuntime
         }
 
         SilenceEngine.eventManager.raiseDisposeEvent();
-
-        ((LwjglDisplayDevice) SilenceEngine.display).cleanUp();
     }
 }

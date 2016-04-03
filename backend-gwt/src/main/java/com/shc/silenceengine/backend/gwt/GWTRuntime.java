@@ -23,6 +23,7 @@ public final class GwtRuntime
         SilenceEngine.input = new GwtInputDevice();
         SilenceEngine.io = new GwtIODevice();
         SilenceEngine.graphics = new GwtGraphicsDevice();
+        SilenceEngine.audio = new GwtAudioDevice();
 
         game.init();
 
