@@ -49,10 +49,6 @@ public abstract class InputDevice
         {
             int finger = FINGER_0;
 
-            // The simulated events should go after real screen events
-            while (finger <= FINGER_9 && isFingerDown(finger))
-                finger++;
-
             for (int button = BUTTON_FIRST; button <= BUTTON_LAST; button++)
             {
                 // Safeguard against max fingers
