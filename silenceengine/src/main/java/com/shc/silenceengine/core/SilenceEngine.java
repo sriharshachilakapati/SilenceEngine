@@ -1,6 +1,6 @@
 package com.shc.silenceengine.core;
 
-import com.shc.silenceengine.audio.IAudioDevice;
+import com.shc.silenceengine.audio.AudioDevice;
 import com.shc.silenceengine.core.gameloops.VariableTimeSteppedLoop;
 import com.shc.silenceengine.graphics.IGraphicsDevice;
 import com.shc.silenceengine.input.InputDevice;
@@ -35,9 +35,9 @@ public final class SilenceEngine
     public static IGraphicsDevice graphics;
 
     /**
-     * The {@link IAudioDevice} that handles the audio.
+     * The {@link AudioDevice} that handles the audio.
      */
-    public static IAudioDevice audio;
+    public static AudioDevice audio;
 
     /**
      * The {@link IODevice} that handles IO operations.

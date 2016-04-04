@@ -30,7 +30,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
-public final class SoundUtils
+final class SoundUtils
 {
     /**
      * Method borrowed from LWJGL 3 demos, this converts stereo and mono data samples to the internal format of OpenAL.

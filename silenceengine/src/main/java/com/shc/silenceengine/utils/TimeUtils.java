@@ -50,7 +50,7 @@ public final class TimeUtils
 
     public static double currentMillis()
     {
-        return currentMillis() / 1000.0;
+        return currentMicros() / 1000.0;
     }
 
     public static double currentSeconds()

@@ -2,6 +2,9 @@ package com.shc.silenceengine.input;
 
 import com.shc.silenceengine.core.SilenceEngine;
 
+import static com.shc.silenceengine.input.Mouse.*;
+import static com.shc.silenceengine.input.Touch.*;
+
 /**
  * @author Sri Harsha Chilakapati
  */
@@ -44,9 +47,26 @@ public abstract class InputDevice
 
         if (simulateTouch)
         {
-            postTouchEvent(Touch.FINGER_0, Mouse.isButtonDown(Mouse.BUTTON_LEFT), Mouse.x, Mouse.y);
-            postTouchEvent(Touch.FINGER_1, Mouse.isButtonDown(Mouse.BUTTON_RIGHT), Mouse.x, Mouse.y);
-            postTouchEvent(Touch.FINGER_2, Mouse.isButtonDown(Mouse.BUTTON_MIDDLE), Mouse.x, Mouse.y);
+            int finger = FINGER_0;
+
+            // The simulated events should go after real screen events
+            while (finger <= FINGER_9 && isFingerDown(finger))
+                finger++;
+
+            for (int button = BUTTON_FIRST; button <= BUTTON_LAST; button++)
+            {
+                // Safeguard against max fingers
+                if (finger == NUM_FINGERS)
+                    break;
+
+                if (isButtonDown(button))
+                    // Mouse button down, post an event and move to next finger
+                    postTouchEvent(finger++, true, Mouse.x, Mouse.y);
+                else
+                    // Post event making finger up, and keep the current finger test
+                    // for next button.
+                    postTouchEvent(finger, false, Mouse.x, Mouse.y);
+            }
         }
     }
 

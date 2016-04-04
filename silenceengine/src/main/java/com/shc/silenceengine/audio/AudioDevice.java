@@ -6,46 +6,48 @@ import com.shc.silenceengine.io.DirectBuffer;
 /**
  * @author Sri Harsha Chilakapati
  */
-public interface IAudioDevice
+public abstract class AudioDevice
 {
-    int alGenBuffers();
+    public final AudioScene scene = new AudioScene();
 
-    void alBufferData(int id, int format, DirectBuffer data, int frequency);
+    public abstract int alGenBuffers();
 
-    void alDeleteBuffers(int... buffers);
+    public abstract void alBufferData(int id, int format, DirectBuffer data, int frequency);
 
-    int alGetError();
+    public abstract void alDeleteBuffers(int... buffers);
 
-    int alGenSources();
+    public abstract int alGetError();
 
-    void alSourcei(int id, int param, int value);
+    public abstract int alGenSources();
 
-    void alSourcef(int id, int param, float value);
+    public abstract void alSourcei(int id, int param, int value);
 
-    void alSource3f(int id, int param, float v1, float v2, float v3);
+    public abstract void alSourcef(int id, int param, float value);
 
-    void alSourcePlay(int id);
+    public abstract void alSource3f(int id, int param, float v1, float v2, float v3);
 
-    void alSourcePause(int id);
+    public abstract void alSourcePlay(int id);
 
-    void alSourceRewind(int id);
+    public abstract void alSourcePause(int id);
 
-    void alSourceStop(int id);
+    public abstract void alSourceRewind(int id);
 
-    int alGetSourcei(int id, int parameter);
+    public abstract void alSourceStop(int id);
 
-    void alDeleteSources(int... sources);
+    public abstract int alGetSourcei(int id, int parameter);
 
-    void readToALBuffer(AudioFormat format, DirectBuffer data, OnDecodeComplete onDecoded);
+    public abstract void alDeleteSources(int... sources);
+
+    public abstract void readToALBuffer(AudioFormat format, DirectBuffer data, OnDecodeComplete onDecoded);
 
     @FunctionalInterface
-    interface OnDecodeComplete {
+    public interface OnDecodeComplete {
         void accept(ALBuffer buffer);
     }
 
-    boolean isSupported(AudioFormat format);
+    public abstract boolean isSupported(AudioFormat format);
 
-    enum AudioFormat
+    public enum AudioFormat
     {
         OGG,
         WAV,
@@ -53,7 +55,7 @@ public interface IAudioDevice
         WEBM
     }
 
-    class Constants
+    public static class Constants
     {
         /**
          * General tokens.

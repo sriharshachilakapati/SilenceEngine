@@ -1,6 +1,6 @@
 package com.shc.silenceengine.backend.lwjgl;
 
-import com.shc.silenceengine.audio.IAudioDevice;
+import com.shc.silenceengine.audio.AudioDevice;
 import com.shc.silenceengine.audio.openal.ALBuffer;
 import com.shc.silenceengine.backend.lwjgl.soundreaders.OggReader;
 import com.shc.silenceengine.backend.lwjgl.soundreaders.WaveReader;
@@ -20,7 +20,7 @@ import static org.lwjgl.openal.ALC10.*;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class LwjglAudioDevice implements IAudioDevice
+public class LwjglAudioDevice extends AudioDevice
 {
     private long device;
     private long context;

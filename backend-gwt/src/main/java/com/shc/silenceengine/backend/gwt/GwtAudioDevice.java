@@ -5,7 +5,7 @@ import com.shc.gwtal.client.openal.AL10;
 import com.shc.gwtal.client.openal.ALContext;
 import com.shc.gwtal.client.openal.AudioDecoder;
 import com.shc.gwtal.client.webaudio.AudioContextException;
-import com.shc.silenceengine.audio.IAudioDevice;
+import com.shc.silenceengine.audio.AudioDevice;
 import com.shc.silenceengine.audio.openal.ALBuffer;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
@@ -14,7 +14,7 @@ import com.shc.silenceengine.io.DirectBuffer;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class GwtAudioDevice implements IAudioDevice
+public class GwtAudioDevice extends AudioDevice
 {
     private ALContext context;
 

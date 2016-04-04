@@ -27,7 +27,7 @@ package com.shc.silenceengine.audio.openal;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.math.Vector3;
 
-import static com.shc.silenceengine.audio.IAudioDevice.Constants.*;
+import static com.shc.silenceengine.audio.AudioDevice.Constants.*;
 
 /**
  * Represents an OpenAL Sound source.

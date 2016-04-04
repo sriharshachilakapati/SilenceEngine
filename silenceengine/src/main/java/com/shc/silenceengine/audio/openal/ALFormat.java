@@ -26,7 +26,7 @@ package com.shc.silenceengine.audio.openal;
 
 import com.shc.silenceengine.core.SilenceException;
 
-import static com.shc.silenceengine.audio.IAudioDevice.Constants.*;
+import static com.shc.silenceengine.audio.AudioDevice.Constants.*;
 
 /**
  * Represents the internal format of an OpenAL Buffer. This format is not the file format or the encoding, but it is

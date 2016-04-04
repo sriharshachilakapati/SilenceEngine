@@ -27,7 +27,7 @@ package com.shc.silenceengine.audio.openal;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
 
-import static com.shc.silenceengine.audio.IAudioDevice.Constants.*;
+import static com.shc.silenceengine.audio.AudioDevice.Constants.*;
 
 /**
  * Class used to check for OpenAL errors (non contextual) and rethrow them as ALException, which is a runtime

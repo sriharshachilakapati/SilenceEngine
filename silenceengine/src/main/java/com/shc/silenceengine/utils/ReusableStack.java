@@ -26,8 +26,10 @@ package com.shc.silenceengine.utils;
 
 import com.shc.silenceengine.core.SilenceException;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @param <T> Any typed parameter.
@@ -37,12 +39,14 @@ import java.util.LinkedList;
 public final class ReusableStack<T>
 {
     private Deque<T> stack;
+    private List<T>  list;
 
     private ObjectProvider<T> objectProvider;
 
     public ReusableStack(ObjectProvider<T> objectProvider)
     {
         stack = new LinkedList<>();
+        list = new ArrayList<>();
         this.objectProvider = objectProvider;
     }
 
@@ -51,7 +55,10 @@ public final class ReusableStack<T>
         if (stack.size() == 0)
             try
             {
-                stack.push(objectProvider.createObject());
+                T object = objectProvider.createObject();
+
+                list.add(object);
+                stack.push(object);
             }
             catch (Exception e)
             {
@@ -66,6 +73,12 @@ public final class ReusableStack<T>
         stack.push(value);
     }
 
+    public List<T> getAsList()
+    {
+        return list;
+    }
+
+    @FunctionalInterface
     public interface ObjectProvider<T>
     {
         T createObject();
