@@ -1,8 +1,13 @@
 package com.shc.silenceengine.backend.lwjgl;
 
 import com.shc.silenceengine.audio.IAudioDevice;
+import com.shc.silenceengine.audio.openal.ALBuffer;
+import com.shc.silenceengine.backend.lwjgl.soundreaders.OggReader;
+import com.shc.silenceengine.backend.lwjgl.soundreaders.WaveReader;
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.DirectBuffer;
+import com.shc.silenceengine.utils.TaskManager;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.ALC;
@@ -116,6 +121,62 @@ public class LwjglAudioDevice implements IAudioDevice
     {
         for (int source : sources)
             AL10.alDeleteSources(source);
+    }
+
+    @Override
+    public void readToALBuffer(AudioFormat format, DirectBuffer data, OnDecodeComplete onDecoded)
+    {
+        if (!isSupported(format))
+            throw new SilenceException("Error, cannot decode unsupported format");
+
+        switch (format)
+        {
+            case OGG:
+            {
+                OggReader reader = new OggReader(data);
+
+                TaskManager.addUpdateTask(() -> {
+                    ALBuffer alBuffer = new ALBuffer();
+                    alBuffer.uploadData(new LwjglDirectBuffer(reader.getData()), reader.getFormat(), reader.getSampleRate());
+
+                    onDecoded.accept(alBuffer);
+                });
+
+                break;
+            }
+
+            case WAV:
+            {
+                WaveReader reader = new WaveReader(data);
+
+                TaskManager.addUpdateTask(() -> {
+                    ALBuffer alBuffer = new ALBuffer();
+                    alBuffer.uploadData(new LwjglDirectBuffer(reader.getData()), reader.getFormat(), reader.getSampleRate());
+
+                    onDecoded.accept(alBuffer);
+                });
+
+                break;
+            }
+        }
+    }
+
+    @Override
+    public boolean isSupported(AudioFormat format)
+    {
+        switch (format)
+        {
+            case OGG:
+                return true;
+            case MP3:
+                return false;
+            case WAV:
+                return true;
+            case WEBM:
+                return false;
+        }
+
+        return false;
     }
 
     private void cleanUp()

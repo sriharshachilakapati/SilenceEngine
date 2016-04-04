@@ -36,6 +36,12 @@ public class LwjglDirectBuffer extends DirectBuffer
 {
     private ByteBuffer nativeBuffer;
 
+    public LwjglDirectBuffer(ByteBuffer buffer)
+    {
+        super(buffer.capacity());
+        nativeBuffer = buffer;
+    }
+
     public LwjglDirectBuffer(int sizeInBytes)
     {
         super(sizeInBytes);

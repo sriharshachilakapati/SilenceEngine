@@ -50,6 +50,11 @@ public class ALBuffer
         ALError.check();
     }
 
+    public ALBuffer(int alBufferID)
+    {
+        id = alBufferID;
+    }
+
     /**
      * Uploads the data present in a DirectBuffer of a specific format and frequency into this OpenAL Buffer.
      *

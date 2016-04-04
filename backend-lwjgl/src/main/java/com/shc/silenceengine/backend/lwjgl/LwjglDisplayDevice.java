@@ -166,13 +166,13 @@ public class LwjglDisplayDevice implements IDisplayDevice
     @Override
     public int getWidth()
     {
-        return (int) window.getPosition().x;
+        return (int) window.getSize().x;
     }
 
     @Override
     public int getHeight()
     {
-        return (int) window.getPosition().y;
+        return (int) window.getSize().y;
     }
 
     @Override

@@ -3,9 +3,12 @@ package com.shc.silenceengine.backend.gwt;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
 import com.shc.gwtal.client.openal.AL10;
 import com.shc.gwtal.client.openal.ALContext;
+import com.shc.gwtal.client.openal.AudioDecoder;
 import com.shc.gwtal.client.webaudio.AudioContextException;
 import com.shc.silenceengine.audio.IAudioDevice;
+import com.shc.silenceengine.audio.openal.ALBuffer;
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.DirectBuffer;
 
 /**
@@ -109,5 +112,37 @@ public class GwtAudioDevice implements IAudioDevice
     public void alDeleteSources(int... sources)
     {
         AL10.alDeleteSources(sources);
+    }
+
+    @Override
+    public void readToALBuffer(AudioFormat format, DirectBuffer data, OnDecodeComplete onDecoded)
+    {
+        if (!isSupported(format))
+            throw new SilenceException("Audio format " + format + " is not supported.");
+
+        AudioDecoder.decodeAudio(((ArrayBufferView) data.nativeBuffer()).buffer(),
+                alBufferID -> onDecoded.accept(new ALBuffer(alBufferID)),
+                reason ->
+                {
+                    throw new SilenceException("Error decoding: " + reason);
+                });
+    }
+
+    @Override
+    public boolean isSupported(AudioFormat format)
+    {
+        switch (format)
+        {
+            case OGG:
+                return AudioDecoder.isSupported(AudioDecoder.FileFormat.OGG);
+            case MP3:
+                return AudioDecoder.isSupported(AudioDecoder.FileFormat.MP3);
+            case WAV:
+                return AudioDecoder.isSupported(AudioDecoder.FileFormat.WAV);
+            case WEBM:
+                return AudioDecoder.isSupported(AudioDecoder.FileFormat.WEBM);
+        }
+
+        return false;
     }
 }

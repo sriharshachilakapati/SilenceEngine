@@ -3,15 +3,15 @@ package com.shc.silenceengine.utils;
 import com.shc.silenceengine.core.SilenceEngine;
 
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Queue;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public final class TaskManager
 {
-    private static List<Task> updateTasks = new LinkedList<>();
-    private static List<Task> renderTasks = new LinkedList<>();
+    private static Queue<Task> updateTasks = new LinkedList<>();
+    private static Queue<Task>  renderTasks = new LinkedList<>();
 
     private static boolean initialized = false;
 
@@ -29,18 +29,14 @@ public final class TaskManager
 
     private static void update(float deltaTime)
     {
-        for (Task task : updateTasks)
-            task.perform();
-
-        updateTasks.clear();
+        while (!updateTasks.isEmpty())
+            updateTasks.remove().perform();
     }
 
     private static void render(float delta)
     {
-        for (Task task : renderTasks)
-            task.perform();
-
-        renderTasks.clear();
+        while (!renderTasks.isEmpty())
+            renderTasks.remove().perform();
     }
 
     private static void checkInitialized()

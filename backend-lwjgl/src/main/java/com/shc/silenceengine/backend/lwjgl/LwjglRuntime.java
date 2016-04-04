@@ -25,6 +25,10 @@ public final class LwjglRuntime
         SilenceEngine.graphics = new LwjglGraphicsDevice();
         SilenceEngine.audio = new LwjglAudioDevice();
 
+        // Set AWT fix on Mac OS X
+        if (SilenceEngine.display.getPlatform() == SilenceEngine.Platform.MACOSX)
+            System.setProperty("java.awt.headless", "true");
+
         Window window = ((LwjglDisplayDevice) SilenceEngine.display).window;
 
         game.init();

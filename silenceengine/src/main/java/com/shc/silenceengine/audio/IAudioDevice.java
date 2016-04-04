@@ -1,5 +1,6 @@
 package com.shc.silenceengine.audio;
 
+import com.shc.silenceengine.audio.openal.ALBuffer;
 import com.shc.silenceengine.io.DirectBuffer;
 
 /**
@@ -34,6 +35,23 @@ public interface IAudioDevice
     int alGetSourcei(int id, int parameter);
 
     void alDeleteSources(int... sources);
+
+    void readToALBuffer(AudioFormat format, DirectBuffer data, OnDecodeComplete onDecoded);
+
+    @FunctionalInterface
+    interface OnDecodeComplete {
+        void accept(ALBuffer buffer);
+    }
+
+    boolean isSupported(AudioFormat format);
+
+    enum AudioFormat
+    {
+        OGG,
+        WAV,
+        MP3,
+        WEBM
+    }
 
     class Constants
     {
