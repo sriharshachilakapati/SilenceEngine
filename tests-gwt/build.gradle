@@ -42,6 +42,8 @@ task superDev(type: de.richsource.gradle.plugins.gwt.GwtSuperDev) {
 
 war {
     from sourceSets.main.resources
+    from files(project(':silenceengine').sourceSets.main.output.resourcesDir)
+    from files(project(':tests').sourceSets.main.output.resourcesDir)
 }
 
 task addSource << {

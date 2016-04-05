@@ -2,6 +2,12 @@ javadoc {
     options.addStringOption("sourcepath", "")
 }
 
+jar {
+    // Prevent resources from adding into the main JAR. We have
+    // a separate artifact for that purpose.
+    exclude "**.*"
+}
+
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
     from javadoc
@@ -12,6 +18,11 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
+task resourcesJar(type: Jar) {
+    classifier = 'resources'
+    from files(sourceSets.main.output.resourcesDir)
+}
+
 artifacts {
-    archives javadocJar, sourcesJar
+    archives javadocJar, sourcesJar, resourcesJar
 }
