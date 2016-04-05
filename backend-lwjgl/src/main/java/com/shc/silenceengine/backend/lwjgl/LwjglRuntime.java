@@ -32,6 +32,7 @@ public final class LwjglRuntime
         Window window = ((LwjglDisplayDevice) SilenceEngine.display).window;
 
         game.init();
+        SilenceEngine.eventManager.raiseResizeEvent();
 
         while (!window.shouldClose())
         {

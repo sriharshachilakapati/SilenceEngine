@@ -64,8 +64,6 @@ public class LwjglDisplayDevice implements IDisplayDevice
             SilenceEngine.eventManager.raiseResizeEvent();
         });
 
-        SilenceEngine.eventManager.raiseResizeEvent();
-
         SilenceEngine.eventManager.addDisposeHandler(this::cleanUp);
     }
 

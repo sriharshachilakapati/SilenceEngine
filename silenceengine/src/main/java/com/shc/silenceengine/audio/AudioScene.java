@@ -30,6 +30,17 @@ public final class AudioScene
         SilenceEngine.eventManager.addUpdateHandler(this::updateSources);
     }
 
+    public void stopAllSources()
+    {
+        for (ALSource source : playingSources.keySet())
+        {
+            source.stop();
+            sourcesPool.push(source);
+        }
+
+        playingSources.clear();
+    }
+
     private void cleanUp()
     {
         // Cleanup all the sources in the object pool

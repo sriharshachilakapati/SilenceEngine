@@ -25,14 +25,55 @@
 package com.shc.silenceengine.tests.gwt;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.shc.silenceengine.backend.gwt.GwtRuntime;
-import com.shc.silenceengine.tests.TestGame;
+import com.shc.silenceengine.tests.GameTest;
+import com.shc.silenceengine.tests.KeyboardTest;
+import com.shc.silenceengine.tests.SilenceTest;
+import com.shc.silenceengine.tests.TestRunner;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TestLauncher implements EntryPoint
 {
+    private Map<String, TestProvider> tests = new HashMap<>();
+
+    private TestRunner game;
+
     @Override
     public void onModuleLoad()
     {
-        GwtRuntime.start(new TestGame());
+        registerTests();
+
+        ListBox selectionList = new ListBox();
+
+        for (String testName : tests.keySet())
+            selectionList.addItem(testName);
+
+        selectionList.addChangeHandler(event ->
+                game.changeTest(tests.get(selectionList.getSelectedItemText()).provide()));
+
+        RootPanel.get().add(new HTML("Select Test: "));
+        RootPanel.get().add(selectionList);
+        RootPanel.get().add(new HTML("<br>"));
+
+        game = new TestRunner(tests.get(selectionList.getItemText(0)).provide());
+
+        GwtRuntime.start(game);
+    }
+
+    private void registerTests()
+    {
+        tests.put("GameTest", GameTest::new);
+        tests.put("KeyboardTest", KeyboardTest::new);
+    }
+
+    @FunctionalInterface
+    private interface TestProvider
+    {
+        SilenceTest provide();
     }
 }
