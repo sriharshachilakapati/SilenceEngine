@@ -16,3 +16,5 @@ tests-gwt/build/
 tests-gwt/tests-gwt.iml
 tests-gwt/war/
 .idea/
+out/
+.gradle/

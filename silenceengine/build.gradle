@@ -15,6 +15,7 @@ task javadocJar(type: Jar) {
 
 task sourcesJar(type: Jar) {
     classifier = 'sources'
+    exclude "**.*"
     from sourceSets.main.allSource
 }
 
