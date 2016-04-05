@@ -333,4 +333,34 @@ public class Color
     {
         return set((float) Math.random(), (float) Math.random(), (float) Math.random(), (float) Math.random());
     }
+    
+    public int getRed()
+    {
+    	return (int) (this.r * 255f);
+    }
+    
+    public int getGreen()
+    {
+    	return (int) (this.g * 255f);
+    }
+    
+    public int getBlue()
+    {
+    	return (int) (this.b * 255f);
+    }
+    
+    public int getAlpha()
+    {
+    	return (int) (this.a * 255f);
+    }
+    
+    public int getRGBA()
+    {
+    	return this.getRed() << 24 | this.getGreen() << 16 | this.getBlue() << 8 | this.getAlpha();
+    }
+    
+    public int getRGB()
+    {
+    	return this.getRed() << 16 | this.getGreen() << 8 | this.getBlue();
+    }
 }
