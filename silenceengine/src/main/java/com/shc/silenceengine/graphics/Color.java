@@ -361,6 +361,6 @@ public class Color
     
     public int getRGB()
     {
-    	return this.getRed() << 16 | this.getGreen() << 8 | this.getBlue();
+    	return this.getRed() << 24 | this.getGreen() << 16 | this.getBlue() << 8 | 255;
     }
 }
