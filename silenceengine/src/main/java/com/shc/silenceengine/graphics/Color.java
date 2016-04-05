@@ -33,6 +33,7 @@ import com.shc.silenceengine.utils.ReusableStack;
  * A Color class with RGBA colors. Has 140 predefined colors from <a href=http://www.w3schools.com/cssref/css_colornames.asp>http://www.w3schools.com/cssref/css_colornames.asp</a>
  *
  * @author Sri Harsha Chilakapati
+ * @author Tyler Hancock
  */
 public class Color
 {
@@ -332,5 +333,35 @@ public class Color
     public Color randomSelf()
     {
         return set((float) Math.random(), (float) Math.random(), (float) Math.random(), (float) Math.random());
+    }
+    
+    public int getRed()
+    {
+    	return (int) (this.r * 255f);
+    }
+    
+    public int getGreen()
+    {
+    	return (int) (this.g * 255f);
+    }
+    
+    public int getBlue()
+    {
+    	return (int) (this.b * 255f);
+    }
+    
+    public int getAlpha()
+    {
+    	return (int) (this.a * 255f);
+    }
+    
+    public int getRGBA()
+    {
+    	return getRed() << 24 | getGreen() << 16 | getBlue() << 8 | getAlpha();
+    }
+    
+    public int getRGB()
+    {
+    	return getRed() << 24 | getGreen() << 16 | getBlue() << 8 | 255;
     }
 }
