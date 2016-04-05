@@ -357,22 +357,11 @@ public class Color
     
     public int getRGBA()
     {
-    	return this.getRed() << 24 | this.getGreen() << 16 | this.getBlue() << 8 | this.getAlpha();
+    	return getRed() << 24 | getGreen() << 16 | getBlue() << 8 | getAlpha();
     }
     
     public int getRGB()
     {
-    	return this.getRed() << 24 | this.getGreen() << 16 | this.getBlue() << 8 | 255;
-    }
-    
-    public int calculateDamage(int armor, int damage) {
-    	
-    	int output = 0;
-    	
-    	for (int index = 0; index < damage; index++)
-    		if (Math.random() > 0.5d || index == damage)
-    			output++;
-    	
-    	return output;
+    	return getRed() << 24 | getGreen() << 16 | getBlue() << 8 | 255;
     }
 }
