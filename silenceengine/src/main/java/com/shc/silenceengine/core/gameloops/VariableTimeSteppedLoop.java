@@ -12,11 +12,14 @@ import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
  */
 public class VariableTimeSteppedLoop implements IGameLoop
 {
-    private float prevTime = (int) TimeUtils.currentTime();
+    private float prevTime;
 
     @Override
     public void performLoopFrame()
     {
+        if (prevTime == 0)
+            prevTime = (int) TimeUtils.currentTime();
+
         float currTime = (float) TimeUtils.currentTime();
         float elapsedTime = currTime - prevTime;
 
