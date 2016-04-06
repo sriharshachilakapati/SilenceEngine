@@ -47,7 +47,7 @@ public class LwjglFileReader extends FileReader
                 for (int i = 0; i < bytes.length; i++)
                     directBuffer.writeByte(i, bytes[i]);
 
-                TaskManager.addUpdateTask(() -> onComplete.invoke(directBuffer));
+                TaskManager.runOnUpdate(() -> onComplete.invoke(directBuffer));
             }
             catch (Exception e)
             {
@@ -72,7 +72,7 @@ public class LwjglFileReader extends FileReader
                 while ((line = bufferedReader.readLine()) != null)
                     stringBuilder.append(line).append("\n");
 
-                TaskManager.addUpdateTask(() -> onComplete.invoke(stringBuilder.toString()));
+                TaskManager.runOnUpdate(() -> onComplete.invoke(stringBuilder.toString()));
             }
             catch (Exception e)
             {

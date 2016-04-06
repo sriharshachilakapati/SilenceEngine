@@ -51,7 +51,7 @@ public class LwjglImageReader extends ImageReader
 
             stbi_image_free(imageBuffer);
 
-            TaskManager.addUpdateTask(() -> onComplete.invoke(image));
+            TaskManager.runOnUpdate(() -> onComplete.invoke(image));
         }).start();
     }
 }

@@ -13,6 +13,8 @@ import com.shc.silenceengine.io.DirectFloatBuffer;
  */
 public class Image
 {
+    private boolean isDisposed;
+
     private int width;
     private int height;
 
@@ -73,6 +75,13 @@ public class Image
 
     public void free()
     {
+        if (isDisposed)
+        {
+            SilenceEngine.log.getRootLogger().error("Cannot free more than once");
+            return;
+        }
+
         SilenceEngine.io.free(imageData.getDirectBuffer());
+        isDisposed = true;
     }
 }

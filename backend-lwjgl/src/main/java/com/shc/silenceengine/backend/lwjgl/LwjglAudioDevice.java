@@ -135,7 +135,7 @@ public class LwjglAudioDevice extends AudioDevice
             {
                 OggReader reader = new OggReader(data);
 
-                TaskManager.addUpdateTask(() -> {
+                TaskManager.runOnUpdate(() -> {
                     ALBuffer alBuffer = new ALBuffer();
                     alBuffer.uploadData(new LwjglDirectBuffer(reader.getData()), reader.getFormat(), reader.getSampleRate());
 
@@ -149,7 +149,7 @@ public class LwjglAudioDevice extends AudioDevice
             {
                 WaveReader reader = new WaveReader(data);
 
-                TaskManager.addUpdateTask(() -> {
+                TaskManager.runOnUpdate(() -> {
                     ALBuffer alBuffer = new ALBuffer();
                     alBuffer.uploadData(new LwjglDirectBuffer(reader.getData()), reader.getFormat(), reader.getSampleRate());
 

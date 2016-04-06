@@ -11,17 +11,17 @@ import java.util.Queue;
 public final class TaskManager
 {
     private static Queue<Task> updateTasks = new LinkedList<>();
-    private static Queue<Task>  renderTasks = new LinkedList<>();
+    private static Queue<Task> renderTasks = new LinkedList<>();
 
     private static boolean initialized = false;
 
-    public static void addUpdateTask(Task task)
+    public static void runOnUpdate(Task task)
     {
         updateTasks.add(task);
         checkInitialized();
     }
 
-    public static void addRenderTask(Task task)
+    public static void runOnRender(Task task)
     {
         renderTasks.add(task);
         checkInitialized();
@@ -29,7 +29,7 @@ public final class TaskManager
 
     private static void update(float deltaTime)
     {
-        if (!updateTasks.isEmpty())
+        while (!updateTasks.isEmpty())
         {
             Task task;
             if ((task = updateTasks.poll()) != null)
@@ -39,8 +39,12 @@ public final class TaskManager
 
     private static void render(float delta)
     {
-        if (!renderTasks.isEmpty())
-            renderTasks.poll().perform();
+        while (!renderTasks.isEmpty())
+        {
+            Task task;
+            if ((task = renderTasks.poll()) != null)
+                task.perform();
+        }
     }
 
     private static void checkInitialized()
