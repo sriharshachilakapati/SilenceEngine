@@ -34,6 +34,7 @@ import com.shc.silenceengine.tests.KeyboardTest;
 import com.shc.silenceengine.tests.OpenGLTest;
 import com.shc.silenceengine.tests.SilenceTest;
 import com.shc.silenceengine.tests.TestRunner;
+import com.shc.silenceengine.tests.TouchTest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +72,7 @@ public class TestLauncher implements EntryPoint
         tests.put("OpenGLTest", OpenGLTest::new);
         tests.put("GameTest", GameTest::new);
         tests.put("KeyboardTest", KeyboardTest::new);
+        tests.put("TouchTest", TouchTest::new);
     }
 
     @FunctionalInterface

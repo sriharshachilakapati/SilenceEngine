@@ -1,6 +1,7 @@
 package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.opengl.BufferObject;
 import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.graphics.opengl.Primitive;
@@ -29,12 +30,12 @@ public class OpenGLTest extends SilenceTest
     @Override
     public void init()
     {
-        SilenceEngine.display.setTitle("OpenGL Test");
+        SilenceEngine.display.setTitle("OpenGLTest");
 
         vertexArray = new VertexArray();
         vertexArray.bind();
 
-        GLContext.clearColor(0, 0, 0, 1);
+        GLContext.clearColor(Color.CORN_FLOWER_BLUE);
         GLContext.enable(GL_BLEND);
         GLContext.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
