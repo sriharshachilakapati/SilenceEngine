@@ -1,11 +1,14 @@
 package com.shc.silenceengine.backend.gwt;
 
 import com.google.gwt.typedarrays.client.Float32ArrayNative;
+import com.google.gwt.typedarrays.client.Uint8ArrayNative;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
 import com.shc.silenceengine.graphics.IGraphicsDevice;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.DirectFloatBuffer;
 import com.shc.webgl4j.client.WebGL10;
+
+import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -191,7 +194,12 @@ public class GwtGraphicsDevice implements IGraphicsDevice
     @Override
     public int glGetProgrami(int program, int param)
     {
-        return WebGL10.glGetProgramParameter(program, param);
+        if (param == GL_LINK_STATUS ||
+            param == GL_DELETE_STATUS ||
+            param == GL_VALIDATE_STATUS)
+            return WebGL10.<Boolean>glGetProgramParameter(program, param) ? GL_TRUE : GL_FALSE;
+
+        return WebGL10.<Integer>glGetProgramParameter(program, param);
     }
 
     @Override
@@ -311,7 +319,10 @@ public class GwtGraphicsDevice implements IGraphicsDevice
     @Override
     public int glGetShaderi(int shader, int param)
     {
-        return WebGL10.glGetShaderParameter(shader, param);
+        if (param == GL_SHADER_TYPE)
+            return WebGL10.<Integer>glGetShaderParameter(shader, param);
+        else
+            return WebGL10.<Boolean>glGetShaderParameter(shader, param) ? Constants.GL_TRUE : Constants.GL_FALSE;
     }
 
     @Override
@@ -354,7 +365,20 @@ public class GwtGraphicsDevice implements IGraphicsDevice
     @Override
     public void glTexImage2D(int target, int level, int internalFormat, int width, int height, int border, int format, int type, DirectBuffer pixels)
     {
-        WebGL10.glTexImage2D(target, level, internalFormat, width, height, border, format, type, (ArrayBufferView) pixels.nativeBuffer());
+        ArrayBufferView arrayBufferView = null;
+
+        switch (type)
+        {
+            case GL_FLOAT:
+                arrayBufferView = Float32ArrayNative.create(((ArrayBufferView) pixels.nativeBuffer()).buffer());
+                break;
+
+            case GL_UNSIGNED_BYTE:
+                arrayBufferView = Uint8ArrayNative.create(((ArrayBufferView) pixels.nativeBuffer()).buffer());
+                break;
+        }
+
+        WebGL10.glTexImage2D(target, level, internalFormat, width, height, border, format, type, arrayBufferView);
     }
 
     @Override

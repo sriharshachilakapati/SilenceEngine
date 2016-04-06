@@ -12,6 +12,10 @@ gwt {
     gwtVersion = '2.8.0-beta1'
     modules 'com.shc.silenceengine.tests.GwtTests'
     devModules 'com.shc.silenceengine.tests.GwtTests'
+
+    compiler {
+        style = 'DETAILED'
+    }
 }
 
 javadoc {

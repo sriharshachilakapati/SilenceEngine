@@ -11,12 +11,21 @@ import com.shc.silenceengine.io.DirectBuffer;
  */
 public class GwtDirectBuffer extends DirectBuffer
 {
+    private static boolean littleEndian = false;
+    private static boolean endiannness  = false;
+
     private ArrayBuffer buffer;
     private DataView    view;
 
     public GwtDirectBuffer(ArrayBuffer data)
     {
         super(data.byteLength());
+
+        if (!endiannness)
+        {
+            littleEndian = getEndianness();
+            endiannness = true;
+        }
 
         this.buffer = data;
         view = DataViewNative.create(buffer);
@@ -26,42 +35,56 @@ public class GwtDirectBuffer extends DirectBuffer
     {
         super(sizeInBytes);
 
+        if (!endiannness)
+        {
+            littleEndian = getEndianness();
+            endiannness = true;
+        }
+
         buffer = ArrayBufferNative.create(sizeInBytes);
         view = DataViewNative.create(buffer);
     }
 
+    private native boolean getEndianness() /*-{
+        var buffer = new ArrayBuffer(2);
+        new DataView(buffer).setInt16(0, 256, true);
+
+        // Int16Array uses the platform's endianness.
+        return new Int16Array(buffer)[0] === 256;
+    }-*/;
+
     @Override
     public DirectBuffer writeInt(int byteIndex, int value)
     {
-        view.setInt32(byteIndex, value);
+        view.setInt32(byteIndex, value, littleEndian);
         return this;
     }
 
     @Override
     public DirectBuffer writeFloat(int byteIndex, float value)
     {
-        view.setFloat32(byteIndex, value);
+        view.setFloat32(byteIndex, value, littleEndian);
         return this;
     }
 
     @Override
     public DirectBuffer writeLong(int byteIndex, long value)
     {
-        view.setUint32(byteIndex, value);
+        view.setUint32(byteIndex, value, littleEndian);
         return this;
     }
 
     @Override
     public DirectBuffer writeDouble(int byteIndex, double value)
     {
-        view.setFloat64(byteIndex, value);
+        view.setFloat64(byteIndex, value, littleEndian);
         return this;
     }
 
     @Override
     public DirectBuffer writeShort(int byteIndex, short value)
     {
-        view.setInt16(byteIndex, value);
+        view.setInt16(byteIndex, value, littleEndian);
         return this;
     }
 
@@ -75,31 +98,31 @@ public class GwtDirectBuffer extends DirectBuffer
     @Override
     public int readInt(int byteIndex)
     {
-        return view.getInt32(byteIndex);
+        return view.getInt32(byteIndex, littleEndian);
     }
 
     @Override
     public float readFloat(int byteIndex)
     {
-        return view.getFloat32(byteIndex);
+        return view.getFloat32(byteIndex, littleEndian);
     }
 
     @Override
     public long readLong(int byteIndex)
     {
-        return view.getUint32(byteIndex);
+        return view.getUint32(byteIndex, littleEndian);
     }
 
     @Override
     public double readDouble(int byteIndex)
     {
-        return view.getFloat64(byteIndex);
+        return view.getFloat64(byteIndex, littleEndian);
     }
 
     @Override
     public short readShort(int byteIndex)
     {
-        return view.getInt16(byteIndex);
+        return view.getInt16(byteIndex, littleEndian);
     }
 
     @Override

@@ -29,14 +29,18 @@ public final class TaskManager
 
     private static void update(float deltaTime)
     {
-        while (!updateTasks.isEmpty())
-            updateTasks.remove().perform();
+        if (!updateTasks.isEmpty())
+        {
+            Task task;
+            if ((task = updateTasks.poll()) != null)
+                task.perform();
+        }
     }
 
     private static void render(float delta)
     {
-        while (!renderTasks.isEmpty())
-            renderTasks.remove().perform();
+        if (!renderTasks.isEmpty())
+            renderTasks.poll().perform();
     }
 
     private static void checkInitialized()

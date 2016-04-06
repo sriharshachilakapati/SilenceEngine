@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.shc.silenceengine.backend.gwt.GwtRuntime;
 import com.shc.silenceengine.tests.GameTest;
 import com.shc.silenceengine.tests.KeyboardTest;
+import com.shc.silenceengine.tests.OpenGLTest;
 import com.shc.silenceengine.tests.SilenceTest;
 import com.shc.silenceengine.tests.TestRunner;
 
@@ -67,6 +68,7 @@ public class TestLauncher implements EntryPoint
 
     private void registerTests()
     {
+        tests.put("OpenGLTest", OpenGLTest::new);
         tests.put("GameTest", GameTest::new);
         tests.put("KeyboardTest", KeyboardTest::new);
     }

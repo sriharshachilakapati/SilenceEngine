@@ -24,7 +24,7 @@ public class GwtImageReader extends ImageReader
                         pixels.getRedAt(x, y) / 255f,
                         pixels.getGreenAt(x, y) / 255f,
                         pixels.getBlueAt(x, y) / 255f,
-                        pixels.getAlphaAt(x, y) / 255f
+                        1 - (pixels.getAlphaAt(x, y) / 255f)
                 ));
         }
 
@@ -38,7 +38,7 @@ public class GwtImageReader extends ImageReader
     }
 
     private native void getImage(ArrayBuffer memory, OnComplete onComplete) /*-{
-        var arrayBufferView = new Uint8Array(memory.buffer);
+        var arrayBufferView = new Uint8Array(memory);
         var blob = new Blob([arrayBufferView], {type: "image/jpeg"});
 
         var urlCreator = $wnd.URL || $wnd.webkitURL || $wnd.mozURL;
@@ -48,21 +48,35 @@ public class GwtImageReader extends ImageReader
         img.src = imageUrl;
         img.style.display = "none";
 
+        function isPowerOfTwo(x) {
+            return (x & (x - 1)) == 0;
+        }
+
+        function nextHighestPowerOfTwo(x) {
+            --x;
+            for (var i = 1; i < 32; i <<= 1) {
+                x = x | x >> i;
+            }
+            return x + 1;
+        }
+
         img.onload = function ()
         {
             var canvas = $doc.createElement("canvas");
 
-            canvas.width = img.width;
-            canvas.height = img.height;
+            canvas.width = isPowerOfTwo(img.width) ? img.width : nextHighestPowerOfTwo(img.width);
+            canvas.height = isPowerOfTwo(img.height) ? img.height : nextHighestPowerOfTwo(img.height);
 
             var ctx = canvas.getContext("2d");
 
-            ctx.drawImage(img, 0, 0, img.width, img.height);
-            var pix = ctx.getImageData(0, 0, img.width, img.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            var pix = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-            @com.shc.silenceengine.backend.gwt.GwtImageReader::jsLoadedCallback(*)(pix, img.width, img.height, onComplete);
+            $doc.body.removeChild(img);
+
+            @com.shc.silenceengine.backend.gwt.GwtImageReader::jsLoadedCallback(*)(pix, canvas.width, canvas.height, onComplete);
         };
 
-        $doc.appendChild(img);
+        $doc.body.appendChild(img);
     }-*/;
 }

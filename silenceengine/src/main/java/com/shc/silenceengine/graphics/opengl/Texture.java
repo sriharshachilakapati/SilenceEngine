@@ -94,7 +94,39 @@ public class Texture implements IResource
 
     public static Texture fromImage(Image image)
     {
-        return fromDirectBuffer(image.getImageData(), image.getWidth(), image.getHeight(), 4);
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        DirectBuffer data = SilenceEngine.io.create(width * height * 4);
+
+        Color color = Color.REUSABLE_STACK.pop();
+
+        int index = 0;
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                image.getPixel(x, y, color);
+
+                int r = (int) (color.r * 255f);
+                int g = (int) (color.g * 255f);
+                int b = (int) (color.b * 255f);
+                int a = (int) ((1 - color.a) * 255f);
+
+                data.writeByte(index++, (byte) r)
+                        .writeByte(index++, (byte) g)
+                        .writeByte(index++, (byte) b)
+                        .writeByte(index++, (byte) a);
+            }
+        }
+
+        Color.REUSABLE_STACK.push(color);
+
+        Texture texture = fromDirectBuffer(data, image.getWidth(), image.getHeight(), 4);
+        SilenceEngine.io.free(data);
+
+        return texture;
     }
 
     public static Texture fromDirectBuffer(DirectBuffer buffer, int width, int height, int components)
@@ -103,7 +135,7 @@ public class Texture implements IResource
 
         texture.bind();
         texture.setFilter(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-        texture.image2d(buffer, GL_FLOAT, components == 4 ? GL_RGBA : GL_RGB, width, height, GL_RGBA4);
+        texture.image2d(buffer, GL_UNSIGNED_BYTE, components == 4 ? GL_RGBA : GL_RGB, width, height, GL_RGBA);
         texture.generateMipMaps();
 
         return texture;
@@ -200,7 +232,7 @@ public class Texture implements IResource
         if (isDisposed())
             throw new SilenceException("This texture is already disposed.");
 
-        EMPTY.bind();
+//        EMPTY.bind();
         GLError.check();
         SilenceEngine.graphics.glDeleteTextures(id);
         GLError.check();

@@ -60,21 +60,22 @@ public class TestRunner extends Game
 
     public void changeTest(SilenceTest test)
     {
+        bypassEvents = true;
+
         if (test != null)
             this.test.dispose();
-
-        bypassEvents = true;
 
         clearDisplay();
         clearInput();
         clearAudio();
 
-        bypassEvents = false;
-
         this.test = test;
 
         if (test != null)
             test.init();
+
+        SilenceEngine.log.getRootLogger().info("Init done");
+        bypassEvents = false;
     }
 
     private void clearDisplay()
