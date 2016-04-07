@@ -33,14 +33,14 @@ dependencies {
 
 task run(type: JettyRunWar) {
     dependsOn war
-    webApp=war.archivePath
-    daemon=true
+    webApp = war.archivePath
+    daemon = true
 }
 
 task superDev(type: de.richsource.gradle.plugins.gwt.GwtSuperDev) {
     dependsOn run
     doFirst {
-    	gwt.modules = gwt.devModules
+        gwt.modules = gwt.devModules
     }
 }
 
@@ -51,7 +51,7 @@ war {
 }
 
 task addSource << {
-	sourceSets.main.compileClasspath += files(project(':silenceengine').sourceSets.main.allSource)
+    sourceSets.main.compileClasspath += files(project(':silenceengine').sourceSets.main.allSource)
     sourceSets.main.compileClasspath += files(project(':backend-gwt').sourceSets.main.allSource)
     sourceSets.main.compileClasspath += files(project(':tests').sourceSets.main.allSource)
 }

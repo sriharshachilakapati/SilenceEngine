@@ -1,3 +1,28 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2016 Sri Harsha Chilakapati
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package com.shc.silenceengine.backend.gwt;
 
 import com.google.gwt.canvas.client.Canvas;
@@ -157,27 +182,11 @@ public class GwtDisplayDevice implements IDisplayDevice
         SilenceEngine.eventManager.raiseResizeEvent();
     }
 
-    private native void setIcon(String url) /*-{
-        var head = $doc.getElementsByTagName("head")[0];
-
-        // Remove existing favicons
-        var links = head.getElementsByTagName("link");
-
-        for (var i = 0; i < links.length; i++)
-        {
-            if (/\bicon\b/i.test(links[i].getAttribute("rel")))
-                head.removeChild(links[i]);
-        }
-
-        // Create a new link element
-        var link = $doc.createElement("link");
-
-        link.type = "image/x-icon";
-        link.rel = "icon";
-        link.href = url;
-
-        head.appendChild(link);
-    }-*/;
+    @Override
+    public boolean isFullscreen()
+    {
+        return WebGLContext.isFullscreen();
+    }
 
     @Override
     public void setFullscreen(boolean fullscreen)
@@ -196,12 +205,6 @@ public class GwtDisplayDevice implements IDisplayDevice
 
         SilenceEngine.eventManager.raiseResizeEvent();
         canvas.setFocus(true);
-    }
-
-    @Override
-    public boolean isFullscreen()
-    {
-        return WebGLContext.isFullscreen();
     }
 
     @Override
@@ -226,18 +229,17 @@ public class GwtDisplayDevice implements IDisplayDevice
         return canvas.getCoordinateSpaceHeight();
     }
 
+    @Override
+    public String getTitle()
+    {
+        return title;
+    }
 
     @Override
     public void setTitle(String title)
     {
         this.title = title;
         Window.setTitle(title);
-    }
-
-    @Override
-    public String getTitle()
-    {
-        return title;
     }
 
     @Override
@@ -256,4 +258,26 @@ public class GwtDisplayDevice implements IDisplayDevice
     {
         return TimeUtil.currentNanos();
     }
+
+    private native void setIcon(String url) /*-{
+        var head = $doc.getElementsByTagName("head")[0];
+
+        // Remove existing favicons
+        var links = head.getElementsByTagName("link");
+
+        for (var i = 0; i < links.length; i++)
+        {
+            if (/\bicon\b/i.test(links[i].getAttribute("rel")))
+                head.removeChild(links[i]);
+        }
+
+        // Create a new link element
+        var link = $doc.createElement("link");
+
+        link.type = "image/x-icon";
+        link.rel = "icon";
+        link.href = url;
+
+        head.appendChild(link);
+    }-*/;
 }

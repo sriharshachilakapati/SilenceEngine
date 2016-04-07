@@ -20,6 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
  */
 
 package com.shc.silenceengine.backend.lwjgl;
@@ -97,18 +98,6 @@ public class LwjglResourceFilePath extends LwjglFilePath
     public boolean isFile()
     {
         return !isDirectory();
-    }
-
-    @Override
-    public InputStream getInputStream() throws IOException
-    {
-        return LwjglResourceFilePath.class.getClassLoader().getResourceAsStream(getPath());
-    }
-
-    @Override
-    public OutputStream getOutputStream() throws IOException
-    {
-        throw new IOException("Cannot open an OutputStream for in-jar resources.");
     }
 
     @Override
@@ -197,6 +186,18 @@ public class LwjglResourceFilePath extends LwjglFilePath
         }
 
         return Collections.unmodifiableList(filePaths);
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException
+    {
+        return LwjglResourceFilePath.class.getClassLoader().getResourceAsStream(getPath());
+    }
+
+    @Override
+    public OutputStream getOutputStream() throws IOException
+    {
+        throw new IOException("Cannot open an OutputStream for in-jar resources.");
     }
 
     private String getIDEPath() throws IOException

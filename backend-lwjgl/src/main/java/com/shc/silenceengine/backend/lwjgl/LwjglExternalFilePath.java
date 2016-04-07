@@ -20,6 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
  */
 
 package com.shc.silenceengine.backend.lwjgl;
@@ -64,18 +65,6 @@ public class LwjglExternalFilePath extends LwjglFilePath
     public boolean isFile()
     {
         return !isDirectory();
-    }
-
-    @Override
-    public InputStream getInputStream() throws IOException
-    {
-        return Files.newInputStream(Paths.get(getPath()));
-    }
-
-    @Override
-    public OutputStream getOutputStream() throws IOException
-    {
-        return Files.newOutputStream(Paths.get(getPath()));
     }
 
     @Override
@@ -160,5 +149,17 @@ public class LwjglExternalFilePath extends LwjglFilePath
                 list.add(new LwjglExternalFilePath(path + SEPARATOR + child.getPath().replace(file.getPath(), "")));
 
         return Collections.unmodifiableList(list);
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException
+    {
+        return Files.newInputStream(Paths.get(getPath()));
+    }
+
+    @Override
+    public OutputStream getOutputStream() throws IOException
+    {
+        return Files.newOutputStream(Paths.get(getPath()));
     }
 }

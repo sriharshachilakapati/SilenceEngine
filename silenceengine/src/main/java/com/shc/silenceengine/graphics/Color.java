@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Sri Harsha Chilakapati
+ * Copyright (c) 2014-2016 Sri Harsha Chilakapati
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
  */
 
 package com.shc.silenceengine.graphics;
@@ -184,10 +185,9 @@ public class Color
     public static final Color WHITE_SMOKE         = new Color(0xF5F5F5);
     public static final Color YELLOW              = new Color(0xFFFF00);
     public static final Color YELLOW_GREEN        = new Color(0x9ACD32);
+    public static final Color TRANSPARENT         = new Color(0x00000000);
 
     public float r, g, b, a;
-
-    public static final Color TRANSPARENT = new Color(0x00000000);
 
     public Color(Vector4 color)
     {
@@ -334,34 +334,34 @@ public class Color
     {
         return set((float) Math.random(), (float) Math.random(), (float) Math.random(), (float) Math.random());
     }
-    
+
     public int getRed()
     {
-    	return (int) (this.r * 255f);
+        return (int) (this.r * 255f);
     }
-    
+
     public int getGreen()
     {
-    	return (int) (this.g * 255f);
+        return (int) (this.g * 255f);
     }
-    
+
     public int getBlue()
     {
-    	return (int) (this.b * 255f);
+        return (int) (this.b * 255f);
     }
-    
+
     public int getAlpha()
     {
-    	return (int) (this.a * 255f);
+        return (int) (this.a * 255f);
     }
-    
+
     public int getRGBA()
     {
-    	return getRed() << 24 | getGreen() << 16 | getBlue() << 8 | getAlpha();
+        return getRed() << 24 | getGreen() << 16 | getBlue() << 8 | getAlpha();
     }
-    
+
     public int getRGB()
     {
-    	return getRed() << 24 | getGreen() << 16 | getBlue() << 8 | 255;
+        return getRed() << 24 | getGreen() << 16 | getBlue() << 8 | 255;
     }
 }

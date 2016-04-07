@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Sri Harsha Chilakapati
+ * Copyright (c) 2014-2016 Sri Harsha Chilakapati
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
  */
 
 package com.shc.silenceengine.math;
@@ -155,8 +156,8 @@ public class Plane
 
         return Float.compare(plane.d, d) == 0 &&
                normal.x == plane.normal.x &&
-                normal.y == plane.normal.y &&
-                normal.z == plane.normal.z;
+               normal.y == plane.normal.y &&
+               normal.z == plane.normal.z;
     }
 
     @Override
