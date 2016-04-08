@@ -43,12 +43,22 @@ public class Image
     private int width;
     private int height;
 
+    private int originalWidth;
+    private int originalHeight;
+
     private DirectFloatBuffer imageData;
 
     public Image(int width, int height)
     {
+        this(width, height, width, height);
+    }
+
+    public Image(int width, int height, int originalWidth, int originalHeight)
+    {
         this.width = width;
         this.height = height;
+        this.originalWidth = originalWidth;
+        this.originalHeight = originalHeight;
 
         imageData = new DirectFloatBuffer(width * height * 4);
     }
@@ -91,6 +101,16 @@ public class Image
     public int getHeight()
     {
         return height;
+    }
+
+    public int getOriginalWidth()
+    {
+        return originalWidth;
+    }
+
+    public int getOriginalHeight()
+    {
+        return originalHeight;
     }
 
     public DirectBuffer getImageData()

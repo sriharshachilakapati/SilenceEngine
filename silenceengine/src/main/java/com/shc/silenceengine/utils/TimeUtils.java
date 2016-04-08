@@ -35,13 +35,25 @@ import com.shc.silenceengine.core.SilenceEngine;
  */
 public final class TimeUtils
 {
+    private static final double STARTING_MILLIS = System.currentTimeMillis();
+
     private TimeUtils()
     {
     }
 
     public static double currentNanos()
     {
-        return SilenceEngine.display.nanoTime();
+        try
+        {
+            return SilenceEngine.display.nanoTime();
+        }
+        catch (Exception e)
+        {
+            // Can only occur if the time is called without a runtime, that is in class init
+            // So to prevent crashes there, we just ignore the exception and return time based
+            // on the System.currentTimeMillis(), which is a low resolution timer.
+            return convert(System.currentTimeMillis() - STARTING_MILLIS, Unit.MILLIS, Unit.NANOS);
+        }
     }
 
     public static double currentMicros()
@@ -77,6 +89,11 @@ public final class TimeUtils
     public static double currentTime()
     {
         return currentTime(getDefaultTimeUnit());
+    }
+
+    public static double convert(double time, Unit source)
+    {
+        return convert(time, source, getDefaultTimeUnit());
     }
 
     public static double convert(double time, Unit source, Unit target)

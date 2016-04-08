@@ -38,9 +38,10 @@ import com.shc.silenceengine.io.ImageReader;
  */
 public class GwtImageReader extends ImageReader
 {
-    private static void jsLoadedCallback(ImageData pixels, int width, int height, OnComplete onComplete)
+    private static void jsLoadedCallback(ImageData pixels, int width, int height, int oWidth, int oHeight,
+                                         OnComplete onComplete)
     {
-        Image image = new Image(width, height);
+        Image image = new Image(width, height, oWidth, oHeight);
 
         for (int x = 0; x < width; x++)
         {
@@ -73,13 +74,16 @@ public class GwtImageReader extends ImageReader
         img.src = imageUrl;
         img.style.display = "none";
 
-        function isPowerOfTwo(x) {
+        function isPowerOfTwo(x)
+        {
             return (x & (x - 1)) == 0;
         }
 
-        function nextHighestPowerOfTwo(x) {
+        function nextHighestPowerOfTwo(x)
+        {
             --x;
-            for (var i = 1; i < 32; i <<= 1) {
+            for (var i = 1; i < 32; i <<= 1)
+            {
                 x = x | x >> i;
             }
             return x + 1;
@@ -99,7 +103,8 @@ public class GwtImageReader extends ImageReader
 
             $doc.body.removeChild(img);
 
-            @com.shc.silenceengine.backend.gwt.GwtImageReader::jsLoadedCallback(*)(pix, canvas.width, canvas.height, onComplete);
+            @com.shc.silenceengine.backend.gwt.GwtImageReader::jsLoadedCallback(*)(pix, canvas.width, canvas.height,
+                img.width, img.height, onComplete);
         };
 
         $doc.body.appendChild(img);

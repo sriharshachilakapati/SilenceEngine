@@ -31,4 +31,8 @@ package com.shc.silenceengine.core;
 public interface IGameLoop
 {
     void performLoopFrame();
+
+    int getFPS();
+
+    int getUPS();
 }

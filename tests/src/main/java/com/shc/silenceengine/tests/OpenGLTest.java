@@ -37,6 +37,8 @@ import com.shc.silenceengine.graphics.opengl.VertexArray;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.io.DirectFloatBuffer;
 import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.math.Transform;
+import com.shc.silenceengine.math.Vector3;
 
 import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
@@ -50,12 +52,16 @@ public class OpenGLTest extends SilenceTest
     private VertexArray  vertexArray;
     private BufferObject vertexBuffer, texCoordBuffer;
 
+    private Transform transform;
+
     private Program program;
 
     @Override
     public void init()
     {
         SilenceEngine.display.setTitle("OpenGLTest");
+
+        transform = new Transform();
 
         vertexArray = new VertexArray();
         vertexArray.bind();
@@ -73,15 +79,16 @@ public class OpenGLTest extends SilenceTest
         });
 
         // The vertex shader source
-        String vsSource = "attribute vec2 position;                             \n" +
-                          "attribute vec2 texCoords;                            \n" +
-                          "                                                     \n" +
-                          "varying vec2 vTexCoords;                             \n" +
-                          "                                                     \n" +
-                          "void main()                                          \n" +
-                          "{                                                    \n" +
-                          "    vTexCoords = texCoords;                          \n" +
-                          "    gl_Position = vec4(position, 0.0, 1.0);          \n" +
+        String vsSource = "uniform mat4 transform;                                 \n" +
+                          "attribute vec2 position;                                \n" +
+                          "attribute vec2 texCoords;                               \n" +
+                          "                                                        \n" +
+                          "varying vec2 vTexCoords;                                \n" +
+                          "                                                        \n" +
+                          "void main()                                             \n" +
+                          "{                                                       \n" +
+                          "    vTexCoords = texCoords;                             \n" +
+                          "    gl_Position = transform * vec4(position, 0.0, 1.0); \n" +
                           "}";
 
         // The fragment shader source
@@ -179,6 +186,15 @@ public class OpenGLTest extends SilenceTest
     {
         if (Keyboard.isKeyTapped(Keyboard.KEY_ESCAPE))
             SilenceEngine.display.close();
+
+        if (Keyboard.isKeyTapped(Keyboard.KEY_F))
+            SilenceEngine.display.setFullscreen(!SilenceEngine.display.isFullscreen());
+
+        SilenceEngine.display.setTitle("OpenGL Test | UPS: " + SilenceEngine.gameLoop.getUPS() +
+                                       " | FPS: " + SilenceEngine.gameLoop.getFPS());
+
+        transform.rotate(Vector3.AXIS_Y, 45 * delta);
+        program.setUniform("transform", transform.getMatrix());
     }
 
     @Override

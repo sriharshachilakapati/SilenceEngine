@@ -175,4 +175,23 @@ public interface IDisplayDevice
     @PlatformDesktop
     @PlatformHTML5
     double nanoTime();
+
+    /**
+     * Sets the VSync (Vertical Synchronization) status of the display, if true, the frame rate will be limited to the
+     * refresh rate of the monitor. This is true by default. For HTML5 platform, VSync will always be true.
+     *
+     * @param vSync True to turn on vertical synchronization, False to turn it off.
+     */
+    @PlatformDesktop
+    void setVSync(boolean vSync);
+
+    /**
+     * Returns whether the display is in focus. In the case of HTML5 platform, it says whether the window is in focus or
+     * not, and at the same time the game is in the active tab.
+     *
+     * @return True if the display has focus, false otherwise.
+     */
+    @PlatformDesktop
+    @PlatformHTML5
+    boolean hasFocus();
 }

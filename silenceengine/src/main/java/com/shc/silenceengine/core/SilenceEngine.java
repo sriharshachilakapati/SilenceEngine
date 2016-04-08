@@ -26,7 +26,7 @@
 package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.audio.AudioDevice;
-import com.shc.silenceengine.core.gameloops.VariableTimeSteppedLoop;
+import com.shc.silenceengine.core.gameloops.FixedTimeSteppedLoop;
 import com.shc.silenceengine.graphics.IGraphicsDevice;
 import com.shc.silenceengine.input.InputDevice;
 import com.shc.silenceengine.io.IODevice;
@@ -43,7 +43,7 @@ public final class SilenceEngine
     /**
      * The {@link IGameLoop} that generates events in the game.
      */
-    public static IGameLoop gameLoop = new VariableTimeSteppedLoop();
+    public static IGameLoop gameLoop = new FixedTimeSteppedLoop();
     /**
      * The {@link IDisplayDevice} that handles the display, that is the window thing.
      */

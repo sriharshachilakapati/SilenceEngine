@@ -127,6 +127,9 @@ public class Texture implements IResource
         Texture texture = fromDirectBuffer(data, image.getWidth(), image.getHeight(), 4);
         SilenceEngine.io.free(data);
 
+        texture.width = image.getOriginalWidth();
+        texture.height = image.getOriginalHeight();
+
         return texture;
     }
 

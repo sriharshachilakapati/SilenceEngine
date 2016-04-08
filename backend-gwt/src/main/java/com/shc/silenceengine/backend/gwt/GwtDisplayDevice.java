@@ -52,6 +52,7 @@ public class GwtDisplayDevice implements IDisplayDevice
     private String title;
 
     private boolean fullScreenRequested;
+    private boolean focus = true;
 
     public GwtDisplayDevice()
     {
@@ -148,7 +149,21 @@ public class GwtDisplayDevice implements IDisplayDevice
         canvas.addTouchEndHandler(event -> checkRequestFullscreen());
         canvas.addTouchMoveHandler(event -> checkRequestFullscreen());
         canvas.addTouchCancelHandler(event -> checkRequestFullscreen());
+
+        hookFocusCallbacks(this);
     }
+
+    private native void hookFocusCallbacks(GwtDisplayDevice self) /*-{
+        $wnd.onfocus = function ()
+        {
+            self.@com.shc.silenceengine.backend.gwt.GwtDisplayDevice::focus = true;
+        };
+
+        $wnd.onblur = function ()
+        {
+            self.@com.shc.silenceengine.backend.gwt.GwtDisplayDevice::focus = true;
+        };
+    }-*/;
 
     private void checkRequestFullscreen()
     {
@@ -257,6 +272,17 @@ public class GwtDisplayDevice implements IDisplayDevice
     public double nanoTime()
     {
         return TimeUtil.currentNanos();
+    }
+
+    @Override
+    public void setVSync(boolean vSync)
+    {
+    }
+
+    @Override
+    public boolean hasFocus()
+    {
+        return false;
     }
 
     private native void setIcon(String url) /*-{

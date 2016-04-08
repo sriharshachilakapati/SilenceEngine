@@ -35,38 +35,72 @@ import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class VariableTimeSteppedLoop implements IGameLoop
+public class FixedTimeSteppedLoop implements IGameLoop
 {
-    private float prevTime;
+    private final int   targetUpdatesPerSecond;
+    private final float frameTime;
+
+    private final int maxFrameSkips;
 
     private int frames;
     private int framesPerSecond;
+    private int updates;
+    private int updatesPerSecond;
 
-    private float lastFPSTime;
+    private double gameTime = -1;
+    private double lastStatsTime;
+
+    public FixedTimeSteppedLoop()
+    {
+        this(60, 5);
+    }
+
+    public FixedTimeSteppedLoop(int targetUpdatesPerSecond)
+    {
+        this(targetUpdatesPerSecond, 5);
+    }
+
+    public FixedTimeSteppedLoop(int targetUpdatesPerSecond, int maxFrameSkips)
+    {
+        this.targetUpdatesPerSecond = targetUpdatesPerSecond;
+        this.frameTime = (float) (TimeUtils.convert(1, TimeUtils.Unit.SECONDS) / targetUpdatesPerSecond);
+
+        this.maxFrameSkips = maxFrameSkips;
+    }
 
     @Override
     public void performLoopFrame()
     {
-        if (prevTime == 0)
-            prevTime = (int) TimeUtils.currentTime();
+        double now = TimeUtils.currentTime();
 
-        float currTime = (float) TimeUtils.currentTime();
-        float elapsedTime = currTime - prevTime;
+        if (gameTime == -1)
+            gameTime = now;
 
-        prevTime = currTime;
+        int skippedFrames = 0;
 
-        SilenceEngine.eventManager.raiseUpdateEvent(elapsedTime);
+        while (gameTime <= now && skippedFrames <= maxFrameSkips)
+        {
+            if (updates <= targetUpdatesPerSecond)
+            {
+                updates++;
+                SilenceEngine.eventManager.raiseUpdateEvent(frameTime);
+            }
 
-        GLContext.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        SilenceEngine.eventManager.raiseRenderEvent(elapsedTime);
+            gameTime += frameTime;
+            skippedFrames++;
+        }
 
         frames++;
+        GLContext.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        SilenceEngine.eventManager.raiseRenderEvent(frameTime);
 
-        if (currTime - lastFPSTime >= TimeUtils.convert(1000, TimeUtils.Unit.MILLIS))
+        if (now - lastStatsTime >= TimeUtils.convert(1, TimeUtils.Unit.SECONDS))
         {
+            updatesPerSecond = updates;
             framesPerSecond = frames;
-            frames = 0;
-            lastFPSTime = currTime;
+
+            updates = frames = 0;
+            lastStatsTime = now;
         }
     }
 
@@ -79,6 +113,6 @@ public class VariableTimeSteppedLoop implements IGameLoop
     @Override
     public int getUPS()
     {
-        return framesPerSecond;
+        return updatesPerSecond;
     }
 }

@@ -51,11 +51,11 @@ public class LwjglDisplayDevice implements IDisplayDevice
     private int windowPositionX, windowPositionY;
 
     private boolean fullscreen;
+    private boolean focus = true;
 
     public LwjglDisplayDevice()
     {
         GLFW3.init();
-        GLFW3.setSwapInterval(1);
 
         Window.setHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
         Window.setHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
@@ -89,7 +89,11 @@ public class LwjglDisplayDevice implements IDisplayDevice
             SilenceEngine.eventManager.raiseResizeEvent();
         });
 
+        window.setFocusCallback((window1, focus1) -> focus = focus1);
+
         SilenceEngine.eventManager.addDisposeHandler(this::cleanUp);
+
+        GLFW3.setSwapInterval(1);
     }
 
     @Override
@@ -220,6 +224,18 @@ public class LwjglDisplayDevice implements IDisplayDevice
     public double nanoTime()
     {
         return System.nanoTime();
+    }
+
+    @Override
+    public void setVSync(boolean vSync)
+    {
+        GLFW3.setSwapInterval(vSync ? 1 : 0);
+    }
+
+    @Override
+    public boolean hasFocus()
+    {
+        return focus;
     }
 
     private void cleanUp()
