@@ -44,7 +44,7 @@ import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
  */
 public class BufferObject
 {
-    private static Map<Integer, BufferObject> current = new HashMap<>();
+    static Map<Integer, BufferObject> current = new HashMap<>();
 
     private int id;
     private int capacity;

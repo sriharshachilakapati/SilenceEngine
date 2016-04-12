@@ -90,7 +90,7 @@ public class OggReader
         // Read all the samples once for all
         int numSamples = stb_vorbis_stream_length_in_samples(handle);
         ByteBuffer pcm = BufferUtils.createByteBuffer(numSamples * Short.BYTES);
-        stb_vorbis_get_samples_short_interleaved(handle, channels, pcm, numSamples);
+        stb_vorbis_get_samples_short_interleaved(handle, channels, pcm.asShortBuffer());
 
         // Convert the audio bytes and store the data buffer
         data = SoundUtils.convertAudioBytes(pcm, channels == 2);

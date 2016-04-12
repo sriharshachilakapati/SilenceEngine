@@ -55,7 +55,7 @@ public class LwjglAudioDevice extends AudioDevice
         device = alcOpenDevice((ByteBuffer) null);
         ALCCapabilities deviceCaps = ALC.createCapabilities(device);
 
-        context = alcCreateContext(device, (ByteBuffer) null);
+        context = alcCreateContext(device, null);
         alcMakeContextCurrent(context);
         AL.createCapabilities(deviceCaps);
 

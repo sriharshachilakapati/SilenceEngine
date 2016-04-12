@@ -30,6 +30,7 @@ import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.io.DirectFloatBuffer;
 import com.shc.silenceengine.math.Matrix3;
 import com.shc.silenceengine.math.Matrix4;
+import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.Vector4;
@@ -265,6 +266,11 @@ public class Program
         setUniform(location, false, value);
     }
 
+    public void setUniform(int location, Transform value)
+    {
+        setUniform(location, false, value.getMatrix());
+    }
+
     public void setUniform(int location, boolean transpose, Matrix4 value)
     {
         use();
@@ -291,6 +297,11 @@ public class Program
     public void setUniform(String name, Matrix4 value)
     {
         setUniform(name, false, value);
+    }
+
+    public void setUniform(String name, Transform value)
+    {
+        setUniform(name, false, value.getMatrix());
     }
 
     public void dispose()

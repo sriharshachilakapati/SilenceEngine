@@ -129,6 +129,8 @@ public final class GLContext
         {
             SilenceEngine.graphics.glBindVertexArray(0);
             GLError.check();
+
+            VertexArray.CURRENT = null;
             return;
         }
 
@@ -146,6 +148,8 @@ public final class GLContext
         {
             SilenceEngine.graphics.glBindBuffer(GL_ARRAY_BUFFER, 0);
             GLError.check();
+
+            BufferObject.current.clear();
             return;
         }
 
