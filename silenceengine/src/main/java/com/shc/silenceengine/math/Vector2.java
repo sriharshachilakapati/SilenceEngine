@@ -115,7 +115,7 @@ public class Vector2
         return x * x + y * y;
     }
 
-    public Vector2 rotateSelf(float angle)
+    public Vector2 rotate(float angle)
     {
         float cos = MathUtils.cos(angle);
         float sin = MathUtils.sin(angle);

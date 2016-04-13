@@ -168,4 +168,22 @@ public class Transform
         tMatrix.invert();
         return this;
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Transform transform = (Transform) o;
+
+        return tMatrix.equals(transform.tMatrix);
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return tMatrix.hashCode();
+    }
 }

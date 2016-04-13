@@ -28,6 +28,8 @@ package com.shc.silenceengine.math;
 import com.shc.silenceengine.io.DirectFloatBuffer;
 import com.shc.silenceengine.utils.ReusableStack;
 
+import java.util.Arrays;
+
 /**
  * @author Sri Harsha Chilakapati
  */
@@ -371,5 +373,23 @@ public class Matrix4
         }
 
         return s.toString();
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Matrix4 matrix4 = (Matrix4) o;
+
+        return Arrays.deepEquals(m, matrix4.m);
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Arrays.deepHashCode(m);
     }
 }
