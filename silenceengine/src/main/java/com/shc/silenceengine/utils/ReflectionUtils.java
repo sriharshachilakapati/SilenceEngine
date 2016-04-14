@@ -34,17 +34,24 @@ public final class ReflectionUtils
     {
     }
 
-    @SuppressWarnings({ "unchecked", "unused" })
-    public static <T> boolean isInstance(Class<T> klass, Object object)
+    public static boolean isInstanceOf(Class<?> clazz, Object o)
     {
-        try
-        {
-            T obj = (T) object;
-            return true;
-        }
-        catch (ClassCastException ex)
-        {
+        if ((clazz == null) || (o == null))
             return false;
+
+        if (clazz.isInterface())
+            throw new UnsupportedOperationException();
+
+        Class<?> oClazz = o.getClass();
+
+        while (oClazz != null)
+        {
+            if (oClazz == clazz)
+                return true;
+
+            oClazz = oClazz.getSuperclass();
         }
+
+        return false;
     }
 }

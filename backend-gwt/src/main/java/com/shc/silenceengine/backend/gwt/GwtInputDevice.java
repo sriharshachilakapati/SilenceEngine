@@ -61,8 +61,8 @@ public class GwtInputDevice extends InputDevice
         canvas.addMouseUpHandler(event -> postMouseEvent(getMouseCode(event.getNativeButton()), false));
 
         canvas.addMouseMoveHandler(event -> {
-            int x = event.getClientX();
-            int y = event.getClientY();
+            int x = event.getX();
+            int y = event.getY();
 
             Mouse.dx = x - Mouse.x;
             Mouse.dy = y - Mouse.y;

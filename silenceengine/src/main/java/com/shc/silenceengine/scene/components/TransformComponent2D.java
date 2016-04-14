@@ -36,6 +36,9 @@ public class TransformComponent2D implements IComponent2D
 {
     public Transform transform;
     public boolean   transformed;
+    public boolean   lockPosition;
+    public boolean   lockScale;
+    public boolean   lockRotation;
 
     private Entity2D  entity;
     private Transform oldTransform;
@@ -61,9 +64,9 @@ public class TransformComponent2D implements IComponent2D
 
         while (entity != null)
         {
-            transform.scale(entity.scale);
-            transform.rotate(Vector3.AXIS_Z, entity.rotation);
-            transform.translate(entity.position);
+            if (!lockScale) transform.scale(entity.scale);
+            if (!lockRotation) transform.rotate(Vector3.AXIS_Z, entity.rotation);
+            if (!lockPosition) transform.translate(entity.position);
 
             entity = entity.parent;
         }

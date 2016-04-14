@@ -40,7 +40,7 @@ import java.util.List;
 public class Entity2D
 {
     public final Vector2 position = new Vector2();
-    public final Vector2 scale    = new Vector2();
+    public final Vector2 scale    = new Vector2(1, 1);
 
     public final long id = IDGenerator.generate();
 
@@ -52,7 +52,7 @@ public class Entity2D
 
     public Entity2D()
     {
-        components.add(new TransformComponent2D());
+        addComponent(new TransformComponent2D());
     }
 
     public final void update(float deltaTime)
@@ -113,9 +113,19 @@ public class Entity2D
     public <T extends IComponent2D> T getComponent(Class<T> type)
     {
         for (IComponent2D component : components)
-            if (ReflectionUtils.isInstance(type, component))
+            if (ReflectionUtils.isInstanceOf(type, component))
                 return (T) component;
 
         return null;
+    }
+
+    public List<Entity2D> getChildren()
+    {
+        return children;
+    }
+
+    public List<IComponent2D> getComponents()
+    {
+        return components;
     }
 }

@@ -26,6 +26,7 @@
 package com.shc.silenceengine.scene.components;
 
 import com.shc.silenceengine.collision.CollisionTag;
+import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.geom2d.Polygon;
 import com.shc.silenceengine.scene.entity.Entity2D;
 import com.shc.silenceengine.utils.IDGenerator;
@@ -43,6 +44,12 @@ public class CollisionComponent2D implements IComponent2D
 
     public Entity2D entity;
 
+    public CollisionComponent2D(CollisionTag tag, Polygon polygon)
+    {
+        this.tag = tag;
+        this.polygon = polygon;
+    }
+
     public CollisionComponent2D(CollisionTag tag, Polygon polygon, CollisionCallback callback)
     {
         this.tag = tag;
@@ -59,9 +66,32 @@ public class CollisionComponent2D implements IComponent2D
     @Override
     public void update(float deltaTime)
     {
-        polygon.setPosition(entity.position);
-        polygon.setRotation(entity.rotation);
-        polygon.setScale(entity.scale);
+        Vector2 tPosition = Vector2.REUSABLE_STACK.pop();
+        Vector2 tScale = Vector2.REUSABLE_STACK.pop();
+
+        float rotation = 0;
+
+        tPosition.set(entity.position);
+        tScale.set(entity.scale);
+        rotation += entity.rotation;
+
+        Entity2D parent = entity.parent;
+
+        while (parent != null)
+        {
+            rotation += parent.rotation;
+            tScale.scale(parent.scale.x, parent.scale.y);
+            tPosition.rotate(parent.rotation).add(parent.position);
+
+            parent = parent.parent;
+        }
+
+        polygon.setCenter(tPosition);
+        polygon.setScale(tScale);
+        polygon.setRotation(rotation);
+
+        Vector2.REUSABLE_STACK.push(tPosition);
+        Vector2.REUSABLE_STACK.push(tScale);
     }
 
     @Override
@@ -77,6 +107,6 @@ public class CollisionComponent2D implements IComponent2D
     @FunctionalInterface
     public interface CollisionCallback
     {
-        void handleCollision(Entity2D other);
+        void handleCollision(Entity2D other, CollisionComponent2D component);
     }
 }

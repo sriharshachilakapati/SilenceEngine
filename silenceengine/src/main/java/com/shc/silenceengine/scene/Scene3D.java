@@ -48,4 +48,14 @@ public class Scene3D
         for (int i = 0; i < entities.size(); i++)
             entities.get(i).render(deltaTime);
     }
+
+    public int numEntities()
+    {
+        int count = entities.size();
+
+        for (Entity3D entity : entities)
+            count += entity.getChildren().size();
+
+        return count;
+    }
 }

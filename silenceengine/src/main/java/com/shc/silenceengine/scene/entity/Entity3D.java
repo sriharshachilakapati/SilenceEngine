@@ -41,7 +41,7 @@ public class Entity3D
 {
     public final Vector3 position = new Vector3();
     public final Vector3 rotation = new Vector3();
-    public final Vector3 scale    = new Vector3();
+    public final Vector3 scale    = new Vector3(1, 1, 1);
 
     public final long id = IDGenerator.generate();
 
@@ -52,7 +52,7 @@ public class Entity3D
 
     public Entity3D()
     {
-        components.add(new TransformComponent3D());
+        addComponent(new TransformComponent3D());
     }
 
     public final void update(float deltaTime)
@@ -113,9 +113,19 @@ public class Entity3D
     public <T extends IComponent3D> T getComponent(Class<T> type)
     {
         for (IComponent3D component : components)
-            if (ReflectionUtils.isInstance(type, component))
+            if (ReflectionUtils.isInstanceOf(type, component))
                 return (T) component;
 
         return null;
+    }
+
+    public List<Entity3D> getChildren()
+    {
+        return children;
+    }
+
+    public List<IComponent3D> getComponents()
+    {
+        return components;
     }
 }

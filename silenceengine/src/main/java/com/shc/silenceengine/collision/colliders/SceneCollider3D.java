@@ -28,6 +28,7 @@ import com.shc.silenceengine.collision.CollisionTag;
 import com.shc.silenceengine.collision.broadphase.IBroadphase3D;
 import com.shc.silenceengine.scene.Scene3D;
 import com.shc.silenceengine.scene.components.CollisionComponent3D;
+import com.shc.silenceengine.scene.components.IComponent3D;
 import com.shc.silenceengine.scene.components.TransformComponent3D;
 import com.shc.silenceengine.scene.entity.Entity3D;
 
@@ -122,36 +123,32 @@ public class SceneCollider3D
         }
 
         // Update the list of entities from the list of children in the scene
-        if (scene.entities.size() != childrenInScene)
+        if (scene.numEntities() != childrenInScene)
         {
             entities.clear();
             broadphase.clear();
             childrenInScene = 0;
 
-            for (Entity3D entity : scene.entities)
-            {
-                CollisionComponent3D component = entity.getComponent(CollisionComponent3D.class);
-
-                if (component != null)
-                {
-                    broadphase.insert(component);
-                    entities.add(entity);
-                }
-
-                childrenInScene++;
-            }
+            updateEntities(scene.entities);
         }
 
         // Update the broadphase for repositioned entities
         for (Entity3D entity : entities)
         {
             TransformComponent3D transform = entity.getComponent(TransformComponent3D.class);
-            CollisionComponent3D collision = entity.getComponent(CollisionComponent3D.class);
 
-            if (transform.transformed)
+            for (IComponent3D component : entity.getComponents())
             {
-                broadphase.remove(collision);
-                broadphase.insert(collision);
+                if (component instanceof CollisionComponent3D)
+                {
+                    CollisionComponent3D collision = (CollisionComponent3D) component;
+
+                    if (transform.transformed)
+                    {
+                        broadphase.remove(collision);
+                        broadphase.insert(collision);
+                    }
+                }
             }
         }
 
@@ -171,10 +168,30 @@ public class SceneCollider3D
                         for (CollisionComponent3D collidable : collidables)
                             if (collidable.tag == type2)
                                 if (collision.polyhedron.intersects(collidable.polyhedron))
-                                    collision.callback.handleCollision(collision.entity);
+                                    collision.callback.handleCollision(collision.entity, collidable);
                     }
                 }
             }
+        }
+    }
+
+    private void updateEntities(List<Entity3D> entities)
+    {
+        for (Entity3D entity : entities)
+        {
+            for (IComponent3D component : entity.getComponents())
+            {
+                if (component instanceof CollisionComponent3D)
+                {
+                    broadphase.insert((CollisionComponent3D) component);
+                    this.entities.add(entity);
+                }
+            }
+
+            childrenInScene++;
+
+            if (entity.getChildren().size() != 0)
+                updateEntities(entity.getChildren());
         }
     }
 }

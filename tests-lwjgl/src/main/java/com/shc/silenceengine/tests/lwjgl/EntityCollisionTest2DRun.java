@@ -23,39 +23,19 @@
  *
  */
 
-package com.shc.silenceengine.scene;
+package com.shc.silenceengine.tests.lwjgl;
 
-import com.shc.silenceengine.scene.entity.Entity2D;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.shc.silenceengine.backend.lwjgl.LwjglRuntime;
+import com.shc.silenceengine.tests.EntityCollisionTest2D;
+import com.shc.silenceengine.tests.TestRunner;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Scene2D
+public class EntityCollisionTest2DRun
 {
-    public final List<Entity2D> entities = new ArrayList<>();
-
-    public void update(float deltaTime)
+    public static void main(String[] args)
     {
-        for (int i = 0; i < entities.size(); i++)
-            entities.get(i).update(deltaTime);
-    }
-
-    public void render(float deltaTime)
-    {
-        for (int i = 0; i < entities.size(); i++)
-            entities.get(i).render(deltaTime);
-    }
-
-    public int numEntities()
-    {
-        int count = entities.size();
-
-        for (Entity2D entity : entities)
-            count += entity.getChildren().size();
-
-        return count;
+        LwjglRuntime.start(new TestRunner(new EntityCollisionTest2D()));
     }
 }

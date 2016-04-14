@@ -45,14 +45,18 @@ public class Polygon
     private float maxX;
     private float maxY;
 
+    private float scaleX;
+    private float scaleY;
+
     private Rectangle bounds;
-    private Vector2   scale;
 
     public Polygon()
     {
         this.vertices = new ArrayList<>();
         this.position = new Vector2();
         this.center = new Vector2();
+
+        scaleX = scaleY = 1;
 
         clearVertices();
     }
@@ -92,6 +96,9 @@ public class Polygon
     {
         for (Vector2 v : vertices)
             v.scale(sx, sy);
+
+        scaleX *= sx;
+        scaleY *= sy;
     }
 
     public boolean intersects(Polygon other)
@@ -328,6 +335,6 @@ public class Polygon
 
     public void setScale(Vector2 scale)
     {
-        this.scale.set(scale);
+        scale(scale.x / scaleX, scale.y / scaleY);
     }
 }

@@ -36,6 +36,9 @@ public class TransformComponent3D implements IComponent3D
 {
     public Transform transform;
     public boolean   transformed;
+    public boolean   lockPosition;
+    public boolean   lockScale;
+    public boolean   lockRotation;
 
     private Entity3D  entity;
     private Transform oldTransform;
@@ -61,13 +64,15 @@ public class TransformComponent3D implements IComponent3D
 
         while (entity != null)
         {
-            transform.scale(entity.scale);
+            if (!lockScale) transform.scale(entity.scale);
 
-            transform.rotate(Vector3.AXIS_Y, entity.rotation.y)
-                    .rotate(Vector3.AXIS_Z, entity.rotation.z)
-                    .rotate(Vector3.AXIS_X, entity.rotation.x);
+            if (!lockRotation)
+                transform.rotate(Vector3.AXIS_Y, entity.rotation.y)
+                        .rotate(Vector3.AXIS_Z, entity.rotation.z)
+                        .rotate(Vector3.AXIS_X, entity.rotation.x);
 
-            transform.translate(entity.position);
+            if (!lockPosition)
+                transform.translate(entity.position);
 
             entity = entity.parent;
         }

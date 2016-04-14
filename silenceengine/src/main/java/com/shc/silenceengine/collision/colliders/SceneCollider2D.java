@@ -28,6 +28,7 @@ import com.shc.silenceengine.collision.CollisionTag;
 import com.shc.silenceengine.collision.broadphase.IBroadphase2D;
 import com.shc.silenceengine.scene.Scene2D;
 import com.shc.silenceengine.scene.components.CollisionComponent2D;
+import com.shc.silenceengine.scene.components.IComponent2D;
 import com.shc.silenceengine.scene.components.TransformComponent2D;
 import com.shc.silenceengine.scene.entity.Entity2D;
 
@@ -122,36 +123,32 @@ public class SceneCollider2D
         }
 
         // Update the list of entities from the list of children in the scene
-        if (scene.entities.size() != childrenInScene)
+        if (scene.numEntities() != childrenInScene)
         {
             entities.clear();
             broadphase.clear();
             childrenInScene = 0;
 
-            for (Entity2D entity : scene.entities)
-            {
-                CollisionComponent2D component = entity.getComponent(CollisionComponent2D.class);
-
-                if (component != null)
-                {
-                    broadphase.insert(component);
-                    entities.add(entity);
-                }
-
-                childrenInScene++;
-            }
+            updateEntities(scene.entities);
         }
 
         // Update the broadphase for repositioned entities
         for (Entity2D entity : entities)
         {
             TransformComponent2D transform = entity.getComponent(TransformComponent2D.class);
-            CollisionComponent2D collision = entity.getComponent(CollisionComponent2D.class);
 
-            if (transform.transformed)
+            for (IComponent2D component : entity.getComponents())
             {
-                broadphase.remove(collision);
-                broadphase.insert(collision);
+                if (component instanceof CollisionComponent2D)
+                {
+                    CollisionComponent2D collision = (CollisionComponent2D) component;
+
+                    if (transform.transformed)
+                    {
+                        broadphase.remove(collision);
+                        broadphase.insert(collision);
+                    }
+                }
             }
         }
 
@@ -171,10 +168,30 @@ public class SceneCollider2D
                         for (CollisionComponent2D collidable : collidables)
                             if (collidable.tag == type2)
                                 if (collision.polygon.intersects(collidable.polygon))
-                                    collision.callback.handleCollision(collision.entity);
+                                    collision.callback.handleCollision(collision.entity, collidable);
                     }
                 }
             }
+        }
+    }
+
+    private void updateEntities(List<Entity2D> entities)
+    {
+        for (Entity2D entity : entities)
+        {
+            for (IComponent2D component : entity.getComponents())
+            {
+                if (component instanceof CollisionComponent2D)
+                {
+                    broadphase.insert((CollisionComponent2D) component);
+                    this.entities.add(entity);
+                }
+            }
+
+            childrenInScene++;
+
+            if (entity.getChildren().size() != 0)
+                updateEntities(entity.getChildren());
         }
     }
 }

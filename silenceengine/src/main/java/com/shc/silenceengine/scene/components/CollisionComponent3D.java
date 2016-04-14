@@ -26,6 +26,7 @@
 package com.shc.silenceengine.scene.components;
 
 import com.shc.silenceengine.collision.CollisionTag;
+import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.scene.entity.Entity3D;
 import com.shc.silenceengine.utils.IDGenerator;
@@ -43,6 +44,12 @@ public class CollisionComponent3D implements IComponent3D
 
     public Entity3D entity;
 
+    public CollisionComponent3D(CollisionTag tag, Polyhedron polyhedron)
+    {
+        this.tag = tag;
+        this.polyhedron = polyhedron;
+    }
+
     public CollisionComponent3D(CollisionTag tag, Polyhedron polyhedron, CollisionCallback callback)
     {
         this.tag = tag;
@@ -59,9 +66,32 @@ public class CollisionComponent3D implements IComponent3D
     @Override
     public void update(float deltaTime)
     {
-        polyhedron.setPosition(entity.position);
-        polyhedron.setRotation(entity.rotation);
-        polyhedron.setScale(entity.scale);
+        Vector3 tPosition = Vector3.REUSABLE_STACK.pop();
+        Vector3 tScale = Vector3.REUSABLE_STACK.pop();
+        Vector3 tRotation = Vector3.REUSABLE_STACK.pop();
+
+        tPosition.set(entity.position);
+        tScale.set(entity.scale);
+        tRotation.set(entity.rotation);
+
+        Entity3D parent = entity.parent;
+
+        while (parent != null)
+        {
+            tRotation.add(parent.rotation);
+            tScale.scale(parent.scale.x, parent.scale.y, parent.scale.z);
+            tPosition.rotate(parent.rotation).add(parent.position);
+
+            parent = parent.parent;
+        }
+
+        polyhedron.setPosition(tPosition);
+        polyhedron.setScale(tScale);
+        polyhedron.setRotation(tRotation);
+
+        Vector3.REUSABLE_STACK.push(tPosition);
+        Vector3.REUSABLE_STACK.push(tScale);
+        Vector3.REUSABLE_STACK.push(tRotation);
     }
 
     @Override
@@ -77,6 +107,6 @@ public class CollisionComponent3D implements IComponent3D
     @FunctionalInterface
     public interface CollisionCallback
     {
-        void handleCollision(Entity3D other);
+        void handleCollision(Entity3D other, CollisionComponent3D component);
     }
 }

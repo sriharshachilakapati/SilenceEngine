@@ -280,4 +280,16 @@ public class Vector3
     {
         return "[" + x + ", " + y + ", " + z + "]";
     }
+
+    public Vector3 rotate(Vector3 rotation)
+    {
+        Quaternion temp = Quaternion.REUSABLE_STACK.pop();
+
+        temp.set(rotation.x, rotation.y, rotation.z);
+        temp.multiply(this, this);
+
+        Quaternion.REUSABLE_STACK.push(temp);
+
+        return this;
+    }
 }
