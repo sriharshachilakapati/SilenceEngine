@@ -44,6 +44,7 @@ public class Entity3D
     public final Vector3 scale    = new Vector3(1, 1, 1);
 
     public final long id = IDGenerator.generate();
+    public final TransformComponent3D transformComponent;
 
     private final List<IComponent3D> components = new ArrayList<>();
     private final List<Entity3D>     children   = new ArrayList<>();
@@ -52,7 +53,7 @@ public class Entity3D
 
     public Entity3D()
     {
-        addComponent(new TransformComponent3D());
+        addComponent(transformComponent = new TransformComponent3D());
     }
 
     public final void update(float deltaTime)

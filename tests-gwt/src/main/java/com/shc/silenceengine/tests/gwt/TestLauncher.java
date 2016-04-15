@@ -26,6 +26,7 @@
 package com.shc.silenceengine.tests.gwt;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -59,13 +60,36 @@ public class TestLauncher implements EntryPoint
             selectionList.addItem(testName);
 
         selectionList.addChangeHandler(event ->
-                game.changeTest(tests.get(selectionList.getSelectedItemText()).provide()));
+        {
+            String test = selectionList.getSelectedItemText();
+            Window.Location.replace(
+                    Window.Location.getPath() + Window.Location.getQueryString() +"#" + test);
 
-        RootPanel.get().add(new HTML("Select Test: "));
+            game.changeTest(tests.get(test).provide());
+        });
+
+        RootPanel.get().add(new HTML("<h1>SilenceEngine Tests</h1>"));
         RootPanel.get().add(selectionList);
         RootPanel.get().add(new HTML("<br>"));
 
-        game = new TestRunner(tests.get(selectionList.getItemText(0)).provide());
+        String test = Window.Location.getHref();
+        test = test == null ? "" : test.substring(test.lastIndexOf('#') + 1);
+
+        if (!tests.keySet().contains(test))
+            test = selectionList.getItemText(0);
+
+        int index = 0;
+
+        for (String testName : tests.keySet())
+            if (testName.equals(test))
+            {
+                selectionList.setSelectedIndex(index);
+                break;
+            }
+            else
+                index++;
+
+        game = new TestRunner(tests.get(test).provide());
 
         GwtRuntime.start(game);
     }

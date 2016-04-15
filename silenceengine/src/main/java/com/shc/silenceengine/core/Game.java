@@ -32,12 +32,46 @@ public abstract class Game
 {
     public static boolean DEVELOPMENT = true;
 
+    protected GameState gameState;
+
     public Game()
     {
-        SilenceEngine.eventManager.addUpdateHandler(this::update);
-        SilenceEngine.eventManager.addRenderHandler(this::render);
-        SilenceEngine.eventManager.addResizeHandler(this::resized);
-        SilenceEngine.eventManager.addDisposeHandler(this::dispose);
+        SilenceEngine.eventManager.addUpdateHandler(this::doUpdate);
+        SilenceEngine.eventManager.addRenderHandler(this::doRender);
+        SilenceEngine.eventManager.addResizeHandler(this::doResized);
+        SilenceEngine.eventManager.addDisposeHandler(this::doDispose);
+    }
+
+    private void doDispose()
+    {
+        if (gameState != null)
+            gameState.onLeave();
+
+        dispose();
+    }
+
+    private void doResized()
+    {
+        resized();
+
+        if (gameState != null)
+            gameState.resized();
+    }
+
+    private void doRender(float delta)
+    {
+        render(delta);
+
+        if (gameState != null)
+            gameState.render(delta);
+    }
+
+    private void doUpdate(float deltaTime)
+    {
+        update(deltaTime);
+
+        if (gameState != null)
+            gameState.update(deltaTime);
     }
 
     public void init()
@@ -58,5 +92,21 @@ public abstract class Game
 
     public void resized()
     {
+    }
+
+    public GameState getGameState()
+    {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState)
+    {
+        if (this.gameState != null)
+            this.gameState.onLeave();
+
+        this.gameState = gameState;
+
+        if (this.gameState != null)
+            this.gameState.onEnter();
     }
 }

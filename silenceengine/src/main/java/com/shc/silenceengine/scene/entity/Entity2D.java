@@ -43,6 +43,7 @@ public class Entity2D
     public final Vector2 scale    = new Vector2(1, 1);
 
     public final long id = IDGenerator.generate();
+    public final TransformComponent2D transformComponent;
 
     private final List<Entity2D>     children   = new ArrayList<>();
     private final List<IComponent2D> components = new ArrayList<>();
@@ -52,7 +53,7 @@ public class Entity2D
 
     public Entity2D()
     {
-        addComponent(new TransformComponent2D());
+        addComponent(transformComponent = new TransformComponent2D());
     }
 
     public final void update(float deltaTime)

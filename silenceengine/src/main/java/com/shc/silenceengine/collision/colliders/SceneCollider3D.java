@@ -29,7 +29,6 @@ import com.shc.silenceengine.collision.broadphase.IBroadphase3D;
 import com.shc.silenceengine.scene.Scene3D;
 import com.shc.silenceengine.scene.components.CollisionComponent3D;
 import com.shc.silenceengine.scene.components.IComponent3D;
-import com.shc.silenceengine.scene.components.TransformComponent3D;
 import com.shc.silenceengine.scene.entity.Entity3D;
 
 import java.util.ArrayList;
@@ -135,15 +134,13 @@ public class SceneCollider3D
         // Update the broadphase for repositioned entities
         for (Entity3D entity : entities)
         {
-            TransformComponent3D transform = entity.getComponent(TransformComponent3D.class);
-
             for (IComponent3D component : entity.getComponents())
             {
                 if (component instanceof CollisionComponent3D)
                 {
                     CollisionComponent3D collision = (CollisionComponent3D) component;
 
-                    if (transform.transformed)
+                    if (entity.transformComponent.transformed)
                     {
                         broadphase.remove(collision);
                         broadphase.insert(collision);

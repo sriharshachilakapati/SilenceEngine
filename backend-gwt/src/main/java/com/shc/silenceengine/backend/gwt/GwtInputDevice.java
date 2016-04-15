@@ -27,6 +27,7 @@ package com.shc.silenceengine.backend.gwt;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.shc.silenceengine.core.SilenceEngine;
@@ -54,11 +55,25 @@ public class GwtInputDevice extends InputDevice
 
         Canvas canvas = ((GwtDisplayDevice) SilenceEngine.display).canvas;
 
-        canvas.addKeyDownHandler(event -> postKeyEvent(getKeyCode(event.getNativeKeyCode()), true));
-        canvas.addKeyUpHandler(event -> postKeyEvent(getKeyCode(event.getNativeKeyCode()), false));
+        canvas.addKeyDownHandler(event -> {
+            postKeyEvent(getKeyCode(event.getNativeKeyCode()), true);
+            event.preventDefault();
+        });
 
-        canvas.addMouseDownHandler(event -> postMouseEvent(getMouseCode(event.getNativeButton()), true));
-        canvas.addMouseUpHandler(event -> postMouseEvent(getMouseCode(event.getNativeButton()), false));
+        canvas.addKeyUpHandler(event -> {
+            postKeyEvent(getKeyCode(event.getNativeKeyCode()), false);
+            event.preventDefault();
+        });
+
+        canvas.addMouseDownHandler(event -> {
+            postMouseEvent(getMouseCode(event.getNativeButton()), true);
+            event.preventDefault();
+        });
+
+        canvas.addMouseUpHandler(event -> {
+            postMouseEvent(getMouseCode(event.getNativeButton()), false);
+            event.preventDefault();
+        });
 
         canvas.addMouseMoveHandler(event -> {
             int x = event.getX();
@@ -69,6 +84,8 @@ public class GwtInputDevice extends InputDevice
 
             Mouse.x = x;
             Mouse.y = y;
+
+            event.preventDefault();
         });
 
         canvas.addMouseWheelHandler(event -> {
@@ -77,13 +94,36 @@ public class GwtInputDevice extends InputDevice
             // To normalize between 0 and 1
             Mouse.deltaScrollY = dsy > 0 ? 1 : dsy == 0 ? 0 : -1;
             Mouse.deltaScrollX = 0;
+
+            event.preventDefault();
         });
 
-        canvas.addTouchStartHandler(event -> postTouchEvents(event.getTargetTouches(), true));
-        canvas.addTouchMoveHandler(event -> postTouchEvents(event.getTargetTouches(), true));
-        canvas.addTouchEndHandler(event -> postTouchEvents(event.getTargetTouches(), false));
-        canvas.addTouchCancelHandler(event -> postTouchEvents(event.getTargetTouches(), false));
+        canvas.addTouchStartHandler(event -> {
+            postTouchEvents(event.getTargetTouches(), true);
+            event.preventDefault();
+        });
+
+        canvas.addTouchMoveHandler(event -> {
+            postTouchEvents(event.getTargetTouches(), true);
+            event.preventDefault();
+        });
+
+        canvas.addTouchEndHandler(event -> {
+            postTouchEvents(event.getTargetTouches(), false);
+            event.preventDefault();
+        });
+
+        canvas.addTouchCancelHandler(event -> {
+            postTouchEvents(event.getTargetTouches(), false);
+            event.preventDefault();
+        });
+
+        preventContextMenu(canvas.getCanvasElement());
     }
+
+    private native void preventContextMenu(CanvasElement canvas) /*-{
+        canvas.oncontextmenu = function (){ return false; };
+    }-*/;
 
     private void postTouchEvents(JsArray<Touch> touches, boolean isDown)
     {
@@ -92,7 +132,7 @@ public class GwtInputDevice extends InputDevice
         // Browsers report only the available touches in a list. So update all the touches in the list accurately.
         // We ignore the touches past finger 9 (only ten fingers are read).
         for (i = 0, j = com.shc.silenceengine.input.Touch.FINGER_0;
-                i < touches.length() && j <= com.shc.silenceengine.input.Touch.FINGER_9; i++, j++)
+             i < touches.length() && j <= com.shc.silenceengine.input.Touch.FINGER_9; i++, j++)
         {
             Touch touch = touches.get(i);
             postTouchEvent(j, isDown, touch.getClientX(), touch.getClientY());

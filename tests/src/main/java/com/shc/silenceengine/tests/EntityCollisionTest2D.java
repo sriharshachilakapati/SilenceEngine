@@ -35,6 +35,7 @@ import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Shader;
+import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
 import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Transforms;
@@ -165,6 +166,9 @@ public class EntityCollisionTest2D extends SilenceTest
     @Override
     public void update(float deltaTime)
     {
+        if (Keyboard.isKeyTapped(Keyboard.KEY_ESCAPE))
+            SilenceEngine.display.close();
+
         scene.update(deltaTime);
         collider.checkCollisions();
 

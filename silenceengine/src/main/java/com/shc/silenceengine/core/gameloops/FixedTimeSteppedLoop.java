@@ -37,35 +37,25 @@ import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
  */
 public class FixedTimeSteppedLoop implements IGameLoop
 {
-    private final int   targetUpdatesPerSecond;
     private final float frameTime;
-
-    private final int maxFrameSkips;
 
     private int frames;
     private int framesPerSecond;
     private int updates;
     private int updatesPerSecond;
 
-    private double gameTime = -1;
+    private double previous = -1;
     private double lastStatsTime;
+    private double lag;
 
     public FixedTimeSteppedLoop()
     {
-        this(60, 5);
+        this(60);
     }
 
     public FixedTimeSteppedLoop(int targetUpdatesPerSecond)
     {
-        this(targetUpdatesPerSecond, 5);
-    }
-
-    public FixedTimeSteppedLoop(int targetUpdatesPerSecond, int maxFrameSkips)
-    {
-        this.targetUpdatesPerSecond = targetUpdatesPerSecond;
         this.frameTime = (float) (TimeUtils.convert(1, TimeUtils.Unit.SECONDS) / targetUpdatesPerSecond);
-
-        this.maxFrameSkips = maxFrameSkips;
     }
 
     @Override
@@ -73,21 +63,22 @@ public class FixedTimeSteppedLoop implements IGameLoop
     {
         double now = TimeUtils.currentTime();
 
-        if (gameTime == -1)
-            gameTime = now;
+        if (previous == -1)
+            previous = now;
 
-        int skippedFrames = 0;
+        double delta = now - previous;
 
-        while (gameTime <= now && skippedFrames <= maxFrameSkips)
+        if (delta >= TimeUtils.convert(1, TimeUtils.Unit.SECONDS))
+            delta = frameTime;
+
+        lag += delta;
+
+        while (lag >= frameTime)
         {
-            if (updates <= targetUpdatesPerSecond)
-            {
-                updates++;
-                SilenceEngine.eventManager.raiseUpdateEvent(frameTime);
-            }
+            updates++;
+            SilenceEngine.eventManager.raiseUpdateEvent(frameTime);
 
-            gameTime += frameTime;
-            skippedFrames++;
+            lag -= frameTime;
         }
 
         frames++;
@@ -102,6 +93,8 @@ public class FixedTimeSteppedLoop implements IGameLoop
             updates = frames = 0;
             lastStatsTime = now;
         }
+
+        previous = now;
     }
 
     @Override

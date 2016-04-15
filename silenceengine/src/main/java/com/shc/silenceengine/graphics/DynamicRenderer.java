@@ -321,7 +321,7 @@ public class DynamicRenderer
         if (vertexCount >= batchSize)
         {
             if (batchSize >= maxBatchSize)
-                // Don't resize more than the max batch size
+                // Don't resized more than the max batch size
                 flush();
             else
                 // Resize the batch by adding a block of vertices at the end
