@@ -38,7 +38,5 @@ public abstract class Material
         this.program = program;
     }
 
-    public abstract void update();
-
-    public abstract int getVertexLocation();
+    public abstract void prepareRenderer(MeshRenderer meshRenderer);
 }
