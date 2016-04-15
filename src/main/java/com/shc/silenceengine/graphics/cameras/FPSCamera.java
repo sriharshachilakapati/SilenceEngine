@@ -34,6 +34,7 @@ import org.lwjgl.opengl.GL11;
 
 /**
  * @author Sri Harsha Chilakapati
+ * @author Kevin Beaucoral
  */
 public class FPSCamera extends BaseCamera
 {
