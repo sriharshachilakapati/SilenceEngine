@@ -67,6 +67,7 @@ public class GwtInputDevice extends InputDevice
 
         canvas.addMouseDownHandler(event -> {
             postMouseEvent(getMouseCode(event.getNativeButton()), true);
+            canvas.setFocus(true);
             event.preventDefault();
         });
 

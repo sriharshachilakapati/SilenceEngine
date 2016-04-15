@@ -161,7 +161,7 @@ public class GwtDisplayDevice implements IDisplayDevice
 
         $wnd.onblur = function ()
         {
-            self.@com.shc.silenceengine.backend.gwt.GwtDisplayDevice::focus = true;
+            self.@com.shc.silenceengine.backend.gwt.GwtDisplayDevice::focus = false;
         };
     }-*/;
 
