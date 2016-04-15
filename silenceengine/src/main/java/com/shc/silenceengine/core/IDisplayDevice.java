@@ -194,4 +194,16 @@ public interface IDisplayDevice
     @PlatformDesktop
     @PlatformHTML5
     boolean hasFocus();
+
+    /**
+     * Returns the aspect ratio of the display device. It is nothing but the width / height ratio.
+     *
+     * @return The aspect ratio of the display.
+     */
+    @PlatformDesktop
+    @PlatformHTML5
+    default float getAspectRatio()
+    {
+        return (float) getWidth() / (float) getHeight();
+    }
 }
