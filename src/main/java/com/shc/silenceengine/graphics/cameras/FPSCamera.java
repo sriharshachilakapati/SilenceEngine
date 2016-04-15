@@ -140,17 +140,14 @@ public class FPSCamera extends BaseCamera
 
     public FPSCamera rotateX(float angle)
     {
-        // If the current angle is already on the limit, do nothing.
-        if (angleX <= -ANGLE_LIMIT_X || angleX >= ANGLE_LIMIT_X) {
+        if ( (angleX <= -ANGLE_LIMIT_X) && (angle < 0) ||
+                (angleX >= ANGLE_LIMIT_X) && (angle > 0) ) {
             return this;
         }
-        
+
         angleX += angle;
 
-        // the limit was exceeded by this new rotation...
-        // We need to calculate which angle is needed to obtain the limit
-        if (angleX < -ANGLE_LIMIT_X || angleX > ANGLE_LIMIT_X)
-        {
+        if (angleX < -ANGLE_LIMIT_X || angleX > ANGLE_LIMIT_X) {
             float deltaAngle = (angleX < 0 ? angleX + ANGLE_LIMIT_X : angleX - ANGLE_LIMIT_X) * -1.f;
             angleX = (angleX < 0 ? -ANGLE_LIMIT_X : ANGLE_LIMIT_X);
             angle -= deltaAngle;
