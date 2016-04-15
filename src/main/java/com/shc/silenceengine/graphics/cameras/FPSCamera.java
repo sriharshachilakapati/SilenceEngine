@@ -139,13 +139,20 @@ public class FPSCamera extends BaseCamera
 
     public FPSCamera rotateX(float angle)
     {
+        // If the current angle is already on the limit, do nothing.
+        if (angleX <= -ANGLE_LIMIT_X || angleX >= ANGLE_LIMIT_X) {
+            return this;
+        }
+        
         angleX += angle;
 
-        // Limit rotation on the X-axis to make it work like an FPSCamera
+        // the limit was exceeded by this new rotation...
+        // We need to calculate which angle is needed to obtain the limit
         if (angleX < -ANGLE_LIMIT_X || angleX > ANGLE_LIMIT_X)
         {
-            angleX -= angle;
-            return this;
+            float deltaAngle = (angleX < 0 ? angleX + ANGLE_LIMIT_X : angleX - ANGLE_LIMIT_X) * -1.f;
+            angleX = (angleX < 0 ? -ANGLE_LIMIT_X : ANGLE_LIMIT_X);
+            angle -= deltaAngle;
         }
 
         Quaternion tempQuat = Quaternion.REUSABLE_STACK.pop();
