@@ -39,7 +39,7 @@ public class GwtFileReader extends FileReader
     {
         // Create a XMLHttpRequest to load the file into a direct buffer
         XMLHttpRequest request = XMLHttpRequest.create();
-        request.open("POST", file.getAbsolutePath());
+        request.open("GET", file.getAbsolutePath());
 
         // Set to read as ArrayBuffer and attach a handler
         request.setResponseType(XMLHttpRequest.ResponseType.ArrayBuffer);
@@ -58,7 +58,7 @@ public class GwtFileReader extends FileReader
     {
         // Create a XMLHttpRequest to load the file into a direct buffer
         XMLHttpRequest request = XMLHttpRequest.create();
-        request.open("POST", file.getAbsolutePath());
+        request.open("GET", file.getAbsolutePath());
 
         // Set to read as default mode and attach a handler
         request.setResponseType(XMLHttpRequest.ResponseType.Default);
