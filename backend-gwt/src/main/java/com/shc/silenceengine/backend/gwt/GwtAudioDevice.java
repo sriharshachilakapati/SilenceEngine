@@ -25,6 +25,7 @@
 package com.shc.silenceengine.backend.gwt;
 
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
+import com.shc.gwtal.client.openal.AL;
 import com.shc.gwtal.client.openal.AL10;
 import com.shc.gwtal.client.openal.ALContext;
 import com.shc.gwtal.client.openal.AudioDecoder;
@@ -47,6 +48,7 @@ public class GwtAudioDevice extends AudioDevice
         try
         {
             context = ALContext.create();
+            AL.setCurrentContext(context);
         }
         catch (AudioContextException e)
         {
