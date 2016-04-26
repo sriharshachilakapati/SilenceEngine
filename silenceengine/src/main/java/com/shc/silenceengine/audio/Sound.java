@@ -25,6 +25,7 @@
 package com.shc.silenceengine.audio;
 
 import com.shc.silenceengine.audio.openal.ALBuffer;
+import com.shc.silenceengine.core.SilenceEngine;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -40,6 +41,11 @@ public class Sound
 
     public void play()
     {
+        SilenceEngine.audio.scene.play(this);
+    }
 
+    public void stop()
+    {
+        SilenceEngine.audio.scene.stop(this);
     }
 }

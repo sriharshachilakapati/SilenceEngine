@@ -38,9 +38,12 @@ import static com.shc.silenceengine.audio.AudioDevice.Constants.*;
  */
 public final class AudioScene
 {
-    private ReusableStack<ALSource> sourcesPool;
+    private ReusableStack<ALSource>      sourcesPool;
+    private ReusableStack<PlayingSource> playingSourcesPool;
 
-    private Map<ALSource, AudioSource> playingSources;
+    private Map<PlayingSource, AudioSource> playingSources;
+
+    private AudioSource defaultAudioSource;
 
     /**
      * Prevent instantiation by users. Should only be used via {@code SilenceEngine.audio.scene}
@@ -48,7 +51,10 @@ public final class AudioScene
     AudioScene()
     {
         sourcesPool = new ReusableStack<>(ALSource::new);
+        playingSourcesPool = new ReusableStack<>(PlayingSource::new);
+
         playingSources = new HashMap<>();
+        defaultAudioSource = new AudioSource();
 
         SilenceEngine.eventManager.addDisposeHandler(this::cleanUp);
         SilenceEngine.eventManager.addUpdateHandler(this::updateSources);
@@ -56,10 +62,10 @@ public final class AudioScene
 
     public void stopAllSources()
     {
-        for (ALSource source : playingSources.keySet())
+        for (PlayingSource source : playingSources.keySet())
         {
-            source.stop();
-            sourcesPool.push(source);
+            source.alSource.stop();
+            sourcesPool.push(source.alSource);
         }
 
         playingSources.clear();
@@ -74,24 +80,77 @@ public final class AudioScene
 
     private void updateSources(float deltaTime)
     {
-        for (ALSource source : playingSources.keySet())
+        for (PlayingSource playingSource : playingSources.keySet())
         {
-            AudioSource audioSource = playingSources.get(source);
+            ALSource source = playingSource.alSource;
+            AudioSource audioSource = playingSources.get(playingSource);
 
             if (audioSource.updated)
             {
                 source.setParameter(AL_POSITION, audioSource.position);
                 source.setParameter(AL_VELOCITY, audioSource.velocity);
                 source.setParameter(AL_DIRECTION, audioSource.direction);
+                source.setParameter(AL_LOOPING, audioSource.loop);
 
                 audioSource.updated = false;
             }
 
             if (source.getState() != ALSource.State.PLAYING)
             {
-                playingSources.remove(source);
+                playingSources.remove(playingSource);
                 sourcesPool.push(source);
+                playingSourcesPool.push(playingSource);
             }
         }
+    }
+
+    public void play(Sound sound)
+    {
+        play(sound, defaultAudioSource);
+    }
+
+    public void play(Sound sound, AudioSource source)
+    {
+        ALSource alSource = sourcesPool.pop();
+
+        source.update();
+
+        alSource.attachBuffer(sound.buffer);
+        alSource.setParameter(AL_POSITION, source.position);
+        alSource.setParameter(AL_VELOCITY, source.velocity);
+        alSource.setParameter(AL_DIRECTION, source.direction);
+        alSource.setParameter(AL_LOOPING, source.loop);
+
+        alSource.play();
+
+        PlayingSource playingSource = playingSourcesPool.pop();
+        playingSource.sound = sound;
+        playingSource.alSource = alSource;
+
+        playingSources.put(playingSource, source);
+    }
+
+    public void stop(Sound sound)
+    {
+        for (PlayingSource source : playingSources.keySet())
+        {
+            if (source.sound.buffer.getID() == sound.buffer.getID())
+                stop(playingSources.get(source));
+        }
+    }
+
+    public void stop(AudioSource source)
+    {
+        for (PlayingSource playingSource : playingSources.keySet())
+        {
+            if (playingSources.get(playingSource) == source)
+                playingSource.alSource.stop();
+        }
+    }
+
+    private static class PlayingSource
+    {
+        private ALSource alSource;
+        private Sound    sound;
     }
 }
