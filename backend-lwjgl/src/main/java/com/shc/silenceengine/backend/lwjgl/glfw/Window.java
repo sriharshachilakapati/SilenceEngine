@@ -504,7 +504,7 @@ public class Window
         });
 
         glfwCursorEnterCallback = GLFWCursorEnterCallback.create((window, entered) ->
-                cursorEnterCallback.invoke(registeredWindows.get(window), entered != 0));
+                cursorEnterCallback.invoke(registeredWindows.get(window), entered));
 
         glfwCursorPosCallback = GLFWCursorPosCallback.create((win, xPos, yPos) ->
         {
@@ -513,8 +513,14 @@ public class Window
             cursorPositionCallback.invoke(window, xPos, yPos);
         });
 
-        glfwDropCallback = GLFWDropCallback.create((window, count, names) ->
-                dropCallback.invoke(registeredWindows.get(window), GLFWDropCallback.getNames(count, names)));
+        glfwDropCallback = GLFWDropCallback.create((window, count, names) -> {
+            String[] strings = new String[count];
+
+            for (int i = 0; i < count; i++)
+                strings[i] = GLFWDropCallback.getName(names, i);
+
+            dropCallback.invoke(registeredWindows.get(window), strings);
+        });
 
         glfwFramebufferSizeCallback = GLFWFramebufferSizeCallback.create((window, width, height) ->
                 framebufferSizeCallback.invoke(registeredWindows.get(window), width, height));
@@ -542,11 +548,11 @@ public class Window
         );
 
         glfwWindowFocusCallback = GLFWWindowFocusCallback.create((window, focus) ->
-                windowFocusCallback.invoke(registeredWindows.get(window), focus != 0)
+                windowFocusCallback.invoke(registeredWindows.get(window), focus)
         );
 
         glfwWindowIconifyCallback = GLFWWindowIconifyCallback.create((window, iconify) ->
-                windowIconifyCallback.invoke(registeredWindows.get(window), iconify != 0)
+                windowIconifyCallback.invoke(registeredWindows.get(window), iconify)
         );
 
         glfwWindowPosCallback = GLFWWindowPosCallback.create((window, xPos, yPos) ->
@@ -792,7 +798,7 @@ public class Window
      */
     public boolean shouldClose()
     {
-        return glfwWindowShouldClose(handle) == 1;
+        return glfwWindowShouldClose(handle);
     }
 
     public void maximize()
@@ -865,7 +871,7 @@ public class Window
      */
     public void setShouldClose(boolean value)
     {
-        glfwSetWindowShouldClose(handle, value ? 1 : 0);
+        glfwSetWindowShouldClose(handle, value);
     }
 
     /**

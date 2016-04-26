@@ -92,7 +92,7 @@ public class OggReader
         stb_vorbis_get_samples_short_interleaved(handle, channels, pcm.asShortBuffer());
 
         // Convert the audio bytes and store the data buffer
-        data = SoundUtils.convertAudioBytes(pcm, channels == 2);
+        data = pcm;
 
         // Close the stb_vorbis* handle
         stb_vorbis_close(handle);

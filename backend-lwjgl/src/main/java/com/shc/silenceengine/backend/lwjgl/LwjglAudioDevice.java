@@ -38,6 +38,7 @@ import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 import static org.lwjgl.openal.ALC10.*;
 
@@ -54,7 +55,7 @@ public class LwjglAudioDevice extends AudioDevice
         device = alcOpenDevice((ByteBuffer) null);
         ALCCapabilities deviceCaps = ALC.createCapabilities(device);
 
-        context = alcCreateContext(device, null);
+        context = alcCreateContext(device, (IntBuffer) null);
         alcMakeContextCurrent(context);
         AL.createCapabilities(deviceCaps);
 

@@ -25,7 +25,7 @@
 package com.shc.silenceengine.backend.lwjgl;
 
 import com.shc.silenceengine.io.DirectBuffer;
-import org.lwjgl.system.jemalloc.JEmalloc;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 
@@ -45,7 +45,7 @@ public class LwjglDirectBuffer extends DirectBuffer
     public LwjglDirectBuffer(int sizeInBytes)
     {
         super(sizeInBytes);
-        nativeBuffer = JEmalloc.je_malloc(sizeInBytes);
+        nativeBuffer = MemoryUtil.memAlloc(sizeInBytes);
     }
 
     @Override
@@ -141,6 +141,6 @@ public class LwjglDirectBuffer extends DirectBuffer
 
     public void free()
     {
-        JEmalloc.je_free(nativeBuffer);
+        MemoryUtil.memFree(nativeBuffer);
     }
 }

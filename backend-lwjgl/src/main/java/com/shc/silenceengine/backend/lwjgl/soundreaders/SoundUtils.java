@@ -24,8 +24,6 @@
 
 package com.shc.silenceengine.backend.lwjgl.soundreaders;
 
-import org.lwjgl.BufferUtils;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
@@ -58,13 +56,13 @@ final class SoundUtils
      */
     static ByteBuffer convertAudioBytes(ByteBuffer samples, boolean stereo)
     {
-        ByteBuffer dest = BufferUtils.createByteBuffer(samples.capacity());
+        ByteBuffer dest = ByteBuffer.allocateDirect(samples.capacity());
+        dest.order(ByteOrder.nativeOrder());
 
         if (stereo)
         {
             ShortBuffer dest_short = dest.asShortBuffer();
             ShortBuffer src_short = samples.asShortBuffer();
-
             while (src_short.hasRemaining())
                 dest_short.put(src_short.get());
         }
@@ -73,8 +71,27 @@ final class SoundUtils
             while (samples.hasRemaining())
                 dest.put(samples.get());
         }
-
         dest.rewind();
+
         return dest;
+
+//        ByteBuffer dest = BufferUtils.createByteBuffer(samples.capacity());
+//
+//        if (stereo)
+//        {
+//            ShortBuffer dest_short = dest.asShortBuffer();
+//            ShortBuffer src_short = samples.asShortBuffer();
+//
+//            while (src_short.hasRemaining())
+//                dest_short.put(src_short.get());
+//        }
+//        else
+//        {
+//            while (samples.hasRemaining())
+//                dest.put(samples.get());
+//        }
+//
+//        dest.rewind();
+//        return dest;
     }
 }

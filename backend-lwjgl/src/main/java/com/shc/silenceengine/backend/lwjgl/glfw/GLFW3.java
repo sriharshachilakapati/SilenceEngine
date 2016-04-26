@@ -29,6 +29,7 @@ import com.shc.silenceengine.math.Vector3;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.IntBuffer;
 
@@ -69,15 +70,16 @@ public final class GLFW3
         if (isInitialized())
             return true;
 
-        int state = glfwInit();
+        boolean state = glfwInit();
 
         // Return immediately in case of error
-        if (state == 0)
+        if (!state)
             return initialized = false;
 
         // Error callback that does nothing
         setErrorCallback(null);
-        glfwErrorCallback = GLFWErrorCallback.createString(errorCallback::invoke);
+        glfwErrorCallback = GLFWErrorCallback.create((error, description) ->
+                errorCallback.invoke(error, MemoryUtil.memUTF8(description)));
 
         // Register the callback
         glfwSetErrorCallback(glfwErrorCallback);

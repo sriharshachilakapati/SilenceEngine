@@ -29,6 +29,7 @@ import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
+import org.lwjgl.system.Configuration;
 
 /**
  * The LwjglRuntime initializes the LWJGL library, and starts the native event loop.
@@ -43,6 +44,9 @@ public final class LwjglRuntime
 
     public static void start(Game game)
     {
+        Configuration.MEMORY_ALLOCATOR.set("system");
+        Configuration.DEBUG.set(Game.DEVELOPMENT);
+
         SilenceEngine.log = new LwjglLogDevice();
         SilenceEngine.io = new LwjglIODevice();
         SilenceEngine.display = new LwjglDisplayDevice();
