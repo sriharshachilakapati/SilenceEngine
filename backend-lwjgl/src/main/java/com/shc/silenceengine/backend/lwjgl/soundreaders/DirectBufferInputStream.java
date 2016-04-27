@@ -49,6 +49,6 @@ public class DirectBufferInputStream extends InputStream
         if (index >= directBuffer.sizeBytes())
             return -1;
 
-        return directBuffer.readByte(index++);
+        return directBuffer.readByte(index++) & 0xFF;
     }
 }

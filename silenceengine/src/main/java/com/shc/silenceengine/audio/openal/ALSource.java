@@ -58,7 +58,7 @@ public class ALSource
      */
     public void attachBuffer(ALBuffer buffer)
     {
-        setParameter(AL_BUFFER, buffer.getID());
+        setParameter(AL_BUFFER, buffer == null ? 0 : buffer.getID());
     }
 
     /**

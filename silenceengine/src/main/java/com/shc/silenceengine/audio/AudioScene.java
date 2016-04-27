@@ -29,6 +29,7 @@ import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.utils.ReusableStack;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static com.shc.silenceengine.audio.AudioDevice.Constants.*;
@@ -80,25 +81,35 @@ public final class AudioScene
 
     private void updateSources(float deltaTime)
     {
-        for (PlayingSource playingSource : playingSources.keySet())
+        Iterator<PlayingSource> iterator = playingSources.keySet().iterator();
+
+        while (iterator.hasNext())
         {
+            PlayingSource playingSource = iterator.next();
             ALSource source = playingSource.alSource;
             AudioSource audioSource = playingSources.get(playingSource);
 
+            if (source.getState() != ALSource.State.PLAYING)
+            {
+                source.attachBuffer(null);
+
+                iterator.remove();
+                sourcesPool.push(source);
+                playingSourcesPool.push(playingSource);
+
+                continue;
+            }
+
             if (audioSource.updated)
             {
+                source.pause();
+
                 source.setParameter(AL_POSITION, audioSource.position);
                 source.setParameter(AL_VELOCITY, audioSource.velocity);
                 source.setParameter(AL_DIRECTION, audioSource.direction);
 
                 audioSource.updated = false;
-            }
-
-            if (source.getState() != ALSource.State.PLAYING)
-            {
-                playingSources.remove(playingSource);
-                sourcesPool.push(source);
-                playingSourcesPool.push(playingSource);
+                source.play();
             }
         }
     }
@@ -130,6 +141,7 @@ public final class AudioScene
         alSource.setParameter(AL_DIRECTION, source.direction);
         alSource.setParameter(AL_LOOPING, loop);
 
+        source.updated = false;
         alSource.play();
 
         PlayingSource playingSource = playingSourcesPool.pop();

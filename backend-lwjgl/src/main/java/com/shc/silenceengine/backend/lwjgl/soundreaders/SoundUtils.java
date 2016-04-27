@@ -33,36 +33,37 @@ final class SoundUtils
     /**
      * Method borrowed from LWJGL 3 demos, this converts stereo and mono data samples to the internal format of OpenAL.
      *
-     * @param samples The Byte array of audio samples
-     * @param stereo  Whether to convert to stereo audio
+     * @param samples        The Byte array of audio samples
+     * @param twoByteSamples Whether the samples are shorts or bytes
      *
      * @return The ByteBuffer containing fixed samples.
      */
-    static ByteBuffer convertAudioBytes(byte[] samples, boolean stereo)
+    static ByteBuffer convertAudioBytes(byte[] samples, boolean twoByteSamples)
     {
         ByteBuffer src = ByteBuffer.wrap(samples);
         src.order(ByteOrder.LITTLE_ENDIAN);
 
-        return convertAudioBytes(src, stereo);
+        return convertAudioBytes(src, twoByteSamples);
     }
 
     /**
      * Method borrowed from LWJGL 3 demos, this converts stereo and mono data samples to the internal format of OpenAL.
      *
-     * @param samples The ByteBuffer of audio samples
-     * @param stereo  Whether to convert to stereo audio
+     * @param samples        The ByteBuffer of audio samples
+     * @param twoByteSamples Whether the samples are shorts or bytes
      *
      * @return The ByteBuffer containing fixed samples.
      */
-    static ByteBuffer convertAudioBytes(ByteBuffer samples, boolean stereo)
+    private static ByteBuffer convertAudioBytes(ByteBuffer samples, boolean twoByteSamples)
     {
         ByteBuffer dest = ByteBuffer.allocateDirect(samples.capacity());
         dest.order(ByteOrder.nativeOrder());
 
-        if (stereo)
+        if (twoByteSamples)
         {
             ShortBuffer dest_short = dest.asShortBuffer();
             ShortBuffer src_short = samples.asShortBuffer();
+
             while (src_short.hasRemaining())
                 dest_short.put(src_short.get());
         }
@@ -74,24 +75,5 @@ final class SoundUtils
         dest.rewind();
 
         return dest;
-
-//        ByteBuffer dest = BufferUtils.createByteBuffer(samples.capacity());
-//
-//        if (stereo)
-//        {
-//            ShortBuffer dest_short = dest.asShortBuffer();
-//            ShortBuffer src_short = samples.asShortBuffer();
-//
-//            while (src_short.hasRemaining())
-//                dest_short.put(src_short.get());
-//        }
-//        else
-//        {
-//            while (samples.hasRemaining())
-//                dest.put(samples.get());
-//        }
-//
-//        dest.rewind();
-//        return dest;
     }
 }

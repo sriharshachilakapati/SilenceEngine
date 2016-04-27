@@ -37,5 +37,5 @@
 
     <source path='gwt'/>
 
-    <stylesheet src="../background.css"/>
+    <stylesheet src="background.css"/>
 </module>

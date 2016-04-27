@@ -176,7 +176,10 @@ public final class EventManager
     {
         while (!eventHandlersQueue.isEmpty())
         {
-            EventHandlerQueueObject object = eventHandlersQueue.remove();
+            EventHandlerQueueObject object = eventHandlersQueue.poll();
+
+            if (object == null)
+                break;
 
             switch (object.eventType)
             {
