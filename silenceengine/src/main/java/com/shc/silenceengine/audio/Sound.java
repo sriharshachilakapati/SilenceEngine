@@ -44,6 +44,11 @@ public class Sound
         SilenceEngine.audio.scene.play(this);
     }
 
+    public void play(boolean loop)
+    {
+        SilenceEngine.audio.scene.play(this, loop);
+    }
+
     public void stop()
     {
         SilenceEngine.audio.scene.stop(this);

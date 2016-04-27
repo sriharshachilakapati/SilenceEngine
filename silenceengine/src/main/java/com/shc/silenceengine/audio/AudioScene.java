@@ -90,7 +90,6 @@ public final class AudioScene
                 source.setParameter(AL_POSITION, audioSource.position);
                 source.setParameter(AL_VELOCITY, audioSource.velocity);
                 source.setParameter(AL_DIRECTION, audioSource.direction);
-                source.setParameter(AL_LOOPING, audioSource.loop);
 
                 audioSource.updated = false;
             }
@@ -106,10 +105,20 @@ public final class AudioScene
 
     public void play(Sound sound)
     {
-        play(sound, defaultAudioSource);
+        play(sound, defaultAudioSource, false);
+    }
+
+    public void play(Sound sound, boolean loop)
+    {
+        play(sound, defaultAudioSource, loop);
     }
 
     public void play(Sound sound, AudioSource source)
+    {
+        play(sound, source, false);
+    }
+
+    public void play(Sound sound, AudioSource source, boolean loop)
     {
         ALSource alSource = sourcesPool.pop();
 
@@ -119,7 +128,7 @@ public final class AudioScene
         alSource.setParameter(AL_POSITION, source.position);
         alSource.setParameter(AL_VELOCITY, source.velocity);
         alSource.setParameter(AL_DIRECTION, source.direction);
-        alSource.setParameter(AL_LOOPING, source.loop);
+        alSource.setParameter(AL_LOOPING, loop);
 
         alSource.play();
 

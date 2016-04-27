@@ -35,8 +35,6 @@ public class AudioSource
     public final Vector3 velocity  = new Vector3();
     public final Vector3 direction = new Vector3();
 
-    public boolean loop;
-
     boolean updated = true;
 
     public void update()
