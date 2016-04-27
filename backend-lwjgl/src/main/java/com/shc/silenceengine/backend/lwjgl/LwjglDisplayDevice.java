@@ -28,6 +28,7 @@ import com.shc.silenceengine.backend.lwjgl.glfw.GLFW3;
 import com.shc.silenceengine.backend.lwjgl.glfw.Monitor;
 import com.shc.silenceengine.backend.lwjgl.glfw.VideoMode;
 import com.shc.silenceengine.backend.lwjgl.glfw.Window;
+import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.IDisplayDevice;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
@@ -56,6 +57,7 @@ public class LwjglDisplayDevice implements IDisplayDevice
     {
         GLFW3.init();
 
+        Window.setHint(GLFW.GLFW_OPENGL_DEBUG_CONTEXT, Game.DEVELOPMENT);
         Window.setHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
         Window.setHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
         Window.setHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
