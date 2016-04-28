@@ -41,16 +41,16 @@ public class Sound
 
     public void play()
     {
-        SilenceEngine.audio.scene.play(this);
+        SilenceEngine.audio.scene.playStatic(this);
     }
 
     public void play(boolean loop)
     {
-        SilenceEngine.audio.scene.play(this, loop);
+        SilenceEngine.audio.scene.playStatic(this, loop);
     }
 
     public void stop()
     {
-        SilenceEngine.audio.scene.stop(this);
+        SilenceEngine.audio.scene.stopStatic(this);
     }
 }

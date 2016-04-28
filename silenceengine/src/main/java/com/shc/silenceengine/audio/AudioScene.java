@@ -114,12 +114,12 @@ public final class AudioScene
         }
     }
 
-    public void play(Sound sound)
+    public void playStatic(Sound sound)
     {
         play(sound, defaultAudioSource, false);
     }
 
-    public void play(Sound sound, boolean loop)
+    public void playStatic(Sound sound, boolean loop)
     {
         play(sound, defaultAudioSource, loop);
     }
@@ -151,21 +151,36 @@ public final class AudioScene
         playingSources.put(playingSource, source);
     }
 
-    public void stop(Sound sound)
+    public void stopFromAllSources(Sound sound)
     {
         for (PlayingSource source : playingSources.keySet())
         {
             if (source.sound.buffer.getID() == sound.buffer.getID())
-                stop(playingSources.get(source));
+                source.alSource.stop();
         }
     }
 
-    public void stop(AudioSource source)
+    public void stopAllFromSource(AudioSource source)
     {
         for (PlayingSource playingSource : playingSources.keySet())
         {
             if (playingSources.get(playingSource) == source)
                 playingSource.alSource.stop();
+        }
+    }
+
+    public void stopStatic(Sound sound)
+    {
+        stop(sound, defaultAudioSource);
+    }
+
+    public void stop(Sound sound, AudioSource source)
+    {
+        for (PlayingSource playingSource : playingSources.keySet())
+        {
+            if (playingSource.sound.buffer.getID() == sound.buffer.getID())
+                if (playingSources.get(playingSource) == source)
+                    playingSource.alSource.stop();
         }
     }
 
