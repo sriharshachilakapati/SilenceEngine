@@ -35,6 +35,7 @@ import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
 /**
  * @author Sri Harsha Chilakapati
+ * @author Kevin Beaucoral
  */
 public class FPSCamera extends BaseCamera
 {
@@ -140,13 +141,17 @@ public class FPSCamera extends BaseCamera
 
     public FPSCamera rotateX(float angle)
     {
+        if ((angleX <= -ANGLE_LIMIT_X) && (angle < 0) ||
+            (angleX >= ANGLE_LIMIT_X) && (angle > 0))
+            return this;
+
         angleX += angle;
 
-        // Limit rotation on the X-axis to make it work like an FPSCamera
         if (angleX < -ANGLE_LIMIT_X || angleX > ANGLE_LIMIT_X)
         {
-            angleX -= angle;
-            return this;
+            float deltaAngle = (angleX < 0 ? angleX + ANGLE_LIMIT_X : angleX - ANGLE_LIMIT_X) * -1.f;
+            angleX = (angleX < 0 ? -ANGLE_LIMIT_X : ANGLE_LIMIT_X);
+            angle -= deltaAngle;
         }
 
         Quaternion tempQuat = Quaternion.REUSABLE_STACK.pop();
