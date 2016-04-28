@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.audio.openal;
 
+import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.DirectBuffer;
 
@@ -34,7 +35,7 @@ import com.shc.silenceengine.io.DirectBuffer;
  *
  * @author Sri Harsha Chilakapati
  */
-public class ALBuffer
+public class ALBuffer implements IResource
 {
     private int     id;
     private boolean disposed;

@@ -86,7 +86,7 @@ public class Texture implements IResource
 
         Texture texture = fromImage(image);
 
-        image.free();
+        image.dispose();
 
         return texture;
     }

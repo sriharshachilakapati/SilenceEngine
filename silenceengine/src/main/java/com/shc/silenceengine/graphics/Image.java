@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.graphics;
 
+import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.DirectFloatBuffer;
@@ -35,7 +36,7 @@ import com.shc.silenceengine.io.DirectFloatBuffer;
  *
  * @author Sri Harsha Chilakapati
  */
-public class Image
+public class Image implements IResource
 {
     private boolean isDisposed;
 
@@ -117,11 +118,11 @@ public class Image
         return imageData.getDirectBuffer();
     }
 
-    public void free()
+    public void dispose()
     {
         if (isDisposed)
         {
-            SilenceEngine.log.getRootLogger().error("Cannot free more than once");
+            SilenceEngine.log.getRootLogger().error("Cannot dispose more than once");
             return;
         }
 

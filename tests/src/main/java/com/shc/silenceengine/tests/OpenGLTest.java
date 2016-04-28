@@ -71,7 +71,7 @@ public class OpenGLTest extends SilenceTest
 
         SilenceEngine.io.getImageReader().readImage(FilePath.getResourceFile("engine_resources/logo.png"), image -> {
             texture = Texture.fromImage(image);
-            image.free();
+            image.dispose();
 
             texture.bind(0);
             program.setUniform("texUnit", 0);

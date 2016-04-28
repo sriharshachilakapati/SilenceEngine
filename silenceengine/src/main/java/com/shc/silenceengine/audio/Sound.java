@@ -25,12 +25,13 @@
 package com.shc.silenceengine.audio;
 
 import com.shc.silenceengine.audio.openal.ALBuffer;
+import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.core.SilenceEngine;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Sound
+public class Sound implements IResource
 {
     public ALBuffer buffer;
 
@@ -52,5 +53,10 @@ public class Sound
     public void stop()
     {
         SilenceEngine.audio.scene.stopStatic(this);
+    }
+
+    @Override
+    public void dispose()
+    {
     }
 }
