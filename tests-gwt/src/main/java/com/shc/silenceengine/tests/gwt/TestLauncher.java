@@ -35,6 +35,7 @@ import com.shc.silenceengine.tests.EntityCollisionTest2D;
 import com.shc.silenceengine.tests.GameTest;
 import com.shc.silenceengine.tests.KeyboardTest;
 import com.shc.silenceengine.tests.OpenGLTest;
+import com.shc.silenceengine.tests.ResourceLoaderTest;
 import com.shc.silenceengine.tests.SilenceTest;
 import com.shc.silenceengine.tests.SoundTest;
 import com.shc.silenceengine.tests.TestRunner;
@@ -103,6 +104,7 @@ public class TestLauncher implements EntryPoint
         tests.put("DynamicRendererTest", DynamicRendererTest::new);
         tests.put("EntityCollisionTest2D", EntityCollisionTest2D::new);
         tests.put("SoundTest", SoundTest::new);
+        tests.put("ResourceLoaderTest", ResourceLoaderTest::new);
     }
 
     @FunctionalInterface
