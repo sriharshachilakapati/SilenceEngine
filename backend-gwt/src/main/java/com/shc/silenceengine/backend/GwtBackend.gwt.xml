@@ -33,6 +33,7 @@
     <inherits name="com.shc.webgl4j.client"/>
     <inherits name="com.shc.gwtal.client"/>
     <inherits name="com.shc.SilenceEngine"/>
+    <inherits name='com.shc.GwtOpenType'/>
 
     <source path='gwt'/>
 

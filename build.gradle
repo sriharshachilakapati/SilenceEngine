@@ -60,6 +60,7 @@ project(":backend-gwt") {
         compile project(":silenceengine")
         compile 'com.goharsha:webgl4j:0.2.9-SNAPSHOT'
         compile 'com.goharsha:gwt-al:0.1-SNAPSHOT'
+        compile 'com.goharsha:gwt-opentype:0.1-SNAPSHOT'
         compile 'com.google.gwt:gwt-user:2.8.0-beta1'
     }
 }
