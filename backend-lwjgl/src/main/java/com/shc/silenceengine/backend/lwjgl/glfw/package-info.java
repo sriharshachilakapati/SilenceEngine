@@ -24,8 +24,8 @@
 
 /**
  * This package consists the object oriented wrapper classes that wrap the GLFW functions. This makes it very easy to
- * use GLFW windows in your game. The {@link com.shc.silenceengine.backend.lwjgl.LwjglDisplayDevice} class is also
- * based on the {@link com.shc.silenceengine.backend.lwjgl.glfw.Window} class defined in this package.
+ * use GLFW windows in your game. The {@link com.shc.silenceengine.backend.lwjgl.LwjglDisplayDevice} class is also based
+ * on the {@link com.shc.silenceengine.backend.lwjgl.glfw.Window} class defined in this package.
  *
  * @author Sri Harsha Chilakapati
  */

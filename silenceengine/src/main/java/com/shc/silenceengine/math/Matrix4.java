@@ -359,19 +359,9 @@ public class Matrix4
     }
 
     @Override
-    public String toString()
+    public int hashCode()
     {
-        StringBuilder s = new StringBuilder();
-
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-                s.append(m[i][j]).append(' ');
-
-            s.append('\n');
-        }
-
-        return s.toString();
+        return Arrays.deepHashCode(m);
     }
 
     @Override
@@ -387,8 +377,18 @@ public class Matrix4
     }
 
     @Override
-    public int hashCode()
+    public String toString()
     {
-        return Arrays.deepHashCode(m);
+        StringBuilder s = new StringBuilder();
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+                s.append(m[i][j]).append(' ');
+
+            s.append('\n');
+        }
+
+        return s.toString();
     }
 }

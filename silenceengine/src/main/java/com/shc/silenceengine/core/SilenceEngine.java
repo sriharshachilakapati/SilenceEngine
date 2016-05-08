@@ -46,7 +46,7 @@ public final class SilenceEngine
     /**
      * The {@link IDisplayDevice} that handles the display, that is the window thing.
      */
-    public static IDisplayDevice display;
+    public static IDisplayDevice  display;
     /**
      * The {@link IGraphicsDevice} that handles the graphics.
      */
@@ -54,19 +54,19 @@ public final class SilenceEngine
     /**
      * The {@link AudioDevice} that handles the audio.
      */
-    public static AudioDevice audio;
+    public static AudioDevice     audio;
     /**
      * The {@link IODevice} that handles IO operations.
      */
-    public static IODevice io;
+    public static IODevice        io;
     /**
      * The {@link InputDevice} that handles game input.
      */
-    public static InputDevice input;
+    public static InputDevice     input;
     /**
      * The {@link ILogDevice} that handles logging.
      */
-    public static ILogDevice log;
+    public static ILogDevice      log;
     /**
      * The {@link EventManager} that handles the events in SilenceEngine.
      */

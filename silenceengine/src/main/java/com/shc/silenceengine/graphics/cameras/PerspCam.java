@@ -31,7 +31,7 @@ import com.shc.silenceengine.math.Quaternion;
 import com.shc.silenceengine.math.Transforms;
 import com.shc.silenceengine.math.Vector3;
 
-import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.GL_DEPTH_TEST;
+import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
 /**
  * @author Sri Harsha Chilakapati

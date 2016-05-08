@@ -169,6 +169,12 @@ public class Transform
     }
 
     @Override
+    public int hashCode()
+    {
+        return tMatrix.hashCode();
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -178,11 +184,5 @@ public class Transform
 
         return tMatrix.equals(transform.tMatrix);
 
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return tMatrix.hashCode();
     }
 }

@@ -55,7 +55,7 @@ public abstract class GameState
     /**
      * Renders this state. This is called internally whenever the display needs to be updated.
      *
-     * @param delta   The frame rate time in seconds
+     * @param delta The frame rate time in seconds
      */
     public void render(float delta)
     {

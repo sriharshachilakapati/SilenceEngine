@@ -34,6 +34,12 @@ public final class CollisionTag
     public final long tagID = IDGenerator.generate();
 
     @Override
+    public int hashCode()
+    {
+        return (int) (tagID ^ (tagID >>> 32));
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -43,11 +49,5 @@ public final class CollisionTag
 
         return tagID == that.tagID;
 
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return (int) (tagID ^ (tagID >>> 32));
     }
 }

@@ -79,10 +79,10 @@ public class DynamicRenderer
     private BufferObject vboNorm;
 
     // VBO index locations in shader
-    private int vertexLocation = -1;
-    private int colorLocation  = -1;
+    private int vertexLocation   = -1;
+    private int colorLocation    = -1;
     private int texCoordLocation = -1;
-    private int normalLocation = -1;
+    private int normalLocation   = -1;
 
     // The no. of vertices in the current batch
     private int vertexCount;
@@ -289,8 +289,8 @@ public class DynamicRenderer
 
         if (vertexLocation != -1) vao.pointAttribute(vertexLocation, NUM_VERTEX_COMPONENTS, GL_FLOAT, vboVert);
         if (colorLocation != -1) vao.pointAttribute(colorLocation, NUM_COLOR_COMPONENTS, GL_FLOAT, vboCol);
-        if (normalLocation != -1)  vao.pointAttribute(normalLocation, NUM_NORMAL_COMPONENTS, GL_FLOAT, vboNorm);
-        if (texCoordLocation != -1)  vao.pointAttribute(texCoordLocation, NUM_TEXCOORD_COMPONENTS, GL_FLOAT, vboTex);
+        if (normalLocation != -1) vao.pointAttribute(normalLocation, NUM_NORMAL_COMPONENTS, GL_FLOAT, vboNorm);
+        if (texCoordLocation != -1) vao.pointAttribute(texCoordLocation, NUM_TEXCOORD_COMPONENTS, GL_FLOAT, vboTex);
     }
 
     private void fillBuffers()

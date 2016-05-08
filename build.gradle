@@ -49,12 +49,6 @@ subprojects {
     }
 }
 
-project(":silenceengine") {
-    dependencies {
-        compile 'com.google.gwt:gwt-user:2.8.0-beta1'
-    }
-}
-
 project(":backend-gwt") {
     dependencies {
         compile project(":silenceengine")

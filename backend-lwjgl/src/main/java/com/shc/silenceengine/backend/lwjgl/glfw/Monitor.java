@@ -121,7 +121,7 @@ public class Monitor
             glfwMonitorCallback.free();
 
         glfwMonitorCallback = GLFWMonitorCallback.create((monitor, event) ->
-                        monitorCallback.invoke(registeredMonitors.get(monitor), event)
+                monitorCallback.invoke(registeredMonitors.get(monitor), event)
         );
 
         glfwSetMonitorCallback(glfwMonitorCallback);

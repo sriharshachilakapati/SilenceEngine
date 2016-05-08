@@ -64,7 +64,7 @@ public class TestLauncher implements EntryPoint
         {
             String test = selectionList.getSelectedItemText();
             Window.Location.replace(
-                    Window.Location.getPath() + Window.Location.getQueryString() +"#" + test);
+                    Window.Location.getPath() + Window.Location.getQueryString() + "#" + test);
 
             game.changeTest(tests.get(test).provide());
         });
