@@ -24,11 +24,15 @@
 
 package com.shc.silenceengine.backend.lwjgl;
 
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.io.FileReader;
 import com.shc.silenceengine.io.IODevice;
 import com.shc.silenceengine.io.ImageReader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -38,16 +42,30 @@ public class LwjglIODevice implements IODevice
     private FileReader  fileReader  = new LwjglFileReader();
     private ImageReader imageReader = new LwjglImageReader();
 
-    @Override
-    public DirectBuffer create(int sizeInBytes)
+    private List<DirectBuffer> directBuffers = new ArrayList<>();
+
+    public LwjglIODevice()
     {
-        return new LwjglDirectBuffer(sizeInBytes);
+        // Free all the direct buffers at the end
+        SilenceEngine.eventManager.addDisposeHandler(() -> {
+            directBuffers.forEach(directBuffer -> ((LwjglDirectBuffer) directBuffer).free());
+            directBuffers.clear();
+        });
     }
 
     @Override
-    public void free(DirectBuffer directBuffer)
+    public synchronized DirectBuffer create(int sizeInBytes)
+    {
+        DirectBuffer directBuffer = new LwjglDirectBuffer(sizeInBytes);
+        directBuffers.add(directBuffer);
+        return directBuffer;
+    }
+
+    @Override
+    public synchronized void free(DirectBuffer directBuffer)
     {
         ((LwjglDirectBuffer) directBuffer).free();
+        directBuffers.remove(directBuffer);
     }
 
     @Override
