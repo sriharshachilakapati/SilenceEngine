@@ -15,6 +15,7 @@ tests-lwjgl/tests-lwjgl.iml
 tests-gwt/build/
 tests-gwt/tests-gwt.iml
 tests-gwt/war/
+tests-gwt/gwt/
 .idea/
 out/
 .gradle/
