@@ -29,6 +29,7 @@ import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.io.FileReader;
 import com.shc.silenceengine.utils.TaskManager;
+import com.shc.silenceengine.utils.functional.UniCallback;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -41,7 +42,7 @@ import java.io.InputStreamReader;
 public class LwjglFileReader extends FileReader
 {
     @Override
-    public void readBinaryFile(FilePath file, OnComplete<DirectBuffer> onComplete)
+    public void readBinaryFile(FilePath file, UniCallback<DirectBuffer> onComplete)
     {
         new Thread(() ->
         {
@@ -81,7 +82,7 @@ public class LwjglFileReader extends FileReader
     }
 
     @Override
-    public void readTextFile(FilePath file, OnComplete<String> onComplete)
+    public void readTextFile(FilePath file, UniCallback<String> onComplete)
     {
         new Thread(() ->
         {

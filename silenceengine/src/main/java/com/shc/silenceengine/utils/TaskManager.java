@@ -25,6 +25,7 @@
 package com.shc.silenceengine.utils;
 
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.utils.functional.SimpleCallback;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -34,18 +35,18 @@ import java.util.Queue;
  */
 public final class TaskManager
 {
-    private static Queue<Task> updateTasks = new LinkedList<>();
-    private static Queue<Task> renderTasks = new LinkedList<>();
+    private static Queue<SimpleCallback> updateTasks = new LinkedList<>();
+    private static Queue<SimpleCallback> renderTasks = new LinkedList<>();
 
     private static boolean initialized = false;
 
-    public static void runOnUpdate(Task task)
+    public static void runOnUpdate(SimpleCallback task)
     {
         updateTasks.add(task);
         checkInitialized();
     }
 
-    public static void runOnRender(Task task)
+    public static void runOnRender(SimpleCallback task)
     {
         renderTasks.add(task);
         checkInitialized();
@@ -55,9 +56,9 @@ public final class TaskManager
     {
         while (!updateTasks.isEmpty())
         {
-            Task task;
+            SimpleCallback task;
             if ((task = updateTasks.poll()) != null)
-                task.perform();
+                task.invoke();
         }
     }
 
@@ -65,9 +66,9 @@ public final class TaskManager
     {
         while (!renderTasks.isEmpty())
         {
-            Task task;
+            SimpleCallback task;
             if ((task = renderTasks.poll()) != null)
-                task.perform();
+                task.invoke();
         }
     }
 
@@ -79,11 +80,5 @@ public final class TaskManager
             SilenceEngine.eventManager.addRenderHandler(TaskManager::render);
             initialized = true;
         }
-    }
-
-    @FunctionalInterface
-    public interface Task
-    {
-        void perform();
     }
 }

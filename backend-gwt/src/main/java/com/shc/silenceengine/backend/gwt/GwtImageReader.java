@@ -31,6 +31,7 @@ import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Image;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.ImageReader;
+import com.shc.silenceengine.utils.functional.UniCallback;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -38,7 +39,7 @@ import com.shc.silenceengine.io.ImageReader;
 public class GwtImageReader extends ImageReader
 {
     private static void jsLoadedCallback(ImageData pixels, int width, int height, int oWidth, int oHeight,
-                                         OnComplete onComplete)
+                                         UniCallback<Image> onComplete)
     {
         Image image = new Image(width, height, oWidth, oHeight);
 
@@ -57,12 +58,12 @@ public class GwtImageReader extends ImageReader
     }
 
     @Override
-    public void readImage(DirectBuffer memory, OnComplete onComplete)
+    public void readImage(DirectBuffer memory, UniCallback<Image> onComplete)
     {
         getImage(((ArrayBufferView) memory.nativeBuffer()).buffer(), onComplete);
     }
 
-    private native void getImage(ArrayBuffer memory, OnComplete onComplete) /*-{
+    private native void getImage(ArrayBuffer memory, UniCallback<Image> onComplete) /*-{
         var arrayBufferView = new Uint8Array(memory);
         var blob = new Blob([arrayBufferView], {type: "image/jpeg"});
 

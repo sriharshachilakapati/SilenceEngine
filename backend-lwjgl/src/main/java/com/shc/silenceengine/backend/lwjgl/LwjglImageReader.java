@@ -30,6 +30,7 @@ import com.shc.silenceengine.graphics.Image;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.ImageReader;
 import com.shc.silenceengine.utils.TaskManager;
+import com.shc.silenceengine.utils.functional.UniCallback;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
@@ -43,7 +44,7 @@ import static org.lwjgl.stb.STBImage.*;
 public class LwjglImageReader extends ImageReader
 {
     @Override
-    public void readImage(DirectBuffer memory, OnComplete onComplete)
+    public void readImage(DirectBuffer memory, UniCallback<Image> onComplete)
     {
         new Thread(() ->
         {
