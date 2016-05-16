@@ -26,13 +26,14 @@ package com.shc.silenceengine.io;
 
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Image;
+import com.shc.silenceengine.utils.functional.UniCallback;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public abstract class ImageReader
 {
-    public void readImage(FilePath filePath, OnComplete onComplete)
+    public void readImage(FilePath filePath, UniCallback<Image> uniCallback)
     {
         SilenceEngine.io.getFileReader().readBinaryFile(filePath, directBuffer ->
                 readImage(directBuffer, image -> {
@@ -40,15 +41,9 @@ public abstract class ImageReader
                     SilenceEngine.io.free(directBuffer);
 
                     // Invoke the on complete handler
-                    onComplete.invoke(image);
+                    uniCallback.invoke(image);
                 }));
     }
 
-    public abstract void readImage(DirectBuffer memory, OnComplete onComplete);
-
-    @FunctionalInterface
-    public interface OnComplete
-    {
-        void invoke(Image image);
-    }
+    public abstract void readImage(DirectBuffer memory, UniCallback<Image> uniCallback);
 }

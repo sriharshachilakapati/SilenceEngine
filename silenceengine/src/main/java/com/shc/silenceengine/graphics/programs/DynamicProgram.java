@@ -31,6 +31,7 @@ import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Shader;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.io.FileReader;
+import com.shc.silenceengine.utils.functional.UniCallback;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -41,7 +42,7 @@ public class DynamicProgram extends Program
     public static final String COLOR_ATTRIB    = "color";
     public static final String TEXCOORD_ATTRIB = "texCoords";
 
-    public static void create(OnComplete onComplete)
+    public static void create(UniCallback<DynamicProgram> uniCallback)
     {
         FileReader fileReader = SilenceEngine.io.getFileReader();
 
@@ -65,7 +66,7 @@ public class DynamicProgram extends Program
                     vShader.dispose();
                     fShader.dispose();
 
-                    onComplete.invoke(program);
+                    uniCallback.invoke(program);
                 })
         );
     }
@@ -85,11 +86,5 @@ public class DynamicProgram extends Program
 
         setUniform("proj", BaseCamera.CURRENT.getProjection());
         setUniform("view", BaseCamera.CURRENT.getView());
-    }
-
-    @FunctionalInterface
-    public interface OnComplete
-    {
-        void invoke(DynamicProgram program);
     }
 }

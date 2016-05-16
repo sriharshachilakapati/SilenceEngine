@@ -32,6 +32,7 @@ import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.utils.TaskManager;
+import com.shc.silenceengine.utils.functional.UniCallback;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.ALC;
@@ -149,7 +150,7 @@ public class LwjglAudioDevice extends AudioDevice
     }
 
     @Override
-    public void readToALBuffer(AudioFormat format, DirectBuffer data, OnDecodeComplete onDecoded)
+    public void readToALBuffer(AudioFormat format, DirectBuffer data, UniCallback<ALBuffer> onDecoded)
     {
         if (!isSupported(format))
             throw new SilenceException("Error, cannot decode unsupported format");
@@ -164,7 +165,7 @@ public class LwjglAudioDevice extends AudioDevice
                     ALBuffer alBuffer = new ALBuffer();
                     alBuffer.uploadData(new LwjglDirectBuffer(reader.getData()), reader.getFormat(), reader.getSampleRate());
 
-                    onDecoded.accept(alBuffer);
+                    onDecoded.invoke(alBuffer);
                 });
 
                 break;
@@ -178,7 +179,7 @@ public class LwjglAudioDevice extends AudioDevice
                     ALBuffer alBuffer = new ALBuffer();
                     alBuffer.uploadData(new LwjglDirectBuffer(reader.getData()), reader.getFormat(), reader.getSampleRate());
 
-                    onDecoded.accept(alBuffer);
+                    onDecoded.invoke(alBuffer);
                 });
 
                 break;

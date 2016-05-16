@@ -35,6 +35,7 @@ import com.shc.silenceengine.audio.openal.ALBuffer;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.DirectBuffer;
+import com.shc.silenceengine.utils.functional.UniCallback;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -141,13 +142,13 @@ public class GwtAudioDevice extends AudioDevice
     }
 
     @Override
-    public void readToALBuffer(AudioFormat format, DirectBuffer data, OnDecodeComplete onDecoded)
+    public void readToALBuffer(AudioFormat format, DirectBuffer data, UniCallback<ALBuffer> onDecoded)
     {
         if (!isSupported(format))
             throw new SilenceException("Audio format " + format + " is not supported.");
 
         AudioDecoder.decodeAudio(((ArrayBufferView) data.nativeBuffer()).buffer(),
-                alBufferID -> onDecoded.accept(new ALBuffer(alBufferID)),
+                alBufferID -> onDecoded.invoke(new ALBuffer(alBufferID)),
                 reason ->
                 {
                     throw new SilenceException("Error decoding: " + reason);

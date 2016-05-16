@@ -26,6 +26,7 @@ package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.utils.TimeUtils;
+import com.shc.silenceengine.utils.functional.SimpleCallback;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -34,10 +35,10 @@ public class Sprite
 {
     private Animation animation;
 
-    private IAnimationStartCallback  startCallback;
-    private IAnimationPauseCallback  pauseCallback;
-    private IAnimationResumeCallback resumeCallback;
-    private IAnimationEndCallback    endCallback;
+    private SimpleCallback startCallback;
+    private SimpleCallback pauseCallback;
+    private SimpleCallback resumeCallback;
+    private SimpleCallback endCallback;
 
     private int   currentFrame;
     private float time;
@@ -59,10 +60,10 @@ public class Sprite
         });
     }
 
-    public Sprite(Texture texture, IAnimationStartCallback startCallback,
-                  IAnimationPauseCallback pauseCallback,
-                  IAnimationResumeCallback resumeCallback,
-                  IAnimationEndCallback endCallback)
+    public Sprite(Texture texture, SimpleCallback startCallback,
+                  SimpleCallback pauseCallback,
+                  SimpleCallback resumeCallback,
+                  SimpleCallback endCallback)
     {
         // Construct with empty callbacks
         this(new Animation().addFrame(texture, 1, TimeUtils.Unit.SECONDS), () -> {
@@ -72,10 +73,10 @@ public class Sprite
         });
     }
 
-    public Sprite(Animation animation, IAnimationStartCallback startCallback,
-                  IAnimationPauseCallback pauseCallback,
-                  IAnimationResumeCallback resumeCallback,
-                  IAnimationEndCallback endCallback)
+    public Sprite(Animation animation, SimpleCallback startCallback,
+                  SimpleCallback pauseCallback,
+                  SimpleCallback resumeCallback,
+                  SimpleCallback endCallback)
     {
         this.startCallback = startCallback;
         this.pauseCallback = pauseCallback;
@@ -169,7 +170,7 @@ public class Sprite
         return active;
     }
 
-    public void setStartCallback(IAnimationStartCallback startCallback)
+    public void setStartCallback(SimpleCallback startCallback)
     {
         if (startCallback == null)
             startCallback = () -> {
@@ -178,7 +179,7 @@ public class Sprite
         this.startCallback = startCallback;
     }
 
-    public void setPauseCallback(IAnimationPauseCallback pauseCallback)
+    public void setPauseCallback(SimpleCallback pauseCallback)
     {
         if (pauseCallback == null)
             pauseCallback = () -> {
@@ -187,7 +188,7 @@ public class Sprite
         this.pauseCallback = pauseCallback;
     }
 
-    public void setResumeCallback(IAnimationResumeCallback resumeCallback)
+    public void setResumeCallback(SimpleCallback resumeCallback)
     {
         if (resumeCallback == null)
             resumeCallback = () -> {
@@ -196,36 +197,12 @@ public class Sprite
         this.resumeCallback = resumeCallback;
     }
 
-    public void setEndCallback(IAnimationEndCallback endCallback)
+    public void setEndCallback(SimpleCallback endCallback)
     {
         if (endCallback == null)
             endCallback = () -> {
             };
 
         this.endCallback = endCallback;
-    }
-
-    @FunctionalInterface
-    public interface IAnimationStartCallback
-    {
-        void invoke();
-    }
-
-    @FunctionalInterface
-    public interface IAnimationPauseCallback
-    {
-        void invoke();
-    }
-
-    @FunctionalInterface
-    public interface IAnimationResumeCallback
-    {
-        void invoke();
-    }
-
-    @FunctionalInterface
-    public interface IAnimationEndCallback
-    {
-        void invoke();
     }
 }

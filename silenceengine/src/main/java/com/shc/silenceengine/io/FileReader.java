@@ -24,18 +24,14 @@
 
 package com.shc.silenceengine.io;
 
+import com.shc.silenceengine.utils.functional.UniCallback;
+
 /**
  * @author Sri Harsha Chilakapati
  */
 public abstract class FileReader
 {
-    public abstract void readBinaryFile(FilePath file, OnComplete<DirectBuffer> onComplete);
+    public abstract void readBinaryFile(FilePath file, UniCallback<DirectBuffer> uniCallback);
 
-    public abstract void readTextFile(FilePath file, OnComplete<String> onComplete);
-
-    @FunctionalInterface
-    public interface OnComplete<T>
-    {
-        void invoke(T data);
-    }
+    public abstract void readTextFile(FilePath file, UniCallback<String> uniCallback);
 }
