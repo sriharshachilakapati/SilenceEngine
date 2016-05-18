@@ -30,6 +30,8 @@ buildscript {
 
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.12.0'
     }
 }
 
@@ -40,13 +42,16 @@ allprojects {
 subprojects {
     apply plugin: 'eclipse'
     apply plugin: 'maven'
-    apply plugin: 'java'
 
     repositories {
         jcenter()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
+}
+
+configure(subprojects.findAll {it.name != 'backend-android'}) {
+    apply plugin: 'java'
 }
 
 project(":backend-gwt") {
@@ -56,6 +61,15 @@ project(":backend-gwt") {
         compile 'com.goharsha:gwt-al:0.1-SNAPSHOT'
         compile 'com.goharsha:gwt-opentype:0.1-SNAPSHOT'
         compile 'com.google.gwt:gwt-user:2.8.0-beta1'
+    }
+}
+
+project(":backend-android") {
+    apply plugin: 'android-sdk-manager'
+    apply plugin: 'android-library'
+
+    dependencies {
+        compile project(":silenceengine")
     }
 }
 

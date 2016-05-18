@@ -8,6 +8,8 @@ backend-lwjgl/build/
 backend-lwjgl/backend-lwjgl.iml
 backend-gwt/build/
 backend-gwt/backend-gwt.iml
+backend-android/build/
+backend-android/gen/
 tests/build/
 tests/tests.iml
 tests-lwjgl/build/
@@ -19,3 +21,4 @@ tests-gwt/gwt/
 .idea/
 out/
 .gradle/
+local.properties

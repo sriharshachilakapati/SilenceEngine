@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.core;
 
+import com.shc.silenceengine.annotations.PlatformAndroid;
 import com.shc.silenceengine.annotations.PlatformDesktop;
 import com.shc.silenceengine.annotations.PlatformHTML5;
 import com.shc.silenceengine.io.FilePath;
@@ -44,6 +45,7 @@ public interface IDisplayDevice
      */
     @PlatformDesktop
     @PlatformHTML5
+    @PlatformAndroid
     SilenceEngine.Platform getPlatform();
 
     /**
@@ -63,6 +65,7 @@ public interface IDisplayDevice
      */
     @PlatformDesktop
     @PlatformHTML5
+    @PlatformAndroid
     boolean isFullscreen();
 
     /**
@@ -119,6 +122,7 @@ public interface IDisplayDevice
      */
     @PlatformDesktop
     @PlatformHTML5
+    @PlatformAndroid
     int getWidth();
 
     /**
@@ -128,6 +132,7 @@ public interface IDisplayDevice
      */
     @PlatformDesktop
     @PlatformHTML5
+    @PlatformAndroid
     int getHeight();
 
     /**
@@ -201,6 +206,7 @@ public interface IDisplayDevice
      */
     @PlatformDesktop
     @PlatformHTML5
+    @PlatformAndroid
     default float getAspectRatio()
     {
         return (float) getWidth() / (float) getHeight();

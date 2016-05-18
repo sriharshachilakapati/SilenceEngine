@@ -22,5 +22,20 @@
  * SOFTWARE.
  */
 
+package com.shc.silenceengine.annotations;
 
-include 'silenceengine', 'backend-lwjgl', 'backend-gwt', 'backend-android', 'tests', 'tests-lwjgl', 'tests-gwt'
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+/**
+ * Represents that a method will only work on the android platform (Windows, Mac and Linux) and ignored on other
+ * platforms.
+ *
+ * @author Sri Harsha Chilakapati
+ */
+@Documented
+@Retention(RetentionPolicy.SOURCE)
+public @interface PlatformAndroid
+{
+}

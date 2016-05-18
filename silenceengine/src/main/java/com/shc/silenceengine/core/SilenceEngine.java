@@ -83,6 +83,7 @@ public final class SilenceEngine
         LINUX_64,
         MACOSX,
         HTML5,
+        ANDROID,
         UNKNOWN
     }
 }
