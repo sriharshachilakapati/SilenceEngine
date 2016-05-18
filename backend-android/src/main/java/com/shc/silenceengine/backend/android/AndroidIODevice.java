@@ -22,26 +22,52 @@
  * SOFTWARE.
  */
 
+package com.shc.silenceengine.backend.android;
 
-android {
-    compileSdkVersion 22
-    buildToolsVersion "23.0.3"
+import com.shc.silenceengine.io.DirectBuffer;
+import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.io.FileReader;
+import com.shc.silenceengine.io.IODevice;
+import com.shc.silenceengine.io.ImageReader;
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+/**
+ * @author Sri Harsha Chilakapati
+ */
+public class AndroidIODevice implements IODevice
+{
+    @Override
+    public DirectBuffer create(int sizeInBytes)
+    {
+        return new AndroidDirectBuffer(sizeInBytes);
     }
 
-    defaultConfig {
-        minSdkVersion 22
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+    @Override
+    public void free(DirectBuffer directBuffer)
+    {
+        ((AndroidDirectBuffer) directBuffer).free();
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt')
-        }
+
+    @Override
+    public FilePath createResourceFilePath(String path)
+    {
+        return new AndroidResourceFilePath(path);
+    }
+
+    @Override
+    public FilePath createExternalFilePath(String path)
+    {
+        return new AndroidExternalFilePath(path);
+    }
+
+    @Override
+    public FileReader getFileReader()
+    {
+        return null;
+    }
+
+    @Override
+    public ImageReader getImageReader()
+    {
+        return null;
     }
 }
