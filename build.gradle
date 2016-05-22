@@ -78,25 +78,6 @@ project(":backend-android") {
         provided project(":silenceengine")
         compile 'com.annimon:stream:1.0.3'
     }
-
-    task processJava8Libs << {
-        copy {
-            configurations.provided.asFileTree.each {
-                from(zipTree(it))
-            }
-            into 'build/retrolambda/debug/'
-            into 'build/retrolambda/release/'
-            include '**/*.class'
-        }
-    }
-
-    build {
-        dependsOn processJava8Libs
-    }
-
-    retrolambda {
-        defaultMethods true
-    }
 }
 
 project(":backend-lwjgl") {
@@ -135,8 +116,8 @@ project(":tests-lwjgl") {
 }
 
 project(":tests-android") {
-    apply plugin: 'me.tatarka.retrolambda'
     apply plugin: 'com.android.application'
+    apply plugin: 'me.tatarka.retrolambda'
 
     dependencies {
         provided project(":silenceengine")
@@ -144,24 +125,5 @@ project(":tests-android") {
 
         compile project(":backend-android")
         compile 'com.annimon:stream:1.0.3'
-    }
-
-    task processJava8Libs << {
-        copy {
-            configurations.provided.asFileTree.each {
-                from(zipTree(it))
-            }
-            into 'build/retrolambda/debug/'
-            into 'build/retrolambda/release/'
-            include '**/*.class'
-        }
-    }
-
-    build {
-        dependsOn processJava8Libs
-    }
-
-    retrolambda {
-        defaultMethods true
     }
 }

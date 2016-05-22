@@ -46,3 +46,46 @@ android {
         }
     }
 }
+
+task copyResources << {
+    delete "src/main/assets"
+
+    copy {
+        from files(project(':silenceengine').sourceSets.main.output.resourcesDir)
+        into 'src/main/assets'
+    }
+
+    copy {
+        from files(project(':tests').sourceSets.main.output.resourcesDir)
+        into 'src/main/assets'
+    }
+}
+
+task beforeRetrolambda << {
+    copy {
+        configurations.provided.asFileTree.each {
+            from(zipTree(it))
+        }
+        into 'build/retrolambda/debug/'
+        include '**/*.class'
+    }
+
+    copy {
+        configurations.provided.asFileTree.each {
+            from(zipTree(it))
+        }
+        into 'build/retrolambda/release/'
+        include '**/*.class'
+    }
+}
+
+preBuild.dependsOn copyResources
+
+afterEvaluate {
+    compileRetrolambdaDebug.dependsOn beforeRetrolambda
+    compileRetrolambdaRelease.dependsOn beforeRetrolambda
+}
+
+retrolambda {
+    defaultMethods true
+}
