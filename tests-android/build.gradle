@@ -22,28 +22,27 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.backend.android;
 
-import android.app.Activity;
-import com.shc.silenceengine.core.Game;
-import com.shc.silenceengine.core.SilenceEngine;
+android {
+    compileSdkVersion 22
+    buildToolsVersion "23.0.3"
 
-/**
- * @author Sri Harsha Chilakapati
- */
-public final class AndroidRuntime
-{
-    private AndroidRuntime()
-    {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    public static void start(Activity activity, Game game)
-    {
-        SilenceEngine.log = new AndroidLogDevice();
-        SilenceEngine.display = new AndroidDisplayDevice(activity);
-        SilenceEngine.io = new AndroidIODevice();
-        SilenceEngine.graphics = new AndroidGraphicsDevice();
+    defaultConfig {
+        minSdkVersion 22
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+    }
 
-        game.init();
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
+        }
     }
 }

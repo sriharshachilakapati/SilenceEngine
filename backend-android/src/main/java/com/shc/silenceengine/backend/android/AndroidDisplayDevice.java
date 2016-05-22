@@ -58,6 +58,8 @@ public class AndroidDisplayDevice implements com.shc.silenceengine.core.IDisplay
         surfaceView.setPreserveEGLContextOnPause(true);
         surfaceView.setEGLContextClientVersion(3);
         surfaceView.setRenderer(new AndroidWindow());
+
+        activity.setContentView(surfaceView);
     }
 
     @Override

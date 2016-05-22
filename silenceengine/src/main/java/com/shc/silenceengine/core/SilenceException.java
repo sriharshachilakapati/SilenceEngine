@@ -52,6 +52,11 @@ public class SilenceException extends RuntimeException
         super();
     }
 
+    public SilenceException(Throwable throwable)
+    {
+        super(throwable.toString());
+    }
+
     /**
      * Rethrows a Throwable as a SilenceException. This method is useful if you want to turn any exception into a
      * runtime SilenceException. Use this method if you want to quit the game with a fatal error.

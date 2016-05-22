@@ -24,26 +24,31 @@
 
 package com.shc.silenceengine.backend.android;
 
-import android.app.Activity;
-import com.shc.silenceengine.core.Game;
-import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.io.DirectBuffer;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public final class AndroidRuntime
+public class DirectBufferInputStream extends InputStream
 {
-    private AndroidRuntime()
+    private DirectBuffer directBuffer;
+
+    private int index;
+
+    public DirectBufferInputStream(DirectBuffer directBuffer)
     {
+        this.directBuffer = directBuffer;
     }
 
-    public static void start(Activity activity, Game game)
+    @Override
+    public int read() throws IOException
     {
-        SilenceEngine.log = new AndroidLogDevice();
-        SilenceEngine.display = new AndroidDisplayDevice(activity);
-        SilenceEngine.io = new AndroidIODevice();
-        SilenceEngine.graphics = new AndroidGraphicsDevice();
+        if (index >= directBuffer.sizeBytes())
+            return -1;
 
-        game.init();
+        return directBuffer.readByte(index++) & 0xFF;
     }
 }

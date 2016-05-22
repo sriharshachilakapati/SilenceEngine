@@ -31,7 +31,6 @@ import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Shader;
-import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.math.Transform;
 import com.shc.silenceengine.math.Vector3;
 
@@ -72,7 +71,8 @@ public class DynamicRendererTest extends SilenceTest
                           "    gl_FragColor = vColor; \n" +
                           "}";
 
-        if (SilenceEngine.display.getPlatform() == SilenceEngine.Platform.HTML5)
+        if (SilenceEngine.display.getPlatform() == SilenceEngine.Platform.HTML5 ||
+            SilenceEngine.display.getPlatform() == SilenceEngine.Platform.ANDROID)
         {
             // Shaders need a small change, we need to set float precision
             String precision = "precision mediump float;\n";
@@ -104,8 +104,8 @@ public class DynamicRendererTest extends SilenceTest
     @Override
     public void update(float deltaTime)
     {
-        if (Keyboard.isKeyTapped(Keyboard.KEY_ESCAPE))
-            SilenceEngine.display.close();
+//        if (Keyboard.isKeyTapped(Keyboard.KEY_ESCAPE))
+//            SilenceEngine.display.close();
 
         transform.rotate(Vector3.AXIS_Y, 45 * deltaTime);
     }

@@ -35,6 +35,9 @@ import com.shc.silenceengine.io.ImageReader;
  */
 public class AndroidIODevice implements IODevice
 {
+    private FileReader  fileReader  = new AndroidFileReader();
+    private ImageReader imageReader = new AndroidImageReader();
+
     @Override
     public DirectBuffer create(int sizeInBytes)
     {
@@ -62,12 +65,12 @@ public class AndroidIODevice implements IODevice
     @Override
     public FileReader getFileReader()
     {
-        return null;
+        return fileReader;
     }
 
     @Override
     public ImageReader getImageReader()
     {
-        return null;
+        return imageReader;
     }
 }

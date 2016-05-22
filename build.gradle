@@ -32,7 +32,6 @@ buildscript {
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
         classpath 'com.android.tools.build:gradle:1.5.0'
-        classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.12.0'
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
         classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
     }
@@ -55,11 +54,13 @@ subprojects {
     }
 }
 
-configure(subprojects.findAll {it.name != 'backend-android'}) {
+project(":silenceengine") {
     apply plugin: 'java'
 }
 
 project(":backend-gwt") {
+    apply plugin: 'java'
+
     dependencies {
         compile project(":silenceengine")
         compile 'com.goharsha:webgl4j:0.2.9-SNAPSHOT'
@@ -71,16 +72,36 @@ project(":backend-gwt") {
 
 project(":backend-android") {
     apply plugin: 'me.tatarka.retrolambda'
-    apply plugin: 'android-sdk-manager'
     apply plugin: 'com.android.library'
 
     dependencies {
-        compile project(":silenceengine")
+        provided project(":silenceengine")
         compile 'com.annimon:stream:1.0.3'
+    }
+
+    task processJava8Libs << {
+        copy {
+            configurations.provided.asFileTree.each {
+                from(zipTree(it))
+            }
+            into 'build/retrolambda/debug/'
+            into 'build/retrolambda/release/'
+            include '**/*.class'
+        }
+    }
+
+    build {
+        dependsOn processJava8Libs
+    }
+
+    retrolambda {
+        defaultMethods true
     }
 }
 
 project(":backend-lwjgl") {
+    apply plugin: 'java'
+
     project.ext.lwjglVersion = "3.0.0-SNAPSHOT"
 
     dependencies {
@@ -93,14 +114,54 @@ project(":backend-lwjgl") {
 }
 
 project(":tests") {
+    apply plugin: 'java'
+
     dependencies {
         compile project(":silenceengine")
     }
 }
 
 project(":tests-gwt") {
+    apply plugin: 'java'
+
     dependencies {
         compile project(":tests")
         compile project(":backend-gwt")
+    }
+}
+
+project(":tests-lwjgl") {
+    apply plugin: 'java'
+}
+
+project(":tests-android") {
+    apply plugin: 'me.tatarka.retrolambda'
+    apply plugin: 'com.android.application'
+
+    dependencies {
+        provided project(":silenceengine")
+        provided project(":tests")
+
+        compile project(":backend-android")
+        compile 'com.annimon:stream:1.0.3'
+    }
+
+    task processJava8Libs << {
+        copy {
+            configurations.provided.asFileTree.each {
+                from(zipTree(it))
+            }
+            into 'build/retrolambda/debug/'
+            into 'build/retrolambda/release/'
+            include '**/*.class'
+        }
+    }
+
+    build {
+        dependsOn processJava8Libs
+    }
+
+    retrolambda {
+        defaultMethods true
     }
 }

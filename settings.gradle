@@ -23,4 +23,5 @@
  */
 
 
-include 'silenceengine', 'backend-lwjgl', 'backend-gwt', 'backend-android', 'tests', 'tests-lwjgl', 'tests-gwt'
+include 'silenceengine', 'backend-lwjgl', 'backend-gwt', 'backend-android'
+include 'tests', 'tests-lwjgl', 'tests-gwt', 'tests-android'

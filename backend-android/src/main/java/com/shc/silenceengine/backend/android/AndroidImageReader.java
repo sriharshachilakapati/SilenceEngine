@@ -24,26 +24,42 @@
 
 package com.shc.silenceengine.backend.android;
 
-import android.app.Activity;
-import com.shc.silenceengine.core.Game;
-import com.shc.silenceengine.core.SilenceEngine;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.Image;
+import com.shc.silenceengine.io.DirectBuffer;
+import com.shc.silenceengine.io.ImageReader;
+import com.shc.silenceengine.utils.TaskManager;
+import com.shc.silenceengine.utils.functional.UniCallback;
+
+import java.io.IOException;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public final class AndroidRuntime
+public class AndroidImageReader extends ImageReader
 {
-    private AndroidRuntime()
+    @Override
+    public void readImage(DirectBuffer memory, UniCallback<Image> uniCallback)
     {
-    }
+        new Thread(() -> {
+            Bitmap bitmap = BitmapFactory.decodeStream(new DirectBufferInputStream(memory));
 
-    public static void start(Activity activity, Game game)
-    {
-        SilenceEngine.log = new AndroidLogDevice();
-        SilenceEngine.display = new AndroidDisplayDevice(activity);
-        SilenceEngine.io = new AndroidIODevice();
-        SilenceEngine.graphics = new AndroidGraphicsDevice();
+            if (bitmap == null)
+                throw new SilenceException(new IOException("Error decoding image from memory"));
 
-        game.init();
+            Image image = new Image(bitmap.getWidth(), bitmap.getHeight());
+
+            for (int x = 0; x < image.getWidth(); x++)
+                for (int y = 0; y < image.getHeight(); y++)
+                    image.setPixel(x, y, new Color(bitmap.getPixel(x, y)));
+
+            bitmap.recycle();
+            bitmap = null;
+
+            TaskManager.runOnUpdate(() -> uniCallback.invoke(image));
+        }).start();
     }
 }

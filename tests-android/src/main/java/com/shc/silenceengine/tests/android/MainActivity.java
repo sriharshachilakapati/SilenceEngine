@@ -22,28 +22,20 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.backend.android;
+package com.shc.silenceengine.tests.android;
 
 import android.app.Activity;
-import com.shc.silenceengine.core.Game;
-import com.shc.silenceengine.core.SilenceEngine;
+import android.os.Bundle;
+import com.shc.silenceengine.backend.android.AndroidRuntime;
+import com.shc.silenceengine.tests.DynamicRendererTest;
+import com.shc.silenceengine.tests.TestRunner;
 
-/**
- * @author Sri Harsha Chilakapati
- */
-public final class AndroidRuntime
+public class MainActivity extends Activity
 {
-    private AndroidRuntime()
+    protected void onCreate(Bundle savedInstanceState)
     {
-    }
+        super.onCreate(savedInstanceState);
 
-    public static void start(Activity activity, Game game)
-    {
-        SilenceEngine.log = new AndroidLogDevice();
-        SilenceEngine.display = new AndroidDisplayDevice(activity);
-        SilenceEngine.io = new AndroidIODevice();
-        SilenceEngine.graphics = new AndroidGraphicsDevice();
-
-        game.init();
+        AndroidRuntime.start(this, new TestRunner(new DynamicRendererTest()));
     }
 }

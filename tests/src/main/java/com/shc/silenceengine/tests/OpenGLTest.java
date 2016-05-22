@@ -99,7 +99,8 @@ public class OpenGLTest extends SilenceTest
                           "    gl_FragColor = texture2D(texUnit, vTexCoords); \n" +
                           "}";
 
-        if (SilenceEngine.display.getPlatform() == SilenceEngine.Platform.HTML5)
+        if (SilenceEngine.display.getPlatform() == SilenceEngine.Platform.HTML5
+                || SilenceEngine.display.getPlatform() == SilenceEngine.Platform.ANDROID)
         {
             // Shaders need a small change, we need to set float precision
             String precision = "precision mediump float;\n";

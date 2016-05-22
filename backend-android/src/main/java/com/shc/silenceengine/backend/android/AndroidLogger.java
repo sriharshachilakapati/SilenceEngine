@@ -24,26 +24,37 @@
 
 package com.shc.silenceengine.backend.android;
 
-import android.app.Activity;
-import com.shc.silenceengine.core.Game;
-import com.shc.silenceengine.core.SilenceEngine;
+import android.util.Log;
+import com.shc.silenceengine.logging.Logger;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public final class AndroidRuntime
+public class AndroidLogger extends Logger
 {
-    private AndroidRuntime()
+    public AndroidLogger(String name)
     {
+        super(name);
     }
 
-    public static void start(Activity activity, Game game)
+    @Override
+    public void info(Object... messages)
     {
-        SilenceEngine.log = new AndroidLogDevice();
-        SilenceEngine.display = new AndroidDisplayDevice(activity);
-        SilenceEngine.io = new AndroidIODevice();
-        SilenceEngine.graphics = new AndroidGraphicsDevice();
+        for (Object msg : messages)
+            Log.i(name, String.valueOf(msg));
+    }
 
-        game.init();
+    @Override
+    public void warn(Object... messages)
+    {
+        for (Object msg : messages)
+            Log.w(name, String.valueOf(msg));
+    }
+
+    @Override
+    public void error(Object... messages)
+    {
+        for (Object msg : messages)
+            Log.e(name, String.valueOf(msg));
     }
 }
