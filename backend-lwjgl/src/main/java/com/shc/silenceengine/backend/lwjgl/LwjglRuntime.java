@@ -47,7 +47,6 @@ public final class LwjglRuntime
 
     public static void start(Game game)
     {
-        Configuration.MEMORY_ALLOCATOR.set("system");
         Configuration.DEBUG.set(Game.DEVELOPMENT);
 
         SilenceEngine.log = new LwjglLogDevice();
