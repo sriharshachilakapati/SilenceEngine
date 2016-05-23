@@ -35,6 +35,8 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class AndroidWindow implements GLSurfaceView.Renderer
 {
+    private boolean initialized = false;
+
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config)
     {
@@ -43,12 +45,18 @@ public class AndroidWindow implements GLSurfaceView.Renderer
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height)
     {
-        SilenceEngine.eventManager.raiseResizeEvent();
+        ((AndroidDisplayDevice) SilenceEngine.display).surfaceView.queueEvent(SilenceEngine.eventManager::raiseResizeEvent);
     }
 
     @Override
     public void onDrawFrame(GL10 gl)
     {
+        if (!initialized)
+        {
+            AndroidRuntime.game.init();
+            initialized = true;
+        }
+
         SilenceEngine.gameLoop.performLoopFrame();
     }
 }

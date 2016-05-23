@@ -44,10 +44,10 @@ public class AndroidDisplayDevice implements com.shc.silenceengine.core.IDisplay
 
     private double startTime;
 
-    public AndroidDisplayDevice(Activity activity)
+    public AndroidDisplayDevice()
     {
         this.startTime = SystemClock.elapsedRealtimeNanos();
-        this.activity = activity;
+        this.activity = AndroidLauncher.instance;
 
         activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
         activity.getWindow().setFlags(
@@ -60,6 +60,8 @@ public class AndroidDisplayDevice implements com.shc.silenceengine.core.IDisplay
         surfaceView.setRenderer(new AndroidWindow());
 
         activity.setContentView(surfaceView);
+
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     @Override

@@ -24,27 +24,35 @@
 
 package com.shc.silenceengine.backend.android;
 
-import com.shc.silenceengine.core.Game;
+import android.app.Activity;
+import android.os.Bundle;
 import com.shc.silenceengine.core.SilenceEngine;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public final class AndroidRuntime
+public class AndroidLauncher extends Activity
 {
-    public static Game game;
+    public static AndroidLauncher instance;
 
-    private AndroidRuntime()
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
     {
+        super.onCreate(savedInstanceState);
+        instance = this;
     }
 
-    public static void start(Game game)
+    @Override
+    protected void onPause()
     {
-        AndroidRuntime.game = game;
+        super.onPause();
+        ((AndroidDisplayDevice) SilenceEngine.display).surfaceView.onPause();
+    }
 
-        SilenceEngine.log = new AndroidLogDevice();
-        SilenceEngine.display = new AndroidDisplayDevice();
-        SilenceEngine.io = new AndroidIODevice();
-        SilenceEngine.graphics = new AndroidGraphicsDevice();
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        ((AndroidDisplayDevice) SilenceEngine.display).surfaceView.onResume();
     }
 }
