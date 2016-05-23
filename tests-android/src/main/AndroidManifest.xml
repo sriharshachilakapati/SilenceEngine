@@ -35,12 +35,11 @@
             android:supportsRtl="true"
             android:icon="@drawable/ic_launcher">
         <activity
-                android:name="com.shc.silenceengine.tests.android.MainActivity"
+                android:name=".MainActivity"
                 android:label="AndroidTest"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>

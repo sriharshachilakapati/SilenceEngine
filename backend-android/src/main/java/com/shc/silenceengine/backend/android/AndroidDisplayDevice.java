@@ -55,12 +55,10 @@ public class AndroidDisplayDevice implements com.shc.silenceengine.core.IDisplay
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         surfaceView = new GLSurfaceView(activity);
-        surfaceView.setPreserveEGLContextOnPause(true);
         surfaceView.setEGLContextClientVersion(3);
         surfaceView.setRenderer(new AndroidWindow());
 
         activity.setContentView(surfaceView);
-
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 

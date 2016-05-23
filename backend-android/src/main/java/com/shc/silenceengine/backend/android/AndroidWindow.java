@@ -35,11 +35,11 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class AndroidWindow implements GLSurfaceView.Renderer
 {
-    private boolean initialized = false;
-
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config)
     {
+        if (AndroidRuntime.game == null)
+            AndroidRuntime.game = AndroidRuntime.gameProvider.provide();
     }
 
     @Override
@@ -51,12 +51,12 @@ public class AndroidWindow implements GLSurfaceView.Renderer
     @Override
     public void onDrawFrame(GL10 gl)
     {
-        if (!initialized)
+        if (!AndroidLauncher.initialized)
         {
             AndroidRuntime.game.init();
-            initialized = true;
+            AndroidLauncher.initialized = true;
         }
-
-        SilenceEngine.gameLoop.performLoopFrame();
+        else
+            SilenceEngine.gameLoop.performLoopFrame();
     }
 }

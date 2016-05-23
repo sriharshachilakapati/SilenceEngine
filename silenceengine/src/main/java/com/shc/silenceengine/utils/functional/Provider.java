@@ -22,40 +22,13 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.backend.android;
-
-import android.app.Activity;
-import android.os.Bundle;
-import com.shc.silenceengine.core.SilenceEngine;
+package com.shc.silenceengine.utils.functional;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidLauncher extends Activity
+@FunctionalInterface
+public interface Provider<T>
 {
-    public static AndroidLauncher instance;
-    public static boolean initialized = false;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        instance = this;
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        initialized = false;
-        ((AndroidDisplayDevice) SilenceEngine.display).surfaceView.onResume();
-    }
-
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        initialized = false;
-        ((AndroidDisplayDevice) SilenceEngine.display).surfaceView.onPause();
-    }
+    T provide();
 }

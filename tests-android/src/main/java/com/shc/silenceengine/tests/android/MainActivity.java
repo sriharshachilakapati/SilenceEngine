@@ -27,14 +27,15 @@ package com.shc.silenceengine.tests.android;
 import android.os.Bundle;
 import com.shc.silenceengine.backend.android.AndroidLauncher;
 import com.shc.silenceengine.backend.android.AndroidRuntime;
-import com.shc.silenceengine.tests.DynamicRendererTest;
+import com.shc.silenceengine.tests.OpenGLTest;
 import com.shc.silenceengine.tests.TestRunner;
 
 public class MainActivity extends AndroidLauncher
 {
+    @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        AndroidRuntime.start(new TestRunner(new DynamicRendererTest()));
+        AndroidRuntime.start(() -> new TestRunner(new OpenGLTest()));
     }
 }

@@ -26,6 +26,7 @@ package com.shc.silenceengine.backend.android;
 
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.utils.functional.Provider;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -33,14 +34,15 @@ import com.shc.silenceengine.core.SilenceEngine;
 public final class AndroidRuntime
 {
     public static Game game;
+    public static Provider<Game> gameProvider;
 
     private AndroidRuntime()
     {
     }
 
-    public static void start(Game game)
+    public static void start(Provider<Game> gameProvider)
     {
-        AndroidRuntime.game = game;
+        AndroidRuntime.gameProvider = gameProvider;
 
         SilenceEngine.log = new AndroidLogDevice();
         SilenceEngine.display = new AndroidDisplayDevice();
