@@ -31,6 +31,8 @@ import android.view.View;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.input.InputDevice;
 
+import static com.shc.silenceengine.input.Touch.*;
+
 /**
  * @author Sri Harsha Chilakapati
  */
@@ -43,7 +45,6 @@ public class AndroidInputDevice extends InputDevice
         surfaceView = ((AndroidDisplayDevice) SilenceEngine.display).surfaceView;
         surfaceView.setOnKeyListener(this::onKey);
         surfaceView.setOnTouchListener(this::onTouch);
-        surfaceView.setOnGenericMotionListener(this::onTouch);
     }
 
     private boolean onKey(View v, int keyCode, KeyEvent event)
@@ -55,18 +56,51 @@ public class AndroidInputDevice extends InputDevice
 
     private boolean onTouch(View v, MotionEvent e)
     {
-        int index = e.getActionIndex() + 1; // Indices start with one on silenceengine
+        final int action = e.getActionMasked();
 
-        float x = e.getX();
-        float y = e.getY();
+        switch (action)
+        {
+            case MotionEvent.ACTION_DOWN:
+                surfaceView.queueEvent(() -> postTouchEvent(FINGER_0, true, e.getX(), e.getY()));
+                break;
 
-        boolean isDown = e.getAction() == MotionEvent.ACTION_DOWN ||
-                         e.getAction() == MotionEvent.ACTION_POINTER_DOWN ||
-                         e.getAction() == MotionEvent.ACTION_MOVE;
+            case MotionEvent.ACTION_UP:
+                surfaceView.queueEvent(() -> postTouchEvent(FINGER_0, false, e.getX(), e.getY()));
+                break;
 
-        // TODO: Fix this for multiple touches
-        surfaceView.queueEvent(() -> postTouchEvent(index, isDown, x, y));
+            case MotionEvent.ACTION_POINTER_DOWN:
+            case MotionEvent.ACTION_POINTER_UP:
+            {
+                final int index = e.getActionIndex();
+                final int finger = index + 1;
 
-        return false;
+                if (finger < FINGER_1 || finger > FINGER_9)
+                    break;
+
+                final boolean isDown = action == MotionEvent.ACTION_POINTER_DOWN;
+                surfaceView.queueEvent(() -> postTouchEvent(finger, isDown, e.getX(), e.getY()));
+            }
+            break;
+
+            case MotionEvent.ACTION_MOVE:
+                for (int i = 0; i < e.getPointerCount(); i++)
+                {
+                    final int finger = i + 1;
+
+                    if (finger < FINGER_1 || finger > FINGER_9)
+                        break;
+
+                    surfaceView.queueEvent(() ->
+                            postTouchEvent(finger, true, e.getX(finger - 1), e.getY(finger - 1)));
+                }
+                for (int i = e.getPointerCount(); i < FINGER_9; i++)
+                {
+                    final int finger = i + 1;
+                    surfaceView.queueEvent(() -> postTouchEvent(finger, false, 0, 0));
+                }
+                break;
+        }
+
+        return true;
     }
 }

@@ -22,21 +22,13 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.tests.android;
-
-import com.shc.silenceengine.backend.android.AndroidLauncher;
-import com.shc.silenceengine.backend.android.AndroidRuntime;
-import com.shc.silenceengine.tests.TestRunner;
-import com.shc.silenceengine.tests.TouchTest;
+package com.shc.silenceengine.utils.functional;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class MainActivity extends AndroidLauncher
+@FunctionalInterface
+public interface BiCallback<T1, T2>
 {
-    @Override
-    public void launchGame()
-    {
-        AndroidRuntime.start(new TestRunner(new TouchTest()));
-    }
+    void invoke(T1 arg1, T2 arg2);
 }
