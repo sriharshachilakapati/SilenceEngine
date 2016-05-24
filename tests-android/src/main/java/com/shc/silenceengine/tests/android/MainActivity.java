@@ -24,18 +24,16 @@
 
 package com.shc.silenceengine.tests.android;
 
-import android.os.Bundle;
 import com.shc.silenceengine.backend.android.AndroidLauncher;
 import com.shc.silenceengine.backend.android.AndroidRuntime;
-import com.shc.silenceengine.tests.OpenGLTest;
 import com.shc.silenceengine.tests.TestRunner;
+import com.shc.silenceengine.tests.TouchTest;
 
 public class MainActivity extends AndroidLauncher
 {
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public void launchGame()
     {
-        super.onCreate(savedInstanceState);
-        AndroidRuntime.start(() -> new TestRunner(new OpenGLTest()));
+        AndroidRuntime.start(new TestRunner(new TouchTest()));
     }
 }

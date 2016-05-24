@@ -25,39 +25,48 @@
 package com.shc.silenceengine.backend.android;
 
 import android.opengl.GLSurfaceView;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
 import com.shc.silenceengine.core.SilenceEngine;
-import com.shc.silenceengine.utils.functional.SimpleCallback;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
+import com.shc.silenceengine.input.InputDevice;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidWindow implements GLSurfaceView.Renderer
+public class AndroidInputDevice extends InputDevice
 {
-    private SimpleCallback startCallback;
+    private GLSurfaceView surfaceView;
 
-    public AndroidWindow(SimpleCallback startCallback)
+    public AndroidInputDevice()
     {
-        this.startCallback = startCallback;
+        surfaceView = ((AndroidDisplayDevice) SilenceEngine.display).surfaceView;
+        surfaceView.setOnKeyListener(this::onKey);
+        surfaceView.setOnTouchListener(this::onTouch);
+        surfaceView.setOnGenericMotionListener(this::onTouch);
     }
 
-    @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config)
+    private boolean onKey(View v, int keyCode, KeyEvent event)
     {
-        startCallback.invoke();
+        // TODO: Create a key mapping and use it
+
+        return true;
     }
 
-    @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height)
+    private boolean onTouch(View v, MotionEvent e)
     {
-        SilenceEngine.eventManager.raiseResizeEvent();
-    }
+        int index = e.getActionIndex() + 1; // Indices start with one on silenceengine
 
-    @Override
-    public void onDrawFrame(GL10 gl)
-    {
-        SilenceEngine.gameLoop.performLoopFrame();
+        float x = e.getX();
+        float y = e.getY();
+
+        boolean isDown = e.getAction() == MotionEvent.ACTION_DOWN ||
+                         e.getAction() == MotionEvent.ACTION_POINTER_DOWN ||
+                         e.getAction() == MotionEvent.ACTION_MOVE;
+
+        // TODO: Fix this for multiple touches
+        surfaceView.queueEvent(() -> postTouchEvent(index, isDown, x, y));
+
+        return false;
     }
 }

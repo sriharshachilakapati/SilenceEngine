@@ -24,13 +24,10 @@
 
 package com.shc.silenceengine.backend.android;
 
-import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
-import android.view.Window;
-import android.view.WindowManager;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
 
@@ -39,8 +36,8 @@ import com.shc.silenceengine.io.FilePath;
  */
 public class AndroidDisplayDevice implements com.shc.silenceengine.core.IDisplayDevice
 {
-    public GLSurfaceView surfaceView;
-    public Activity      activity;
+    public GLSurfaceView   surfaceView;
+    public AndroidLauncher activity;
 
     private double startTime;
 
@@ -48,18 +45,7 @@ public class AndroidDisplayDevice implements com.shc.silenceengine.core.IDisplay
     {
         this.startTime = SystemClock.elapsedRealtimeNanos();
         this.activity = AndroidLauncher.instance;
-
-        activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        activity.getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        surfaceView = new GLSurfaceView(activity);
-        surfaceView.setEGLContextClientVersion(3);
-        surfaceView.setRenderer(new AndroidWindow());
-
-        activity.setContentView(surfaceView);
-        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        this.surfaceView = activity.surfaceView;
     }
 
     @Override

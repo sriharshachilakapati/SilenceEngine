@@ -57,7 +57,7 @@ public abstract class InputDevice
         Mouse.eventButtonStates[button] = isDown;
     }
 
-    public void postTouchEvent(int finger, boolean isDown, int xPos, int yPos)
+    public void postTouchEvent(int finger, boolean isDown, float xPos, float yPos)
     {
         Touch.eventStates[finger] = isDown;
         Touch.eventPositions[finger].set(xPos, yPos);

@@ -25,37 +25,55 @@
 package com.shc.silenceengine.backend.android;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import com.shc.silenceengine.core.SilenceEngine;
+import android.view.Window;
+import android.view.WindowManager;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidLauncher extends Activity
+public abstract class AndroidLauncher extends Activity
 {
     public static AndroidLauncher instance;
-    public static boolean initialized = false;
+
+    public GLSurfaceView          surfaceView;
+    public GLSurfaceView.Renderer renderer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         instance = this;
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        surfaceView = new GLSurfaceView(this);
+        surfaceView.setEGLContextClientVersion(3);
+        surfaceView.setPreserveEGLContextOnPause(true);
+        surfaceView.setRenderer(renderer = new AndroidWindow(this::launchGame));
+
+        setContentView(surfaceView);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
-        initialized = false;
-        ((AndroidDisplayDevice) SilenceEngine.display).surfaceView.onResume();
+        surfaceView.onResume();
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
-        initialized = false;
-        ((AndroidDisplayDevice) SilenceEngine.display).surfaceView.onPause();
+        surfaceView.onPause();
     }
+
+    public abstract void launchGame();
 }
