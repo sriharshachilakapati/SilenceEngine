@@ -45,20 +45,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt')
         }
     }
-}
 
-task copyResources << {
-    delete "src/main/assets"
-
-    copy {
-        from files(project(':silenceengine').sourceSets.main.output.resourcesDir)
-        into 'src/main/assets'
-    }
-
-    copy {
-        from files(project(':tests').sourceSets.main.output.resourcesDir)
-        into 'src/main/assets'
-    }
+    sourceSets.main.assets.srcDirs = [
+            file(project(':silenceengine').sourceSets.main.output.resourcesDir),
+            file(project(':tests').sourceSets.main.output.resourcesDir)
+    ]
 }
 
 task beforeRetrolambda << {
@@ -78,8 +69,6 @@ task beforeRetrolambda << {
         include '**/*.class'
     }
 }
-
-preBuild.dependsOn copyResources
 
 afterEvaluate {
     compileRetrolambdaDebug.dependsOn beforeRetrolambda

@@ -17,7 +17,6 @@ tests-lwjgl/tests-lwjgl.iml
 tests-gwt/build/
 tests-gwt/tests-gwt.iml
 tests-android/build/
-tests-android/src/main/assets/
 tests-gwt/war/
 tests-gwt/gwt/
 .idea/
