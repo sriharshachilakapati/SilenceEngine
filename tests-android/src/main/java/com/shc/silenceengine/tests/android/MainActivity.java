@@ -24,19 +24,67 @@
 
 package com.shc.silenceengine.tests.android;
 
+import android.app.ListActivity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import com.annimon.stream.Stream;
 import com.shc.silenceengine.backend.android.AndroidLauncher;
-import com.shc.silenceengine.backend.android.AndroidRuntime;
-import com.shc.silenceengine.tests.TestRunner;
-import com.shc.silenceengine.tests.TouchTest;
 
-/**
- * @author Sri Harsha Chilakapati
- */
-public class MainActivity extends AndroidLauncher
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class MainActivity extends ListActivity
 {
+    private Map<String, Class<? extends AndroidLauncher>> tests;
+
     @Override
-    public void launchGame()
+    protected void onCreate(Bundle savedInstanceState)
     {
-        AndroidRuntime.start(new TestRunner(new TouchTest()));
+        super.onCreate(savedInstanceState);
+
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.argb(255, 50, 3, 3));
+
+        setTheme(R.style.MyTheme);
+
+        setContentView(R.layout.main);
+
+        List<String> items = new ArrayList<>();
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
+        setListAdapter(adapter);
+
+        addTestsToList(adapter);
+
+        adapter.notifyDataSetChanged();
+
+        ListView listView = getListView();
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            String key = adapter.getItem(position);
+            Intent intent = new Intent(this, tests.get(key));
+            startActivity(intent);
+        });
+    }
+
+    private void addTestsToList(ArrayAdapter<String> adapter)
+    {
+        tests = new HashMap<>();
+        tests.put("EntityCollisionTest2D", EntityCollisionTest2DActivity.class);
+        tests.put("DynamicRendererTest", DynamicRendererTestActivity.class);
+        tests.put("GameTest", GameTestActivity.class);
+        tests.put("OpenGLTest", OpenGLTestActivity.class);
+        tests.put("TouchTest", TouchTestActivity.class);
+
+        Stream.of(tests)
+                .sorted((e1, e2) -> e1.getKey().compareTo(e2.getKey()))
+                .forEach(e -> adapter.add(e.getKey()));
     }
 }

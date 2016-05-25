@@ -21,23 +21,40 @@
   ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   ~ SOFTWARE.
-  -->
-
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.shc.silenceengine.tests.android">
 
-    <uses-feature android:glEsVersion="0x00030000"
-                  android:required="true" />
+    <uses-feature
+            android:glEsVersion="0x00030000"
+            android:required="true"/>
 
     <application
             android:allowBackup="true"
+            android:icon="@drawable/ic_launcher"
             android:label="SilenceEngine Tests"
-            android:supportsRtl="true"
-            android:icon="@drawable/ic_launcher">
+            android:supportsRtl="true">
         <activity
-                android:name=".MainActivity"
-                android:label="AndroidTest"
+                android:name=".EntityCollisionTest2DActivity"
                 android:screenOrientation="portrait">
+        </activity>
+        <activity
+                android:name=".OpenGLTestActivity"
+                android:screenOrientation="portrait">
+        </activity>
+        <activity
+                android:name=".GameTestActivity"
+                android:screenOrientation="portrait">
+        </activity>
+        <activity
+                android:name=".TouchTestActivity"
+                android:screenOrientation="portrait">
+        </activity>
+        <activity
+                android:name=".DynamicRendererTestActivity"
+                android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".MainActivity" android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

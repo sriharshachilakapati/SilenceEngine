@@ -25,7 +25,7 @@
 package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.collision.CollisionTag;
-import com.shc.silenceengine.collision.broadphase.DynamicTree2D;
+import com.shc.silenceengine.collision.broadphase.Grid;
 import com.shc.silenceengine.collision.colliders.SceneCollider2D;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Color;
@@ -35,7 +35,7 @@ import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Shader;
 import com.shc.silenceengine.input.Keyboard;
-import com.shc.silenceengine.input.Mouse;
+import com.shc.silenceengine.input.Touch;
 import com.shc.silenceengine.math.Matrix4;
 import com.shc.silenceengine.math.Transforms;
 import com.shc.silenceengine.math.Vector2;
@@ -64,6 +64,9 @@ public class EntityCollisionTest2D extends SilenceTest
     @Override
     public void init()
     {
+        if (SilenceEngine.display.getPlatform() != SilenceEngine.Platform.ANDROID)
+            SilenceEngine.input.setSimulateTouch(true);
+
         renderer = new DynamicRenderer();
         camera = new Matrix4();
 
@@ -121,7 +124,7 @@ public class EntityCollisionTest2D extends SilenceTest
         program.setUniform("camera", camera);
 
         scene = new Scene2D();
-        collider = new SceneCollider2D(new DynamicTree2D());
+        collider = new SceneCollider2D(new Grid(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight(), 48, 48));
         collider.setScene(scene);
 
         collider.register(heroTag, wallsTag);
@@ -236,7 +239,9 @@ public class EntityCollisionTest2D extends SilenceTest
         public void onUpdate(float deltaTime)
         {
             rotation += 45 * deltaTime;
-            position.set(Mouse.x, Mouse.y);
+
+            if (Touch.isFingerDown(Touch.FINGER_0))
+                position.set(Touch.getFingerPosition(Touch.FINGER_0));
 
             subHero.rotation += 45 * deltaTime;
 
