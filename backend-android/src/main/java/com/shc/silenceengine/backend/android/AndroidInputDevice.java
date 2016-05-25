@@ -221,7 +221,7 @@ public class AndroidInputDevice extends InputDevice
                 {
                     final int finger = i + 1;
 
-                    if (finger < FINGER_1 || finger > FINGER_9)
+                    if (finger < FINGER_0 || finger > FINGER_9)
                         break;
 
                     surfaceView.queueEvent(() ->
