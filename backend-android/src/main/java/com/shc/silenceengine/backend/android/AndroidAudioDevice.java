@@ -24,109 +24,172 @@
 
 package com.shc.silenceengine.backend.android;
 
+import com.shc.androidopenal.AL;
+import com.shc.androidopenal.ALC;
+import com.shc.androidopenal.ALCdevice;
+import com.shc.androidopenal.ALCcontext;
 import com.shc.silenceengine.audio.AudioDevice;
 import com.shc.silenceengine.audio.openal.ALBuffer;
+import com.shc.silenceengine.backend.android.soundreaders.OggReader;
+import com.shc.silenceengine.backend.android.soundreaders.WavReader;
 import com.shc.silenceengine.io.DirectBuffer;
+import com.shc.silenceengine.io.PrimitiveSize;
+import com.shc.silenceengine.utils.TaskManager;
 import com.shc.silenceengine.utils.functional.UniCallback;
+
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class AndroidAudioDevice extends AudioDevice
 {
+    public AndroidAudioDevice()
+    {
+        ALCdevice device = ALC.alcOpenDevice();
+        ALCcontext context = ALC.alcCreateContext(device, null);
+
+        ALC.alcMakeContextCurrent(context);
+    }
+
     @Override
     public int alGenBuffers()
     {
-        return 0;
+        IntBuffer intBuffer = ByteBuffer.allocateDirect(PrimitiveSize.INT).order(ByteOrder.nativeOrder()).asIntBuffer();
+        AL.alGenBuffers(1, intBuffer);
+        return intBuffer.get(0);
     }
 
     @Override
     public void alBufferData(int id, int format, DirectBuffer data, int frequency)
     {
-
+        AL.alBufferData(id, format, (Buffer) data.nativeBuffer(), data.sizeBytes(), frequency);
     }
 
     @Override
     public void alDeleteBuffers(int... buffers)
     {
-
+        DirectBuffer directBuffer = DirectBuffer.wrap(buffers);
+        AL.alDeleteBuffers(buffers.length, ((ByteBuffer) directBuffer.nativeBuffer()).asIntBuffer());
+        DirectBuffer.free(directBuffer);
     }
 
     @Override
     public int alGetError()
     {
-        return 0;
+        return AL.alGetError();
     }
 
     @Override
     public int alGenSources()
     {
-        return 0;
+        IntBuffer intBuffer = ByteBuffer.allocateDirect(PrimitiveSize.INT).order(ByteOrder.nativeOrder()).asIntBuffer();
+        AL.alGenSources(1, intBuffer);
+        return intBuffer.get(0);
     }
 
     @Override
     public void alSourcei(int id, int param, int value)
     {
-
+        AL.alSourcei(id, param, value);
     }
 
     @Override
     public void alSourcef(int id, int param, float value)
     {
-
+        AL.alSourcef(id, param, value);
     }
 
     @Override
     public void alSource3f(int id, int param, float v1, float v2, float v3)
     {
-
+        AL.alSource3f(id, param, v1, v2, v3);
     }
 
     @Override
     public void alSourcePlay(int id)
     {
-
+        AL.alSourcePlay(id);
     }
 
     @Override
     public void alSourcePause(int id)
     {
-
+        AL.alSourcePause(id);
     }
 
     @Override
     public void alSourceRewind(int id)
     {
-
+        AL.alSourceRewind(id);
     }
 
     @Override
     public void alSourceStop(int id)
     {
-
+        AL.alSourceStop(id);
     }
 
     @Override
     public int alGetSourcei(int id, int parameter)
     {
-        return 0;
+        IntBuffer intBuffer = ByteBuffer.allocateDirect(PrimitiveSize.INT).order(ByteOrder.nativeOrder()).asIntBuffer();
+        AL.alGetSourcei(id, parameter, intBuffer);
+        return intBuffer.get(0);
     }
 
     @Override
     public void alDeleteSources(int... sources)
     {
-
+        DirectBuffer directBuffer = DirectBuffer.wrap(sources);
+        AL.alDeleteSources(sources.length, ((ByteBuffer) directBuffer.nativeBuffer()).asIntBuffer());
+        DirectBuffer.free(directBuffer);
     }
 
     @Override
     public void readToALBuffer(AudioFormat format, DirectBuffer data, UniCallback<ALBuffer> onDecoded)
     {
+        if (format == AudioFormat.WAV)
+            new Thread(() ->
+            {
+                WavReader reader = new WavReader(data);
 
+                ALBuffer alBuffer = new ALBuffer();
+                alBuffer.uploadData(new AndroidDirectBuffer(reader.data), reader.alFormat, reader.sampleRate);
+
+                TaskManager.runOnUpdate(() -> onDecoded.invoke(alBuffer));
+            }).start();
+
+        else if (format == AudioFormat.OGG)
+            new Thread(() ->
+            {
+                OggReader reader = new OggReader(data);
+
+                ALBuffer alBuffer = new ALBuffer();
+                alBuffer.uploadData(new AndroidDirectBuffer(reader.getData()), reader.getFormat(), reader.getSampleRate());
+
+                TaskManager.runOnUpdate(() -> onDecoded.invoke(alBuffer));
+            }).start();
+
+        else
+            onDecoded.invoke(new ALBuffer());
     }
 
     @Override
     public boolean isSupported(AudioFormat format)
     {
+        switch (format)
+        {
+            case WAV:
+                return true;
+
+            case OGG:
+                return true;
+        }
+
         return false;
     }
 }

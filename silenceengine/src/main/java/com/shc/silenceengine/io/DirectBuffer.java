@@ -38,6 +38,66 @@ public abstract class DirectBuffer
         this.sizeInBytes = sizeInBytes;
     }
 
+    public static DirectBuffer wrap(byte... data)
+    {
+        DirectBuffer buffer = create(data.length);
+
+        for (int i = 0; i < data.length; i++)
+            buffer.writeByte(i, data[i]);
+
+        return buffer;
+    }
+
+    public static DirectBuffer wrap(short... data)
+    {
+        DirectBuffer buffer = create(data.length * PrimitiveSize.SHORT);
+
+        for (int i = 0; i < data.length; i++)
+            buffer.writeShort(i * PrimitiveSize.SHORT, data[i]);
+
+        return buffer;
+    }
+
+    public static DirectBuffer wrap(int... data)
+    {
+        DirectBuffer buffer = create(data.length * PrimitiveSize.INT);
+
+        for (int i = 0; i < data.length; i++)
+            buffer.writeInt(i * PrimitiveSize.INT, data[i]);
+
+        return buffer;
+    }
+
+    public static DirectBuffer wrap(float... data)
+    {
+        DirectBuffer buffer = create(data.length * PrimitiveSize.FLOAT);
+
+        for (int i = 0; i < data.length; i++)
+            buffer.writeFloat(i * PrimitiveSize.FLOAT, data[i]);
+
+        return buffer;
+    }
+
+    public static DirectBuffer wrap(long... data)
+    {
+        DirectBuffer buffer = create(data.length * PrimitiveSize.LONG);
+
+        for (int i = 0; i < data.length; i++)
+            buffer.writeLong(i * PrimitiveSize.LONG, data[i]);
+
+        return buffer;
+    }
+
+    public static DirectBuffer wrap(double... data)
+    {
+        DirectBuffer buffer = create(data.length * PrimitiveSize.DOUBLE);
+
+        for (int i = 0; i < data.length; i++)
+            buffer.writeDouble(i * PrimitiveSize.DOUBLE, data[i]);
+
+        return buffer;
+    }
+
     public static DirectBuffer create(int sizeInBytes)
     {
         return SilenceEngine.io.create(sizeInBytes);

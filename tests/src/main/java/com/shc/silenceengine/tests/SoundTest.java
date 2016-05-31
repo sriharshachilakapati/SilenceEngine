@@ -28,6 +28,7 @@ import com.shc.silenceengine.audio.AudioDevice;
 import com.shc.silenceengine.audio.Sound;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.input.Touch;
 import com.shc.silenceengine.io.FilePath;
 
 /**
@@ -35,14 +36,21 @@ import com.shc.silenceengine.io.FilePath;
  */
 public class SoundTest extends SilenceTest
 {
-    private Sound sound;
+    private Sound sound1;
+    private Sound sound2;
+
+    private boolean playS1;
 
     @Override
     public void init()
     {
         SilenceEngine.io.getFileReader().readBinaryFile(FilePath.getResourceFile("test_resources/shoot.wav"), data ->
                 SilenceEngine.audio.readToALBuffer(AudioDevice.AudioFormat.WAV, data, buffer ->
-                        sound = new Sound(buffer)));
+                        sound1 = new Sound(buffer)));
+
+        SilenceEngine.io.getFileReader().readBinaryFile(FilePath.getResourceFile("test_resources/siren.ogg"), data ->
+                SilenceEngine.audio.readToALBuffer(AudioDevice.AudioFormat.OGG, data, buffer ->
+                        sound2 = new Sound(buffer)));
     }
 
     @Override
@@ -51,9 +59,11 @@ public class SoundTest extends SilenceTest
         if (Keyboard.isKeyTapped(Keyboard.KEY_ESCAPE))
             SilenceEngine.display.close();
 
-        if (sound != null)
+        if (Keyboard.isKeyTapped(Keyboard.KEY_SPACE) || Touch.isFingerTapped(Touch.FINGER_0))
         {
-            if (Keyboard.isKeyTapped(Keyboard.KEY_SPACE))
+            Sound sound = (playS1 = !playS1) ? sound1 : sound2;
+
+            if (sound != null)
                 sound.play();
         }
     }
@@ -61,7 +71,10 @@ public class SoundTest extends SilenceTest
     @Override
     public void dispose()
     {
-        if (sound != null)
-            sound.buffer.dispose();
+        if (sound1 != null)
+            sound1.buffer.dispose();
+
+        if (sound2 != null)
+            sound2.buffer.dispose();
     }
 }

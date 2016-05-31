@@ -51,6 +51,10 @@
                 android:screenOrientation="portrait">
         </activity>
         <activity
+                android:name=".SoundTestActivity"
+                android:screenOrientation="portrait">
+        </activity>
+        <activity
                 android:name=".DynamicRendererTestActivity"
                 android:screenOrientation="portrait">
         </activity>

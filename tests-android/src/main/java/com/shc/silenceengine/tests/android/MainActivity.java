@@ -82,6 +82,7 @@ public class MainActivity extends ListActivity
         tests.put("GameTest", GameTestActivity.class);
         tests.put("OpenGLTest", OpenGLTestActivity.class);
         tests.put("TouchTest", TouchTestActivity.class);
+        tests.put("SoundTest", SoundTestActivity.class);
 
         Stream.of(tests)
                 .sorted((e1, e2) -> e1.getKey().compareTo(e2.getKey()))

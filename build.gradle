@@ -77,6 +77,11 @@ project(":backend-android") {
     dependencies {
         provided project(":silenceengine")
         compile 'com.annimon:stream:1.0.3'
+        compile 'com.goharsha:android-openal:0.1-SNAPSHOT'
+    }
+
+    repositories {
+        mavenCentral()
     }
 }
 
@@ -125,5 +130,11 @@ project(":tests-android") {
 
         compile project(":backend-android")
         compile 'com.annimon:stream:1.0.3'
+
+        compile 'com.goharsha:android-openal:0.1-SNAPSHOT'
+    }
+
+    repositories {
+        mavenCentral()
     }
 }
