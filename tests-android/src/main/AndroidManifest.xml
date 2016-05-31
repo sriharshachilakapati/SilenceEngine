@@ -58,6 +58,10 @@
                 android:name=".DynamicRendererTestActivity"
                 android:screenOrientation="portrait">
         </activity>
+        <activity
+                android:name=".ResourceLoaderTestActivity"
+                android:screenOrientation="portrait">
+        </activity>
         <activity android:name=".MainActivity" android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

@@ -35,6 +35,7 @@ import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.graphics.programs.DynamicProgram;
 import com.shc.silenceengine.input.Keyboard;
+import com.shc.silenceengine.input.Touch;
 import com.shc.silenceengine.io.FilePath;
 
 /**
@@ -98,7 +99,7 @@ public class ResourceLoaderTest extends SilenceTest
         }
         else
         {
-            if (Keyboard.isKeyTapped(Keyboard.KEY_SPACE))
+            if (Keyboard.isKeyTapped(Keyboard.KEY_SPACE) || Touch.isFingerTapped(Touch.FINGER_0))
                 sound.play();
         }
     }

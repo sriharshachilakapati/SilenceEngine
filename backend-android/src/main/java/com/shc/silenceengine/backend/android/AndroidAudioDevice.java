@@ -32,6 +32,7 @@ import com.shc.silenceengine.audio.AudioDevice;
 import com.shc.silenceengine.audio.openal.ALBuffer;
 import com.shc.silenceengine.backend.android.soundreaders.OggReader;
 import com.shc.silenceengine.backend.android.soundreaders.WavReader;
+import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.PrimitiveSize;
 import com.shc.silenceengine.utils.TaskManager;
@@ -152,6 +153,9 @@ public class AndroidAudioDevice extends AudioDevice
     @Override
     public void readToALBuffer(AudioFormat format, DirectBuffer data, UniCallback<ALBuffer> onDecoded)
     {
+        if (!isSupported(format))
+            throw new SilenceException("Cannot parse sound. The format is unsupported: " + format);
+
         if (format == AudioFormat.WAV)
             new Thread(() ->
             {
@@ -173,9 +177,6 @@ public class AndroidAudioDevice extends AudioDevice
 
                 TaskManager.runOnUpdate(() -> onDecoded.invoke(alBuffer));
             }).start();
-
-        else
-            onDecoded.invoke(new ALBuffer());
     }
 
     @Override
