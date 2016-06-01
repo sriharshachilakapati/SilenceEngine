@@ -195,12 +195,16 @@ public class AndroidInputDevice extends InputDevice
         switch (action)
         {
             case MotionEvent.ACTION_DOWN:
-                surfaceView.queueEvent(() -> postTouchEvent(FINGER_0, true, e.getX(), e.getY()));
-                break;
-
             case MotionEvent.ACTION_UP:
-                surfaceView.queueEvent(() -> postTouchEvent(FINGER_0, false, e.getX(), e.getY()));
+            {
+                final boolean down = action == ACTION_DOWN;
+
+                final float x = e.getX();
+                final float y = e.getY();
+
+                surfaceView.queueEvent(() -> postTouchEvent(FINGER_0, down, x, y));
                 break;
+            }
 
             case MotionEvent.ACTION_POINTER_DOWN:
             case MotionEvent.ACTION_POINTER_UP:
@@ -211,12 +215,16 @@ public class AndroidInputDevice extends InputDevice
                 if (finger < FINGER_1 || finger > FINGER_9)
                     break;
 
+                final float x = e.getX();
+                final float y = e.getY();
+
                 final boolean isDown = action == MotionEvent.ACTION_POINTER_DOWN;
-                surfaceView.queueEvent(() -> postTouchEvent(finger, isDown, e.getX(), e.getY()));
+                surfaceView.queueEvent(() -> postTouchEvent(finger, isDown, x, y));
+                break;
             }
-            break;
 
             case MotionEvent.ACTION_MOVE:
+            {
                 for (int i = 0; i < e.getPointerCount(); i++)
                 {
                     final int finger = i + 1;
@@ -224,15 +232,20 @@ public class AndroidInputDevice extends InputDevice
                     if (finger < FINGER_0 || finger > FINGER_9)
                         break;
 
-                    surfaceView.queueEvent(() ->
-                            postTouchEvent(finger, true, e.getX(finger - 1), e.getY(finger - 1)));
+                    final float x = e.getX(i);
+                    final float y = e.getY(i);
+
+                    surfaceView.queueEvent(() -> postTouchEvent(finger, true, x, y));
                 }
+
                 for (int i = e.getPointerCount(); i < FINGER_9; i++)
                 {
                     final int finger = i + 1;
                     surfaceView.queueEvent(() -> postTouchEvent(finger, false, 0, 0));
                 }
+
                 break;
+            }
         }
 
         return true;
