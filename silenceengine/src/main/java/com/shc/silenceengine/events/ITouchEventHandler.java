@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.core.events;
+package com.shc.silenceengine.events;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 @FunctionalInterface
-public interface IUpdateEventHandler
+public interface ITouchEventHandler
 {
-    void update(float deltaTime);
+    void onTouchEvent(int finger, boolean down, float x, float y);
 }

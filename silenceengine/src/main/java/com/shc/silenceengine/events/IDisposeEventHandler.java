@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.core.events;
+package com.shc.silenceengine.events;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 @FunctionalInterface
-public interface IRenderEventHandler
+public interface IDisposeEventHandler
 {
-    void render(float delta);
+    void dispose();
 }

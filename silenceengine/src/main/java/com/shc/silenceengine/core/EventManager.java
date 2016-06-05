@@ -24,10 +24,10 @@
 
 package com.shc.silenceengine.core;
 
-import com.shc.silenceengine.core.events.IDisposeEventHandler;
-import com.shc.silenceengine.core.events.IRenderEventHandler;
-import com.shc.silenceengine.core.events.IResizeEventHandler;
-import com.shc.silenceengine.core.events.IUpdateEventHandler;
+import com.shc.silenceengine.events.IDisposeEventHandler;
+import com.shc.silenceengine.events.IRenderEventHandler;
+import com.shc.silenceengine.events.IResizeEventHandler;
+import com.shc.silenceengine.events.IUpdateEventHandler;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

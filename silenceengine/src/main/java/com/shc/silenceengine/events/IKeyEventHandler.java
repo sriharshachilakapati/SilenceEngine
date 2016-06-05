@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.core.events;
+package com.shc.silenceengine.events;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 @FunctionalInterface
-public interface IDisposeEventHandler
+public interface IKeyEventHandler
 {
-    void dispose();
+    void onKeyEvent(int keyCode, boolean down);
 }

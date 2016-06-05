@@ -25,6 +25,14 @@
 package com.shc.silenceengine.input;
 
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.events.IKeyEventHandler;
+import com.shc.silenceengine.events.IMouseEventHandler;
+import com.shc.silenceengine.events.ITouchEventHandler;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 import static com.shc.silenceengine.input.Mouse.*;
 import static com.shc.silenceengine.input.Touch.*;
@@ -36,9 +44,23 @@ public abstract class InputDevice
 {
     private boolean simulateTouch;
 
+    private List<IKeyEventHandler>   keyEventHandlers;
+    private List<IMouseEventHandler> mouseEventHandlers;
+    private List<ITouchEventHandler> touchEventHandlers;
+
+    private Queue<Object> eventHandlerAddQueue;
+    private Queue<Object> eventHandlerRemQueue;
+
     public InputDevice()
     {
         simulateTouch = false;
+
+        keyEventHandlers = new ArrayList<>();
+        mouseEventHandlers = new ArrayList<>();
+        touchEventHandlers = new ArrayList<>();
+
+        eventHandlerAddQueue = new LinkedList<>();
+        eventHandlerRemQueue = new LinkedList<>();
 
         Keyboard.init();
         Mouse.init();
@@ -47,20 +69,92 @@ public abstract class InputDevice
         SilenceEngine.eventManager.addUpdateHandler(this::update);
     }
 
+    public void addKeyEventHandler(IKeyEventHandler handler)
+    {
+        eventHandlerAddQueue.add(handler);
+    }
+
+    public void addMouseEventHandler(IMouseEventHandler handler)
+    {
+        eventHandlerAddQueue.add(handler);
+    }
+
+    public void addTouchEventHandler(ITouchEventHandler handler)
+    {
+        eventHandlerAddQueue.add(handler);
+    }
+
+    public void removeKeyEventHandler(IKeyEventHandler handler)
+    {
+        eventHandlerRemQueue.add(handler);
+    }
+
+    public void removeMouseEventHandler(IMouseEventHandler handler)
+    {
+        eventHandlerRemQueue.add(handler);
+    }
+
+    public void removeTouchEventHandler(ITouchEventHandler handler)
+    {
+        eventHandlerRemQueue.add(handler);
+    }
+
     public void postKeyEvent(int key, boolean isDown)
     {
         Keyboard.eventKeyStates[key] = isDown;
+        processEventHandlerQueues();
+
+        for (IKeyEventHandler keyEventHandler : keyEventHandlers)
+            keyEventHandler.onKeyEvent(key, isDown);
     }
 
     public void postMouseEvent(int button, boolean isDown)
     {
         Mouse.eventButtonStates[button] = isDown;
+        processEventHandlerQueues();
+
+        for (IMouseEventHandler mouseEventHandler : mouseEventHandlers)
+            mouseEventHandler.onMouseEvent(button, isDown, Mouse.x, Mouse.y);
     }
 
     public void postTouchEvent(int finger, boolean isDown, float xPos, float yPos)
     {
         Touch.eventStates[finger] = isDown;
         Touch.eventPositions[finger].set(xPos, yPos);
+
+        processEventHandlerQueues();
+
+        for (ITouchEventHandler touchEventHandler : touchEventHandlers)
+            touchEventHandler.onTouchEvent(finger, isDown, xPos, yPos);
+    }
+
+    private void processEventHandlerQueues()
+    {
+        Object handler;
+
+        while ((handler = eventHandlerAddQueue.poll()) != null)
+        {
+            if (handler instanceof IKeyEventHandler)
+                keyEventHandlers.add((IKeyEventHandler) handler);
+
+            else if (handler instanceof IMouseEventHandler)
+                mouseEventHandlers.add((IMouseEventHandler) handler);
+
+            else if (handler instanceof ITouchEventHandler)
+                touchEventHandlers.add((ITouchEventHandler) handler);
+        }
+
+        while ((handler = eventHandlerRemQueue.poll()) != null)
+        {
+            if (handler instanceof IKeyEventHandler)
+                keyEventHandlers.remove(handler);
+
+            else if (handler instanceof IMouseEventHandler)
+                mouseEventHandlers.remove(handler);
+
+            else if (handler instanceof ITouchEventHandler)
+                touchEventHandlers.remove(handler);
+        }
     }
 
     private void update(float deltaTime)
