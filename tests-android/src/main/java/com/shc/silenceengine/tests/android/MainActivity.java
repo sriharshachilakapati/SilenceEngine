@@ -26,6 +26,9 @@ package com.shc.silenceengine.tests.android;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Window;
@@ -74,16 +77,33 @@ public class MainActivity extends ListActivity
         });
     }
 
+    @SuppressWarnings("unchecked")
     private void addTestsToList(ArrayAdapter<String> adapter)
     {
         tests = new HashMap<>();
-        tests.put("EntityCollisionTest2D", EntityCollisionTest2DActivity.class);
-        tests.put("DynamicRendererTest", DynamicRendererTestActivity.class);
-        tests.put("GameTest", GameTestActivity.class);
-        tests.put("OpenGLTest", OpenGLTestActivity.class);
-        tests.put("TouchTest", TouchTestActivity.class);
-        tests.put("SoundTest", SoundTestActivity.class);
-        tests.put("ResourceLoaderTest", ResourceLoaderTestActivity.class);
+
+        PackageManager packageManager = getPackageManager();
+        try
+        {
+            ActivityInfo[] list = packageManager.getPackageInfo(getApplicationContext().getPackageName(),
+                    PackageManager.GET_ACTIVITIES).activities;
+
+            for (ActivityInfo activityInfo : list)
+            {
+                String name = activityInfo.name;
+                Class<?> klass = Class.forName(name);
+
+                if (AndroidLauncher.class.isAssignableFrom(klass))
+                {
+                    String simpleName = klass.getSimpleName().replaceAll("Activity", "");
+                    tests.put(simpleName, (Class<? extends AndroidLauncher>) klass);
+                }
+            }
+        }
+        catch (NameNotFoundException | ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
 
         Stream.of(tests)
                 .sorted((e1, e2) -> e1.getKey().compareTo(e2.getKey()))
