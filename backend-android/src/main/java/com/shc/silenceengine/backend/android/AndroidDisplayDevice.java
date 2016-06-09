@@ -28,13 +28,14 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
+import com.shc.silenceengine.core.IDisplayDevice;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidDisplayDevice implements com.shc.silenceengine.core.IDisplayDevice
+public class AndroidDisplayDevice implements IDisplayDevice
 {
     public GLSurfaceView   surfaceView;
     public AndroidLauncher activity;
@@ -46,6 +47,8 @@ public class AndroidDisplayDevice implements com.shc.silenceengine.core.IDisplay
         this.startTime = SystemClock.elapsedRealtimeNanos();
         this.activity = AndroidLauncher.instance;
         this.surfaceView = activity.surfaceView;
+
+        setSize(800, 600);
     }
 
     @Override

@@ -25,7 +25,6 @@
 package com.shc.silenceengine.backend.android;
 
 import android.app.Activity;
-import android.content.pm.ActivityInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.Window;
@@ -58,7 +57,6 @@ public abstract class AndroidLauncher extends Activity
         surfaceView.setRenderer(renderer = new AndroidWindow(this::launchGame));
 
         setContentView(surfaceView);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     @Override

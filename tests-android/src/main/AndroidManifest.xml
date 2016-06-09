@@ -34,34 +34,15 @@
             android:icon="@drawable/ic_launcher"
             android:label="SilenceEngine Tests"
             android:supportsRtl="true">
-        <activity
-                android:name=".EntityCollisionTest2DActivity"
-                android:screenOrientation="portrait">
-        </activity>
-        <activity
-                android:name=".OpenGLTestActivity"
-                android:screenOrientation="portrait">
-        </activity>
-        <activity
-                android:name=".GameTestActivity"
-                android:screenOrientation="portrait">
-        </activity>
-        <activity
-                android:name=".TouchTestActivity"
-                android:screenOrientation="portrait">
-        </activity>
-        <activity
-                android:name=".SoundTestActivity"
-                android:screenOrientation="portrait">
-        </activity>
-        <activity
-                android:name=".DynamicRendererTestActivity"
-                android:screenOrientation="portrait">
-        </activity>
-        <activity
-                android:name=".ResourceLoaderTestActivity"
-                android:screenOrientation="portrait">
-        </activity>
+
+        <activity android:name=".EntityCollisionTest2DActivity"/>
+        <activity android:name=".OpenGLTestActivity"/>
+        <activity android:name=".GameTestActivity"/>
+        <activity android:name=".TouchTestActivity"/>
+        <activity android:name=".SoundTestActivity"/>
+        <activity android:name=".DynamicRendererTestActivity"/>
+        <activity android:name=".ResourceLoaderTestActivity"/>
+
         <activity android:name=".MainActivity" android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
