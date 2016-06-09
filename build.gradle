@@ -88,7 +88,7 @@ project(":backend-android") {
 project(":backend-lwjgl") {
     apply plugin: 'java'
 
-    project.ext.lwjglVersion = "3.0.0-SNAPSHOT"
+    project.ext.lwjglVersion = "3.0.1-SNAPSHOT"
 
     dependencies {
         compile project(":silenceengine")
