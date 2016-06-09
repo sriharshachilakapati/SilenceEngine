@@ -58,9 +58,11 @@ public class AndroidDisplayDevice implements com.shc.silenceengine.core.IDisplay
     public void setSize(int width, int height)
     {
         if (width > height)
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            activity.runOnUiThread(() ->
+                    activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE));
         else
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            activity.runOnUiThread(() ->
+                    activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT));
     }
 
     @Override
