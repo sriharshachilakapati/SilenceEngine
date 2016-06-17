@@ -138,6 +138,18 @@ public class Program
         return location;
     }
 
+    public void setUniform(String name, boolean value)
+    {
+        setUniform(getUniform(name), value);
+    }
+
+    public void setUniform(int location, boolean value)
+    {
+        use();
+        SilenceEngine.graphics.glUniform1i(location, value ? GL_TRUE : GL_FALSE);
+        GLError.check();
+    }
+
     public void setUniform(int location, int... values)
     {
         if (values.length > 4)

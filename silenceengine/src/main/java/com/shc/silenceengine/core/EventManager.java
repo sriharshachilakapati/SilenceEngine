@@ -28,6 +28,8 @@ import com.shc.silenceengine.events.IDisposeEventHandler;
 import com.shc.silenceengine.events.IRenderEventHandler;
 import com.shc.silenceengine.events.IResizeEventHandler;
 import com.shc.silenceengine.events.IUpdateEventHandler;
+import com.shc.silenceengine.utils.GameTimer;
+import com.shc.silenceengine.utils.functional.Provider;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -45,6 +47,9 @@ public final class EventManager
     private List<IDisposeEventHandler> disposeEventHandlers = new ArrayList<>();
 
     private Queue<EventHandlerQueueObject> eventHandlersQueue = new LinkedList<>();
+
+    private boolean           waiting;
+    private Provider<Boolean> waitCondition;
 
     /**
      * Prevent instantiation by the users.
@@ -133,9 +138,32 @@ public final class EventManager
         eventHandlersQueue.add(eventHandlersQueueObject);
     }
 
+    /**
+     * Waits for the condition to be satisfied. The game events will not be fired while the condition is satisfied. The
+     * events will be silently swallowed if the game is still waiting. Do not use this with a timer unless you want a
+     * deadlock to happen. This is because the {@link GameTimer} relies on the update handlers and this will keep the
+     * game waiting indefinitely. Also note that this is not exactly synchronous, it will take effect only after the
+     * current event handler exits.
+     *
+     * @param condition A provider that provides a condition on how much time to wait.
+     */
+    public void waitUntil(Provider<Boolean> condition)
+    {
+        waitCondition = condition;
+
+        if (condition != null)
+            waiting = !condition.provide();
+    }
+
     public void raiseUpdateEvent(float deltaTime)
     {
         processHandlers();
+
+        if (waiting)
+        {
+            if (waiting = !waitCondition.provide())
+                return;
+        }
 
         for (IUpdateEventHandler handler : updateEventHandlers)
             handler.update(deltaTime);
@@ -145,6 +173,9 @@ public final class EventManager
     {
         processHandlers();
 
+        if (waiting)
+            return;
+
         for (IRenderEventHandler handler : renderEventHandlers)
             handler.render(delta);
     }
@@ -152,6 +183,9 @@ public final class EventManager
     public void raiseResizeEvent()
     {
         processHandlers();
+
+        if (waiting)
+            return;
 
         for (IResizeEventHandler handler : resizeEventHandlers)
             handler.resized();
