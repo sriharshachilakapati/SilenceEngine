@@ -57,10 +57,10 @@ public class DynamicRenderer
     public static final int SIZE_OF_TEXCOORD = PrimitiveSize.FLOAT * NUM_TEXCOORD_COMPONENTS;
 
     // The maximum size of the batch, by default is 1024^2 = 10,48,576 vertices
-    private int maxBatchSize = 1024 * 1024;
+    private int maxBatchSize;
 
     // The current size of the batch, starts at 4096 vertices
-    private int batchSize = 4096;
+    private int batchSize;
 
     // Active state of this batcher
     private boolean active = false;
@@ -93,11 +93,24 @@ public class DynamicRenderer
     // The rendering mode
     private Primitive beginMode;
 
-    /**
-     * Creates the Batcher, and initialises OpenGL
-     */
     public DynamicRenderer()
     {
+        this(4096, 1024 * 1024);
+    }
+
+    public DynamicRenderer(int batchSize)
+    {
+        this(batchSize, batchSize);
+    }
+
+    /**
+     * Creates the DynamicRenderer, and initialises OpenGL
+     */
+    public DynamicRenderer(int batchSize, int maxBatchSize)
+    {
+        this.batchSize = batchSize;
+        this.maxBatchSize = maxBatchSize;
+
         // Create the buffers
         vBuffer = SilenceEngine.io.create(batchSize * SIZE_OF_VERTEX);
         nBuffer = SilenceEngine.io.create(batchSize * SIZE_OF_NORMAL);
