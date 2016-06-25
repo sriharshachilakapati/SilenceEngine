@@ -58,6 +58,12 @@ public class AndroidGraphicsDevice implements IGraphicsDevice
     }
 
     @Override
+    public void glBufferSubData(int target, int offset, int size, DirectBuffer data)
+    {
+        GLES30.glBufferSubData(target, offset, size, (ByteBuffer) data.nativeBuffer());
+    }
+
+    @Override
     public void glBindBuffer(int target, int buffer)
     {
         GLES30.glBindBuffer(target, buffer);

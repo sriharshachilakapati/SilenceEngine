@@ -32,6 +32,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 
@@ -58,6 +59,12 @@ public class LwjglGraphicsDevice implements IGraphicsDevice
     public void glBufferData(int value, DirectBuffer data, int usage)
     {
         GL15.glBufferData(value, (ByteBuffer) data.nativeBuffer(), usage);
+    }
+
+    @Override
+    public void glBufferSubData(int target, int offset, int size, DirectBuffer data)
+    {
+        GL15.nglBufferSubData(target, offset, size, MemoryUtil.memAddress((ByteBuffer) data.nativeBuffer()));
     }
 
     @Override

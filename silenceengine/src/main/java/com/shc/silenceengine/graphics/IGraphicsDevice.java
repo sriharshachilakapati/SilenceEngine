@@ -40,6 +40,8 @@ public interface IGraphicsDevice
 
     void glBufferData(int value, DirectBuffer data, int usage);
 
+    void glBufferSubData(int target, int offset, int size, DirectBuffer data);
+
     void glBindBuffer(int target, int buffer);
 
     void glBufferData(int target, int capacity, int usage);

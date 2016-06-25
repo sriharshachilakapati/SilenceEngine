@@ -58,6 +58,12 @@ public class GwtGraphicsDevice implements IGraphicsDevice
     }
 
     @Override
+    public void glBufferSubData(int target, int offset, int size, DirectBuffer data)
+    {
+        WebGL10.glBufferSubData(target, offset, size, (ArrayBufferView) data.nativeBuffer());
+    }
+
+    @Override
     public void glBindBuffer(int target, int buffer)
     {
         WebGL10.glBindBuffer(target, buffer);

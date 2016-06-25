@@ -105,6 +105,9 @@ public class DynamicRenderer
 
     /**
      * Creates the DynamicRenderer, and initialises OpenGL
+     *
+     * @param batchSize    The size of the initial batch size.
+     * @param maxBatchSize The maximum size of the batch.
      */
     public DynamicRenderer(int batchSize, int maxBatchSize)
     {
@@ -289,16 +292,16 @@ public class DynamicRenderer
         vao.bind();
 
         vboVert.bind();
-        vboVert.uploadSubData(vBuffer, 0);
+        vboVert.uploadSubData(vBuffer, 0, vertexCount * SIZE_OF_VERTEX);
 
         vboCol.bind();
-        vboCol.uploadSubData(cBuffer, 0);
+        vboCol.uploadSubData(cBuffer, 0, vertexCount * SIZE_OF_COLOR);
 
         vboNorm.bind();
-        vboNorm.uploadSubData(nBuffer, 0);
+        vboNorm.uploadSubData(nBuffer, 0, vertexCount * SIZE_OF_NORMAL);
 
         vboTex.bind();
-        vboTex.uploadSubData(tBuffer, 0);
+        vboTex.uploadSubData(tBuffer, 0, vertexCount * SIZE_OF_TEXCOORD);
 
         if (vertexLocation != -1) vao.pointAttribute(vertexLocation, NUM_VERTEX_COMPONENTS, GL_FLOAT, vboVert);
         if (colorLocation != -1) vao.pointAttribute(colorLocation, NUM_COLOR_COMPONENTS, GL_FLOAT, vboCol);
@@ -353,7 +356,7 @@ public class DynamicRenderer
 
     public void flushOnOverflow(int capacity)
     {
-        if (vertexCount + capacity >= maxBatchSize)
+        if (vertexCount + capacity >= batchSize)
             flush();
     }
 

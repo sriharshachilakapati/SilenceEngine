@@ -130,16 +130,40 @@ public class BufferObject
      * buffer
      *
      * @param data   The NIO buffer with data to be copied into the data store
+     */
+    public void uploadSubData(DirectBuffer data)
+    {
+        uploadSubData(data, 0, data.sizeBytes());
+    }
+
+    /**
+     * Updates a subset of data starting from the offset in the BufferObject's data store with the data from a direct
+     * buffer
+     *
+     * @param data   The NIO buffer with data to be copied into the data store
      * @param offset The starting index from which the data should be updated.
      */
     public void uploadSubData(DirectBuffer data, int offset)
+    {
+        uploadSubData(data, offset, data.sizeBytes());
+    }
+
+    /**
+     * Updates a subset of data starting from the offset in the BufferObject's data store with the data from a direct
+     * buffer
+     *
+     * @param data   The NIO buffer with data to be copied into the data store
+     * @param offset The starting index from which the data should be updated.
+     * @param size   The byte size of the region being replaced.
+     */
+    public void uploadSubData(DirectBuffer data, int offset, int size)
     {
         if (capacity < data.sizeBytes() - offset)
             throw new GLException("Not enough capacity");
 
         bind();
 
-        SilenceEngine.graphics.glBufferSubData(target.getValue(), offset, data);
+        SilenceEngine.graphics.glBufferSubData(target.getValue(), offset, size, data);
         GLError.check();
     }
 
