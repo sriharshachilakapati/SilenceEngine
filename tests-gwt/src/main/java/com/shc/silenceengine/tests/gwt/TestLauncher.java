@@ -38,6 +38,7 @@ import com.shc.silenceengine.tests.OpenGLTest;
 import com.shc.silenceengine.tests.ResourceLoaderTest;
 import com.shc.silenceengine.tests.SilenceTest;
 import com.shc.silenceengine.tests.SoundTest;
+import com.shc.silenceengine.tests.SpriteRendererTest;
 import com.shc.silenceengine.tests.TestRunner;
 import com.shc.silenceengine.tests.TouchTest;
 
@@ -105,6 +106,7 @@ public class TestLauncher implements EntryPoint
         tests.put("EntityCollisionTest2D", EntityCollisionTest2D::new);
         tests.put("SoundTest", SoundTest::new);
         tests.put("ResourceLoaderTest", ResourceLoaderTest::new);
+        tests.put("SpriteRendererTest", SpriteRendererTest::new);
     }
 
     @FunctionalInterface
