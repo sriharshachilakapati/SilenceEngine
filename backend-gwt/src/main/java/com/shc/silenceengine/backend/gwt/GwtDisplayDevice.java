@@ -156,11 +156,17 @@ public class GwtDisplayDevice implements IDisplayDevice
         $wnd.onfocus = function ()
         {
             self.@com.shc.silenceengine.backend.gwt.GwtDisplayDevice::focus = true;
+
+            var loop = @com.shc.silenceengine.core.SilenceEngine::gameLoop;
+            loop.@com.shc.silenceengine.core.IGameLoop::onFocusGain()();
         };
 
         $wnd.onblur = function ()
         {
             self.@com.shc.silenceengine.backend.gwt.GwtDisplayDevice::focus = false;
+
+            var loop = @com.shc.silenceengine.core.SilenceEngine::gameLoop;
+            loop.@com.shc.silenceengine.core.IGameLoop::onFocusLost()();
         };
     }-*/;
 

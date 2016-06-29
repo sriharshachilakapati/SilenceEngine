@@ -90,7 +90,15 @@ public class LwjglDisplayDevice implements IDisplayDevice
             SilenceEngine.eventManager.raiseResizeEvent();
         });
 
-        window.setFocusCallback((window1, focus1) -> focus = focus1);
+        window.setFocusCallback((window1, focus1) ->
+        {
+            focus = focus1;
+
+            if (focus)
+                SilenceEngine.gameLoop.onFocusGain();
+            else
+                SilenceEngine.gameLoop.onFocusLost();
+        });
 
         SilenceEngine.eventManager.addDisposeHandler(this::cleanUp);
 

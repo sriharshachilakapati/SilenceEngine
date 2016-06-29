@@ -80,4 +80,10 @@ public class VariableTimeSteppedLoop implements IGameLoop
     {
         return framesPerSecond;
     }
+
+    @Override
+    public void onFocusGain()
+    {
+        prevTime = (float) TimeUtils.currentTime();
+    }
 }

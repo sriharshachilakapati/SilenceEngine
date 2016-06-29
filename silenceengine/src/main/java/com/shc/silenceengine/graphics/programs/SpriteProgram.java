@@ -25,28 +25,24 @@
 package com.shc.silenceengine.graphics.programs;
 
 import com.shc.silenceengine.core.SilenceEngine;
-import com.shc.silenceengine.graphics.DynamicRenderer;
 import com.shc.silenceengine.graphics.cameras.BaseCamera;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Shader;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.io.FileReader;
+import com.shc.silenceengine.utils.functional.UniCallback;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class SpriteProgram extends Program
 {
-    public static final String VERTEX_ATTRIB   = "position";
-    public static final String COLOR_ATTRIB    = "color";
-    public static final String TEXCOORD_ATTRIB = "texCoords";
-
-    public static void create(OnComplete onComplete)
+    public static void create(UniCallback<SpriteProgram> uniCallback)
     {
         FileReader fileReader = SilenceEngine.io.getFileReader();
 
-        fileReader.readTextFile(FilePath.getResourceFile("engine_resources/shaders/dynamic.vert"), vSource ->
-                fileReader.readTextFile(FilePath.getResourceFile("engine_resources/shaders/dynamic.frag"), fSource ->
+        fileReader.readTextFile(FilePath.getResourceFile("engine_resources/shaders/sprite.vert"), vSource ->
+                fileReader.readTextFile(FilePath.getResourceFile("engine_resources/shaders/sprite.frag"), fSource ->
                 {
                     SpriteProgram program = new SpriteProgram();
 
@@ -65,17 +61,9 @@ public class SpriteProgram extends Program
                     vShader.dispose();
                     fShader.dispose();
 
-                    onComplete.invoke(program);
+                    uniCallback.invoke(program);
                 })
         );
-    }
-
-    public void applyToRenderer(DynamicRenderer dynamicRenderer)
-    {
-        dynamicRenderer.setVertexLocation(getAttribute(VERTEX_ATTRIB));
-        dynamicRenderer.setColorLocation(getAttribute(COLOR_ATTRIB));
-        dynamicRenderer.setTexCoordLocation(getAttribute(TEXCOORD_ATTRIB));
-        dynamicRenderer.setNormalLocation(-1);
     }
 
     @Override
@@ -85,11 +73,5 @@ public class SpriteProgram extends Program
 
         setUniform("proj", BaseCamera.CURRENT.getProjection());
         setUniform("view", BaseCamera.CURRENT.getView());
-    }
-
-    @FunctionalInterface
-    public interface OnComplete
-    {
-        void invoke(SpriteProgram program);
     }
 }

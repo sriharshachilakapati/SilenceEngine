@@ -107,4 +107,10 @@ public class FixedTimeSteppedLoop implements IGameLoop
     {
         return updatesPerSecond;
     }
+
+    @Override
+    public void onFocusGain()
+    {
+        previous = TimeUtils.currentTime();
+    }
 }

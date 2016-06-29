@@ -25,7 +25,7 @@
 package com.shc.silenceengine.tests.lwjgl;
 
 import com.shc.silenceengine.backend.lwjgl.LwjglRuntime;
-import com.shc.silenceengine.tests.EntityCollisionTest2D;
+import com.shc.silenceengine.tests.SpriteRendererTest;
 import com.shc.silenceengine.tests.TestRunner;
 
 /**
@@ -35,6 +35,6 @@ public class SpriteRendererTestRun
 {
     public static void main(String[] args)
     {
-        LwjglRuntime.start(new TestRunner(new EntityCollisionTest2D()));
+        LwjglRuntime.start(new TestRunner(new SpriteRendererTest()));
     }
 }

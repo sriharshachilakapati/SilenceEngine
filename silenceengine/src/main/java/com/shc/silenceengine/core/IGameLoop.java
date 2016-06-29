@@ -34,4 +34,12 @@ public interface IGameLoop
     int getFPS();
 
     int getUPS();
+
+    default void onFocusLost()
+    {
+    }
+
+    default void onFocusGain()
+    {
+    }
 }

@@ -29,6 +29,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+import com.shc.silenceengine.core.SilenceEngine;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -64,11 +65,15 @@ public abstract class AndroidLauncher extends Activity
     {
         super.onResume();
         surfaceView.onResume();
+
+        surfaceView.queueEvent(() -> SilenceEngine.gameLoop.onFocusGain());
     }
 
     @Override
     protected void onPause()
     {
+        surfaceView.queueEvent(() -> SilenceEngine.gameLoop.onFocusLost());
+
         super.onPause();
         surfaceView.onPause();
     }
