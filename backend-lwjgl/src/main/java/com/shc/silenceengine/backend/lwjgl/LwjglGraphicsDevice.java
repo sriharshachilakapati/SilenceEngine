@@ -125,6 +125,7 @@ public class LwjglGraphicsDevice implements IGraphicsDevice
     @Override
     public void glClear(int flags)
     {
+        IGraphicsDevice.super.glClear(flags);
         GL11.glClear(flags);
     }
 
@@ -144,12 +145,14 @@ public class LwjglGraphicsDevice implements IGraphicsDevice
     @Override
     public void glDrawArrays(int primitive, int offset, int vertexCount)
     {
+        IGraphicsDevice.super.glDrawArrays(primitive, offset, vertexCount);
         GL11.glDrawArrays(primitive, offset, vertexCount);
     }
 
     @Override
     public void glDrawElements(int primitive, int vertexCount, int type, int offset)
     {
+        IGraphicsDevice.super.glDrawElements(primitive, vertexCount, type, offset);
         GL11.glDrawElements(primitive, vertexCount, type, offset);
     }
 

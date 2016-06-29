@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.graphics;
 
+import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.opengl.BufferObject;
 import com.shc.silenceengine.graphics.opengl.GLContext;
@@ -42,7 +43,7 @@ import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
  * @author Sri Harsha Chilakapati
  * @author Heiko Brumme
  */
-public class DynamicRenderer
+public class DynamicRenderer implements IResource
 {
     // The no. of components in vertex, normal, color and texcoord
     public static final int NUM_VERTEX_COMPONENTS   = 4;
@@ -64,34 +65,31 @@ public class DynamicRenderer
 
     // Active state of this batcher
     private boolean active = false;
-
     // The mapped buffers to store the collected data
     private DirectBuffer vBuffer;
     private DirectBuffer cBuffer;
     private DirectBuffer tBuffer;
     private DirectBuffer nBuffer;
-
     // VAO and VBOs
     private VertexArray  vao;
     private BufferObject vboVert;
     private BufferObject vboCol;
     private BufferObject vboTex;
     private BufferObject vboNorm;
-
     // VBO index locations in shader
     private int vertexLocation   = -1;
     private int colorLocation    = -1;
     private int texCoordLocation = -1;
     private int normalLocation   = -1;
-
     // The no. of vertices in the current batch
-    private int vertexCount;
-    private int colorCount;
-    private int texCoordCount;
-    private int normalCount;
-
+    private int          vertexCount;
+    private int          colorCount;
+    private int          texCoordCount;
+    private int          normalCount;
     // The rendering mode
-    private Primitive beginMode;
+    private Primitive    beginMode;
+    // The rendering policy
+    private RenderPolicy renderPolicy;
 
     public DynamicRenderer()
     {
@@ -122,6 +120,31 @@ public class DynamicRenderer
 
         // Initialise OpenGL handles
         initGLHandles();
+    }
+
+    public DirectBuffer getVBuffer()
+    {
+        return vBuffer;
+    }
+
+    public DirectBuffer getCBuffer()
+    {
+        return cBuffer;
+    }
+
+    public DirectBuffer getTBuffer()
+    {
+        return tBuffer;
+    }
+
+    public DirectBuffer getNBuffer()
+    {
+        return nBuffer;
+    }
+
+    public int getVertexCount()
+    {
+        return vertexCount;
     }
 
     public int getMaxBatchSize()
@@ -203,12 +226,18 @@ public class DynamicRenderer
         vboNorm.uploadData(maxBatchSize * SIZE_OF_NORMAL, BufferObject.Usage.STREAM_DRAW);
     }
 
+    public void begin(Primitive beginMode)
+    {
+        begin(beginMode, RenderPolicy.PERFORM_RENDER);
+    }
+
     /**
      * Begins the batcher and marks it active.
      *
-     * @param beginMode The Mode to begin rendering with
+     * @param beginMode    The Mode to begin rendering with
+     * @param renderPolicy The render policy, specify whether to render or not to render.
      */
-    public void begin(Primitive beginMode)
+    public void begin(Primitive beginMode, RenderPolicy renderPolicy)
     {
         if (active)
             throw new IllegalStateException("Batcher Already Active!");
@@ -221,6 +250,7 @@ public class DynamicRenderer
         normalCount = 0;
 
         this.beginMode = beginMode;
+        this.renderPolicy = renderPolicy;
     }
 
     public void begin()
@@ -238,7 +268,10 @@ public class DynamicRenderer
 
         active = false;
 
-        flush();
+        if (renderPolicy == RenderPolicy.PERFORM_RENDER)
+            flush();
+        else
+            fillBuffers(); // Just fill the buffers otherwise and leave them
     }
 
     /**
@@ -255,6 +288,9 @@ public class DynamicRenderer
 
         // Fill the buffers
         fillBuffers();
+
+        if (renderPolicy != RenderPolicy.PERFORM_RENDER)
+            return;
 
         Program.CURRENT.prepareFrame();
 
@@ -500,5 +536,11 @@ public class DynamicRenderer
     public Primitive getBeginMode()
     {
         return beginMode;
+    }
+
+    public enum RenderPolicy
+    {
+        PERFORM_RENDER,
+        NO_RENDER
     }
 }

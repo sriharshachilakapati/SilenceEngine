@@ -24,7 +24,7 @@
 
 package com.shc.silenceengine.graphics;
 
-import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.graphics.opengl.BufferObject;
 import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.graphics.opengl.Primitive;
@@ -36,118 +36,197 @@ import com.shc.silenceengine.math.Vector3;
 
 import java.util.List;
 
-import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
+import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.GL_FLOAT;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class MeshRenderer
+public class MeshRenderer implements IResource
 {
+    public final VertexArray vertexArray;
+
+    public final boolean hasColors;
+    public final boolean hasNormals;
+    public final boolean hasTexCoords;
+    public final boolean hasTangents;
+    public final boolean hasBiTangents;
+
+    public final BufferObject vertexBuffer;
+    public final BufferObject colorBuffer;
+    public final BufferObject normalBuffer;
+    public final BufferObject texCoordBuffer;
+    public final BufferObject tangentBuffer;
+    public final BufferObject biTangentBuffer;
+
     public int vertexLocation    = -1;
     public int normalLocation    = -1;
     public int uvLocation        = -1;
     public int tangentLocation   = -1;
     public int biTangentLocation = -1;
 
-    private VertexArray vao;
-    private Primitive   renderMode;
+    public final Primitive renderMode;
+    public final int       vertexCount;
 
-    private BufferObject vertexBuffer;
-    private BufferObject normalBuffer;
-    private BufferObject uvBuffer;
-    private BufferObject tangentBuffer;
-    private BufferObject biTangentBuffer;
+    public MeshRenderer(DynamicRenderer renderer)
+    {
+        vertexArray = new VertexArray();
+        vertexArray.bind();
 
-    private int vertexCount;
+        hasColors = renderer.getColorLocation() != -1;
+        hasNormals = renderer.getNormalLocation() != -1;
+        hasTexCoords = renderer.getTexCoordLocation() != -1;
+
+        hasTangents = hasBiTangents = false;
+
+        vertexBuffer = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
+        colorBuffer = hasColors ? new BufferObject(BufferObject.Target.ARRAY_BUFFER) : null;
+        normalBuffer = hasNormals ? new BufferObject(BufferObject.Target.ARRAY_BUFFER) : null;
+        texCoordBuffer = hasTexCoords ? new BufferObject(BufferObject.Target.ARRAY_BUFFER) : null;
+
+        tangentBuffer = biTangentBuffer = null;
+
+        vertexCount = renderer.getVertexCount();
+
+        vertexBuffer.uploadData(vertexCount * DynamicRenderer.SIZE_OF_VERTEX, BufferObject.Usage.STATIC_DRAW);
+        vertexBuffer.uploadSubData(renderer.getVBuffer(), 0, vertexCount * DynamicRenderer.SIZE_OF_VERTEX);
+
+        if (hasNormals)
+        {
+            normalBuffer.uploadData(vertexCount * DynamicRenderer.SIZE_OF_NORMAL, BufferObject.Usage.STATIC_DRAW);
+            normalBuffer.uploadSubData(renderer.getVBuffer(), 0, vertexCount * DynamicRenderer.SIZE_OF_NORMAL);
+        }
+
+        if (hasTexCoords)
+        {
+            texCoordBuffer.uploadData(vertexCount * DynamicRenderer.SIZE_OF_TEXCOORD, BufferObject.Usage.STATIC_DRAW);
+            texCoordBuffer.uploadSubData(renderer.getVBuffer(), 0, vertexCount * DynamicRenderer.SIZE_OF_TEXCOORD);
+        }
+
+        if (hasColors)
+        {
+            colorBuffer.uploadData(vertexCount * DynamicRenderer.SIZE_OF_COLOR, BufferObject.Usage.STATIC_DRAW);
+            colorBuffer.uploadSubData(renderer.getVBuffer(), 0, vertexCount * DynamicRenderer.SIZE_OF_COLOR);
+        }
+
+        renderMode = renderer.getBeginMode();
+    }
 
     public MeshRenderer(Mesh mesh)
     {
-        vao = new VertexArray();
-        vao.bind();
+        vertexArray = new VertexArray();
+        vertexArray.bind();
+
+        hasColors = !mesh.colors.isEmpty();
+        hasNormals = !mesh.normals.isEmpty();
+        hasTexCoords = !mesh.uvs.isEmpty();
+        hasTangents = !mesh.tangents.isEmpty();
+        hasBiTangents = !mesh.biTangents.isEmpty();
 
         vertexBuffer = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
-        normalBuffer = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
-        uvBuffer = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
-        tangentBuffer = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
-        biTangentBuffer = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
+        colorBuffer = hasColors ? new BufferObject(BufferObject.Target.ARRAY_BUFFER) : null;
+        normalBuffer = hasNormals ? new BufferObject(BufferObject.Target.ARRAY_BUFFER) : null;
+        texCoordBuffer = hasTexCoords ? new BufferObject(BufferObject.Target.ARRAY_BUFFER) : null;
+        tangentBuffer = hasTangents ? new BufferObject(BufferObject.Target.ARRAY_BUFFER) : null;
+        biTangentBuffer = hasBiTangents ? new BufferObject(BufferObject.Target.ARRAY_BUFFER) : null;
+
+        uploadTo4Layout(mesh.vertices, vertexBuffer, 1);
+        if (hasNormals) uploadTo4Layout(mesh.normals, normalBuffer, 0);
+        if (hasTangents) uploadTo4Layout(mesh.tangents, tangentBuffer, 0);
+        if (hasBiTangents) uploadTo4Layout(mesh.biTangents, biTangentBuffer, 0);
+        if (hasTexCoords) uploadTo2Layout(mesh.uvs, tangentBuffer);
+        if (hasColors) uploadTo4Layout(mesh.colors, colorBuffer);
 
         vertexCount = mesh.vertices.size();
+
         renderMode = mesh.renderMode;
-
-        DirectBuffer data = wrapVec3(mesh.vertices);
-        vertexBuffer.uploadData(data, BufferObject.Usage.STATIC_DRAW);
-        SilenceEngine.io.free(data);
-
-        data = wrapVec3(mesh.normals);
-        normalBuffer.uploadData(data, BufferObject.Usage.STATIC_DRAW);
-        SilenceEngine.io.free(data);
-
-        data = wrapVec2(mesh.uvs);
-        uvBuffer.uploadData(data, BufferObject.Usage.STATIC_DRAW);
-        SilenceEngine.io.free(data);
-
-        data = wrapVec3(mesh.tangents);
-        tangentBuffer.uploadData(data, BufferObject.Usage.STATIC_DRAW);
-        SilenceEngine.io.free(data);
-
-        data = wrapVec3(mesh.biTangents);
-        biTangentBuffer.uploadData(data, BufferObject.Usage.STATIC_DRAW);
-        SilenceEngine.io.free(data);
     }
 
-    private DirectBuffer wrapVec3(List<Vector3> list)
+    private void uploadTo4Layout(List<Vector3> data, BufferObject bufferObject, int w)
     {
-        DirectBuffer buffer = SilenceEngine.io.create(3 * PrimitiveSize.FLOAT * list.size());
+        DirectBuffer buffer = DirectBuffer.create(data.size() * 4 * PrimitiveSize.FLOAT);
 
-        int index = 0;
+        int i = 0;
 
-        for (Vector3 v : list)
-            buffer.writeFloat(index++, v.x)
-                    .writeFloat(index + 1, v.y)
-                    .writeFloat(index + 2, v.z);
+        for (Vector3 v : data)
+            buffer.writeFloat(i++, v.x)
+                    .writeFloat(i++, v.y)
+                    .writeFloat(i++, v.z)
+                    .writeFloat(i++, w);
 
-        return buffer;
+        bufferObject.uploadData(buffer, BufferObject.Usage.STATIC_DRAW);
+
+        DirectBuffer.free(buffer);
     }
 
-    private DirectBuffer wrapVec2(List<Vector2> list)
+    private void uploadTo4Layout(List<Color> data, BufferObject bufferObject)
     {
-        DirectBuffer buffer = SilenceEngine.io.create(2 * PrimitiveSize.FLOAT * list.size());
+        DirectBuffer buffer = DirectBuffer.create(data.size() * 4 * PrimitiveSize.FLOAT);
 
-        int index = 0;
+        int i = 0;
 
-        for (Vector2 v : list)
-            buffer.writeFloat(index++, v.x)
-                    .writeFloat(index + 1, v.y);
+        for (Color c : data)
+            buffer.writeFloat(i++, c.r)
+                    .writeFloat(i++, c.g)
+                    .writeFloat(i++, c.b)
+                    .writeFloat(i++, c.a);
 
-        return buffer;
+        bufferObject.uploadData(buffer, BufferObject.Usage.STATIC_DRAW);
+
+        DirectBuffer.free(buffer);
+    }
+
+    private void uploadTo2Layout(List<Vector2> data, BufferObject bufferObject)
+    {
+        DirectBuffer buffer = DirectBuffer.create(data.size() * 2 * PrimitiveSize.FLOAT);
+
+        int i = 0;
+
+        for (Vector2 v : data)
+            buffer.writeFloat(i++, v.x)
+                    .writeFloat(i++, v.y);
+
+        bufferObject.uploadData(buffer, BufferObject.Usage.STATIC_DRAW);
+
+        DirectBuffer.free(buffer);
     }
 
     public void render(Material material)
     {
         material.prepareRenderer(this);
 
-        vao.bind();
+        vertexArray.bind();
 
-        if (vertexLocation != -1) vao.pointAttribute(vertexLocation, 3, GL_FLOAT, vertexBuffer);
-        if (normalLocation != -1) vao.pointAttribute(normalLocation, 3, GL_FLOAT, normalBuffer);
-        if (uvLocation != -1) vao.pointAttribute(uvLocation, 2, GL_FLOAT, uvBuffer);
-        if (tangentLocation != -1) vao.pointAttribute(tangentLocation, 3, GL_FLOAT, tangentBuffer);
-        if (biTangentLocation != -1) vao.pointAttribute(biTangentLocation, 3, GL_FLOAT, biTangentBuffer);
+        if (vertexLocation != -1) vertexArray.pointAttribute(vertexLocation, 4, GL_FLOAT, vertexBuffer);
+        if (normalLocation != -1) vertexArray.pointAttribute(normalLocation, 4, GL_FLOAT, normalBuffer);
+        if (uvLocation != -1) vertexArray.pointAttribute(uvLocation, 2, GL_FLOAT, texCoordBuffer);
+        if (tangentLocation != -1) vertexArray.pointAttribute(tangentLocation, 4, GL_FLOAT, tangentBuffer);
+        if (biTangentLocation != -1) vertexArray.pointAttribute(biTangentLocation, 4, GL_FLOAT, biTangentBuffer);
 
-        if (vertexLocation != -1) vao.enableAttributeArray(vertexLocation);
-        if (normalLocation != -1) vao.enableAttributeArray(normalLocation);
-        if (uvLocation != -1) vao.enableAttributeArray(uvLocation);
-        if (tangentLocation != -1) vao.enableAttributeArray(tangentLocation);
-        if (biTangentLocation != -1) vao.enableAttributeArray(biTangentLocation);
+        if (vertexLocation != -1) vertexArray.enableAttributeArray(vertexLocation);
+        if (normalLocation != -1) vertexArray.enableAttributeArray(normalLocation);
+        if (uvLocation != -1) vertexArray.enableAttributeArray(uvLocation);
+        if (tangentLocation != -1) vertexArray.enableAttributeArray(tangentLocation);
+        if (biTangentLocation != -1) vertexArray.enableAttributeArray(biTangentLocation);
 
-        GLContext.drawArrays(vao, renderMode, 0, vertexCount);
+        GLContext.drawArrays(vertexArray, renderMode, 0, vertexCount);
 
-        if (vertexLocation != -1) vao.disableAttributeArray(vertexLocation);
-        if (normalLocation != -1) vao.disableAttributeArray(normalLocation);
-        if (uvLocation != -1) vao.disableAttributeArray(uvLocation);
-        if (tangentLocation != -1) vao.disableAttributeArray(tangentLocation);
-        if (biTangentLocation != -1) vao.disableAttributeArray(biTangentLocation);
+        if (vertexLocation != -1) vertexArray.disableAttributeArray(vertexLocation);
+        if (normalLocation != -1) vertexArray.disableAttributeArray(normalLocation);
+        if (uvLocation != -1) vertexArray.disableAttributeArray(uvLocation);
+        if (tangentLocation != -1) vertexArray.disableAttributeArray(tangentLocation);
+        if (biTangentLocation != -1) vertexArray.disableAttributeArray(biTangentLocation);
 
         GLContext.bindVertexArray(null);
+    }
+
+    public void dispose()
+    {
+        vertexArray.dispose();
+        vertexBuffer.dispose();
+        if (hasColors) colorBuffer.dispose();
+        if (hasNormals) normalBuffer.dispose();
+        if (hasTexCoords) texCoordBuffer.dispose();
+        if (hasTangents) tangentBuffer.dispose();
+        if (hasBiTangents) biTangentBuffer.dispose();
     }
 }

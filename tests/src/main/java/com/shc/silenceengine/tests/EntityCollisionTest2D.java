@@ -30,6 +30,7 @@ import com.shc.silenceengine.collision.colliders.SceneCollider2D;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.DynamicRenderer;
+import com.shc.silenceengine.graphics.IGraphicsDevice;
 import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Program;
@@ -176,6 +177,7 @@ public class EntityCollisionTest2D extends SilenceTest
 
         SilenceEngine.display.setTitle("UPS: " + SilenceEngine.gameLoop.getUPS()
                                        + " | FPS: " + SilenceEngine.gameLoop.getFPS()
+                                       + " | RC: " + IGraphicsDevice.Data.renderCallsThisFrame
                                        + " | EntityCollisionTest2D");
     }
 

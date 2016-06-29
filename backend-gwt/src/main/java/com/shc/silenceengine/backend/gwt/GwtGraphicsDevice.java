@@ -121,6 +121,7 @@ public class GwtGraphicsDevice implements IGraphicsDevice
     @Override
     public void glClear(int flags)
     {
+        IGraphicsDevice.super.glClear(flags);
         WebGL10.glClear(flags);
     }
 
@@ -140,12 +141,14 @@ public class GwtGraphicsDevice implements IGraphicsDevice
     @Override
     public void glDrawArrays(int primitive, int offset, int vertexCount)
     {
+        IGraphicsDevice.super.glDrawArrays(primitive, offset, vertexCount);
         WebGL10.glDrawArrays(primitive, offset, vertexCount);
     }
 
     @Override
     public void glDrawElements(int primitive, int vertexCount, int type, int offset)
     {
+        IGraphicsDevice.super.glDrawElements(primitive, vertexCount, type, offset);
         WebGL10.glDrawElements(primitive, vertexCount, type, offset);
     }
 

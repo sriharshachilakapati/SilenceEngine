@@ -38,6 +38,7 @@ import java.util.List;
 public class Mesh
 {
     public final List<Vector3> vertices   = new ArrayList<>();
+    public final List<Color>   colors     = new ArrayList<>();
     public final List<Vector3> normals    = new ArrayList<>();
     public final List<Vector3> tangents   = new ArrayList<>();
     public final List<Vector3> biTangents = new ArrayList<>();

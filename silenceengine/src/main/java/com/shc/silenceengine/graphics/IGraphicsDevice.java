@@ -60,15 +60,26 @@ public interface IGraphicsDevice
 
     void glViewport(int x, int y, int width, int height);
 
-    void glClear(int flags);
+    default void glClear(int flags)
+    {
+        Data.renderCallsThisFrame = 0;
+    }
 
     int glCheckFramebufferStatus(int target);
 
     void glDeleteFramebuffers(int... framebuffer);
 
-    void glDrawArrays(int primitive, int offset, int vertexCount);
+    default void glDrawArrays(int primitive, int offset, int vertexCount)
+    {
+        Data.renderCallsThisFrame++;
+        Data.totalRenderCalls++;
+    }
 
-    void glDrawElements(int primitive, int vertexCount, int type, int offset);
+    default void glDrawElements(int primitive, int vertexCount, int type, int offset)
+    {
+        Data.renderCallsThisFrame++;
+        Data.totalRenderCalls++;
+    }
 
     void glEnable(int capability);
 
@@ -471,5 +482,11 @@ public interface IGraphicsDevice
         private Constants()
         {
         }
+    }
+
+    final class Data
+    {
+        public static int totalRenderCalls = 0;
+        public static int renderCallsThisFrame = 0;
     }
 }
