@@ -123,7 +123,7 @@ public class AndroidGraphicsDevice implements IGraphicsDevice
     @Override
     public void glClear(int flags)
     {
-        IGraphicsDevice.super.glClear(flags);
+        Data.renderCallsThisFrame = 0;
         GLES30.glClear(flags);
     }
 
@@ -142,14 +142,16 @@ public class AndroidGraphicsDevice implements IGraphicsDevice
     @Override
     public void glDrawArrays(int primitive, int offset, int vertexCount)
     {
-        IGraphicsDevice.super.glDrawArrays(primitive, offset, vertexCount);
+        Data.renderCallsThisFrame++;
+        Data.totalRenderCalls++;
         GLES30.glDrawArrays(primitive, offset, vertexCount);
     }
 
     @Override
     public void glDrawElements(int primitive, int vertexCount, int type, int offset)
     {
-        IGraphicsDevice.super.glDrawElements(primitive, vertexCount, type, offset);
+        Data.renderCallsThisFrame++;
+        Data.totalRenderCalls++;
         GLES30.glDrawElements(primitive, vertexCount, type, offset);
     }
 
