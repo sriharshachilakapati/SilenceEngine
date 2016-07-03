@@ -29,6 +29,9 @@ import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.utils.functional.UniCallback;
 
 /**
+ * <p>AudioDevice describes how the audio implementation specific to the platform should behave. This class is here to
+ * allow the user to access the OpenAL functions as well as the audio loading and also the audio scene.</p>
+ *
  * @author Sri Harsha Chilakapati
  */
 public abstract class AudioDevice
