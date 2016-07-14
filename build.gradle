@@ -31,7 +31,7 @@ buildscript {
 
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:2.1.0'
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
         classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
     }
@@ -78,6 +78,8 @@ project(":backend-android") {
         provided project(":silenceengine")
         compile 'com.annimon:stream:1.0.3'
         compile 'com.goharsha:android-openal:0.1-SNAPSHOT'
+
+        retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
     }
 
     repositories {
@@ -132,6 +134,8 @@ project(":tests-android") {
         compile 'com.annimon:stream:1.0.3'
 
         compile 'com.goharsha:android-openal:0.2-SNAPSHOT'
+
+        retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
     }
 
     repositories {
