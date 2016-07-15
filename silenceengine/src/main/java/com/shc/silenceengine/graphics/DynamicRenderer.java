@@ -327,22 +327,33 @@ public class DynamicRenderer implements IResource
     {
         vao.bind();
 
-        vboVert.bind();
-        vboVert.uploadSubData(vBuffer, 0, vertexCount * SIZE_OF_VERTEX);
+        if (vertexLocation != -1)
+        {
+            vboVert.bind();
+            vboVert.uploadData(vBuffer, BufferObject.Usage.DYNAMIC_DRAW);
+            vao.pointAttribute(vertexLocation, NUM_VERTEX_COMPONENTS, GL_FLOAT, vboVert);
+        }
 
-        vboCol.bind();
-        vboCol.uploadSubData(cBuffer, 0, vertexCount * SIZE_OF_COLOR);
+        if (colorLocation != -1)
+        {
+            vboCol.bind();
+            vboCol.uploadData(cBuffer, BufferObject.Usage.DYNAMIC_DRAW);
+            vao.pointAttribute(colorLocation, NUM_COLOR_COMPONENTS, GL_FLOAT, vboCol);
+        }
 
-        vboNorm.bind();
-        vboNorm.uploadSubData(nBuffer, 0, vertexCount * SIZE_OF_NORMAL);
+        if (normalLocation != -1)
+        {
+            vboNorm.bind();
+            vboNorm.uploadData(nBuffer, BufferObject.Usage.DYNAMIC_DRAW);
+            vao.pointAttribute(normalLocation, NUM_NORMAL_COMPONENTS, GL_FLOAT, vboNorm);
+        }
 
-        vboTex.bind();
-        vboTex.uploadSubData(tBuffer, 0, vertexCount * SIZE_OF_TEXCOORD);
-
-        if (vertexLocation != -1) vao.pointAttribute(vertexLocation, NUM_VERTEX_COMPONENTS, GL_FLOAT, vboVert);
-        if (colorLocation != -1) vao.pointAttribute(colorLocation, NUM_COLOR_COMPONENTS, GL_FLOAT, vboCol);
-        if (normalLocation != -1) vao.pointAttribute(normalLocation, NUM_NORMAL_COMPONENTS, GL_FLOAT, vboNorm);
-        if (texCoordLocation != -1) vao.pointAttribute(texCoordLocation, NUM_TEXCOORD_COMPONENTS, GL_FLOAT, vboTex);
+        if (texCoordLocation != -1)
+        {
+            vboTex.bind();
+            vboTex.uploadData(tBuffer, BufferObject.Usage.DYNAMIC_DRAW);
+            vao.pointAttribute(texCoordLocation, NUM_TEXCOORD_COMPONENTS, GL_FLOAT, vboTex);
+        }
     }
 
     private void fillBuffers()
