@@ -34,7 +34,7 @@ public class Matrix4
 {
     public static final ReusableStack<Matrix4> REUSABLE_STACK = new ReusableStack<>(Matrix4::new);
 
-    private float[][] m;
+    public final float[][] m;
 
     public Matrix4(Vector4 c0, Vector4 c1, Vector4 c2, Vector4 c3)
     {
@@ -88,7 +88,7 @@ public class Matrix4
         {
             for (int j = 0; j < 3; j++)
             {
-                this.m[i][j] = m.get(i, j);
+                this.m[i][j] = m.m[i][j];
             }
         }
 
@@ -117,7 +117,7 @@ public class Matrix4
         {
             for (int j = 0; j < 4; j++)
             {
-                this.m[i][j] = m.get(i, j);
+                this.m[i][j] = m.m[i][j];
             }
         }
 
@@ -148,7 +148,7 @@ public class Matrix4
         {
             for (int j = 0; j < 4; j++)
             {
-                this.m[i][j] += m.get(i, j);
+                this.m[i][j] += m.m[i][j];
             }
         }
 
@@ -161,7 +161,7 @@ public class Matrix4
         {
             for (int j = 0; j < 4; j++)
             {
-                this.m[i][j] -= m.get(i, j);
+                this.m[i][j] -= m.m[i][j];
             }
         }
 
@@ -179,7 +179,7 @@ public class Matrix4
             for (int c = 0; c < 4; c++)
             {
                 for (int k = 0; k < 4; k++)
-                    temp.set(c, r, temp.get(c, r) + this.m[k][r] * m.get(c, k));
+                    temp.m[c][r] += this.m[k][r] * m.m[c][k];
             }
         }
 
