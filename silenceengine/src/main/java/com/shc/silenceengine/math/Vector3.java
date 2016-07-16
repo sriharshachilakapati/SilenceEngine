@@ -78,6 +78,34 @@ public class Vector3
         this(v.x, v.y, v.z);
     }
 
+    @Override
+    public int hashCode()
+    {
+        int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
+        result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+        result = 31 * result + (z != +0.0f ? Float.floatToIntBits(z) : 0);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Vector3 vector3 = (Vector3) o;
+
+        return Float.compare(vector3.x, x) == 0 &&
+               Float.compare(vector3.y, y) == 0 &&
+               Float.compare(vector3.z, z) == 0;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "[" + x + ", " + y + ", " + z + "]";
+    }
+
     public Vector3 add(Vector2 v, float z)
     {
         return add(v.x, v.y, z);
@@ -272,12 +300,6 @@ public class Vector3
     public Vector3 set(float v)
     {
         return set(v, v, v);
-    }
-
-    @Override
-    public String toString()
-    {
-        return "[" + x + ", " + y + ", " + z + "]";
     }
 
     public Vector3 rotate(Vector3 rotation)

@@ -34,11 +34,13 @@ public class Transform
     public static final ReusableStack<Transform> REUSABLE_STACK = new ReusableStack<>(Transform::new);
 
     // The transformation matrix
-    private Matrix4 tMatrix;
+    public final Matrix4 matrix;
+
+    private boolean changed;
 
     public Transform()
     {
-        tMatrix = new Matrix4();
+        matrix = new Matrix4();
     }
 
     public Transform translate(Vector2 v)
@@ -47,19 +49,22 @@ public class Transform
         translate(temp.set(v.x, v.y, 0));
 
         Vector3.REUSABLE_STACK.push(temp);
+
+        changed = true;
         return this;
     }
 
     public Transform copy()
     {
-        return new Transform().apply(tMatrix);
+        return new Transform().apply(matrix);
     }
 
     public Transform translate(Vector3 v)
     {
         Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
-        tMatrix.set(Transforms.createTranslation(v, temp).multiply(tMatrix));
+        matrix.set(Transforms.createTranslation(v, temp).multiply(matrix));
         Matrix4.REUSABLE_STACK.push(temp);
+        changed = true;
 
         return this;
     }
@@ -67,16 +72,18 @@ public class Transform
     public Transform apply(Matrix4 matrix)
     {
         Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
-        tMatrix.set(temp.set(matrix).multiply(tMatrix));
+        this.matrix.set(temp.set(matrix).multiply(this.matrix));
         Matrix4.REUSABLE_STACK.push(temp);
+        changed = true;
         return this;
     }
 
     public Transform rotate(Vector3 axis, float angle)
     {
         Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
-        tMatrix.set(Transforms.createRotation(axis, angle, temp).multiply(tMatrix));
+        matrix.set(Transforms.createRotation(axis, angle, temp).multiply(matrix));
         Matrix4.REUSABLE_STACK.push(temp);
+        changed = true;
 
         return this;
     }
@@ -87,10 +94,11 @@ public class Transform
         temp.set(rx, ry, rz);
 
         Matrix4 tMat = Matrix4.REUSABLE_STACK.pop();
-        tMatrix.set(Transforms.createRotation(temp, tMat).multiply(tMatrix));
+        matrix.set(Transforms.createRotation(temp, tMat).multiply(matrix));
         Matrix4.REUSABLE_STACK.push(tMat);
 
         Quaternion.REUSABLE_STACK.push(temp);
+        changed = true;
         return this;
     }
 
@@ -99,6 +107,7 @@ public class Transform
         Vector3 temp = Vector3.REUSABLE_STACK.pop();
         scale(temp.set(scale.x, scale.y, 0));
         Vector3.REUSABLE_STACK.push(temp);
+        changed = true;
 
         return this;
     }
@@ -106,20 +115,16 @@ public class Transform
     public Transform scale(Vector3 scale)
     {
         Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
-        tMatrix.set(Transforms.createScaling(scale, temp).multiply(tMatrix));
+        matrix.set(Transforms.createScaling(scale, temp).multiply(matrix));
         Matrix4.REUSABLE_STACK.push(temp);
+        changed = true;
 
         return this;
     }
 
     public Transform apply(Transform transform)
     {
-        return apply(transform.getMatrix());
-    }
-
-    public Matrix4 getMatrix()
-    {
-        return tMatrix;
+        return apply(transform.matrix);
     }
 
     public Transform applyInverse(Matrix4 matrix)
@@ -129,6 +134,7 @@ public class Transform
         temp.set(matrix).invert();
         apply(temp);
         Matrix4.REUSABLE_STACK.push(temp);
+        changed = true;
 
         return this;
     }
@@ -139,6 +145,7 @@ public class Transform
         apply(Transforms.createRotation(q, temp));
 
         Matrix4.REUSABLE_STACK.push(temp);
+        changed = true;
         return this;
     }
 
@@ -148,6 +155,7 @@ public class Transform
         applyInverse(Transforms.createRotation(q, temp));
 
         Matrix4.REUSABLE_STACK.push(temp);
+        changed = true;
         return this;
     }
 
@@ -158,20 +166,27 @@ public class Transform
 
     public Transform reset()
     {
-        tMatrix.initIdentity();
+        matrix.initIdentity();
+        changed = true;
         return this;
     }
 
     public Transform invert()
     {
-        tMatrix.invert();
+        matrix.invert();
+        changed = true;
         return this;
     }
 
-    @Override
-    public int hashCode()
+    public boolean hasChanged()
     {
-        return tMatrix.hashCode();
+        if (changed)
+        {
+            changed = false;
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -182,7 +197,12 @@ public class Transform
 
         Transform transform = (Transform) o;
 
-        return tMatrix.equals(transform.tMatrix);
+        return matrix.equals(transform.matrix);
+    }
 
+    @Override
+    public int hashCode()
+    {
+        return matrix.hashCode();
     }
 }

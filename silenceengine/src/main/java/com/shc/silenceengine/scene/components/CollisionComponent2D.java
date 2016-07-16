@@ -65,6 +65,9 @@ public class CollisionComponent2D implements IComponent2D
     @Override
     public void update(float deltaTime)
     {
+        if (!entity.transformComponent.transformed)
+            return;
+
         Vector2 tPosition = Vector2.REUSABLE_STACK.pop();
         Vector2 tScale = Vector2.REUSABLE_STACK.pop();
 

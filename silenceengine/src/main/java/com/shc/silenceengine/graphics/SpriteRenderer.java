@@ -110,7 +110,7 @@ public class SpriteRenderer
             texture.bind(0);
 
         Vector3 scale = Vector3.REUSABLE_STACK.pop().set(texture.getWidth(), texture.getHeight(), 1);
-        Matrix4 sprMat = Transforms.createScaling(scale, Matrix4.REUSABLE_STACK.pop()).multiply(transform.getMatrix());
+        Matrix4 sprMat = Transforms.createScaling(scale, Matrix4.REUSABLE_STACK.pop()).multiply(transform.matrix);
 
         program.prepareFrame();
         program.setUniform("sprite", sprMat);

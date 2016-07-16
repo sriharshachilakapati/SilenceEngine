@@ -25,6 +25,7 @@
 package com.shc.silenceengine.scene.components;
 
 import com.shc.silenceengine.math.Transform;
+import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.scene.entity.Entity2D;
 
@@ -35,17 +36,18 @@ public class TransformComponent2D implements IComponent2D
 {
     public Transform transform;
     public boolean   transformed;
-    public boolean   lockPosition;
-    public boolean   lockScale;
-    public boolean   lockRotation;
 
-    private Entity2D  entity;
-    private Transform oldTransform;
+    private Entity2D entity;
+
+    private float   oldRotation;
+    private Vector2 oldScale;
+    private Vector2 oldPosition;
 
     public TransformComponent2D()
     {
         transform = new Transform();
-        oldTransform = new Transform();
+        oldScale = new Vector2();
+        oldPosition = new Vector2();
     }
 
     @Override
@@ -57,21 +59,43 @@ public class TransformComponent2D implements IComponent2D
     @Override
     public void update(float deltaTime)
     {
+        transformed = false;
+
+        if (!(oldRotation != entity.rotation ||
+              !oldPosition.equals(entity.position) ||
+              !oldScale.equals(entity.scale)))
+        {
+            if (entity.parent == null)
+                return;
+
+            if (!entity.parent.transformComponent.transformed)
+                return;
+        }
+
+        oldRotation = entity.rotation;
+        oldPosition.set(entity.position);
+        oldScale.set(entity.scale);
+
         transform.reset();
 
         Entity2D entity = this.entity;
 
         while (entity != null)
         {
-            if (!lockScale) transform.scale(entity.scale);
-            if (!lockRotation) transform.rotate(Vector3.AXIS_Z, entity.rotation);
-            if (!lockPosition) transform.translate(entity.position);
+            transform.scale(entity.scale);
+            transform.rotate(Vector3.AXIS_Z, entity.rotation);
+            transform.translate(entity.position);
 
             entity = entity.parent;
+
+            if (entity != null && !entity.transformComponent.transformed)
+            {
+                transform.apply(entity.transformComponent.transform);
+                break;
+            }
         }
 
-        transformed = oldTransform.equals(transform);
-        oldTransform.set(transform);
+        transformed = true;
     }
 
     @Override

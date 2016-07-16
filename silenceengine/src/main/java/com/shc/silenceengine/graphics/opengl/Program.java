@@ -279,7 +279,7 @@ public class Program
 
     public void setUniform(int location, Transform value)
     {
-        setUniform(location, false, value.getMatrix());
+        setUniform(location, false, value.matrix);
     }
 
     public void setUniform(int location, boolean transpose, Matrix4 value)
@@ -312,7 +312,7 @@ public class Program
 
     public void setUniform(String name, Transform value)
     {
-        setUniform(name, false, value.getMatrix());
+        setUniform(name, false, value.matrix);
     }
 
     public void dispose()

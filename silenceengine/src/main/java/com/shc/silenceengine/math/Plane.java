@@ -154,9 +154,7 @@ public class Plane
         Plane plane = (Plane) o;
 
         return Float.compare(plane.d, d) == 0 &&
-               normal.x == plane.normal.x &&
-               normal.y == plane.normal.y &&
-               normal.z == plane.normal.z;
+               normal.equals(plane.normal);
     }
 
     @Override

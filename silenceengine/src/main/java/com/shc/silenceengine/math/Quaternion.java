@@ -59,6 +59,30 @@ public class Quaternion
         set(pitch, yaw, roll);
     }
 
+    @Override
+    public int hashCode()
+    {
+        int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
+        result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+        result = 31 * result + (z != +0.0f ? Float.floatToIntBits(z) : 0);
+        result = 31 * result + (w != +0.0f ? Float.floatToIntBits(w) : 0);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Quaternion that = (Quaternion) o;
+
+        return Float.compare(that.x, x) == 0 &&
+               Float.compare(that.y, y) == 0 &&
+               Float.compare(that.z, z) == 0 &&
+               Float.compare(that.w, w) == 0;
+    }
+
     public Quaternion set(float x, float y, float z, float w)
     {
         this.x = x;

@@ -194,7 +194,7 @@ public class OpenGLTest extends SilenceTest
                                        " | FPS: " + SilenceEngine.gameLoop.getFPS());
 
         transform.rotate(Vector3.AXIS_Y, 45 * delta);
-        program.setUniform("transform", transform.getMatrix());
+        program.setUniform("transform", transform.matrix);
     }
 
     @Override

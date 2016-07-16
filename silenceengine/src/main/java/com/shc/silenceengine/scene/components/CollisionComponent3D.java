@@ -65,6 +65,9 @@ public class CollisionComponent3D implements IComponent3D
     @Override
     public void update(float deltaTime)
     {
+        if (!entity.transformComponent.transformed)
+            return;
+
         Vector3 tPosition = Vector3.REUSABLE_STACK.pop();
         Vector3 tScale = Vector3.REUSABLE_STACK.pop();
         Vector3 tRotation = Vector3.REUSABLE_STACK.pop();

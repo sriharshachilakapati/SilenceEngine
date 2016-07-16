@@ -35,17 +35,19 @@ public class TransformComponent3D implements IComponent3D
 {
     public Transform transform;
     public boolean   transformed;
-    public boolean   lockPosition;
-    public boolean   lockScale;
-    public boolean   lockRotation;
 
-    private Entity3D  entity;
-    private Transform oldTransform;
+    private Entity3D entity;
+
+    private Vector3 oldPosition;
+    private Vector3 oldRotation;
+    private Vector3 oldScale;
 
     public TransformComponent3D()
     {
         transform = new Transform();
-        oldTransform = new Transform();
+        oldPosition = new Vector3();
+        oldRotation = new Vector3();
+        oldScale = new Vector3();
     }
 
     @Override
@@ -57,27 +59,45 @@ public class TransformComponent3D implements IComponent3D
     @Override
     public void update(float deltaTime)
     {
+        transformed = false;
+
+        if (!(!oldRotation.equals(entity.rotation) ||
+              !oldPosition.equals(entity.position) ||
+              !oldScale.equals(entity.scale)))
+        {
+            if (entity.parent == null)
+                return;
+
+            if (!entity.parent.transformComponent.transformed)
+                return;
+        }
+
+        oldRotation.set(entity.rotation);
+        oldPosition.set(entity.position);
+        oldScale.set(entity.scale);
+
         transform.reset();
 
         Entity3D entity = this.entity;
 
         while (entity != null)
         {
-            if (!lockScale) transform.scale(entity.scale);
-
-            if (!lockRotation)
-                transform.rotate(Vector3.AXIS_Y, entity.rotation.y)
-                        .rotate(Vector3.AXIS_Z, entity.rotation.z)
-                        .rotate(Vector3.AXIS_X, entity.rotation.x);
-
-            if (!lockPosition)
-                transform.translate(entity.position);
+            transform.scale(entity.scale);
+            transform.rotate(Vector3.AXIS_Y, entity.rotation.y)
+                    .rotate(Vector3.AXIS_Z, entity.rotation.z)
+                    .rotate(Vector3.AXIS_X, entity.rotation.x);
+            transform.translate(entity.position);
 
             entity = entity.parent;
+
+            if (entity != null && !entity.transformComponent.transformed)
+            {
+                transform.apply(entity.transformComponent.transform);
+                break;
+            }
         }
 
-        transformed = oldTransform.equals(transform);
-        oldTransform.set(transform);
+        transformed = true;
     }
 
     @Override
