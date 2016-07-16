@@ -65,29 +65,35 @@ public class DynamicRenderer implements IResource
 
     // Active state of this batcher
     private boolean active = false;
+
     // The mapped buffers to store the collected data
     private DirectBuffer vBuffer;
     private DirectBuffer cBuffer;
     private DirectBuffer tBuffer;
     private DirectBuffer nBuffer;
+
     // VAO and VBOs
     private VertexArray  vao;
     private BufferObject vboVert;
     private BufferObject vboCol;
     private BufferObject vboTex;
     private BufferObject vboNorm;
+
     // VBO index locations in shader
     private int vertexLocation   = -1;
     private int colorLocation    = -1;
     private int texCoordLocation = -1;
     private int normalLocation   = -1;
+
     // The no. of vertices in the current batch
-    private int          vertexCount;
-    private int          colorCount;
-    private int          texCoordCount;
-    private int          normalCount;
+    private int vertexCount;
+    private int colorCount;
+    private int texCoordCount;
+    private int normalCount;
+
     // The rendering mode
-    private Primitive    beginMode;
+    private Primitive beginMode;
+
     // The rendering policy
     private RenderPolicy renderPolicy;
 
@@ -208,22 +214,6 @@ public class DynamicRenderer implements IResource
         vboCol = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
         vboTex = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
         vboNorm = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
-
-        // Initialize vertex-buffer
-        vboVert.bind();
-        vboVert.uploadData(maxBatchSize * SIZE_OF_VERTEX, BufferObject.Usage.STREAM_DRAW);
-
-        // Initialize color-buffer
-        vboCol.bind();
-        vboCol.uploadData(maxBatchSize * SIZE_OF_COLOR, BufferObject.Usage.STREAM_DRAW);
-
-        // Initialize texcoord-buffer
-        vboTex.bind();
-        vboTex.uploadData(maxBatchSize * SIZE_OF_TEXCOORD, BufferObject.Usage.STREAM_DRAW);
-
-        // Initialize normal-buffer
-        vboNorm.bind();
-        vboNorm.uploadData(maxBatchSize * SIZE_OF_NORMAL, BufferObject.Usage.STREAM_DRAW);
     }
 
     public void begin(Primitive beginMode)
