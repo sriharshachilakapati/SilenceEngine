@@ -383,10 +383,12 @@ public class DynamicRenderer implements IResource
 
         fillBuffers();
 
-        vBuffer.writeFloat(vertexCount * NUM_VERTEX_COMPONENTS * PrimitiveSize.FLOAT, x)
-                .writeFloat(vertexCount * NUM_VERTEX_COMPONENTS * PrimitiveSize.FLOAT + 4, y)
-                .writeFloat(vertexCount * NUM_VERTEX_COMPONENTS * PrimitiveSize.FLOAT + 8, z)
-                .writeFloat(vertexCount * NUM_VERTEX_COMPONENTS * PrimitiveSize.FLOAT + 12, w);
+        final int offset = SIZE_OF_VERTEX * vertexCount;
+
+        vBuffer.writeFloat(offset, x)
+                .writeFloat(offset + 4, y)
+                .writeFloat(offset + 8, z)
+                .writeFloat(offset + 12, w);
 
         vertexCount++;
     }
@@ -429,11 +431,13 @@ public class DynamicRenderer implements IResource
 
     public void color(float r, float g, float b, float a)
     {
+        final int offset = SIZE_OF_COLOR * colorCount;
+
         // Add the specified color
-        cBuffer.writeFloat(colorCount * NUM_COLOR_COMPONENTS * PrimitiveSize.FLOAT, r)
-                .writeFloat(colorCount * NUM_COLOR_COMPONENTS * PrimitiveSize.FLOAT + 4, g)
-                .writeFloat(colorCount * NUM_COLOR_COMPONENTS * PrimitiveSize.FLOAT + 8, b)
-                .writeFloat(colorCount * NUM_COLOR_COMPONENTS * PrimitiveSize.FLOAT + 12, a);
+        cBuffer.writeFloat(offset, r)
+                .writeFloat(offset + 4, g)
+                .writeFloat(offset + 8, b)
+                .writeFloat(offset + 12, a);
 
         colorCount++;
     }
@@ -445,9 +449,11 @@ public class DynamicRenderer implements IResource
 
     public void texCoord(float u, float v)
     {
+        final int offset = SIZE_OF_TEXCOORD * texCoordCount;
+
         // Add the specified texcoord
-        tBuffer.writeFloat(texCoordCount * NUM_TEXCOORD_COMPONENTS * PrimitiveSize.FLOAT, u)
-                .writeFloat(texCoordCount * NUM_TEXCOORD_COMPONENTS * PrimitiveSize.FLOAT + 4, v);
+        tBuffer.writeFloat(offset, u)
+                .writeFloat(offset + 4, v);
 
         texCoordCount++;
     }
@@ -459,10 +465,12 @@ public class DynamicRenderer implements IResource
 
     public void normal(float x, float y, float z, float w)
     {
-        nBuffer.writeFloat(normalCount * NUM_NORMAL_COMPONENTS * PrimitiveSize.FLOAT, x)
-                .writeFloat(normalCount * NUM_NORMAL_COMPONENTS * PrimitiveSize.FLOAT + 4, y)
-                .writeFloat(normalCount * NUM_NORMAL_COMPONENTS * PrimitiveSize.FLOAT + 8, z)
-                .writeFloat(normalCount * NUM_NORMAL_COMPONENTS * PrimitiveSize.FLOAT + 12, w);
+        final int offset = SIZE_OF_NORMAL * normalCount;
+
+        nBuffer.writeFloat(offset, x)
+                .writeFloat(offset + 4, y)
+                .writeFloat(offset + 8, z)
+                .writeFloat(offset + 12, w);
 
         normalCount++;
     }
