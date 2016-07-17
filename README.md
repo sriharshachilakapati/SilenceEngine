@@ -10,7 +10,7 @@ The main feature of SilenceEngine is it's simplicity, and it greatly reduces the
 
 - __State Based Games__:
 
-      SilenceEngine supports separating the game logic into different states, like intro state, story state, play state, high score state, game over state, and any other state that you are going to create. This allows you to keep stuff separate and your code base clean and easy to read.
+    SilenceEngine supports separating the game logic into different states, like intro state, story state, play state, high score state, game over state, and any other state that you are going to create. This allows you to keep stuff separate and your code base clean and easy to read.
 
 - __Module Based Engine__:
 
@@ -42,8 +42,11 @@ It is also easier to use in development mode as we will check for OpenGL errors 
 
 ## Licence
 
- - This is licenced under MIT licence, which you can find [here](http://choosealicense.com/licenses/mit/).
- - This game engine is written on top of [LWJGL 3](http://lwjgl.org). You can find it's licence [here](https://github.com/LWJGL/lwjgl3/blob/master/doc/LICENSE.txt).
+ - The engine, and all the backends in this repo are licenced under MIT licence, which you can find [here](http://choosealicense.com/licenses/mit/).
+ - This desktop backend uses [LWJGL 3](http://lwjgl.org). You can find it's licence [here](https://github.com/LWJGL/lwjgl3/blob/master/doc/LICENSE.txt).
+ - The GWT backend uses [WebGL4J](https://github.com/sriharshachilakapati/WebGL4J/), [GWT-AL](https://github.com/sriharshachilakapati/GWT-AL/) and [GwtOpentype](https://github.com/sriharshachilakapati/GwtOpentype/) libraries which operate on MIT licence.
+ - The Android backend uses [AndroidOpenAL](https://github.com/sriharshachilakapati/AndroidOpenAL/) library which uses LGPL v3 licence.
+ - The engine uses [EasyJSON](https://github.com/sriharshachilakapati/EasyJSON/) and [EasyXML](https://github.com/sriharshachilakapati/EasyXML/) libraries which are released under MIT licence.
 
 ## Links
 
