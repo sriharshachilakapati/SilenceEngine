@@ -31,12 +31,12 @@ import com.shc.silenceengine.utils.IDGenerator;
  */
 public final class CollisionTag
 {
-    public final long tagID = IDGenerator.generate();
+    public final long id = IDGenerator.generate();
 
     @Override
     public int hashCode()
     {
-        return (int) (tagID ^ (tagID >>> 32));
+        return (int) (id ^ (id >>> 32));
     }
 
     @Override
@@ -47,7 +47,6 @@ public final class CollisionTag
 
         CollisionTag that = (CollisionTag) o;
 
-        return tagID == that.tagID;
-
+        return id == that.id;
     }
 }

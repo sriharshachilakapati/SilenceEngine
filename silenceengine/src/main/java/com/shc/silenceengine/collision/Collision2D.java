@@ -34,7 +34,7 @@ import java.util.List;
  * (Separating Axis Theorem) This class also calculates the response, like how much the polygons have overlapped, and in
  * what direction they overlapped.
  *
- * @author Sri Harsha CHilakapati
+ * @author Sri Harsha Chilakapati
  */
 public final class Collision2D
 {

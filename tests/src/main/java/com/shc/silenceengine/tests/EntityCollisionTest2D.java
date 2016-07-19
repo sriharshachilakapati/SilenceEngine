@@ -25,7 +25,7 @@
 package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.collision.CollisionTag;
-import com.shc.silenceengine.collision.broadphase.Grid;
+import com.shc.silenceengine.collision.broadphase.DynamicTree2D;
 import com.shc.silenceengine.collision.colliders.SceneCollider2D;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Color;
@@ -126,7 +126,7 @@ public class EntityCollisionTest2D extends SilenceTest
         program.setUniform("camera", camera);
 
         scene = new Scene2D();
-        collider = new SceneCollider2D(new Grid(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight(), 48, 48));
+        collider = new SceneCollider2D(new DynamicTree2D());
         collider.setScene(scene);
 
         collider.register(heroTag, wallsTag);
