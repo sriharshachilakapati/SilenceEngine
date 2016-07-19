@@ -28,6 +28,7 @@ import com.shc.silenceengine.events.IDisposeEventHandler;
 import com.shc.silenceengine.events.IRenderEventHandler;
 import com.shc.silenceengine.events.IResizeEventHandler;
 import com.shc.silenceengine.events.IUpdateEventHandler;
+import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.utils.GameTimer;
 import com.shc.silenceengine.utils.functional.Provider;
 
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
+import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -171,6 +174,7 @@ public final class EventManager
 
     public void raiseRenderEvent(float delta)
     {
+        GLContext.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         processHandlers();
 
         if (waiting)
@@ -199,6 +203,13 @@ public final class EventManager
             handler.dispose();
 
         // No updates happen after dispose, it's the end of the game
+        clearAllHandlers();
+    }
+
+    public void clearAllHandlers()
+    {
+        processHandlers();
+
         updateEventHandlers.clear();
         renderEventHandlers.clear();
         resizeEventHandlers.clear();

@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.tests.android;
 
+import com.shc.silenceengine.backend.android.AndroidLauncher;
 import com.shc.silenceengine.backend.android.AndroidRuntime;
 import com.shc.silenceengine.tests.TestRunner;
 import com.shc.silenceengine.tests.TouchTest;
@@ -31,7 +32,7 @@ import com.shc.silenceengine.tests.TouchTest;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class TouchTestActivity extends TestActivity
+public class TouchTestActivity extends AndroidLauncher
 {
     @Override
     public void launchGame()

@@ -319,28 +319,28 @@ public class DynamicRenderer implements IResource
 
         if (vertexLocation != -1)
         {
-            vboVert.bind();
+            vboVert.uploadData(vBuffer.sizeBytes(), BufferObject.Usage.DYNAMIC_DRAW);
             vboVert.uploadData(vBuffer, BufferObject.Usage.DYNAMIC_DRAW);
             vao.pointAttribute(vertexLocation, NUM_VERTEX_COMPONENTS, GL_FLOAT, vboVert);
         }
 
         if (colorLocation != -1)
         {
-            vboCol.bind();
+            vboCol.uploadData(cBuffer.sizeBytes(), BufferObject.Usage.DYNAMIC_DRAW);
             vboCol.uploadData(cBuffer, BufferObject.Usage.DYNAMIC_DRAW);
             vao.pointAttribute(colorLocation, NUM_COLOR_COMPONENTS, GL_FLOAT, vboCol);
         }
 
         if (normalLocation != -1)
         {
-            vboNorm.bind();
+            vboNorm.uploadData(nBuffer.sizeBytes(), BufferObject.Usage.DYNAMIC_DRAW);
             vboNorm.uploadData(nBuffer, BufferObject.Usage.DYNAMIC_DRAW);
             vao.pointAttribute(normalLocation, NUM_NORMAL_COMPONENTS, GL_FLOAT, vboNorm);
         }
 
         if (texCoordLocation != -1)
         {
-            vboTex.bind();
+            vboTex.uploadData(tBuffer.sizeBytes(), BufferObject.Usage.DYNAMIC_DRAW);
             vboTex.uploadData(tBuffer, BufferObject.Usage.DYNAMIC_DRAW);
             vao.pointAttribute(texCoordLocation, NUM_TEXCOORD_COMPONENTS, GL_FLOAT, vboTex);
         }

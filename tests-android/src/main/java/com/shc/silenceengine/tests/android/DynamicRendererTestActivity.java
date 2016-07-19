@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.tests.android;
 
+import com.shc.silenceengine.backend.android.AndroidLauncher;
 import com.shc.silenceengine.backend.android.AndroidRuntime;
 import com.shc.silenceengine.tests.DynamicRendererTest;
 import com.shc.silenceengine.tests.TestRunner;
@@ -31,7 +32,7 @@ import com.shc.silenceengine.tests.TestRunner;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class DynamicRendererTestActivity extends TestActivity
+public class DynamicRendererTestActivity extends AndroidLauncher
 {
     @Override
     public void launchGame()

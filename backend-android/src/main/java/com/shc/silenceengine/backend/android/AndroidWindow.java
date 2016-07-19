@@ -46,6 +46,8 @@ public class AndroidWindow implements GLSurfaceView.Renderer
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config)
     {
+        SilenceEngine.eventManager.clearAllHandlers();
+        SilenceEngine.gameLoop.onFocusLost();
         startCallback.invoke();
     }
 

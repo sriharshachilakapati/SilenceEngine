@@ -26,6 +26,11 @@ package com.shc.silenceengine.backend.android;
 
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.utils.TaskManager;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -48,6 +53,29 @@ public final class AndroidRuntime
         SilenceEngine.input = new AndroidInputDevice();
 
         AndroidRuntime.game = game;
+
+        // Notify the game loop that we got focus
+        SilenceEngine.gameLoop.onFocusGain();
+
+        // This is a hack to enable the TaskManager. The TaskManager fails to register upon
+        // recreating the context, and or reopening the app without calling System.exit()
+        Class<?> klass = TaskManager.class;
+        try
+        {
+            Field field = klass.getDeclaredField("initialized");
+            field.setAccessible(true);
+            field.setBoolean(null, false);
+
+            Method method = klass.getDeclaredMethod("checkInitialized");
+            method.setAccessible(true);
+            method.invoke(null);
+        }
+        catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
+        {
+            e.printStackTrace();
+        }
+
+        // Now initialize the game
         game.init();
     }
 }
