@@ -29,27 +29,49 @@ import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.core.SilenceEngine;
 
 /**
+ * <p>A sound is a collection of samples that needs to be played. It simply is a wrapper over an OpenAL buffer.</p>
+ *
  * @author Sri Harsha Chilakapati
  */
 public class Sound implements IResource
 {
+    /**
+     * The OpenAL Buffer that is backing the audio of this sound.
+     */
     public ALBuffer buffer;
 
+    /**
+     * Construct a new Sound object with a OpenAL Buffer.
+     *
+     * @param buffer The OpenAL audio buffer containing the audio samples.
+     */
     public Sound(ALBuffer buffer)
     {
         this.buffer = buffer;
     }
 
+    /**
+     * Plays this sound in a static environment.
+     */
     public void play()
     {
         SilenceEngine.audio.scene.playStatic(this);
     }
 
+    /**
+     * Plays this sound in a static environment, optionally allowing you to loop the sound.
+     *
+     * @param loop Whether to loop the sound.
+     */
     public void play(boolean loop)
     {
         SilenceEngine.audio.scene.playStatic(this, loop);
     }
 
+    /**
+     * Stops this sound from playing. Note that in case this sound is playing through a source, then this method doesn't
+     * stop this sound.
+     */
     public void stop()
     {
         SilenceEngine.audio.scene.stopStatic(this);

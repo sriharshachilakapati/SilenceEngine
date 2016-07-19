@@ -27,16 +27,35 @@ package com.shc.silenceengine.audio;
 import com.shc.silenceengine.math.Vector3;
 
 /**
+ * <p>An AudioSource is like a speaker that lives in a 3D world. Each sound will be played through a source. This class
+ * allows for specifying the spatial properties like the position, the velocity and direction of the source.</p>
+ *
  * @author Sri Harsha Chilakapati
  */
 public class AudioSource
 {
+    /**
+     * The position vector of the source. This is relative to the origin (0, 0, 0).
+     */
     public final Vector3 position  = new Vector3();
+
+    /**
+     * The velocity vector of the source. This velocity is not added to the position every frame like one would expect,
+     * but is used to render doppler effect.
+     */
     public final Vector3 velocity  = new Vector3();
+
+    /**
+     * The direction vector of the source. This is used to specify the orientation of the speaker, where it is looking
+     * at is the question.
+     */
     public final Vector3 direction = new Vector3();
 
     boolean updated = true;
 
+    /**
+     * Marks this source for updating. This causes the AudioScene to apply these properties to all the playing sounds.
+     */
     public void update()
     {
         // The updating to ALSource will happen in AudioScene

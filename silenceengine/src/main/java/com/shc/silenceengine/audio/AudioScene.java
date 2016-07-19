@@ -35,6 +35,10 @@ import java.util.Map;
 import static com.shc.silenceengine.audio.AudioDevice.Constants.*;
 
 /**
+ * <p>An AudioScene allows you to play positional sounds, in 3D. The scene updates itself whenever the game updates,
+ * and also updates the position, direction and velocity of the updated sources. It acts like a master of all sounds.
+ * </p>
+ *
  * @author Sri Harsha Chilakapati
  */
 public final class AudioScene
@@ -61,6 +65,10 @@ public final class AudioScene
         SilenceEngine.eventManager.addUpdateHandler(this::updateSources);
     }
 
+    /**
+     * Stops all the sources and makes sure that no sound is playing from the game. This method does not stop the static
+     * sounds of course because static sounds do not have a source attached.
+     */
     public void stopAllSources()
     {
         for (PlayingSource source : playingSources.keySet())
@@ -114,21 +122,47 @@ public final class AudioScene
         }
     }
 
+    /**
+     * Plays a sound as a static audio, that is, it has no position and special effects.
+     *
+     * @param sound The sound to be played.
+     */
     public void playStatic(Sound sound)
     {
         play(sound, defaultAudioSource, false);
     }
 
+    /**
+     * Plays a static sound, optionally allowing you to loop the sound.
+     *
+     * @param sound The sound to be played.
+     * @param loop  Whether to loop the sound.
+     */
     public void playStatic(Sound sound, boolean loop)
     {
         play(sound, defaultAudioSource, loop);
     }
 
+    /**
+     * Plays a sound through a specified AudioSource. The AudioSource instance specifies the spatial properties of the
+     * sound to be played.
+     *
+     * @param sound  The Sound object to be played.
+     * @param source The AudioSource object which describes the spatial properties.
+     */
     public void play(Sound sound, AudioSource source)
     {
         play(sound, source, false);
     }
 
+    /**
+     * Plays a sound through a specified AudioSource, optionally allowing you to loop the sound. The AudioSource
+     * instance specifies the spatial properties of the sound to be played.
+     *
+     * @param sound  The Sound object to be played.
+     * @param source The AudioSource object which describes the spatial properties.
+     * @param loop   Whether to play the sound in loop.
+     */
     public void play(Sound sound, AudioSource source, boolean loop)
     {
         ALSource alSource = sourcesPool.pop();
@@ -151,6 +185,11 @@ public final class AudioScene
         playingSources.put(playingSource, source);
     }
 
+    /**
+     * Stops a sound which is playing from all the sources. Other sounds for the sources will not be effected.
+     *
+     * @param sound The sound to stop playing.
+     */
     public void stopFromAllSources(Sound sound)
     {
         for (PlayingSource source : playingSources.keySet())
@@ -160,6 +199,11 @@ public final class AudioScene
         }
     }
 
+    /**
+     * Stops all the sounds that are playing from a specific source.
+     *
+     * @param source The source from which the sounds should be stopped.
+     */
     public void stopAllFromSource(AudioSource source)
     {
         for (PlayingSource playingSource : playingSources.keySet())
@@ -169,11 +213,22 @@ public final class AudioScene
         }
     }
 
+    /**
+     * Stops the sound which is being played statically without any spatial properties.
+     *
+     * @param sound The sound to be stopped.
+     */
     public void stopStatic(Sound sound)
     {
         stop(sound, defaultAudioSource);
     }
 
+    /**
+     * Stops a sound from playing from a specific source.
+     *
+     * @param sound  The sound to be stopped.
+     * @param source The source which is playing that sound.
+     */
     public void stop(Sound sound, AudioSource source)
     {
         for (PlayingSource playingSource : playingSources.keySet())
