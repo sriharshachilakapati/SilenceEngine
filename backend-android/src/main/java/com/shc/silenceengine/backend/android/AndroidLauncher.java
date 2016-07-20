@@ -66,13 +66,25 @@ public abstract class AndroidLauncher extends Activity
         super.onResume();
         surfaceView.onResume();
 
-        surfaceView.queueEvent(() -> SilenceEngine.gameLoop.onFocusGain());
+        surfaceView.queueEvent(() ->
+        {
+            SilenceEngine.gameLoop.onFocusGain();
+
+            if (SilenceEngine.audio != null)
+                ((AndroidAudioDevice) SilenceEngine.audio).onFocusGain();
+        });
     }
 
     @Override
     protected void onPause()
     {
-        surfaceView.queueEvent(() -> SilenceEngine.gameLoop.onFocusLost());
+        surfaceView.queueEvent(() ->
+        {
+            SilenceEngine.gameLoop.onFocusLost();
+
+            if (SilenceEngine.audio != null)
+                ((AndroidAudioDevice) SilenceEngine.audio).onFocusLost();
+        });
 
         super.onPause();
         surfaceView.onPause();

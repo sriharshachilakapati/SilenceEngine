@@ -26,8 +26,8 @@ package com.shc.silenceengine.backend.android;
 
 import com.shc.androidopenal.AL;
 import com.shc.androidopenal.ALC;
-import com.shc.androidopenal.ALCdevice;
 import com.shc.androidopenal.ALCcontext;
+import com.shc.androidopenal.ALCdevice;
 import com.shc.silenceengine.audio.AudioDevice;
 import com.shc.silenceengine.audio.openal.ALBuffer;
 import com.shc.silenceengine.backend.android.soundreaders.OggReader;
@@ -42,12 +42,19 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class AndroidAudioDevice extends AudioDevice
 {
+    // List of all the sources, and the paused sources. The sources will be paused on out of focus,
+    // and will be resumed automatically on getting focus back.
+    private final List<Integer> sources       = new ArrayList<>();
+    private final List<Integer> pausedSources = new ArrayList<>();
+
     public AndroidAudioDevice()
     {
         ALCdevice device = ALC.alcOpenDevice();
@@ -89,7 +96,11 @@ public class AndroidAudioDevice extends AudioDevice
     {
         IntBuffer intBuffer = ByteBuffer.allocateDirect(PrimitiveSize.INT).order(ByteOrder.nativeOrder()).asIntBuffer();
         AL.alGenSources(1, intBuffer);
-        return intBuffer.get(0);
+
+        int source = intBuffer.get(0);
+        sources.add(source);
+
+        return source;
     }
 
     @Override
@@ -148,6 +159,9 @@ public class AndroidAudioDevice extends AudioDevice
         DirectBuffer directBuffer = DirectBuffer.wrap(sources);
         AL.alDeleteSources(sources.length, ((ByteBuffer) directBuffer.nativeBuffer()).asIntBuffer());
         DirectBuffer.free(directBuffer);
+
+        for (int i : sources)
+            this.sources.remove((Integer) i);
     }
 
     @Override
@@ -192,5 +206,26 @@ public class AndroidAudioDevice extends AudioDevice
         }
 
         return false;
+    }
+
+    public void onFocusLost()
+    {
+        pausedSources.clear();
+        for (int source : sources)
+        {
+            if (AL.alIsSource(source) != 0)
+            {
+                pausedSources.add(source);
+                alSourcePause(source);
+            }
+        }
+    }
+
+    public void onFocusGain()
+    {
+        for (int source : pausedSources)
+            alSourcePlay(source);
+
+        pausedSources.clear();
     }
 }
