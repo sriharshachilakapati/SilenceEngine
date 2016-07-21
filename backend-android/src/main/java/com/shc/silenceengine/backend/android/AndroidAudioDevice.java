@@ -45,6 +45,8 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.shc.silenceengine.audio.AudioDevice.Constants.*;
+
 /**
  * @author Sri Harsha Chilakapati
  */
@@ -54,6 +56,11 @@ public class AndroidAudioDevice extends AudioDevice
     // and will be resumed automatically on getting focus back.
     private final List<Integer> sources       = new ArrayList<>();
     private final List<Integer> pausedSources = new ArrayList<>();
+
+    // The temp buffer is used to store the result from AndroidOpenAL.
+    private final IntBuffer temp = ByteBuffer.allocateDirect(PrimitiveSize.INT)
+            .order(ByteOrder.nativeOrder())
+            .asIntBuffer();
 
     public AndroidAudioDevice()
     {
@@ -211,9 +218,13 @@ public class AndroidAudioDevice extends AudioDevice
     public void onFocusLost()
     {
         pausedSources.clear();
+
         for (int source : sources)
         {
-            if (AL.alIsSource(source) != 0)
+            AL.alGetSourcei(source, AL_SOURCE_STATE, temp);
+
+            // Pause the source explicitly if it is looping or playing
+            if (temp.get(0) == AL_PLAYING || temp.get(0) == AL_LOOPING)
             {
                 pausedSources.add(source);
                 alSourcePause(source);
