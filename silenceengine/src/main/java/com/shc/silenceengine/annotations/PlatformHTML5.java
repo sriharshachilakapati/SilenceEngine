@@ -29,7 +29,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Represents that a method will only work on the HTML5 platform (Web) and ignored on other platforms.
+ * Represents that a method will work on the HTML5 platform (Web).
  *
  * @author Sri Harsha Chilakapati
  */
