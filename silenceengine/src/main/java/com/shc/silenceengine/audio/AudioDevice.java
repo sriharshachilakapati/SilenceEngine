@@ -36,6 +36,9 @@ import com.shc.silenceengine.utils.functional.UniCallback;
  */
 public abstract class AudioDevice
 {
+    /**
+     * The public instance of the AudioScene, or the world where audio sources live.
+     */
     public final AudioScene scene = new AudioScene();
 
     public abstract int alGenBuffers();
@@ -70,6 +73,9 @@ public abstract class AudioDevice
 
     public abstract boolean isSupported(AudioFormat format);
 
+    /**
+     * The format of the audio. This represents the File Format, and not the format used to store the sound in memory.
+     */
     public enum AudioFormat
     {
         OGG,
@@ -78,6 +84,9 @@ public abstract class AudioDevice
         WEBM
     }
 
+    /**
+     * Container class for all the OpenAL constants.
+     */
     public static class Constants
     {
         /**
