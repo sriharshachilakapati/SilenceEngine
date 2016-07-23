@@ -1,27 +1,43 @@
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2016 Sri Harsha Chilakapati
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
+* The MIT License (MIT)
+*
+* Copyright (c) 2014-2016 Sri Harsha Chilakapati
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+*/
 
+
+allprojects {
+    apply plugin: "idea"
+
+    // Define the versions of all the dependencies
+    project.ext {
+        gwtVersion           = "2.8.0-SNAPSHOT"
+        webgl4jVersion       = "0.2.9-SNAPSHOT"
+        gwtAlVersion         = "0.2-SNAPSHOT"
+        gwtOpentypeVersion   = "0.1-SNAPSHOT"
+        streamsVersion       = "1.0.3"
+        openAlAndroidVersion = "0.1-SNAPSHOT"
+        retrolambdaVersion   = "2.3.0"
+        lwjglVersion         = "3.0.1-SNAPSHOT"
+    }
+}
 
 buildscript {
     repositories {
@@ -30,56 +46,53 @@ buildscript {
     }
 
     dependencies {
-        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:2.1.0'
-        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
-        classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
+        classpath "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6"
+        classpath "com.android.tools.build:gradle:2.1.0"
+        classpath "me.tatarka:gradle-retrolambda:3.2.5"
+        classpath "me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2"
     }
 
-    configurations.classpath.exclude group: 'com.android.tools.external.lombok'
-}
-
-allprojects {
-    apply plugin: 'idea'
+    configurations.classpath.exclude group: "com.android.tools.external.lombok"
 }
 
 subprojects {
-    apply plugin: 'eclipse'
-    apply plugin: 'maven'
+    apply plugin: "eclipse"
+    apply plugin: "maven"
 
     repositories {
         jcenter()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/google-snapshots/" }
     }
 }
 
 project(":silenceengine") {
-    apply plugin: 'java'
+    apply plugin: "java"
 }
 
 project(":backend-gwt") {
-    apply plugin: 'java'
+    apply plugin: "java"
 
     dependencies {
         compile project(":silenceengine")
-        compile 'com.goharsha:webgl4j:0.2.9-SNAPSHOT'
-        compile 'com.goharsha:gwt-al:0.2-SNAPSHOT'
-        compile 'com.goharsha:gwt-opentype:0.1-SNAPSHOT'
-        compile 'com.google.gwt:gwt-user:2.8.0-beta1'
+        compile "com.goharsha:webgl4j:${webgl4jVersion}"
+        compile "com.goharsha:gwt-al:${gwtAlVersion}"
+        compile "com.goharsha:gwt-opentype:${gwtOpentypeVersion}"
+        compile "com.google.gwt:gwt-user:${gwtVersion}"
     }
 }
 
 project(":backend-android") {
-    apply plugin: 'me.tatarka.retrolambda'
-    apply plugin: 'com.android.library'
+    apply plugin: "me.tatarka.retrolambda"
+    apply plugin: "com.android.library"
 
     dependencies {
         provided project(":silenceengine")
-        compile 'com.annimon:stream:1.0.3'
-        compile 'com.goharsha:android-openal:0.1-SNAPSHOT'
+        compile "com.annimon:stream:${streamsVersion}"
+        compile "com.goharsha:android-openal:${openAlAndroidVersion}"
 
-        retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
+        retrolambdaConfig "net.orfjackal.retrolambda:retrolambda:${retrolambdaVersion}"
     }
 
     repositories {
@@ -88,9 +101,7 @@ project(":backend-android") {
 }
 
 project(":backend-lwjgl") {
-    apply plugin: 'java'
-
-    project.ext.lwjglVersion = "3.0.1-SNAPSHOT"
+    apply plugin: "java"
 
     dependencies {
         compile project(":silenceengine")
@@ -102,7 +113,7 @@ project(":backend-lwjgl") {
 }
 
 project(":tests") {
-    apply plugin: 'java'
+    apply plugin: "java"
 
     dependencies {
         compile project(":silenceengine")
@@ -110,7 +121,7 @@ project(":tests") {
 }
 
 project(":tests-gwt") {
-    apply plugin: 'java'
+    apply plugin: "java"
 
     dependencies {
         compile project(":tests")
@@ -119,23 +130,22 @@ project(":tests-gwt") {
 }
 
 project(":tests-lwjgl") {
-    apply plugin: 'java'
+    apply plugin: "java"
 }
 
 project(":tests-android") {
-    apply plugin: 'com.android.application'
-    apply plugin: 'me.tatarka.retrolambda'
+    apply plugin: "com.android.application"
+    apply plugin: "me.tatarka.retrolambda"
 
     dependencies {
         provided project(":silenceengine")
         provided project(":tests")
 
         compile project(":backend-android")
-        compile 'com.annimon:stream:1.0.3'
+        compile "com.annimon:stream:${streamsVersion}"
+        compile "com.goharsha:android-openal:${openAlAndroidVersion}"
 
-        compile 'com.goharsha:android-openal:0.2-SNAPSHOT'
-
-        retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
+        retrolambdaConfig "net.orfjackal.retrolambda:retrolambda:${retrolambdaVersion}"
     }
 
     repositories {

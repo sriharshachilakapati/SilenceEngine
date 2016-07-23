@@ -34,13 +34,15 @@ gwt {
     minHeapSize = "512M";
     maxHeapSize = "1024M";
 
-    gwtVersion = '2.8.0-beta1'
-    modules 'com.shc.silenceengine.tests.GwtTests'
-    devModules 'com.shc.silenceengine.tests.GwtTests'
+    gwtVersion = "${gwtVersion}"
+    modules "com.shc.silenceengine.tests.GwtTests"
+    devModules "com.shc.silenceengine.tests.GwtTests"
 
     compiler {
-        style = 'DETAILED'
+        style = "DETAILED"
     }
+
+    eclipse.addGwtContainer = false;
 }
 
 javadoc {
@@ -48,8 +50,9 @@ javadoc {
 }
 
 dependencies {
-    providedCompile 'com.google.gwt:gwt-user:2.8.0-beta1'
-    providedCompile 'com.google.gwt:gwt-servlet:2.8.0-beta1'
+    providedCompile "com.google.gwt:gwt-user:${gwtVersion}"
+    providedCompile "com.google.gwt:gwt-dev:${gwtVersion}"
+    providedCompile "com.google.gwt:gwt-servlet:${gwtVersion}"
 
     providedCompile project(":silenceengine")
     providedCompile project(":backend-gwt")
@@ -71,14 +74,14 @@ task superDev(type: de.richsource.gradle.plugins.gwt.GwtSuperDev) {
 
 war {
     from sourceSets.main.resources
-    from files(project(':silenceengine').sourceSets.main.output.resourcesDir)
-    from files(project(':tests').sourceSets.main.output.resourcesDir)
+    from files(project(":silenceengine").sourceSets.main.output.resourcesDir)
+    from files(project(":tests").sourceSets.main.output.resourcesDir)
 }
 
 task addSource << {
-    sourceSets.main.compileClasspath += files(project(':silenceengine').sourceSets.main.allSource)
-    sourceSets.main.compileClasspath += files(project(':backend-gwt').sourceSets.main.allSource)
-    sourceSets.main.compileClasspath += files(project(':tests').sourceSets.main.allSource)
+    sourceSets.main.compileClasspath += files(project(":silenceengine").sourceSets.main.allSource)
+    sourceSets.main.compileClasspath += files(project(":backend-gwt").sourceSets.main.allSource)
+    sourceSets.main.compileClasspath += files(project(":tests").sourceSets.main.allSource)
 }
 
 tasks.compileGwt.dependsOn(addSource)
