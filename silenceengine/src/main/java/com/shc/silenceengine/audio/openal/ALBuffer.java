@@ -51,6 +51,11 @@ public class ALBuffer implements IResource
         ALError.check();
     }
 
+    /**
+     * Construct an ALBuffer object to manage an OpenAL buffer which is already created.
+     *
+     * @param alBufferID The OpenAL Buffer handle.
+     */
     public ALBuffer(int alBufferID)
     {
         id = alBufferID;
