@@ -54,7 +54,16 @@ public class AndroidImageReader extends ImageReader
 
             for (int x = 0; x < image.getWidth(); x++)
                 for (int y = 0; y < image.getHeight(); y++)
-                    image.setPixel(x, y, new Color(bitmap.getPixel(x, y)));
+                {
+                    int rgba = bitmap.getPixel(x, y);
+
+                    float r = ((rgba & 0x00FF0000) >> 16) / 255f;
+                    float g = ((rgba & 0x0000FF00) >> 8) / 255f;
+                    float b = (rgba & 0x000000FF) / 255f;
+                    float a = ((rgba & 0xFF000000) >> 24) / 255f;
+
+                    image.setPixel(x, y, new Color(r, g, b, a));
+                }
 
             bitmap.recycle();
             bitmap = null;

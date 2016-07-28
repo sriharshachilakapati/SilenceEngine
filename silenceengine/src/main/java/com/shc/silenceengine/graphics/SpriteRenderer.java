@@ -25,63 +25,37 @@
 package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.core.SilenceException;
-import com.shc.silenceengine.graphics.opengl.BufferObject;
-import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.graphics.opengl.VertexArray;
-import com.shc.silenceengine.graphics.programs.SpriteProgram;
-import com.shc.silenceengine.io.DirectBuffer;
-import com.shc.silenceengine.math.Matrix4;
+import com.shc.silenceengine.graphics.programs.DynamicProgram;
 import com.shc.silenceengine.math.Transform;
-import com.shc.silenceengine.math.Transforms;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.utils.functional.UniCallback;
-
-import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.GL_FLOAT;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class SpriteRenderer
 {
-    private static SpriteProgram program;
-    private static int           instances;
+    private Vector3 tempVec = new Vector3();
+    private Color   tempCol = new Color();
 
-    private VertexArray  vao;
-    private BufferObject vbo;
+    private static DynamicProgram program;
+    private static int            instances;
+
+    private DynamicRenderer renderer;
+    private Texture         currentTexture;
 
     private boolean disposed;
 
     // Instantiation should happen only via static method
     private SpriteRenderer()
     {
-        vao = new VertexArray();
-        vao.bind();
+        renderer = new DynamicRenderer(500 * 2 * 3);
+        program.applyToRenderer(renderer);
 
-        vbo = new BufferObject(BufferObject.Target.ARRAY_BUFFER);
-        vbo.bind();
-
-        float[] verts = {
-                0, 0, 0, 0,
-                1, 0, 1, 0,
-                0, 1, 0, 1,
-                1, 0, 1, 0,
-                1, 1, 1, 1,
-                0, 1, 0, 1
-        };
-
-        DirectBuffer vertBuf = DirectBuffer.wrap(verts);
-        vbo.uploadData(vertBuf, BufferObject.Usage.STATIC_DRAW);
-        DirectBuffer.free(vertBuf);
-
-        program.use();
-        program.setUniform("spriteTex", 0);
-        program.setUniform("customTexCoords", false);
-
-        int position = program.getAttribute("position");
-        vao.enableAttributeArray(position);
-        vao.pointAttribute(position, 4, GL_FLOAT, vbo);
+        currentTexture = Texture.CURRENT != null ? Texture.CURRENT
+                                                 : Texture.fromColor(Color.BLACK, 16, 16);
     }
 
     public static void create(UniCallback<SpriteRenderer> onComplete)
@@ -94,31 +68,83 @@ public class SpriteRenderer
             return;
         }
 
-        SpriteProgram.create(program ->
+        DynamicProgram.create(program ->
         {
             SpriteRenderer.program = program;
             onComplete.invoke(new SpriteRenderer());
         });
     }
 
+    public void begin()
+    {
+        renderer.begin(Primitive.TRIANGLES);
+    }
+
     public void render(Sprite sprite, Transform transform)
     {
-        vao.bind();
+        render(sprite, transform, Color.BLACK);
+    }
 
+    public void render(Sprite sprite, Transform transform, Color tint)
+    {
+        render(sprite, transform, tint, 1);
+    }
+
+    public void render(Sprite sprite, Transform transform, Color tint, float opacity)
+    {
         Texture texture = sprite.getCurrentFrame();
-        if (texture.getID() != Texture.CURRENT.getID())
+
+        if (currentTexture == null || texture.getID() != currentTexture.getID())
+        {
+            flush();
             texture.bind(0);
+            program.setUniform("tex", 0);
+            currentTexture = texture;
+        }
 
-        Vector3 scale = Vector3.REUSABLE_STACK.pop().set(texture.getWidth(), texture.getHeight(), 1);
-        Matrix4 sprMat = Transforms.createScaling(scale, Matrix4.REUSABLE_STACK.pop()).multiply(transform.matrix);
+        tempCol.set(tint).a *= opacity;
 
-        program.prepareFrame();
-        program.setUniform("sprite", sprMat);
+        final float tw = texture.getWidth() / 2;
+        final float th = texture.getHeight() / 2;
 
-        Vector3.REUSABLE_STACK.push(scale);
-        Matrix4.REUSABLE_STACK.push(sprMat);
+        renderer.vertex(tempVec.set(-1, -1, 0).scale(tw, th, 0).multiply(transform.matrix));
+        renderer.texCoord(currentTexture.getMinU(), currentTexture.getMinV());
+        renderer.color(tempCol);
 
-        GLContext.drawArrays(vao, Primitive.TRIANGLES, 0, 6);
+        renderer.vertex(tempVec.set(1, -1, 0).scale(tw, th, 0).multiply(transform.matrix));
+        renderer.texCoord(currentTexture.getMaxU(), currentTexture.getMinV());
+        renderer.color(tempCol);
+
+        renderer.vertex(tempVec.set(-1, 1, 0).scale(tw, th, 0).multiply(transform.matrix));
+        renderer.texCoord(currentTexture.getMinU(), currentTexture.getMaxV());
+        renderer.color(tempCol);
+
+        renderer.vertex(tempVec.set(1, -1, 0).scale(tw, th, 0).multiply(transform.matrix));
+        renderer.texCoord(currentTexture.getMaxU(), currentTexture.getMinV());
+        renderer.color(tempCol);
+
+        renderer.vertex(tempVec.set(1, 1, 0).scale(tw, th, 0).multiply(transform.matrix));
+        renderer.texCoord(currentTexture.getMaxU(), currentTexture.getMaxV());
+        renderer.color(tempCol);
+
+        renderer.vertex(tempVec.set(-1, 1, 0).scale(tw, th, 0).multiply(transform.matrix));
+        renderer.texCoord(currentTexture.getMinU(), currentTexture.getMaxV());
+        renderer.color(tempCol);
+    }
+
+    public void flush()
+    {
+        renderer.flush();
+    }
+
+    public void end()
+    {
+        renderer.end();
+    }
+
+    public boolean isActive()
+    {
+        return renderer.isActive();
     }
 
     public void dispose()
@@ -127,9 +153,7 @@ public class SpriteRenderer
             throw new SilenceException("Cannot dispose an already disposed object");
 
         instances--;
-
-        vao.dispose();
-        vbo.dispose();
+        renderer.dispose();
 
         if (instances == 0)
         {

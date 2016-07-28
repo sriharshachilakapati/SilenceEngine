@@ -28,7 +28,7 @@ allprojects {
 
     // Define the versions of all the dependencies
     project.ext {
-        gwtVersion           = "2.8.0-SNAPSHOT"
+        gwtVersion           = "2.8.0-beta1"
         webgl4jVersion       = "0.2.9-SNAPSHOT"
         gwtAlVersion         = "0.2-SNAPSHOT"
         gwtOpentypeVersion   = "0.1-SNAPSHOT"
@@ -47,7 +47,7 @@ buildscript {
 
     dependencies {
         classpath "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6"
-        classpath "com.android.tools.build:gradle:2.1.0"
+        classpath "com.android.tools.build:gradle:2.1.2"
         classpath "me.tatarka:gradle-retrolambda:3.2.5"
         classpath "me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2"
     }

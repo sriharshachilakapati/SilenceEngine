@@ -834,7 +834,7 @@ public class Window
                 float r = (color.r * 255f);
                 float g = (color.g * 255f);
                 float b = (color.b * 255f);
-                float a = ((1 - color.a) * 255f);
+                float a = (color.a * 255f);
 
                 data.put((byte) r)
                         .put((byte) g)

@@ -68,7 +68,7 @@ public class LwjglImageReader extends ImageReader
                     float r = (imageBuffer.get(start) & 0xff) / 255f;
                     float g = (imageBuffer.get(start + 1) & 0xff) / 255f;
                     float b = (imageBuffer.get(start + 2) & 0xff) / 255f;
-                    float a = 1 - (imageBuffer.get(start + 3) & 0xff) / 255f;
+                    float a = (imageBuffer.get(start + 3) & 0xff) / 255f;
 
                     image.setPixel(x, y, new Color(r, g, b, a));
                 }

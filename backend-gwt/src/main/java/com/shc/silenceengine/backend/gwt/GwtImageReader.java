@@ -50,7 +50,7 @@ public class GwtImageReader extends ImageReader
                         pixels.getRedAt(x, y) / 255f,
                         pixels.getGreenAt(x, y) / 255f,
                         pixels.getBlueAt(x, y) / 255f,
-                        1 - (pixels.getAlphaAt(x, y) / 255f)
+                        pixels.getAlphaAt(x, y) / 255f
                 ));
         }
 

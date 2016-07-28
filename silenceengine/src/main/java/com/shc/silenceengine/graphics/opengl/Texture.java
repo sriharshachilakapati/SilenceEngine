@@ -111,7 +111,7 @@ public class Texture implements IResource
                 int r = (int) (color.r * 255f);
                 int g = (int) (color.g * 255f);
                 int b = (int) (color.b * 255f);
-                int a = (int) ((1 - color.a) * 255f);
+                int a = (int) (color.a * 255f);
 
                 data.writeByte(index++, (byte) r)
                         .writeByte(index++, (byte) g)
@@ -122,7 +122,7 @@ public class Texture implements IResource
 
         Color.REUSABLE_STACK.push(color);
 
-        Texture texture = fromDirectBuffer(data, image.getWidth(), image.getHeight(), 4);
+        Texture texture = fromDirectBuffer(data, width, height, 4);
         SilenceEngine.io.free(data);
 
         texture.width = image.getOriginalWidth();
@@ -136,9 +136,14 @@ public class Texture implements IResource
         Texture texture = new Texture();
 
         texture.bind();
-        texture.setFilter(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+        texture.setFilter(GL_LINEAR, GL_LINEAR);
         texture.image2d(buffer, GL_UNSIGNED_BYTE, components == 4 ? GL_RGBA : GL_RGB, width, height, GL_RGBA);
-        texture.generateMipMaps();
+
+        if (texture.width >= 128 && texture.height >= 128)
+        {
+            texture.generateMipMaps();
+            texture.setFilter(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+        }
 
         return texture;
     }
