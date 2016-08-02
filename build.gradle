@@ -36,6 +36,8 @@ allprojects {
         openAlAndroidVersion = "0.1-SNAPSHOT"
         retrolambdaVersion   = "2.3.0"
         lwjglVersion         = "3.0.1-SNAPSHOT"
+        easyXmlVersion       = "0.1"
+        easyJsonVersion      = "0.3"
     }
 }
 
@@ -69,6 +71,11 @@ subprojects {
 
 project(":silenceengine") {
     apply plugin: "java"
+
+    dependencies {
+        compile "com.goharsha:easyxml:${easyXmlVersion}:@jar"
+        compile "com.goharsha:easyjson:${easyJsonVersion}:@jar"
+    }
 }
 
 project(":backend-gwt") {
@@ -80,6 +87,8 @@ project(":backend-gwt") {
         compile "com.goharsha:gwt-al:${gwtAlVersion}"
         compile "com.goharsha:gwt-opentype:${gwtOpentypeVersion}"
         compile "com.google.gwt:gwt-user:${gwtVersion}"
+        compile "com.goharsha:easyxml:${easyXmlVersion}:gwt"
+        compile "com.goharsha:easyjson:${easyJsonVersion}:gwt"
     }
 }
 
@@ -89,6 +98,8 @@ project(":backend-android") {
 
     dependencies {
         provided project(":silenceengine")
+        provided "com.goharsha:easyxml:${easyXmlVersion}:@jar"
+        provided "com.goharsha:easyjson:${easyJsonVersion}:@jar"
         compile "com.annimon:stream:${streamsVersion}"
         compile "com.goharsha:android-openal:${openAlAndroidVersion}"
 
@@ -109,6 +120,8 @@ project(":backend-lwjgl") {
         compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-windows"
         compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-linux"
         compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
+        compile "com.goharsha:easyxml:${easyXmlVersion}:@jar"
+        compile "com.goharsha:easyjson:${easyJsonVersion}:@jar"
     }
 }
 
@@ -140,6 +153,8 @@ project(":tests-android") {
     dependencies {
         provided project(":silenceengine")
         provided project(":tests")
+        provided "com.goharsha:easyxml:${easyXmlVersion}:@jar"
+        provided "com.goharsha:easyjson:${easyJsonVersion}:@jar"
 
         compile project(":backend-android")
         compile "com.annimon:stream:${streamsVersion}"
