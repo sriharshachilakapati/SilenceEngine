@@ -34,6 +34,8 @@
     <inherits name="com.shc.gwtal.client"/>
     <inherits name="com.shc.SilenceEngine"/>
     <inherits name='com.shc.GwtOpenType'/>
+    <inherits name="com.shc.EasyXML"/>
+    <inherits name="com.shc.EasyJSON"/>
 
     <source path='gwt'/>
 
