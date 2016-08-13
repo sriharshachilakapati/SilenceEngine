@@ -26,6 +26,7 @@ package com.shc.silenceengine.graphics.fonts;
 
 import com.shc.easyxml.Xml;
 import com.shc.easyxml.XmlTag;
+import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.io.FilePath;
@@ -41,7 +42,7 @@ import java.util.Map;
 /**
  * @author Sri harsha Chilakapati
  */
-public class BitmapFont
+public class BitmapFont implements IResource
 {
     public final Map<Integer, Texture> pages = new HashMap<>();
     public final Map<Integer, Char>    chars = new HashMap<>();
@@ -64,7 +65,7 @@ public class BitmapFont
         return hadKerning ? kerningPairs.get(first).get(second) : 0;
     }
 
-    public static void create(FilePath fontDesc, UniCallback<BitmapFont> callback)
+    public static void load(FilePath fontDesc, UniCallback<BitmapFont> callback)
     {
         SilenceEngine.io.getFileReader().readTextFile(fontDesc, xmlString ->
         {

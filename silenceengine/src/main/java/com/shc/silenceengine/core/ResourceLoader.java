@@ -28,6 +28,7 @@ import com.shc.silenceengine.audio.AudioDevice.AudioFormat;
 import com.shc.silenceengine.audio.Sound;
 import com.shc.silenceengine.audio.openal.ALBuffer;
 import com.shc.silenceengine.graphics.Image;
+import com.shc.silenceengine.graphics.fonts.BitmapFont;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.IDGenerator;
@@ -116,6 +117,11 @@ public class ResourceLoader
         alBufferLoadHelper(path, (resource, filePath) -> submitter.submit(new Sound(resource), path));
     }
 
+    private static void bitmapFontLoadHelper(FilePath path, ISubmitter<BitmapFont> submitter)
+    {
+        BitmapFont.load(path, bitmapFont -> submitter.submit(bitmapFont, path));
+    }
+
     public long define(Class<? extends IResource> klass, FilePath path)
     {
         toBeLoaded.put(path, klass);
@@ -187,5 +193,6 @@ public class ResourceLoader
         setHelper(Texture.class, ResourceLoader::textureLoadHelper);
         setHelper(ALBuffer.class, ResourceLoader::alBufferLoadHelper);
         setHelper(Sound.class, ResourceLoader::soundLoadHelper);
+        setHelper(BitmapFont.class, ResourceLoader::bitmapFontLoadHelper);
     }
 }

@@ -49,7 +49,7 @@ public class FontRendererTest extends SilenceTest
     {
         SilenceEngine.display.setTitle("FontRendererTest");
 
-        BitmapFont.create(FilePath.getResourceFile("/engine_resources/fonts/roboto32px.fnt"), font ->
+        BitmapFont.load(FilePath.getResourceFile("/engine_resources/fonts/roboto32px.fnt"), font ->
         {
             bitmapFont = font;
             BitmapFontRenderer.create(renderer -> fontRenderer = renderer);
