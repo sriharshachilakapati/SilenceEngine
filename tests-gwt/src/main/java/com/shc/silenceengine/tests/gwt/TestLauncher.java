@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.shc.silenceengine.backend.gwt.GwtRuntime;
 import com.shc.silenceengine.tests.DynamicRendererTest;
 import com.shc.silenceengine.tests.EntityCollisionTest2D;
+import com.shc.silenceengine.tests.FontRendererTest;
 import com.shc.silenceengine.tests.GameTest;
 import com.shc.silenceengine.tests.KeyboardTest;
 import com.shc.silenceengine.tests.OpenGLTest;
@@ -107,6 +108,7 @@ public class TestLauncher implements EntryPoint
         tests.put("SoundTest", SoundTest::new);
         tests.put("ResourceLoaderTest", ResourceLoaderTest::new);
         tests.put("SpriteRendererTest", SpriteRendererTest::new);
+        tests.put("FontRendererTest", FontRendererTest::new);
     }
 
     @FunctionalInterface

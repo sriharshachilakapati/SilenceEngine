@@ -171,7 +171,7 @@ public class BitmapFont
             for (XmlTag page : pagesTag.children)
             {
                 int id = Integer.parseInt(page.getAttribute("id").value);
-                FilePath file = fontDesc.getParent().getChild(page.getAttribute("path").value);
+                FilePath file = fontDesc.getParent().getChild(page.getAttribute("file").value);
 
                 // Just because variable used in lambda should be effectively final.
                 SimpleCallback finalLoadingCallback = loadingCallback;
@@ -192,6 +192,12 @@ public class BitmapFont
 
             loadingCallback.invoke();
         });
+    }
+
+    public void dispose()
+    {
+        for (Texture page : pages.values())
+            page.dispose();
     }
 
     public static class Info

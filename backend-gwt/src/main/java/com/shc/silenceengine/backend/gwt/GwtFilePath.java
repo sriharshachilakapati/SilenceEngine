@@ -82,14 +82,12 @@ public class GwtFilePath extends FilePath
     @Override
     public boolean isDirectory()
     {
-        return !isFile();
+        return exists;
     }
 
     @Override
     public boolean isFile()
     {
-        // XMLHttpRequest cannot be used with directories, so if it exists
-        // then it should be a directory
         return exists;
     }
 

@@ -43,6 +43,7 @@
         <activity android:name=".DynamicRendererTestActivity"/>
         <activity android:name=".ResourceLoaderTestActivity"/>
         <activity android:name=".SpriteRendererTestActivity"/>
+        <activity android:name=".FontRendererTestActivity"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>

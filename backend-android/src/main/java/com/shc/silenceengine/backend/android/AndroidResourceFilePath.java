@@ -55,13 +55,15 @@ public class AndroidResourceFilePath extends AndroidFilePath
     {
         try
         {
-            return getInputStream() != null;
+            AssetFileDescriptor desc = assetManager.openFd(path);
+            desc.close();
         }
-        catch (IOException e)
+        catch (Exception e)
         {
-            e.printStackTrace();
-            return false;
+            return true;
         }
+
+        return false;
     }
 
     @Override
