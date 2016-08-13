@@ -26,7 +26,6 @@ package com.shc.silenceengine.graphics.fonts;
 
 import com.shc.easyxml.Xml;
 import com.shc.easyxml.XmlTag;
-import com.shc.silenceengine.core.IResource;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.io.FilePath;
@@ -42,7 +41,7 @@ import java.util.Map;
 /**
  * @author Sri harsha Chilakapati
  */
-public class BitmapFont implements IResource
+public class BitmapFont implements IFont
 {
     public final Map<Integer, Texture> pages = new HashMap<>();
     public final Map<Integer, Char>    chars = new HashMap<>();
@@ -199,6 +198,44 @@ public class BitmapFont implements IResource
     {
         for (Texture page : pages.values())
             page.dispose();
+    }
+
+    @Override
+    public float getWidth(String text)
+    {
+        float x = 0;
+        float width = 0;
+
+        Char last = null;
+
+        for (char ch : text.toCharArray())
+        {
+            if (ch == '\n')
+            {
+                width = Math.max(x, width);
+                x = 0;
+                last = null;
+                continue;
+            }
+
+            Char curr = chars.get((int) ch);
+            curr = curr == null ? chars.get((int) ' ') : curr;
+
+            x += curr.xAdvance;
+
+            if (last != null)
+                x += getKerning(last, curr);
+
+            last = curr;
+        }
+
+        return Math.max(x, width);
+    }
+
+    @Override
+    public float getHeight()
+    {
+        return common.lineHeight;
     }
 
     public static class Info

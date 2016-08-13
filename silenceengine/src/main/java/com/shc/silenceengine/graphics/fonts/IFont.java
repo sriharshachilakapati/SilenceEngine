@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.graphics;
+package com.shc.silenceengine.graphics.fonts;
 
 import com.shc.silenceengine.core.IResource;
 
@@ -31,17 +31,6 @@ import com.shc.silenceengine.core.IResource;
  */
 public interface IFont extends IResource
 {
-    void begin();
-
-    default void draw(String text, float x, float y)
-    {
-        draw(text, x, y, Color.WHITE);
-    }
-
-    void draw(String text, float x, float y, Color color);
-
-    void end();
-
     float getWidth(String text);
 
     float getHeight();

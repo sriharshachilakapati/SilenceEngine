@@ -105,11 +105,8 @@ public class BitmapFontRenderer
 
             if (last == null || fChar.page != last.page)
             {
-//                if (last != null)
-                {
-                    end();
-                    begin();
-                }
+                end();
+                begin();
 
                 font.pages.get(fChar.page).bind(0);
             }
