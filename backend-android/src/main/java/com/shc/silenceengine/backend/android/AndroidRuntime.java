@@ -26,7 +26,9 @@ package com.shc.silenceengine.backend.android;
 
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.utils.GameTimer;
 import com.shc.silenceengine.utils.TaskManager;
+import com.shc.silenceengine.utils.TimeUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -59,16 +61,23 @@ public final class AndroidRuntime
 
         // This is a hack to enable the TaskManager. The TaskManager fails to register upon
         // recreating the context, and or reopening the app without calling System.exit()
-        Class<?> klass = TaskManager.class;
+        // The same bug is also present in GameTimer utility class, so apply this hack for it too.
         try
         {
-            Field field = klass.getDeclaredField("initialized");
+            Field field = TaskManager.class.getDeclaredField("initialized");
             field.setAccessible(true);
             field.setBoolean(null, false);
 
-            Method method = klass.getDeclaredMethod("checkInitialized");
+            Method method = TaskManager.class.getDeclaredMethod("checkInitialized");
             method.setAccessible(true);
             method.invoke(null);
+
+            field = GameTimer.class.getDeclaredField("initialized");
+            field.setAccessible(true);
+            field.setBoolean(null, false);
+
+            // Create a temporary timer so that the timing handler is registered
+            new GameTimer(0, TimeUtils.Unit.SECONDS).start();
         }
         catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
         {

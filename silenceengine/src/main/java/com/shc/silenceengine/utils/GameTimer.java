@@ -52,6 +52,10 @@ public class GameTimer
             initialized = true;
         }
 
+        this.callback = () ->
+        {
+        };
+
         this.time = TimeUtils.convert(time, unit, TimeUtils.getDefaultTimeUnit());
     }
 

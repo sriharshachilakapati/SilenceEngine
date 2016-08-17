@@ -30,7 +30,7 @@ import com.shc.silenceengine.utils.MathUtils;
 import com.shc.silenceengine.utils.ReusableStack;
 
 /**
- * A Color class with RGBA colors. Has 140 predefined colors from <a href=http://www.w3schools.com/cssref/css_colornames.asp>http://www.w3schools.com/cssref/css_colornames.asp</a>
+ * A Color class with RGBA colors. Has 140 predefined colors from <a href=http://www.w3schools.com/colors/colors_names.asp>http://www.w3schools.com/colors/colors_names.asp</a>
  *
  * @author Sri Harsha Chilakapati
  * @author Tyler Hancock
