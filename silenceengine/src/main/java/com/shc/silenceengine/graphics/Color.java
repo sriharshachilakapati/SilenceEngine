@@ -47,7 +47,7 @@ public class Color
     public static final Color WHITE = new Color(0xFFFFFF);
 
     // Other colors (legal HTML colors) from
-    // http://www.w3schools.com/cssref/css_colornames.asp
+    // http://www.w3schools.com/colors/colors_names.asp
 
     public static final Color ALICE_BLUE          = new Color(0xF0F8FF);
     public static final Color ANTIQUE_WHITE       = new Color(0xFAEBD7);
