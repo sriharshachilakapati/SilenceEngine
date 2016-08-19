@@ -363,4 +363,10 @@ public class Color
     {
         return getRed() << 24 | getGreen() << 16 | getBlue() << 8 | 255;
     }
+
+    @Override
+    public String toString()
+    {
+        return "Color [ r: " + r + ", g: " + g + ", b: " + b + ", a: " + a + " ]";
+    }
 }

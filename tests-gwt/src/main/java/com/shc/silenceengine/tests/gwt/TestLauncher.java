@@ -41,6 +41,7 @@ import com.shc.silenceengine.tests.SilenceTest;
 import com.shc.silenceengine.tests.SoundTest;
 import com.shc.silenceengine.tests.SpriteRendererTest;
 import com.shc.silenceengine.tests.TestRunner;
+import com.shc.silenceengine.tests.TmxMapTest;
 import com.shc.silenceengine.tests.TouchTest;
 
 import java.util.HashMap;
@@ -109,6 +110,8 @@ public class TestLauncher implements EntryPoint
         tests.put("ResourceLoaderTest", ResourceLoaderTest::new);
         tests.put("SpriteRendererTest", SpriteRendererTest::new);
         tests.put("FontRendererTest", FontRendererTest::new);
+        tests.put("TmxMapTestOrthogonal", () -> new TmxMapTest("test_resources/example.tmx"));
+        tests.put("TmxMapTestIsometric", () -> new TmxMapTest("test_resources/example-isometric.tmx"));
     }
 
     @FunctionalInterface

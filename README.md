@@ -26,7 +26,7 @@ The main feature of SilenceEngine is it's simplicity, and it greatly reduces the
 
 - __Tiled MAP Editor Support__:
 
-    SilenceEngine has support for loading and rendering maps made with the [Tiled Map Editor](http://mapeditor.org/). Currently supports automatically rendering of Orthogonal and Isometric maps, but the support will soon increase to all other map formats. The parser can parse any TMX format (even compressed) though.
+    SilenceEngine has support for loading and rendering maps made with the [Tiled Map Editor](http://mapeditor.org/). Currently supports automatically rendering of Orthogonal and Isometric maps, but the support will soon increase to all other map formats. The parser can parse any TMX format (not compressed, and XML only) though.
 
 - __Object Oriented Wrappers for OpenGL and OpenAL__:
 
