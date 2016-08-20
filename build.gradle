@@ -1,41 +1,169 @@
-apply plugin: 'java'
-apply plugin: 'eclipse'
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2016 Sri Harsha Chilakapati
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
-// Source sets in the project, specify source directories
-sourceSets {
-    main {
-        java.srcDir("${projectDir}/src/main/java/")
-        resources.srcDir("${projectDir}/src/main/java/")
+
+allprojects {
+    apply plugin: "idea"
+
+    // Define the versions of all the dependencies
+    project.ext {
+        gwtVersion           = "2.8.0-beta1"
+        webgl4jVersion       = "0.2.9-SNAPSHOT"
+        gwtAlVersion         = "0.2-SNAPSHOT"
+        gwtOpentypeVersion   = "0.1-SNAPSHOT"
+        streamsVersion       = "1.0.3"
+        openAlAndroidVersion = "0.1-SNAPSHOT"
+        retrolambdaVersion   = "2.3.0"
+        lwjglVersion         = "3.0.1-SNAPSHOT"
+        easyXmlVersion       = "0.1"
+        easyJsonVersion      = "0.3"
     }
 }
 
-// Dependencies for the project are stored in the libs directory
-dependencies {
-    compile fileTree(dir: "libs", includes: ["*.jar"])
-    runtime fileTree(dir: "libs", includes: ["*.jar"])
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
 
-    // Using this because the resources are in source code
-    runtime fileTree(dir: "${projectDir}/src/main/java/", includes: ["*"])
+    dependencies {
+        classpath "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6"
+        classpath "com.android.tools.build:gradle:2.1.2"
+        classpath "me.tatarka:gradle-retrolambda:3.2.5"
+        classpath "me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2"
+    }
+
+    configurations.classpath.exclude group: "com.android.tools.external.lombok"
 }
 
-// Exclude the tests from JavaDoc
-javadoc {
-    exclude("com/shc/silenceengine/tests/**")
+subprojects {
+    apply plugin: "eclipse"
+    apply plugin: "maven"
 
-    // Add MathJax to the header, so that we can render math inside documentation.
-    javadoc.options.header = '<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>'
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/google-snapshots/" }
+    }
 }
 
-// Control what goes into the JAR
-jar {
-    // Include all the classes except the tests
-    include("com/shc/silenceengine/**")
-    exclude("com/shc/silenceengine/tests/**")
+project(":silenceengine") {
+    apply plugin: "java"
 
-    // Only include the logo and the shader sources
-    include("resources/**.frag")
-    include("resources/**.vert")
-    include("resources/**.glsl")
-    include("resources/logo.png")
-    include("resources/logo_dark.png")
+    dependencies {
+        compile "com.goharsha:easyxml:${easyXmlVersion}:@jar"
+        compile "com.goharsha:easyjson:${easyJsonVersion}:@jar"
+    }
+}
+
+project(":backend-gwt") {
+    apply plugin: "java"
+
+    dependencies {
+        compile project(":silenceengine")
+        compile "com.goharsha:webgl4j:${webgl4jVersion}"
+        compile "com.goharsha:gwt-al:${gwtAlVersion}"
+        compile "com.goharsha:gwt-opentype:${gwtOpentypeVersion}"
+        compile "com.google.gwt:gwt-user:${gwtVersion}"
+        compile "com.goharsha:easyxml:${easyXmlVersion}:gwt"
+        compile "com.goharsha:easyjson:${easyJsonVersion}:gwt"
+    }
+}
+
+project(":backend-android") {
+    apply plugin: "me.tatarka.retrolambda"
+    apply plugin: "com.android.library"
+
+    dependencies {
+        provided project(":silenceengine")
+        provided "com.goharsha:easyxml:${easyXmlVersion}:@jar"
+        provided "com.goharsha:easyjson:${easyJsonVersion}:@jar"
+        compile "com.annimon:stream:${streamsVersion}"
+        compile "com.goharsha:android-openal:${openAlAndroidVersion}"
+
+        retrolambdaConfig "net.orfjackal.retrolambda:retrolambda:${retrolambdaVersion}"
+    }
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+project(":backend-lwjgl") {
+    apply plugin: "java"
+
+    dependencies {
+        compile project(":silenceengine")
+        compile "org.lwjgl:lwjgl:${lwjglVersion}"
+        compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-windows"
+        compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-linux"
+        compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
+        compile "com.goharsha:easyxml:${easyXmlVersion}:@jar"
+        compile "com.goharsha:easyjson:${easyJsonVersion}:@jar"
+    }
+}
+
+project(":tests") {
+    apply plugin: "java"
+
+    dependencies {
+        compile project(":silenceengine")
+    }
+}
+
+project(":tests-gwt") {
+    apply plugin: "java"
+
+    dependencies {
+        compile project(":tests")
+        compile project(":backend-gwt")
+    }
+}
+
+project(":tests-lwjgl") {
+    apply plugin: "java"
+}
+
+project(":tests-android") {
+    apply plugin: "com.android.application"
+    apply plugin: "me.tatarka.retrolambda"
+
+    dependencies {
+        provided project(":silenceengine")
+        provided project(":tests")
+        provided "com.goharsha:easyxml:${easyXmlVersion}:@jar"
+        provided "com.goharsha:easyjson:${easyJsonVersion}:@jar"
+
+        compile project(":backend-android")
+        compile "com.annimon:stream:${streamsVersion}"
+        compile "com.goharsha:android-openal:${openAlAndroidVersion}"
+
+        retrolambdaConfig "net.orfjackal.retrolambda:retrolambda:${retrolambdaVersion}"
+    }
+
+    repositories {
+        mavenCentral()
+    }
 }
