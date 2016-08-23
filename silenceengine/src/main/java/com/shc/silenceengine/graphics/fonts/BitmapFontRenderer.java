@@ -130,6 +130,8 @@ public class BitmapFontRenderer
             float u2 = sRight / font.common.scaleW;
             float v2 = sBot / font.common.scaleH;
 
+            renderer.flushOnOverflow(6);
+
             renderer.vertex(dLeft, dTop);
             renderer.texCoord(u1, v1);
             renderer.color(color);
