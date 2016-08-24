@@ -30,6 +30,8 @@ import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.utils.TaskManager;
+import com.shc.silenceengine.utils.functional.SimpleCallback;
 import org.lwjgl.system.Configuration;
 
 import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
@@ -62,21 +64,42 @@ public final class LwjglRuntime
 
         Window window = ((LwjglDisplayDevice) SilenceEngine.display).window;
 
-        SilenceEngine.display.setIcon(FilePath.getResourceFile("engine_resources/icon.png"));
+        final SimpleCallback[] performLoopFrame = {
+                () ->
+                {
+                    // Assume 100 seconds so that tasks are force flushed
+                    TaskManager.forceUpdateTasks(100);
+                    TaskManager.forceRenderTasks(100);
+                }
+        };
 
+        // Initiate setting the icon
+        SilenceEngine.display.setIcon(FilePath.getResourceFile("engine_resources/icon.png"), () ->
+        {
+            // Call the game's init method
+            game.init();
+
+            // Replace the callback so that we now perform the game loop instead of flushing
+            // tasks in TaskManager.
+            performLoopFrame[0] = SilenceEngine.gameLoop::performLoopFrame;
+
+            // Raise a resize event now
+            SilenceEngine.eventManager.raiseResizeEvent();
+        });
+
+        // Set the context to blend
         GLContext.enable(GL_BLEND);
         GLContext.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        game.init();
-        SilenceEngine.eventManager.raiseResizeEvent();
-
+        // The native event loop
         while (!window.shouldClose())
         {
             GLFW3.pollEvents();
-            SilenceEngine.gameLoop.performLoopFrame();
+            performLoopFrame[0].invoke();
             window.swapBuffers();
         }
 
+        // Raise the dispose event finally
         SilenceEngine.eventManager.raiseDisposeEvent();
     }
 }

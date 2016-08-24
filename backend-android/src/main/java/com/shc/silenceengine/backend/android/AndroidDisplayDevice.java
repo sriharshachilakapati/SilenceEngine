@@ -31,6 +31,7 @@ import android.os.SystemClock;
 import com.shc.silenceengine.core.IDisplayDevice;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.utils.functional.SimpleCallback;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -117,7 +118,7 @@ public class AndroidDisplayDevice implements IDisplayDevice
     }
 
     @Override
-    public void setIcon(FilePath filePath)
+    public void setIcon(FilePath filePath, SimpleCallback success)
     {
     }
 

@@ -33,6 +33,7 @@ import com.shc.silenceengine.core.IDisplayDevice;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Vector2;
+import com.shc.silenceengine.utils.functional.SimpleCallback;
 import org.lwjgl.glfw.GLFW;
 
 import static com.shc.silenceengine.core.SilenceEngine.*;
@@ -218,9 +219,9 @@ public class LwjglDisplayDevice implements IDisplayDevice
     }
 
     @Override
-    public void setIcon(FilePath filePath)
+    public void setIcon(FilePath filePath, SimpleCallback callback)
     {
-        window.setIcon(filePath);
+        window.setIcon(filePath, callback);
     }
 
     @Override

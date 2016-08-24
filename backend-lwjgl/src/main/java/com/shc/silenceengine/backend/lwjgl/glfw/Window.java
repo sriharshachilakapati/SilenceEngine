@@ -31,6 +31,7 @@ import com.shc.silenceengine.graphics.Image;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector4;
+import com.shc.silenceengine.utils.functional.SimpleCallback;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
@@ -513,7 +514,8 @@ public class Window
             cursorPositionCallback.invoke(window, xPos, yPos);
         });
 
-        glfwDropCallback = GLFWDropCallback.create((window, count, names) -> {
+        glfwDropCallback = GLFWDropCallback.create((window, count, names) ->
+        {
             String[] strings = new String[count];
 
             for (int i = 0; i < count; i++)
@@ -857,10 +859,14 @@ public class Window
      * Sets the icon for the window.
      *
      * @param imagePath The image to be used as an icon.
+     * @param success   The callback to be called upon successful icon set.
      */
-    public void setIcon(FilePath imagePath)
+    public void setIcon(FilePath imagePath, SimpleCallback success)
     {
-        SilenceEngine.io.getImageReader().readImage(imagePath, this::setIcon);
+        SilenceEngine.io.getImageReader().readImage(imagePath, image -> {
+            setIcon(image);
+            success.invoke();
+        });
     }
 
     /**
@@ -1211,7 +1217,8 @@ public class Window
         ICharacterCallback previousCallback = characterCallback;
 
         if (callback == null)
-            callback = (window, codePoint) -> {
+            callback = (window, codePoint) ->
+            {
             };
 
         this.characterCallback = callback;
@@ -1243,7 +1250,8 @@ public class Window
         ICharacterModsCallback previousCallback = characterModsCallback;
 
         if (callback == null)
-            callback = (window, cp, mods) -> {
+            callback = (window, cp, mods) ->
+            {
             };
 
         this.characterModsCallback = callback;
@@ -1274,7 +1282,8 @@ public class Window
         ICursorEnterCallback previousCallback = cursorEnterCallback;
 
         if (callback == null)
-            callback = (window, entered) -> {
+            callback = (window, entered) ->
+            {
             };
 
         this.cursorEnterCallback = callback;
@@ -1305,7 +1314,8 @@ public class Window
         ICursorPositionCallback previousCallback = cursorPositionCallback;
 
         if (callback == null)
-            callback = (window, x, y) -> {
+            callback = (window, x, y) ->
+            {
             };
 
         this.cursorPositionCallback = callback;
@@ -1337,7 +1347,8 @@ public class Window
         IDropCallback previousCallback = dropCallback;
 
         if (callback == null)
-            callback = (window, paths) -> {
+            callback = (window, paths) ->
+            {
             };
 
         this.dropCallback = callback;
@@ -1369,7 +1380,8 @@ public class Window
         IFramebufferSizeCallback previousCallback = framebufferSizeCallback;
 
         if (callback == null)
-            callback = (window, w, h) -> {
+            callback = (window, w, h) ->
+            {
             };
 
         this.framebufferSizeCallback = callback;
@@ -1401,7 +1413,8 @@ public class Window
         IKeyCallback previousCallback = keyCallback;
 
         if (callback == null)
-            callback = (win, key, sc, act, mods) -> {
+            callback = (win, key, sc, act, mods) ->
+            {
             };
 
         this.keyCallback = callback;
@@ -1433,7 +1446,8 @@ public class Window
         IMouseButtonCallback previousCallback = mouseButtonCallback;
 
         if (callback == null)
-            callback = (win, b, act, mods) -> {
+            callback = (win, b, act, mods) ->
+            {
             };
 
         this.mouseButtonCallback = callback;
@@ -1465,7 +1479,8 @@ public class Window
         IScrollCallback previousCallback = scrollCallback;
 
         if (callback == null)
-            callback = (win, x, y) -> {
+            callback = (win, x, y) ->
+            {
             };
 
         this.scrollCallback = callback;
@@ -1497,7 +1512,8 @@ public class Window
         IWindowCloseCallback previousCallback = windowCloseCallback;
 
         if (callback == null)
-            callback = (win) -> {
+            callback = (win) ->
+            {
             };
 
         this.windowCloseCallback = callback;
@@ -1529,7 +1545,8 @@ public class Window
         IWindowFocusCallback previousCallback = windowFocusCallback;
 
         if (callback == null)
-            callback = (win, focused) -> {
+            callback = (win, focused) ->
+            {
             };
 
         this.windowFocusCallback = callback;
@@ -1561,7 +1578,8 @@ public class Window
         IWindowIconifyCallback previousCallback = windowIconifyCallback;
 
         if (callback == null)
-            callback = (win, ic) -> {
+            callback = (win, ic) ->
+            {
             };
 
         this.windowIconifyCallback = callback;
@@ -1593,7 +1611,8 @@ public class Window
         IWindowPositionCallback previousCallback = windowPositionCallback;
 
         if (callback == null)
-            callback = (win, x, y) -> {
+            callback = (win, x, y) ->
+            {
             };
 
         this.windowPositionCallback = callback;
@@ -1625,7 +1644,8 @@ public class Window
         IWindowRefreshCallback previousCallback = windowRefreshCallback;
 
         if (callback == null)
-            callback = (win) -> {
+            callback = (win) ->
+            {
             };
 
         this.windowRefreshCallback = callback;
@@ -1657,7 +1677,8 @@ public class Window
         IWindowSizeCallback previousCallback = windowSizeCallback;
 
         if (callback == null)
-            callback = (win, w, h) -> {
+            callback = (win, w, h) ->
+            {
             };
 
         this.windowSizeCallback = callback;

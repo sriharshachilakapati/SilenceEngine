@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.shc.silenceengine.core.IDisplayDevice;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.utils.functional.SimpleCallback;
 import com.shc.webgl4j.client.OES_vertex_array_object;
 import com.shc.webgl4j.client.TimeUtil;
 import com.shc.webgl4j.client.WebGL10;
@@ -263,9 +264,10 @@ public class GwtDisplayDevice implements IDisplayDevice
     }
 
     @Override
-    public void setIcon(FilePath filePath)
+    public void setIcon(FilePath filePath, SimpleCallback callback)
     {
         setIcon(filePath.getPath());
+        callback.invoke();
     }
 
     @Override

@@ -52,7 +52,7 @@ public final class TaskManager
         checkInitialized();
     }
 
-    private static void update(float deltaTime)
+    public static void forceUpdateTasks(float deltaTime)
     {
         while (!updateTasks.isEmpty())
         {
@@ -62,7 +62,7 @@ public final class TaskManager
         }
     }
 
-    private static void render(float delta)
+    public static void forceRenderTasks(float delta)
     {
         while (!renderTasks.isEmpty())
         {
@@ -76,8 +76,8 @@ public final class TaskManager
     {
         if (!initialized)
         {
-            SilenceEngine.eventManager.addUpdateHandler(TaskManager::update);
-            SilenceEngine.eventManager.addRenderHandler(TaskManager::render);
+            SilenceEngine.eventManager.addUpdateHandler(TaskManager::forceUpdateTasks);
+            SilenceEngine.eventManager.addRenderHandler(TaskManager::forceRenderTasks);
             initialized = true;
         }
     }
