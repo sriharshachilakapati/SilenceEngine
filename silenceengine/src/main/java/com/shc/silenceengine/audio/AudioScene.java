@@ -97,7 +97,10 @@ public final class AudioScene
             ALSource source = playingSource.alSource;
             AudioSource audioSource = playingSources.get(playingSource);
 
-            if (source.getState() != ALSource.State.PLAYING)
+            ALSource.State state = source.getState();
+
+            if (state != ALSource.State.PLAYING &&
+                state != ALSource.State.LOOPING)
             {
                 source.attachBuffer(null);
 
