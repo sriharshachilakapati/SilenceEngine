@@ -77,6 +77,8 @@ public class SpriteRenderer
 
     public void begin()
     {
+        program.use();
+        program.applyToRenderer(renderer);
         renderer.begin(Primitive.TRIANGLES);
     }
 
@@ -106,6 +108,8 @@ public class SpriteRenderer
 
         final float tw = texture.getWidth() / 2;
         final float th = texture.getHeight() / 2;
+
+        renderer.flushOnOverflow(6);
 
         renderer.vertex(tempVec.set(-1, -1, 0).scale(tw, th, 0).multiply(transform.matrix));
         renderer.texCoord(currentTexture.getMinU(), currentTexture.getMinV());
@@ -140,6 +144,7 @@ public class SpriteRenderer
     public void end()
     {
         renderer.end();
+        currentTexture = null;
     }
 
     public boolean isActive()
