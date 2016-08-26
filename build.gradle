@@ -116,12 +116,31 @@ project(":backend-lwjgl") {
 
     dependencies {
         compile project(":silenceengine")
-        compile "org.lwjgl:lwjgl:${lwjglVersion}"
-        compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-windows"
-        compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-linux"
-        compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
         compile "com.goharsha:easyxml:${easyXmlVersion}:@jar"
         compile "com.goharsha:easyjson:${easyJsonVersion}:@jar"
+
+        compile "org.lwjgl:lwjgl:${lwjglVersion}"
+        compile "org.lwjgl:lwjgl-stb:${lwjglVersion}"
+        compile "org.lwjgl:lwjgl-glfw:${lwjglVersion}"
+        compile "org.lwjgl:lwjgl-jemalloc:${lwjglVersion}"
+        compile "org.lwjgl:lwjgl-opengl:${lwjglVersion}"
+        compile "org.lwjgl:lwjgl-openal:${lwjglVersion}"
+
+        compile "org.lwjgl:lwjgl:${lwjglVersion}:natives-windows"
+        compile "org.lwjgl:lwjgl:${lwjglVersion}:natives-macos"
+        compile "org.lwjgl:lwjgl:${lwjglVersion}:natives-linux"
+        compile "org.lwjgl:lwjgl-stb:${lwjglVersion}:natives-windows"
+        compile "org.lwjgl:lwjgl-stb:${lwjglVersion}:natives-macos"
+        compile "org.lwjgl:lwjgl-stb:${lwjglVersion}:natives-linux"
+        compile "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-windows"
+        compile "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-macos"
+        compile "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-linux"
+        compile "org.lwjgl:lwjgl-jemalloc:${lwjglVersion}:natives-windows"
+        compile "org.lwjgl:lwjgl-jemalloc:${lwjglVersion}:natives-macos"
+        compile "org.lwjgl:lwjgl-jemalloc:${lwjglVersion}:natives-linux"
+        compile "org.lwjgl:lwjgl-openal:${lwjglVersion}:natives-windows"
+        compile "org.lwjgl:lwjgl-openal:${lwjglVersion}:natives-macos"
+        compile "org.lwjgl:lwjgl-openal:${lwjglVersion}:natives-linux"
     }
 }
 
