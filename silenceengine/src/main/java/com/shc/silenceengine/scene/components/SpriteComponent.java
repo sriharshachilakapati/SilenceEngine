@@ -57,6 +57,7 @@ public class SpriteComponent implements IComponent2D
     @Override
     public void update(float deltaTime)
     {
+        sprite.update(deltaTime);
     }
 
     @Override
