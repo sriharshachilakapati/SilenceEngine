@@ -101,8 +101,9 @@ public class SpriteRenderer
             flush();
             texture.bind(0);
             program.setUniform("tex", 0);
-            currentTexture = texture;
         }
+
+        currentTexture = texture;
 
         tempCol.set(tint).a *= opacity;
 
