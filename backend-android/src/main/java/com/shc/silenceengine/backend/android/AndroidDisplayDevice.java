@@ -123,6 +123,11 @@ public class AndroidDisplayDevice implements IDisplayDevice
     }
 
     @Override
+    public void setIcon(FilePath filePath)
+    {
+    }
+
+    @Override
     public void close()
     {
     }
