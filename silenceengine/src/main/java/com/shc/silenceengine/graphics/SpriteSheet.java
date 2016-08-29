@@ -58,10 +58,10 @@ public class SpriteSheet
 
         if (cells[column][row] == null)
         {
-            float minU = (column * cellWidth) / texture.getWidth();
-            float minV = (row * cellHeight) / texture.getHeight();
-            float maxU = ((column + 1) * cellWidth - 1) / texture.getWidth();
-            float maxV = ((row + 1) * cellHeight - 1) / texture.getHeight();
+            float minU = (column * cellWidth + 0.5f) / texture.getWidth();
+            float minV = (row * cellHeight + 0.5f) / texture.getHeight();
+            float maxU = ((column + 1) * cellWidth - 0.5f) / texture.getWidth();
+            float maxV = ((row + 1) * cellHeight - 0.5f) / texture.getHeight();
 
             cells[column][row] = texture.getSubTexture(minU, minV, maxU, maxV, cellWidth, cellHeight);
         }
