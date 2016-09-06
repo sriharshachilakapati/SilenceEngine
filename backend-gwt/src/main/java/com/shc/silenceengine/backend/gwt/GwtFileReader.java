@@ -44,7 +44,8 @@ public class GwtFileReader extends FileReader
 
         // Set to read as ArrayBuffer and attach a handler
         request.setResponseType(XMLHttpRequest.ResponseType.ArrayBuffer);
-        request.setOnReadyStateChange(xhr -> {
+        request.setOnReadyStateChange(xhr ->
+        {
             if (request.getReadyState() == XMLHttpRequest.DONE)
                 // Invoke the onComplete handler
                 onComplete.invoke(new GwtDirectBuffer(request.getResponseArrayBuffer()));
@@ -63,7 +64,8 @@ public class GwtFileReader extends FileReader
 
         // Set to read as default mode and attach a handler
         request.setResponseType(XMLHttpRequest.ResponseType.Default);
-        request.setOnReadyStateChange(xhr -> {
+        request.setOnReadyStateChange(xhr ->
+        {
             if (request.getReadyState() == XMLHttpRequest.DONE)
                 // Invoke the onComplete handler
                 onComplete.invoke(request.getResponseText());

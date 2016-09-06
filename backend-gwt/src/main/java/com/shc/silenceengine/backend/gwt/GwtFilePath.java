@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.backend.gwt;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.xhr.client.XMLHttpRequest;
 import com.shc.silenceengine.io.FilePath;
 
@@ -38,6 +39,24 @@ import java.util.List;
 public class GwtFilePath extends FilePath
 {
     private static final List<FilePath> EMPTY_LIST = Collections.unmodifiableList(new ArrayList<>());
+
+    private static String resourcesRoot;
+
+    static
+    {
+        resourcesRoot = GWT.getModuleBaseURL();
+
+        // Get rid of the trailing slash
+        if (resourcesRoot.endsWith("/"))
+            resourcesRoot = resourcesRoot.substring(0, resourcesRoot.lastIndexOf('/'));
+
+        // Get rid of the module directory
+        resourcesRoot = resourcesRoot.substring(0, resourcesRoot.lastIndexOf('/'));
+
+        // Add the trailing slash if not present
+        if (!resourcesRoot.endsWith("/"))
+            resourcesRoot += "/";
+    }
 
     private boolean exists;
     private int     size;
@@ -54,9 +73,10 @@ public class GwtFilePath extends FilePath
 
         XMLHttpRequest request = XMLHttpRequest.create();
 
-        request.open("HEAD", getPath());
+        request.open("HEAD", getAbsolutePath());
 
-        request.setOnReadyStateChange(xhr -> {
+        request.setOnReadyStateChange(xhr ->
+        {
             if (request.getReadyState() == XMLHttpRequest.DONE)
                 try
                 {
@@ -131,6 +151,15 @@ public class GwtFilePath extends FilePath
     public long sizeInBytes()
     {
         return size;
+    }
+
+    @Override
+    public String getAbsolutePath()
+    {
+        if (type == Type.RESOURCE)
+            return resourcesRoot + super.getAbsolutePath();
+
+        return super.getAbsolutePath();
     }
 
     @Override
