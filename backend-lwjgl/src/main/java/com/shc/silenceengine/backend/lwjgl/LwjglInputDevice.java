@@ -54,7 +54,8 @@ public class LwjglInputDevice extends InputDevice
         window.setMouseButtonCallback((window1, button, action, mods) ->
                 postMouseEvent(translateMouseCode(button), action != GLFW_RELEASE));
 
-        window.setCursorPositionCallback((window1, xPos, yPos) -> {
+        window.setCursorPositionCallback((window1, xPos, yPos) ->
+        {
             Mouse.dx = (int) (xPos - Mouse.x);
             Mouse.dy = (int) (yPos - Mouse.y);
 
@@ -62,7 +63,8 @@ public class LwjglInputDevice extends InputDevice
             Mouse.y = (int) yPos;
         });
 
-        window.setScrollCallback((window1, xOffset, yOffset) -> {
+        window.setScrollCallback((window1, xOffset, yOffset) ->
+        {
             int dsx = (int) xOffset;
             int dsy = (int) yOffset;
 
@@ -70,6 +72,9 @@ public class LwjglInputDevice extends InputDevice
             Mouse.deltaScrollX = dsx > 0 ? 1 : dsx == 0 ? 0 : -1;
             Mouse.deltaScrollY = dsy > 0 ? 1 : dsy == 0 ? 0 : -1;
         });
+
+        window.setCharacterModsCallback((window1, codePoint, mods) ->
+                postTextEvent(Character.toChars(codePoint)));
 
         createKeyMap();
         createMouseMap();

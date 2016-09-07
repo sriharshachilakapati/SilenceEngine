@@ -54,28 +54,59 @@ public class GwtInputDevice extends InputDevice
 
         Canvas canvas = ((GwtDisplayDevice) SilenceEngine.display).canvas;
 
-        canvas.addKeyDownHandler(event -> {
-            postKeyEvent(getKeyCode(event.getNativeKeyCode()), true);
+        canvas.addKeyPressHandler(event ->
+        {
+            postTextEvent((char) event.getUnicodeCharCode());
             event.preventDefault();
         });
 
-        canvas.addKeyUpHandler(event -> {
-            postKeyEvent(getKeyCode(event.getNativeKeyCode()), false);
-            event.preventDefault();
+        canvas.addKeyDownHandler(event ->
+        {
+            int keyCode = getKeyCode(event.getNativeKeyCode());
+
+            postKeyEvent(keyCode, true);
+
+            switch (keyCode)
+            {
+                case Keyboard.KEY_UP:
+                case Keyboard.KEY_DOWN:
+                case Keyboard.KEY_RIGHT:
+                case Keyboard.KEY_LEFT:
+                    event.preventDefault();
+            }
         });
 
-        canvas.addMouseDownHandler(event -> {
+        canvas.addKeyUpHandler(event ->
+        {
+            int keyCode = getKeyCode(event.getNativeKeyCode());
+
+            postKeyEvent(keyCode, false);
+
+            switch (keyCode)
+            {
+                case Keyboard.KEY_UP:
+                case Keyboard.KEY_DOWN:
+                case Keyboard.KEY_RIGHT:
+                case Keyboard.KEY_LEFT:
+                    event.preventDefault();
+            }
+        });
+
+        canvas.addMouseDownHandler(event ->
+        {
             postMouseEvent(getMouseCode(event.getNativeButton()), true);
             canvas.setFocus(true);
             event.preventDefault();
         });
 
-        canvas.addMouseUpHandler(event -> {
+        canvas.addMouseUpHandler(event ->
+        {
             postMouseEvent(getMouseCode(event.getNativeButton()), false);
             event.preventDefault();
         });
 
-        canvas.addMouseMoveHandler(event -> {
+        canvas.addMouseMoveHandler(event ->
+        {
             int x = event.getX();
             int y = event.getY();
 
@@ -88,7 +119,8 @@ public class GwtInputDevice extends InputDevice
             event.preventDefault();
         });
 
-        canvas.addMouseWheelHandler(event -> {
+        canvas.addMouseWheelHandler(event ->
+        {
             int dsy = event.getDeltaY();
 
             // To normalize between 0 and 1
@@ -98,22 +130,26 @@ public class GwtInputDevice extends InputDevice
             event.preventDefault();
         });
 
-        canvas.addTouchStartHandler(event -> {
+        canvas.addTouchStartHandler(event ->
+        {
             postTouchEvents(event.getTargetTouches(), true);
             event.preventDefault();
         });
 
-        canvas.addTouchMoveHandler(event -> {
+        canvas.addTouchMoveHandler(event ->
+        {
             postTouchEvents(event.getTargetTouches(), true);
             event.preventDefault();
         });
 
-        canvas.addTouchEndHandler(event -> {
+        canvas.addTouchEndHandler(event ->
+        {
             postTouchEvents(event.getTargetTouches(), false);
             event.preventDefault();
         });
 
-        canvas.addTouchCancelHandler(event -> {
+        canvas.addTouchCancelHandler(event ->
+        {
             postTouchEvents(event.getTargetTouches(), false);
             event.preventDefault();
         });

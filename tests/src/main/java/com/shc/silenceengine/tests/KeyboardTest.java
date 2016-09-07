@@ -41,8 +41,14 @@ public class KeyboardTest extends SilenceTest
         logger = SilenceEngine.log.getLogger("KeyboardTest");
 
         SilenceEngine.display.setTitle("KeyboardTest");
+        SilenceEngine.input.addTextEventHandler(this::textInputCallback);
 
         logger.info("Test initialized successfully");
+    }
+
+    private void textInputCallback(char... chars)
+    {
+        logger.info("Got text " + new String(chars));
     }
 
     @Override

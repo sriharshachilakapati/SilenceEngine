@@ -27,6 +27,7 @@ package com.shc.silenceengine.input;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.events.IKeyEventHandler;
 import com.shc.silenceengine.events.IMouseEventHandler;
+import com.shc.silenceengine.events.ITextEventHandler;
 import com.shc.silenceengine.events.ITouchEventHandler;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public abstract class InputDevice
     private boolean simulateTouch;
 
     private List<IKeyEventHandler>   keyEventHandlers;
+    private List<ITextEventHandler>  textEventHandlers;
     private List<IMouseEventHandler> mouseEventHandlers;
     private List<ITouchEventHandler> touchEventHandlers;
 
@@ -58,6 +60,7 @@ public abstract class InputDevice
         keyEventHandlers = new ArrayList<>();
         mouseEventHandlers = new ArrayList<>();
         touchEventHandlers = new ArrayList<>();
+        textEventHandlers = new ArrayList<>();
 
         eventHandlerAddQueue = new LinkedList<>();
         eventHandlerRemQueue = new LinkedList<>();
@@ -84,6 +87,11 @@ public abstract class InputDevice
         eventHandlerAddQueue.add(handler);
     }
 
+    public void addTextEventHandler(ITextEventHandler handler)
+    {
+        eventHandlerAddQueue.add(handler);
+    }
+
     public void removeKeyEventHandler(IKeyEventHandler handler)
     {
         eventHandlerRemQueue.add(handler);
@@ -95,6 +103,11 @@ public abstract class InputDevice
     }
 
     public void removeTouchEventHandler(ITouchEventHandler handler)
+    {
+        eventHandlerRemQueue.add(handler);
+    }
+
+    public void removeTextEventHandler(ITextEventHandler handler)
     {
         eventHandlerRemQueue.add(handler);
     }
@@ -128,6 +141,14 @@ public abstract class InputDevice
             touchEventHandler.onTouchEvent(finger, isDown, xPos, yPos);
     }
 
+    public void postTextEvent(char... chars)
+    {
+        processEventHandlerQueues();
+
+        for (ITextEventHandler textEventHandler : textEventHandlers)
+            textEventHandler.invoke(chars);
+    }
+
     private void processEventHandlerQueues()
     {
         Object handler;
@@ -142,6 +163,9 @@ public abstract class InputDevice
 
             else if (handler instanceof ITouchEventHandler)
                 touchEventHandlers.add((ITouchEventHandler) handler);
+
+            else if (handler instanceof ITextEventHandler)
+                textEventHandlers.add((ITextEventHandler) handler);
         }
 
         while ((handler = eventHandlerRemQueue.poll()) != null)
@@ -154,6 +178,9 @@ public abstract class InputDevice
 
             else if (handler instanceof ITouchEventHandler)
                 touchEventHandlers.remove(handler);
+
+            else if (handler instanceof ITextEventHandler)
+                textEventHandlers.remove(handler);
         }
     }
 
