@@ -25,6 +25,7 @@
 package com.shc.silenceengine.backend.gwt;
 
 import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.StyleElement;
 import com.google.gwt.user.client.Window;
@@ -291,6 +292,27 @@ public class GwtDisplayDevice implements IDisplayDevice
     {
         return false;
     }
+
+    @Override
+    public void setGrabMouse(boolean grabMouse)
+    {
+        grabMouseImpl(grabMouse, canvas.getCanvasElement());
+    }
+
+    private native void grabMouseImpl(boolean grabMouse, CanvasElement canvas) /*-{
+        if (grabMouse)
+        {
+            canvas.requestPointerLock = canvas.requestPointerLock ||
+                    canvas.mozRequestPointerLock;
+
+            canvas.requestPointerLock();
+        }
+        else
+        {
+            $doc.exitPointerLock = $doc.exitPointerLock || $doc.mozExitPointerLock;
+            $doc.exitPointerLock();
+        }
+    }-*/;
 
     private native void setIcon(String url) /*-{
         var head = $doc.getElementsByTagName("head")[0];

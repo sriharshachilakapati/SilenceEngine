@@ -227,4 +227,13 @@ public interface IDisplayDevice
     {
         return (float) getWidth() / (float) getHeight();
     }
+
+    /**
+     * The window grabs the mouse, locks it from moving the cursor, especially useful for 3D games.
+     *
+     * @param grabMouse The state of the mouse, {@code true} for locking the curse, {@code false} otherwise.
+     */
+    @PlatformDesktop
+    @PlatformHTML5
+    void setGrabMouse(boolean grabMouse);
 }

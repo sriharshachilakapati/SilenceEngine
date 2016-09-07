@@ -148,4 +148,9 @@ public class AndroidDisplayDevice implements IDisplayDevice
     {
         return true;
     }
+
+    @Override
+    public void setGrabMouse(boolean grabMouse)
+    {
+    }
 }

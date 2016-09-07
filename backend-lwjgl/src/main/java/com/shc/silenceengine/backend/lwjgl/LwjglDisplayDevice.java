@@ -37,6 +37,7 @@ import com.shc.silenceengine.utils.functional.SimpleCallback;
 import org.lwjgl.glfw.GLFW;
 
 import static com.shc.silenceengine.core.SilenceEngine.*;
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * An implementation of the Display using GLFW as the windowing backend.
@@ -73,7 +74,8 @@ public class LwjglDisplayDevice implements IDisplayDevice
         window.show();
         window.makeCurrent();
 
-        window.setPositionCallback((window1, xPos, yPos) -> {
+        window.setPositionCallback((window1, xPos, yPos) ->
+        {
             if (!fullscreen)
             {
                 windowPositionX = xPos;
@@ -81,7 +83,8 @@ public class LwjglDisplayDevice implements IDisplayDevice
             }
         });
 
-        window.setSizeCallback((window1, width, height) -> {
+        window.setSizeCallback((window1, width, height) ->
+        {
             if (!fullscreen)
             {
                 windowWidth = width;
@@ -246,6 +249,15 @@ public class LwjglDisplayDevice implements IDisplayDevice
     public boolean hasFocus()
     {
         return focus;
+    }
+
+    @Override
+    public void setGrabMouse(boolean grabMouse)
+    {
+        if (grabMouse)
+            window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        else
+            window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 
     private void cleanUp()
