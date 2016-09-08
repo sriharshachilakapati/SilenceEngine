@@ -25,7 +25,6 @@
 package com.shc.silenceengine.backend.gwt;
 
 import com.google.gwt.animation.client.AnimationScheduler;
-import com.google.gwt.core.client.GWT;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.opengl.GLContext;
@@ -49,8 +48,6 @@ public final class GwtRuntime
     {
         SilenceEngine.log = new GwtLogDevice();
 
-        GWT.setUncaughtExceptionHandler(new UnwrappingExceptionHandler());
-
         SilenceEngine.display = new GwtDisplayDevice();
         SilenceEngine.input = new GwtInputDevice();
         SilenceEngine.io = new GwtIODevice();
@@ -72,6 +69,8 @@ public final class GwtRuntime
 
     private static void frameLoop(double timestamp)
     {
+        GwtInputDevice.pollControllers();
+
         SilenceEngine.gameLoop.performLoopFrame();
 
         // Request another frame

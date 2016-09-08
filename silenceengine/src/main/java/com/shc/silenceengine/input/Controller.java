@@ -73,6 +73,11 @@ public final class Controller
 
     public static final State[] states = new State[NUM_CONTROLLERS];
 
+    // Prevent construction
+    private Controller()
+    {
+    }
+
     static void init()
     {
         for (int i = 0; i < NUM_CONTROLLERS; i++)

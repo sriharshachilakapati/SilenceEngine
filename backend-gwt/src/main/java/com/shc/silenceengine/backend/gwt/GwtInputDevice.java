@@ -30,6 +30,7 @@ import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.input.Controller;
 import com.shc.silenceengine.input.InputDevice;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Mouse;
@@ -42,15 +43,19 @@ import java.util.Map;
  */
 public class GwtInputDevice extends InputDevice
 {
-    private final Map<Integer, Integer> keysMap  = new HashMap<>();
-    private final Map<Integer, Integer> mouseMap = new HashMap<>();
+    private final Map<Integer, Integer> keysMap             = new HashMap<>();
+    private final Map<Integer, Integer> mouseMap            = new HashMap<>();
+    private final Map<Integer, Integer> controllerButtonMap = new HashMap<>();
+    private final Map<Integer, Integer> controllerAxesMap   = new HashMap<>();
+    private final Map<Integer, Integer> keyShortCircuitMap  = new HashMap<>();
 
-    private final Map<Integer, Integer> keyShortCircuitMap = new HashMap<>();
+    private boolean gamepadsExist = false;
 
     public GwtInputDevice()
     {
         createKeyMapping();
         createMouseMapping();
+        createControllerMapping();
 
         Canvas canvas = ((GwtDisplayDevice) SilenceEngine.display).canvas;
 
@@ -155,6 +160,106 @@ public class GwtInputDevice extends InputDevice
         });
 
         preventContextMenu(canvas.getCanvasElement());
+
+        registerControllerConnectionEvents(this, Controller.NUM_CONTROLLERS);
+    }
+
+    public static void pollControllers()
+    {
+        GwtInputDevice inputDevice = (GwtInputDevice) SilenceEngine.input;
+
+        if (inputDevice.gamepadsExist)
+            pollControllers(inputDevice);
+    }
+
+    private static native void pollControllers(GwtInputDevice gid) /*-{
+        var gamepads = navigator.getGamepads();
+
+        for (var i = 0; i < gamepads.length; i++)
+        {
+            var gamepad = gamepads[i];
+
+            if (gamepad && gamepad.connected)
+            {
+                var id = gamepad.index;
+
+                for (var j = 0; j < gamepad.buttons.length; j++)
+                {
+                    var button = gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::getControllerButtonCode(*)(j);
+                    var state = gamepad.buttons[j].pressed;
+
+                    if (button != -1)
+                        gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::postControllerButtonEvent(*)(id, button, state)
+                }
+
+                for (var j = 0; j < gamepad.axes.length; j++)
+                {
+                    var axe = gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::getControllerAxeCode(*)(j);
+                    var amount = gamepad.axes[j];
+
+                    if (axe != -1)
+                        gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::postControllerAxeEvent(*)(id, axe, amount);
+                }
+            }
+        }
+    }-*/;
+
+    private native void registerControllerConnectionEvents(GwtInputDevice gid, int maxGamePads) /*-{
+        $wnd.addEventListener('gamepadconnected', function gamePadConnectEventHandler(event)
+        {
+            gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::gamepadsExist = true;
+
+            var gamepad = event.gamepad;
+
+            var id = gamepad.index;
+            var name = gamepad.id;
+
+            if (id >= maxGamePads)
+                return;
+
+            gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::postControllerConnectionEvent(*)(id, true, name);
+        });
+
+        $wnd.addEventListener('gamepaddisconnected', function gamePadDisconnectEventHandler(event)
+        {
+            var gamepad = event.gamepad;
+
+            var id = gamepad.index;
+            var name = 'Null Gamepad';
+
+            if (id >= maxGamePads)
+                return;
+
+            gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::postControllerConnectionEvent(*)(id, false, name);
+        });
+    }-*/;
+
+    private void createControllerMapping()
+    {
+        // Controller mappings came from the HTML5 GamePad API
+        // https://www.w3.org/TR/gamepad/#remapping
+
+        controllerButtonMap.put(0, Controller.BUTTON_A);
+        controllerButtonMap.put(1, Controller.BUTTON_B);
+        controllerButtonMap.put(2, Controller.BUTTON_X);
+        controllerButtonMap.put(3, Controller.BUTTON_Y);
+        controllerButtonMap.put(4, Controller.BUTTON_L1);
+        controllerButtonMap.put(5, Controller.BUTTON_R1);
+        controllerButtonMap.put(6, Controller.BUTTON_L2);
+        controllerButtonMap.put(7, Controller.BUTTON_R2);
+        controllerButtonMap.put(8, Controller.BUTTON_SELECT);
+        controllerButtonMap.put(9, Controller.BUTTON_START);
+        controllerButtonMap.put(10, Controller.BUTTON_LEFT_STICK);
+        controllerButtonMap.put(11, Controller.BUTTON_RIGHT_STICK);
+        controllerButtonMap.put(12, Controller.BUTTON_DPAD_UP);
+        controllerButtonMap.put(13, Controller.BUTTON_DPAD_DOWN);
+        controllerButtonMap.put(14, Controller.BUTTON_DPAD_LEFT);
+        controllerButtonMap.put(15, Controller.BUTTON_DPAD_RIGHT);
+
+        controllerAxesMap.put(0, Controller.AXE_LEFT_X);
+        controllerAxesMap.put(1, Controller.AXE_LEFT_Y);
+        controllerAxesMap.put(2, Controller.AXE_RIGHT_X);
+        controllerAxesMap.put(3, Controller.AXE_RIGHT_Y);
     }
 
     private native void preventContextMenu(CanvasElement canvas) /*-{
@@ -201,6 +306,18 @@ public class GwtInputDevice extends InputDevice
     {
         Integer code = mouseMap.get(nativeButtonCode);
         return code == null ? 0 : code;
+    }
+
+    private int getControllerButtonCode(int nativeButtonCode)
+    {
+        Integer code = controllerButtonMap.get(nativeButtonCode);
+        return code == null ? -1 : code;
+    }
+
+    private int getControllerAxeCode(int nativeAxeCode)
+    {
+        Integer code = controllerAxesMap.get(nativeAxeCode);
+        return code == null ? -1 : code;
     }
 
     private void createKeyMapping()
