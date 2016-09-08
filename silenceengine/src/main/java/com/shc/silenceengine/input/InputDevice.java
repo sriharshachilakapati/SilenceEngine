@@ -68,6 +68,7 @@ public abstract class InputDevice
         Keyboard.init();
         Mouse.init();
         Touch.init();
+        Controller.init();
 
         SilenceEngine.eventManager.addUpdateHandler(this::update);
     }
@@ -189,6 +190,7 @@ public abstract class InputDevice
         Keyboard.update();
         Mouse.update();
         Touch.update();
+        Controller.update();
 
         if (simulateTouch)
         {
