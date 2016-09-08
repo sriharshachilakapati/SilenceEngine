@@ -303,7 +303,7 @@ public class GwtDisplayDevice implements IDisplayDevice
         if (grabMouse)
         {
             canvas.requestPointerLock = canvas.requestPointerLock ||
-                    canvas.mozRequestPointerLock;
+                canvas.mozRequestPointerLock;
 
             canvas.requestPointerLock();
         }

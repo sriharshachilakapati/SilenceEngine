@@ -71,14 +71,29 @@ public final class Controller
     public static final int AXE_RIGHT_Y = 3;
     public static final int NUM_AXES    = AXE_RIGHT_Y + 1;
 
+    public static final State[] states = new State[NUM_CONTROLLERS];
+
+    static void init()
+    {
+        for (int i = 0; i < NUM_CONTROLLERS; i++)
+            states[i] = new State();
+    }
+
+    static void update()
+    {
+        for (int i = 0; i < NUM_CONTROLLERS; i++)
+            states[i].update();
+    }
+
     public static class Button
     {
-        public InputState state = InputState.RELEASED;
+        public InputState state;
 
-        boolean newState;
+        boolean eventState;
 
         private Button()
         {
+            reset();
         }
 
         private void update()
@@ -87,20 +102,26 @@ public final class Controller
                 state = InputState.WAITING_FOR_RELEASE;
 
             if (state == InputState.RELEASED)
-                state = newState ? InputState.PRESSED : InputState.RELEASED;
+                state = eventState ? InputState.PRESSED : InputState.RELEASED;
             else
-                state = newState ? state : InputState.RELEASED;
+                state = eventState ? state : InputState.RELEASED;
+        }
+
+        private void reset()
+        {
+            state = InputState.RELEASED;
+            eventState = false;
         }
     }
 
     public static class Axe
     {
-        public InputState state = InputState.RELEASED;
-
-        public double amount;
+        public InputState state;
+        public double     amount;
 
         private Axe()
         {
+            reset();
         }
 
         private void update()
@@ -114,6 +135,12 @@ public final class Controller
                 state = newState ? InputState.PRESSED : InputState.RELEASED;
             else
                 state = newState ? state : InputState.RELEASED;
+        }
+
+        private void reset()
+        {
+            state = InputState.RELEASED;
+            amount = 0;
         }
     }
 
@@ -142,19 +169,14 @@ public final class Controller
             for (int i = 0; i < NUM_AXES; i++)
                 axes[i].update();
         }
-    }
 
-    public static final State[] states = new State[NUM_CONTROLLERS];
+        void reset()
+        {
+            for (int i = 0; i < NUM_BUTTONS; i++)
+                buttons[i].reset();
 
-    static void init()
-    {
-        for (int i = 0; i < NUM_CONTROLLERS; i++)
-            states[i] = new State();
-    }
-
-    static void update()
-    {
-        for (int i = 0; i < NUM_CONTROLLERS; i++)
-            states[i].update();
+            for (int i = 0; i < NUM_AXES; i++)
+                axes[i].reset();
+        }
     }
 }

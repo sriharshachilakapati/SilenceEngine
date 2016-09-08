@@ -22,52 +22,23 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.scene.components;
-
-import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.Sprite;
-import com.shc.silenceengine.graphics.SpriteRenderer;
-import com.shc.silenceengine.scene.entity.Entity2D;
+package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 
 /**
+ * Functional Interface describing the signature of the <code>GLFWJoystickfun</code> in Java 8 environment. To
+ * set a joystick callback use the function <code>setJoystickCallback()</code> from <code>GLFW3</code> class.
+ *
  * @author Sri Harsha Chilakapati
  */
-public class SpriteComponent implements IComponent2D
+@FunctionalInterface
+public interface IJoystickCallback
 {
-    public final Color tint = Color.BLACK.copy();
-
-    public Sprite sprite;
-    public float opacity = 1;
-
-    private TransformComponent2D transformComponent;
-    private SpriteRenderer       spriteRenderer;
-
-    public SpriteComponent(Sprite sprite, SpriteRenderer renderer)
-    {
-        this.sprite = sprite;
-        this.spriteRenderer = renderer;
-    }
-
-    @Override
-    public void init(Entity2D entity)
-    {
-        transformComponent = entity.transformComponent;
-    }
-
-    @Override
-    public void update(float deltaTime)
-    {
-        sprite.update(deltaTime);
-    }
-
-    @Override
-    public void render(float deltaTime)
-    {
-        spriteRenderer.render(sprite, transformComponent.transform, tint, opacity);
-    }
-
-    @Override
-    public void dispose()
-    {
-    }
+    /**
+     * The signature of the <code>GLFWJoystickfun</code> method. This method is invoked by GLFW to notify you
+     * that a joystick event occurred like disconnected or connected.
+     *
+     * @param joystick  The ID of the joystick for which the event occurred.
+     * @param connected Whether the joystick is connected or not.
+     */
+    void invoke(int joystick, boolean connected);
 }

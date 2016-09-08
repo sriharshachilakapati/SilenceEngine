@@ -53,10 +53,14 @@ public class Sprite
     public Sprite(Animation animation)
     {
         // Construct with empty callbacks
-        this(animation, () -> {
-        }, () -> {
-        }, () -> {
-        }, () -> {
+        this(animation, () ->
+        {
+        }, () ->
+        {
+        }, () ->
+        {
+        }, () ->
+        {
         });
     }
 
@@ -66,10 +70,14 @@ public class Sprite
                   SimpleCallback endCallback)
     {
         // Construct with empty callbacks
-        this(new Animation().addFrame(texture, 1, TimeUtils.Unit.SECONDS), () -> {
-        }, () -> {
-        }, () -> {
-        }, () -> {
+        this(new Animation().addFrame(texture, 1, TimeUtils.Unit.SECONDS), () ->
+        {
+        }, () ->
+        {
+        }, () ->
+        {
+        }, () ->
+        {
         });
     }
 
@@ -173,7 +181,8 @@ public class Sprite
     public void setStartCallback(SimpleCallback startCallback)
     {
         if (startCallback == null)
-            startCallback = () -> {
+            startCallback = () ->
+            {
             };
 
         this.startCallback = startCallback;
@@ -182,7 +191,8 @@ public class Sprite
     public void setPauseCallback(SimpleCallback pauseCallback)
     {
         if (pauseCallback == null)
-            pauseCallback = () -> {
+            pauseCallback = () ->
+            {
             };
 
         this.pauseCallback = pauseCallback;
@@ -191,7 +201,8 @@ public class Sprite
     public void setResumeCallback(SimpleCallback resumeCallback)
     {
         if (resumeCallback == null)
-            resumeCallback = () -> {
+            resumeCallback = () ->
+            {
             };
 
         this.resumeCallback = resumeCallback;
@@ -200,7 +211,8 @@ public class Sprite
     public void setEndCallback(SimpleCallback endCallback)
     {
         if (endCallback == null)
-            endCallback = () -> {
+            endCallback = () ->
+            {
             };
 
         this.endCallback = endCallback;

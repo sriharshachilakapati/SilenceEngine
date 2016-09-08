@@ -36,7 +36,8 @@ public abstract class ImageReader
     public void readImage(FilePath filePath, UniCallback<Image> uniCallback)
     {
         SilenceEngine.io.getFileReader().readBinaryFile(filePath, directBuffer ->
-                readImage(directBuffer, image -> {
+                readImage(directBuffer, image ->
+                {
                     // Free the direct buffer
                     SilenceEngine.io.free(directBuffer);
 

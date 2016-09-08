@@ -486,7 +486,7 @@ public interface IGraphicsDevice
 
     final class Data
     {
-        public static int totalRenderCalls = 0;
+        public static int totalRenderCalls     = 0;
         public static int renderCallsThisFrame = 0;
     }
 }

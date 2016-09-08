@@ -37,13 +37,13 @@ public class AudioSource
     /**
      * The position vector of the source. This is relative to the origin (0, 0, 0).
      */
-    public final Vector3 position  = new Vector3();
+    public final Vector3 position = new Vector3();
 
     /**
      * The velocity vector of the source. This velocity is not added to the position every frame like one would expect,
      * but is used to render doppler effect.
      */
-    public final Vector3 velocity  = new Vector3();
+    public final Vector3 velocity = new Vector3();
 
     /**
      * The direction vector of the source. This is used to specify the orientation of the speaker, where it is looking

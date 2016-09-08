@@ -42,22 +42,6 @@ public class GwtFilePath extends FilePath
 
     private static String resourcesRoot;
 
-    static
-    {
-        resourcesRoot = GWT.getModuleBaseURL();
-
-        // Get rid of the trailing slash
-        if (resourcesRoot.endsWith("/"))
-            resourcesRoot = resourcesRoot.substring(0, resourcesRoot.lastIndexOf('/'));
-
-        // Get rid of the module directory
-        resourcesRoot = resourcesRoot.substring(0, resourcesRoot.lastIndexOf('/'));
-
-        // Add the trailing slash if not present
-        if (!resourcesRoot.endsWith("/"))
-            resourcesRoot += "/";
-    }
-
     private boolean exists;
     private int     size;
 
@@ -136,6 +120,15 @@ public class GwtFilePath extends FilePath
     }
 
     @Override
+    public String getAbsolutePath()
+    {
+        if (type == Type.RESOURCE)
+            return resourcesRoot + super.getAbsolutePath();
+
+        return super.getAbsolutePath();
+    }
+
+    @Override
     public boolean delete() throws IOException
     {
         throw new IOException("Cannot delete files in HTML5 platform.");
@@ -154,17 +147,24 @@ public class GwtFilePath extends FilePath
     }
 
     @Override
-    public String getAbsolutePath()
-    {
-        if (type == Type.RESOURCE)
-            return resourcesRoot + super.getAbsolutePath();
-
-        return super.getAbsolutePath();
-    }
-
-    @Override
     public List<FilePath> listFiles() throws IOException
     {
         return EMPTY_LIST;
+    }
+
+    static
+    {
+        resourcesRoot = GWT.getModuleBaseURL();
+
+        // Get rid of the trailing slash
+        if (resourcesRoot.endsWith("/"))
+            resourcesRoot = resourcesRoot.substring(0, resourcesRoot.lastIndexOf('/'));
+
+        // Get rid of the module directory
+        resourcesRoot = resourcesRoot.substring(0, resourcesRoot.lastIndexOf('/'));
+
+        // Add the trailing slash if not present
+        if (!resourcesRoot.endsWith("/"))
+            resourcesRoot += "/";
     }
 }

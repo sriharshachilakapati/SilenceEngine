@@ -72,7 +72,8 @@ public class ResourceLoader
 
     private static void textureLoadHelper(FilePath path, ISubmitter<Texture> submitter)
     {
-        SilenceEngine.io.getImageReader().readImage(path, image -> {
+        SilenceEngine.io.getImageReader().readImage(path, image ->
+        {
             submitter.submit(Texture.fromImage(image), path);
             image.dispose();
         });
@@ -150,7 +151,8 @@ public class ResourceLoader
             Class<? extends IResource> type = toBeLoaded.get(path);
 
             ILoadHelper<?> loadHelper = loadHelpers.get(type);
-            loadHelper.load(path, (resource, path1) -> {
+            loadHelper.load(path, (resource, path1) ->
+            {
                 done++;
                 loaded.put(path1, resource);
             });

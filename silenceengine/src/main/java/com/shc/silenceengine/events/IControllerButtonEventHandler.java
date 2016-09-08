@@ -22,52 +22,12 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.scene.components;
-
-import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.Sprite;
-import com.shc.silenceengine.graphics.SpriteRenderer;
-import com.shc.silenceengine.scene.entity.Entity2D;
+package com.shc.silenceengine.events;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class SpriteComponent implements IComponent2D
+public interface IControllerButtonEventHandler
 {
-    public final Color tint = Color.BLACK.copy();
-
-    public Sprite sprite;
-    public float opacity = 1;
-
-    private TransformComponent2D transformComponent;
-    private SpriteRenderer       spriteRenderer;
-
-    public SpriteComponent(Sprite sprite, SpriteRenderer renderer)
-    {
-        this.sprite = sprite;
-        this.spriteRenderer = renderer;
-    }
-
-    @Override
-    public void init(Entity2D entity)
-    {
-        transformComponent = entity.transformComponent;
-    }
-
-    @Override
-    public void update(float deltaTime)
-    {
-        sprite.update(deltaTime);
-    }
-
-    @Override
-    public void render(float deltaTime)
-    {
-        spriteRenderer.render(sprite, transformComponent.transform, tint, opacity);
-    }
-
-    @Override
-    public void dispose()
-    {
-    }
+    void invoke(int controller, int button, boolean down);
 }

@@ -118,12 +118,12 @@ public class AndroidDisplayDevice implements IDisplayDevice
     }
 
     @Override
-    public void setIcon(FilePath filePath, SimpleCallback success)
+    public void setIcon(FilePath filePath)
     {
     }
 
     @Override
-    public void setIcon(FilePath filePath)
+    public void setIcon(FilePath filePath, SimpleCallback success)
     {
     }
 

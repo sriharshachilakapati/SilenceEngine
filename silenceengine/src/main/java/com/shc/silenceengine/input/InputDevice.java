@@ -25,6 +25,9 @@
 package com.shc.silenceengine.input;
 
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.events.IControllerAxeEventHandler;
+import com.shc.silenceengine.events.IControllerButtonEventHandler;
+import com.shc.silenceengine.events.IControllerConnectionEventHandler;
 import com.shc.silenceengine.events.IKeyEventHandler;
 import com.shc.silenceengine.events.IMouseEventHandler;
 import com.shc.silenceengine.events.ITextEventHandler;
@@ -50,6 +53,10 @@ public abstract class InputDevice
     private List<IMouseEventHandler> mouseEventHandlers;
     private List<ITouchEventHandler> touchEventHandlers;
 
+    private List<IControllerConnectionEventHandler> controllerConnectionEventHandlers;
+    private List<IControllerButtonEventHandler>     controllerButtonEventHandlers;
+    private List<IControllerAxeEventHandler>        controllerAxeEventHandlers;
+
     private Queue<Object> eventHandlerAddQueue;
     private Queue<Object> eventHandlerRemQueue;
 
@@ -61,6 +68,10 @@ public abstract class InputDevice
         mouseEventHandlers = new ArrayList<>();
         touchEventHandlers = new ArrayList<>();
         textEventHandlers = new ArrayList<>();
+
+        controllerConnectionEventHandlers = new ArrayList<>();
+        controllerButtonEventHandlers = new ArrayList<>();
+        controllerAxeEventHandlers = new ArrayList<>();
 
         eventHandlerAddQueue = new LinkedList<>();
         eventHandlerRemQueue = new LinkedList<>();
@@ -93,6 +104,21 @@ public abstract class InputDevice
         eventHandlerAddQueue.add(handler);
     }
 
+    public void addControllerConnectionEventHandler(IControllerConnectionEventHandler handler)
+    {
+        eventHandlerAddQueue.add(handler);
+    }
+
+    public void addControllerButtonEventHandler(IControllerButtonEventHandler handler)
+    {
+        eventHandlerAddQueue.add(handler);
+    }
+
+    public void addControllerAxeEventHandler(IControllerAxeEventHandler handler)
+    {
+        eventHandlerAddQueue.add(handler);
+    }
+
     public void removeKeyEventHandler(IKeyEventHandler handler)
     {
         eventHandlerRemQueue.add(handler);
@@ -109,6 +135,21 @@ public abstract class InputDevice
     }
 
     public void removeTextEventHandler(ITextEventHandler handler)
+    {
+        eventHandlerRemQueue.add(handler);
+    }
+
+    public void removeControllerConnectionEventHandler(IControllerConnectionEventHandler handler)
+    {
+        eventHandlerRemQueue.add(handler);
+    }
+
+    public void removeControllerButtonEventHandler(IControllerButtonEventHandler handler)
+    {
+        eventHandlerRemQueue.add(handler);
+    }
+
+    public void removeControllerAxeEventHandler(IControllerAxeEventHandler handler)
     {
         eventHandlerRemQueue.add(handler);
     }
@@ -150,6 +191,40 @@ public abstract class InputDevice
             textEventHandler.invoke(chars);
     }
 
+    public void postControllerConnectionEvent(int controller, boolean connected, String name)
+    {
+        processEventHandlerQueues();
+
+        Controller.State state = Controller.states[controller];
+        state.connected = connected;
+        state.name = name;
+
+        state.reset();
+
+        for (IControllerConnectionEventHandler eventHandler : controllerConnectionEventHandlers)
+            eventHandler.invoke(controller, connected, name);
+    }
+
+    public void postControllerButtonEvent(int controller, int button, boolean down)
+    {
+        processEventHandlerQueues();
+
+        Controller.states[controller].buttons[button].eventState = down;
+
+        for (IControllerButtonEventHandler handler : controllerButtonEventHandlers)
+            handler.invoke(controller, button, down);
+    }
+
+    public void postControllerAxeEvent(int controller, int axe, double amount)
+    {
+        processEventHandlerQueues();
+
+        Controller.states[controller].axes[axe].amount = amount;
+
+        for (IControllerAxeEventHandler handler : controllerAxeEventHandlers)
+            handler.invoke(controller, axe, amount);
+    }
+
     private void processEventHandlerQueues()
     {
         Object handler;
@@ -167,6 +242,15 @@ public abstract class InputDevice
 
             else if (handler instanceof ITextEventHandler)
                 textEventHandlers.add((ITextEventHandler) handler);
+
+            else if (handler instanceof IControllerConnectionEventHandler)
+                controllerConnectionEventHandlers.add((IControllerConnectionEventHandler) handler);
+
+            else if (handler instanceof IControllerButtonEventHandler)
+                controllerButtonEventHandlers.add((IControllerButtonEventHandler) handler);
+
+            else if (handler instanceof IControllerAxeEventHandler)
+                controllerAxeEventHandlers.add((IControllerAxeEventHandler) handler);
         }
 
         while ((handler = eventHandlerRemQueue.poll()) != null)
@@ -182,6 +266,15 @@ public abstract class InputDevice
 
             else if (handler instanceof ITextEventHandler)
                 textEventHandlers.remove(handler);
+
+            else if (handler instanceof IControllerConnectionEventHandler)
+                controllerConnectionEventHandlers.remove(handler);
+
+            else if (handler instanceof IControllerButtonEventHandler)
+                controllerButtonEventHandlers.remove(handler);
+
+            else if (handler instanceof IControllerAxeEventHandler)
+                controllerAxeEventHandlers.remove(handler);
         }
     }
 

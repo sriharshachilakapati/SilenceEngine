@@ -129,7 +129,7 @@ public class BufferObject
      * Updates a subset of data starting from the offset in the BufferObject's data store with the data from a direct
      * buffer
      *
-     * @param data   The NIO buffer with data to be copied into the data store
+     * @param data The NIO buffer with data to be copied into the data store
      */
     public void uploadSubData(DirectBuffer data)
     {

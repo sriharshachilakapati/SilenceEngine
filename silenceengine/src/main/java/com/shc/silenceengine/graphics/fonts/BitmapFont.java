@@ -46,10 +46,10 @@ public class BitmapFont implements IFont
     public final Map<Integer, Texture> pages = new HashMap<>();
     public final Map<Integer, Char>    chars = new HashMap<>();
 
-    private final Map<Char, Map<Char, Integer>> kerningPairs = new HashMap<>();
-
     public final Info   info;
     public final Common common;
+
+    private final Map<Char, Map<Char, Integer>> kerningPairs = new HashMap<>();
 
     private boolean hadKerning = false;
 
@@ -57,11 +57,6 @@ public class BitmapFont implements IFont
     {
         this.info = info;
         this.common = common;
-    }
-
-    public int getKerning(Char first, Char second)
-    {
-        return hadKerning ? kerningPairs.get(first).get(second) : 0;
     }
 
     public static void load(FilePath fontDesc, UniCallback<BitmapFont> callback)
@@ -194,6 +189,11 @@ public class BitmapFont implements IFont
         });
     }
 
+    public int getKerning(Char first, Char second)
+    {
+        return hadKerning ? kerningPairs.get(first).get(second) : 0;
+    }
+
     public void dispose()
     {
         for (Texture page : pages.values())
@@ -240,6 +240,9 @@ public class BitmapFont implements IFont
 
     public static class Info
     {
+        public final Vector4 padding = new Vector4();
+        public final Vector2 spacing = new Vector2();
+
         public String  face;
         public int     size;
         public boolean bold;
@@ -249,11 +252,7 @@ public class BitmapFont implements IFont
         public double  stretchH;
         public boolean smooth;
         public int     aa;
-
-        public final Vector4 padding = new Vector4();
-        public final Vector2 spacing = new Vector2();
-
-        public int outline;
+        public int     outline;
     }
 
     public static class Common
@@ -272,7 +271,6 @@ public class BitmapFont implements IFont
 
     public static class Char
     {
-        private int id;
         public  int x;
         public  int y;
         public  int height;
@@ -282,5 +280,6 @@ public class BitmapFont implements IFont
         public  int xAdvance;
         public  int page;
         public  int chnl;
+        private int id;
     }
 }

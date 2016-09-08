@@ -37,11 +37,12 @@ import com.shc.silenceengine.utils.functional.UniCallback;
  */
 public class SpriteRenderer
 {
+    private static DynamicProgram program;
+
+    private static int instances;
+
     private Vector3 tempVec = new Vector3();
     private Color   tempCol = new Color();
-
-    private static DynamicProgram program;
-    private static int            instances;
 
     private DynamicRenderer renderer;
     private Texture         currentTexture;

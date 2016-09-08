@@ -190,6 +190,12 @@ public class Transform
     }
 
     @Override
+    public int hashCode()
+    {
+        return matrix.hashCode();
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -198,11 +204,5 @@ public class Transform
         Transform transform = (Transform) o;
 
         return matrix.equals(transform.matrix);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return matrix.hashCode();
     }
 }

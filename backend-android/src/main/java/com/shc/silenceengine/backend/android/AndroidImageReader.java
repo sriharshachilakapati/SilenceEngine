@@ -44,7 +44,8 @@ public class AndroidImageReader extends ImageReader
     @Override
     public void readImage(DirectBuffer memory, UniCallback<Image> uniCallback)
     {
-        new Thread(() -> {
+        new Thread(() ->
+        {
             Bitmap bitmap = BitmapFactory.decodeStream(new DirectBufferInputStream(memory));
 
             if (bitmap == null)

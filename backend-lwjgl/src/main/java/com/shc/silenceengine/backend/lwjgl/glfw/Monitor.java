@@ -112,7 +112,8 @@ public class Monitor
         IMonitorCallback previousCallback = monitorCallback;
 
         if (callback == null)
-            callback = (monitor, event) -> {
+            callback = (monitor, event) ->
+            {
             };
 
         monitorCallback = callback;

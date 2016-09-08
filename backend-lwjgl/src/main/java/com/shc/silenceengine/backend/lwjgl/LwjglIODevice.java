@@ -47,7 +47,8 @@ public class LwjglIODevice implements IODevice
     public LwjglIODevice()
     {
         // Free all the direct buffers at the end
-        SilenceEngine.eventManager.addDisposeHandler(() -> {
+        SilenceEngine.eventManager.addDisposeHandler(() ->
+        {
             directBuffers.forEach(directBuffer -> ((LwjglDirectBuffer) directBuffer).free());
             directBuffers.clear();
         });

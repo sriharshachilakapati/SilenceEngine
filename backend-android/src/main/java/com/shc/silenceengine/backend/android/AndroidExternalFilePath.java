@@ -70,12 +70,6 @@ public class AndroidExternalFilePath extends AndroidFilePath
     }
 
     @Override
-    public String getAbsolutePath()
-    {
-        return file.getAbsolutePath();
-    }
-
-    @Override
     public void moveTo(FilePath path) throws IOException
     {
         InputStream in = getInputStream();
@@ -83,7 +77,8 @@ public class AndroidExternalFilePath extends AndroidFilePath
 
         byte[] buffer = new byte[1024];
         int read;
-        while ((read = in.read(buffer)) != -1) {
+        while ((read = in.read(buffer)) != -1)
+        {
             out.write(buffer, 0, read);
         }
         in.close();
@@ -110,6 +105,12 @@ public class AndroidExternalFilePath extends AndroidFilePath
             throw new SilenceException("Cannot convert a directory to a file");
 
         file.createNewFile();
+    }
+
+    @Override
+    public String getAbsolutePath()
+    {
+        return file.getAbsolutePath();
     }
 
     @Override

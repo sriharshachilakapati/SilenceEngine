@@ -36,14 +36,16 @@ public class DefaultMaterial extends Material
 
     public DefaultMaterial(Program program)
     {
-        this(program, renderer -> {
+        this(program, renderer ->
+        {
         });
     }
 
     public DefaultMaterial(Program program, UniCallback<MeshRenderer> rendererCallback)
     {
         super(program);
-        this.rendererCallback = rendererCallback != null ? rendererCallback : renderer -> {
+        this.rendererCallback = rendererCallback != null ? rendererCallback : renderer ->
+        {
         };
     }
 

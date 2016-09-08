@@ -863,7 +863,8 @@ public class Window
      */
     public void setIcon(FilePath imagePath, SimpleCallback success)
     {
-        SilenceEngine.io.getImageReader().readImage(imagePath, image -> {
+        SilenceEngine.io.getImageReader().readImage(imagePath, image ->
+        {
             setIcon(image);
             success.invoke();
         });

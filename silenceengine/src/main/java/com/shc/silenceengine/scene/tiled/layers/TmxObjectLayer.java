@@ -83,7 +83,7 @@ public class TmxObjectLayer extends TmxMapLayer
         }
 
         opacity = element.getAttribute("opacity") != null ? Float.parseFloat(element.getAttribute("opacity").value) : 1.0f;
-        visible = element.getAttribute("visible") == null|| Boolean.parseBoolean(element.getAttribute("visible").value);
+        visible = element.getAttribute("visible") == null || Boolean.parseBoolean(element.getAttribute("visible").value);
 
         List<XmlTag> nodes = element.getTagsByName("properties");
         if (nodes.size() > 0)

@@ -25,10 +25,12 @@
 package com.shc.silenceengine.backend.lwjgl.glfw;
 
 import com.shc.silenceengine.backend.lwjgl.glfw.callbacks.IErrorCallback;
+import com.shc.silenceengine.backend.lwjgl.glfw.callbacks.IJoystickCallback;
 import com.shc.silenceengine.math.Vector3;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWJoystickCallback;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.IntBuffer;
@@ -49,6 +51,10 @@ public final class GLFW3
     // The error callbacks
     private static GLFWErrorCallback glfwErrorCallback;
     private static IErrorCallback    errorCallback;
+
+    // The joystick callbacks
+    private static GLFWJoystickCallback glfwJoystickCallback;
+    private static IJoystickCallback    joystickCallback;
 
     private static boolean initialized = false;
 
@@ -81,6 +87,11 @@ public final class GLFW3
         glfwErrorCallback = GLFWErrorCallback.create((error, description) ->
                 errorCallback.invoke(error, MemoryUtil.memUTF8(description)));
 
+        // Joystick callback that does nothing
+        setJoystickCallback(null);
+        glfwJoystickCallback = GLFWJoystickCallback.create((joy, event) ->
+                joystickCallback.invoke(joy, event == GLFW_CONNECTED));
+
         // Register the callback
         glfwSetErrorCallback(glfwErrorCallback);
 
@@ -96,10 +107,26 @@ public final class GLFW3
     public static void setErrorCallback(IErrorCallback errorCallback)
     {
         if (errorCallback == null)
-            errorCallback = (error, description) -> {
+            errorCallback = (error, description) ->
+            {
             };
 
         GLFW3.errorCallback = errorCallback;
+    }
+
+    /**
+     * Sets an joystick callback which will be invoked when a joystick event occurs.
+     *
+     * @param joystickCallback The joystick callback to be invoked when an event occurs in GLFW.
+     */
+    public static void setJoystickCallback(IJoystickCallback joystickCallback)
+    {
+        if (joystickCallback == null)
+            joystickCallback = (joystick, connected) ->
+            {
+            };
+
+        GLFW3.joystickCallback = joystickCallback;
     }
 
     /**
@@ -222,6 +249,9 @@ public final class GLFW3
 
         if (glfwErrorCallback != null)
             glfwErrorCallback.free();
+
+        if (glfwJoystickCallback != null)
+            glfwJoystickCallback.free();
 
         glfwTerminate();
         initialized = false;

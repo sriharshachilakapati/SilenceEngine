@@ -53,9 +53,27 @@ import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
  */
 public abstract class TmxMapRenderer
 {
-    protected TmxMap                     map;
+    protected TmxMap map;
+
     protected Map<String, Texture>       textureMap;
     protected Map<TmxTile, TileAnimator> tileAnimators;
+
+    public static void create(TmxMap map, UniCallback<TmxMapRenderer> callback)
+    {
+        switch (map.getOrientation())
+        {
+            case ISOMETRIC:
+                TmxIsometricMapRenderer.create(map, callback);
+                break;
+            case ORTHOGONAL:
+                TmxOrthogonalMapRenderer.create(map, callback);
+                break;
+
+            default:
+                throw new SilenceException("A TmxMapRenderer has not yet been implemented for "
+                                           + map.getOrientation() + " orientation");
+        }
+    }
 
     protected void init(TmxMap map, SimpleCallback onInit)
     {
@@ -115,23 +133,6 @@ public abstract class TmxMapRenderer
         }
 
         finishCallback.invoke();
-    }
-
-    public static void create(TmxMap map, UniCallback<TmxMapRenderer> callback)
-    {
-        switch (map.getOrientation())
-        {
-            case ISOMETRIC:
-                TmxIsometricMapRenderer.create(map, callback);
-                break;
-            case ORTHOGONAL:
-                TmxOrthogonalMapRenderer.create(map, callback);
-                break;
-
-            default:
-                throw new SilenceException("A TmxMapRenderer has not yet been implemented for "
-                                           + map.getOrientation() + " orientation");
-        }
     }
 
     public void update(float delta)

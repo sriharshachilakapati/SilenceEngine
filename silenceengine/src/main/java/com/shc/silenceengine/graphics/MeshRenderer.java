@@ -36,7 +36,7 @@ import com.shc.silenceengine.math.Vector3;
 
 import java.util.List;
 
-import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.GL_FLOAT;
+import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -58,14 +58,14 @@ public class MeshRenderer implements IResource
     public final BufferObject tangentBuffer;
     public final BufferObject biTangentBuffer;
 
+    public final Primitive renderMode;
+    public final int       vertexCount;
+
     public int vertexLocation    = -1;
     public int normalLocation    = -1;
     public int uvLocation        = -1;
     public int tangentLocation   = -1;
     public int biTangentLocation = -1;
-
-    public final Primitive renderMode;
-    public final int       vertexCount;
 
     public MeshRenderer(DynamicRenderer renderer)
     {
