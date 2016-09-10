@@ -24,11 +24,15 @@
 
 package com.shc.silenceengine.backend.lwjgl;
 
+import com.shc.silenceengine.backend.lwjgl.glfw.GLFW3;
 import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.input.Controller;
 import com.shc.silenceengine.input.InputDevice;
 import com.shc.silenceengine.input.Mouse;
 
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,8 +80,30 @@ public class LwjglInputDevice extends InputDevice
         window.setCharacterModsCallback((window1, codePoint, mods) ->
                 postTextEvent(Character.toChars(codePoint)));
 
+        GLFW3.setJoystickCallback((joystick, connected) ->
+                postControllerConnectionEvent(joystick, connected, false, glfwGetJoystickName(joystick)));
+
         createKeyMap();
         createMouseMap();
+    }
+
+    static void pollControllers()
+    {
+        for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; i++)
+        {
+            if (Controller.states[i].connected)
+            {
+                ByteBuffer buttons = glfwGetJoystickButtons(i);
+
+                while (buttons.hasRemaining())
+                    SilenceEngine.input.postControllerButtonEvent(i, buttons.position(), buttons.get() == 1);
+
+                FloatBuffer axes = glfwGetJoystickAxes(i);
+
+                while (axes.hasRemaining())
+                    SilenceEngine.input.postControllerAxeEvent(i, axes.position(), axes.get());
+            }
+        }
     }
 
     private void createMouseMap()

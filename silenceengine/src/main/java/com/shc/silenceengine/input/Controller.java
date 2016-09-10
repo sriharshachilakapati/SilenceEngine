@@ -47,6 +47,7 @@ public final class Controller
     public static final int CONTROLLER_15   = 15;
     public static final int NUM_CONTROLLERS = CONTROLLER_15 + 1;
 
+    // Ideal Joystick (https://github.com/sriharshachilakapati/SilenceEngine/wiki/Controller-Input/)
     public static final int BUTTON_A           = 0;
     public static final int BUTTON_B           = 1;
     public static final int BUTTON_X           = 2;
@@ -63,13 +64,59 @@ public final class Controller
     public static final int BUTTON_DPAD_LEFT   = 13;
     public static final int BUTTON_LEFT_STICK  = 14;
     public static final int BUTTON_RIGHT_STICK = 15;
-    public static final int NUM_BUTTONS        = BUTTON_RIGHT_STICK + 1;
 
     public static final int AXE_LEFT_X  = 0;
     public static final int AXE_LEFT_Y  = 1;
     public static final int AXE_RIGHT_X = 2;
     public static final int AXE_RIGHT_Y = 3;
-    public static final int NUM_AXES    = AXE_RIGHT_Y + 1;
+
+    // Generic joystick buttons and axes
+    public static final int BUTTON_0  = 0;
+    public static final int BUTTON_1  = 1;
+    public static final int BUTTON_2  = 2;
+    public static final int BUTTON_3  = 3;
+    public static final int BUTTON_4  = 4;
+    public static final int BUTTON_5  = 5;
+    public static final int BUTTON_6  = 6;
+    public static final int BUTTON_7  = 7;
+    public static final int BUTTON_8  = 8;
+    public static final int BUTTON_9  = 9;
+    public static final int BUTTON_10 = 10;
+    public static final int BUTTON_11 = 11;
+    public static final int BUTTON_12 = 12;
+    public static final int BUTTON_13 = 13;
+    public static final int BUTTON_14 = 14;
+    public static final int BUTTON_15 = 15;
+    public static final int BUTTON_16 = 16;
+    public static final int BUTTON_17 = 17;
+    public static final int BUTTON_18 = 18;
+    public static final int BUTTON_19 = 19;
+    public static final int BUTTON_20 = 20;
+    public static final int BUTTON_21 = 21;
+    public static final int BUTTON_22 = 22;
+    public static final int BUTTON_23 = 23;
+    public static final int BUTTON_24 = 24;
+    public static final int BUTTON_25 = 25;
+    public static final int BUTTON_26 = 26;
+    public static final int BUTTON_27 = 27;
+    public static final int BUTTON_28 = 28;
+    public static final int BUTTON_29 = 29;
+    public static final int BUTTON_30 = 30;
+
+    public static final int AXIS_0  = 0;
+    public static final int AXIS_1  = 1;
+    public static final int AXIS_2  = 2;
+    public static final int AXIS_3  = 3;
+    public static final int AXIS_4  = 4;
+    public static final int AXIS_5  = 5;
+    public static final int AXIS_6  = 6;
+    public static final int AXIS_7  = 7;
+    public static final int AXIS_8  = 8;
+    public static final int AXIS_9  = 9;
+    public static final int AXIS_10 = 10;
+
+    public static final int NUM_BUTTONS = BUTTON_30 + 1;
+    public static final int NUM_AXES    = AXIS_10 + 1;
 
     public static final State[] states = new State[NUM_CONTROLLERS];
 
@@ -155,7 +202,9 @@ public final class Controller
         public final Axe[]    axes    = new Axe[NUM_AXES];
 
         public boolean connected;
-        public String  name;
+        public boolean ideal;
+
+        public String name;
 
         private State()
         {

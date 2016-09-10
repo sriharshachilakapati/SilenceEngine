@@ -217,7 +217,9 @@ public class GwtInputDevice extends InputDevice
             if (id >= maxGamePads)
                 return;
 
-            gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::postControllerConnectionEvent(*)(id, true, name);
+            var ideal = gamepad.mapping == 'standard';
+
+            gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::postControllerConnectionEvent(*)(id, true, ideal, name);
         });
 
         $wnd.addEventListener('gamepaddisconnected', function gamePadDisconnectEventHandler(event)
@@ -230,7 +232,7 @@ public class GwtInputDevice extends InputDevice
             if (id >= maxGamePads)
                 return;
 
-            gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::postControllerConnectionEvent(*)(id, false, name);
+            gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::postControllerConnectionEvent(*)(id, false, false, name);
         });
     }-*/;
 

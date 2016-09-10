@@ -95,6 +95,8 @@ public final class LwjglRuntime
         while (!window.shouldClose())
         {
             GLFW3.pollEvents();
+            LwjglInputDevice.pollControllers();
+
             performLoopFrame[0].invoke();
             window.swapBuffers();
         }

@@ -191,18 +191,19 @@ public abstract class InputDevice
             textEventHandler.invoke(chars);
     }
 
-    public void postControllerConnectionEvent(int controller, boolean connected, String name)
+    public void postControllerConnectionEvent(int controller, boolean connected, boolean ideal, String name)
     {
         processEventHandlerQueues();
 
         Controller.State state = Controller.states[controller];
         state.connected = connected;
+        state.ideal = ideal;
         state.name = name;
 
         state.reset();
 
         for (IControllerConnectionEventHandler eventHandler : controllerConnectionEventHandlers)
-            eventHandler.invoke(controller, connected, name);
+            eventHandler.invoke(controller, connected, ideal, name);
     }
 
     public void postControllerButtonEvent(int controller, int button, boolean down)

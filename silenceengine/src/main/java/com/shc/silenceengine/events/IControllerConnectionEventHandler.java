@@ -30,5 +30,5 @@ package com.shc.silenceengine.events;
 @FunctionalInterface
 public interface IControllerConnectionEventHandler
 {
-    void invoke(int controller, boolean connected, String name);
+    void invoke(int controller, boolean connected, boolean ideal, String name);
 }
