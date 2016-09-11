@@ -30,6 +30,7 @@ import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.events.ControllerConnectionEvent;
 import com.shc.silenceengine.input.Controller;
 import com.shc.silenceengine.input.InputDevice;
 import com.shc.silenceengine.input.Keyboard;
@@ -45,8 +46,6 @@ public class GwtInputDevice extends InputDevice
 {
     private final Map<Integer, Integer> keysMap             = new HashMap<>();
     private final Map<Integer, Integer> mouseMap            = new HashMap<>();
-    private final Map<Integer, Integer> controllerButtonMap = new HashMap<>();
-    private final Map<Integer, Integer> controllerAxesMap   = new HashMap<>();
     private final Map<Integer, Integer> keyShortCircuitMap  = new HashMap<>();
 
     private boolean gamepadsExist = false;
@@ -55,7 +54,6 @@ public class GwtInputDevice extends InputDevice
     {
         createKeyMapping();
         createMouseMapping();
-        createControllerMapping();
 
         Canvas canvas = ((GwtDisplayDevice) SilenceEngine.display).canvas;
 
@@ -161,7 +159,7 @@ public class GwtInputDevice extends InputDevice
 
         preventContextMenu(canvas.getCanvasElement());
 
-        registerControllerConnectionEvents(this, Controller.NUM_CONTROLLERS);
+        registerControllerConnectionEvents(this, Controller.MAX_CONTROLLERS);
     }
 
     public static void pollControllers()
@@ -185,7 +183,7 @@ public class GwtInputDevice extends InputDevice
 
                 for (var j = 0; j < gamepad.buttons.length; j++)
                 {
-                    var button = gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::getControllerButtonCode(*)(j);
+                    var button = j;
                     var state = gamepad.buttons[j].pressed;
 
                     if (button != -1)
@@ -194,7 +192,7 @@ public class GwtInputDevice extends InputDevice
 
                 for (var j = 0; j < gamepad.axes.length; j++)
                 {
-                    var axe = gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::getControllerAxeCode(*)(j);
+                    var axe = j;
                     var amount = gamepad.axes[j];
 
                     if (axe != -1)
@@ -203,6 +201,50 @@ public class GwtInputDevice extends InputDevice
             }
         }
     }-*/;
+
+    private void createControllerEvent(int id, boolean connected, boolean ideal,
+                                       String name, int numButtons, int numAxes)
+    {
+        ControllerConnectionEvent event = new ControllerConnectionEvent();
+
+        event.buttonMapping = new Controller.Mapping();
+        event.axeMapping = new Controller.Mapping();
+        event.isControllerIdeal = ideal;
+        event.controllerConnected = connected;
+        event.controllerName = name;
+        event.numButtons = numButtons;
+        event.numAxes = numAxes;
+
+        if (ideal)
+        {
+            // Controller mappings came from the HTML5 GamePad API
+            // https://www.w3.org/TR/gamepad/#remapping
+
+            event.buttonMapping.map(0, Controller.BUTTON_A);
+            event.buttonMapping.map(1, Controller.BUTTON_B);
+            event.buttonMapping.map(2, Controller.BUTTON_X);
+            event.buttonMapping.map(3, Controller.BUTTON_Y);
+            event.buttonMapping.map(4, Controller.BUTTON_L1);
+            event.buttonMapping.map(5, Controller.BUTTON_R1);
+            event.buttonMapping.map(6, Controller.BUTTON_L2);
+            event.buttonMapping.map(7, Controller.BUTTON_R2);
+            event.buttonMapping.map(8, Controller.BUTTON_SELECT);
+            event.buttonMapping.map(9, Controller.BUTTON_START);
+            event.buttonMapping.map(10, Controller.BUTTON_LEFT_STICK);
+            event.buttonMapping.map(11, Controller.BUTTON_RIGHT_STICK);
+            event.buttonMapping.map(12, Controller.BUTTON_DPAD_UP);
+            event.buttonMapping.map(13, Controller.BUTTON_DPAD_DOWN);
+            event.buttonMapping.map(14, Controller.BUTTON_DPAD_LEFT);
+            event.buttonMapping.map(15, Controller.BUTTON_DPAD_RIGHT);
+
+            event.axeMapping.map(0, Controller.AXE_LEFT_X);
+            event.axeMapping.map(1, Controller.AXE_LEFT_Y);
+            event.axeMapping.map(2, Controller.AXE_RIGHT_X);
+            event.axeMapping.map(3, Controller.AXE_RIGHT_Y);
+        }
+
+        postControllerConnectionEvent(id, event);
+    }
 
     private native void registerControllerConnectionEvents(GwtInputDevice gid, int maxGamePads) /*-{
         $wnd.addEventListener('gamepadconnected', function gamePadConnectEventHandler(event)
@@ -219,7 +261,8 @@ public class GwtInputDevice extends InputDevice
 
             var ideal = gamepad.mapping == 'standard';
 
-            gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::postControllerConnectionEvent(*)(id, true, ideal, name);
+            gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::createControllerEvent(*)(id, true, ideal, name,
+                gamepad.buttons.length, gamepad.axes.length);
         });
 
         $wnd.addEventListener('gamepaddisconnected', function gamePadDisconnectEventHandler(event)
@@ -232,37 +275,10 @@ public class GwtInputDevice extends InputDevice
             if (id >= maxGamePads)
                 return;
 
-            gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::postControllerConnectionEvent(*)(id, false, false, name);
+            gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::createControllerEvent(*)(id, false, false, name,
+                0, 0);
         });
     }-*/;
-
-    private void createControllerMapping()
-    {
-        // Controller mappings came from the HTML5 GamePad API
-        // https://www.w3.org/TR/gamepad/#remapping
-
-        controllerButtonMap.put(0, Controller.BUTTON_A);
-        controllerButtonMap.put(1, Controller.BUTTON_B);
-        controllerButtonMap.put(2, Controller.BUTTON_X);
-        controllerButtonMap.put(3, Controller.BUTTON_Y);
-        controllerButtonMap.put(4, Controller.BUTTON_L1);
-        controllerButtonMap.put(5, Controller.BUTTON_R1);
-        controllerButtonMap.put(6, Controller.BUTTON_L2);
-        controllerButtonMap.put(7, Controller.BUTTON_R2);
-        controllerButtonMap.put(8, Controller.BUTTON_SELECT);
-        controllerButtonMap.put(9, Controller.BUTTON_START);
-        controllerButtonMap.put(10, Controller.BUTTON_LEFT_STICK);
-        controllerButtonMap.put(11, Controller.BUTTON_RIGHT_STICK);
-        controllerButtonMap.put(12, Controller.BUTTON_DPAD_UP);
-        controllerButtonMap.put(13, Controller.BUTTON_DPAD_DOWN);
-        controllerButtonMap.put(14, Controller.BUTTON_DPAD_LEFT);
-        controllerButtonMap.put(15, Controller.BUTTON_DPAD_RIGHT);
-
-        controllerAxesMap.put(0, Controller.AXE_LEFT_X);
-        controllerAxesMap.put(1, Controller.AXE_LEFT_Y);
-        controllerAxesMap.put(2, Controller.AXE_RIGHT_X);
-        controllerAxesMap.put(3, Controller.AXE_RIGHT_Y);
-    }
 
     private native void preventContextMenu(CanvasElement canvas) /*-{
         canvas.oncontextmenu = function (){ return false; };
@@ -308,18 +324,6 @@ public class GwtInputDevice extends InputDevice
     {
         Integer code = mouseMap.get(nativeButtonCode);
         return code == null ? 0 : code;
-    }
-
-    private int getControllerButtonCode(int nativeButtonCode)
-    {
-        Integer code = controllerButtonMap.get(nativeButtonCode);
-        return code == null ? -1 : code;
-    }
-
-    private int getControllerAxeCode(int nativeAxeCode)
-    {
-        Integer code = controllerAxesMap.get(nativeAxeCode);
-        return code == null ? -1 : code;
     }
 
     private void createKeyMapping()

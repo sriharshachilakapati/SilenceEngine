@@ -24,11 +24,20 @@
 
 package com.shc.silenceengine.events;
 
+import com.shc.silenceengine.input.Controller;
+
 /**
  * @author Sri Harsha Chilakapati
  */
-@FunctionalInterface
-public interface IControllerConnectionEventHandler
+public class ControllerConnectionEvent
 {
-    void invoke(int controller, ControllerConnectionEvent event);
+    public String  controllerName;
+    public boolean isControllerIdeal;
+    public boolean controllerConnected;
+
+    public int numButtons;
+    public int numAxes;
+
+    public Controller.Mapping buttonMapping;
+    public Controller.Mapping axeMapping;
 }

@@ -27,6 +27,7 @@ package com.shc.silenceengine.backend.lwjgl;
 import com.shc.silenceengine.backend.lwjgl.glfw.GLFW3;
 import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.events.ControllerConnectionEvent;
 import com.shc.silenceengine.input.Controller;
 import com.shc.silenceengine.input.InputDevice;
 import com.shc.silenceengine.input.Mouse;
@@ -81,7 +82,20 @@ public class LwjglInputDevice extends InputDevice
                 postTextEvent(Character.toChars(codePoint)));
 
         GLFW3.setJoystickCallback((joystick, connected) ->
-                postControllerConnectionEvent(joystick, connected, false, glfwGetJoystickName(joystick)));
+        {
+            ControllerConnectionEvent event = new ControllerConnectionEvent();
+            event.controllerConnected = connected;
+            event.isControllerIdeal = false;
+            event.controllerName = glfwGetJoystickName(joystick);
+
+            event.axeMapping = new Controller.Mapping();
+            event.buttonMapping = new Controller.Mapping();
+
+            event.numButtons = glfwGetJoystickButtons(joystick).capacity();
+            event.numAxes = glfwGetJoystickAxes(joystick).capacity();
+
+            postControllerConnectionEvent(joystick, event);
+        });
 
         createKeyMap();
         createMouseMap();

@@ -25,6 +25,7 @@
 package com.shc.silenceengine.input;
 
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.events.ControllerConnectionEvent;
 import com.shc.silenceengine.events.IControllerAxeEventHandler;
 import com.shc.silenceengine.events.IControllerButtonEventHandler;
 import com.shc.silenceengine.events.IControllerConnectionEventHandler;
@@ -191,19 +192,23 @@ public abstract class InputDevice
             textEventHandler.invoke(chars);
     }
 
-    public void postControllerConnectionEvent(int controller, boolean connected, boolean ideal, String name)
+    public void postControllerConnectionEvent(int controller, ControllerConnectionEvent event)
     {
         processEventHandlerQueues();
 
         Controller.State state = Controller.states[controller];
-        state.connected = connected;
-        state.ideal = ideal;
-        state.name = name;
+        state.connected = event.controllerConnected;
+        state.ideal = event.isControllerIdeal;
+        state.name = event.controllerName;
+        state.axeMapping = event.axeMapping;
+        state.buttonMapping = event.buttonMapping;
+        state.numAxes = event.numAxes;
+        state.numButtons = event.numButtons;
 
         state.reset();
 
         for (IControllerConnectionEventHandler eventHandler : controllerConnectionEventHandlers)
-            eventHandler.invoke(controller, connected, ideal, name);
+            eventHandler.invoke(controller, event);
     }
 
     public void postControllerButtonEvent(int controller, int button, boolean down)

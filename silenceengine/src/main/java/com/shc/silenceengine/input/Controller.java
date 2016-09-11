@@ -24,6 +24,9 @@
 
 package com.shc.silenceengine.input;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Sri Harsha Chilakapati
  */
@@ -45,7 +48,7 @@ public final class Controller
     public static final int CONTROLLER_13   = 13;
     public static final int CONTROLLER_14   = 14;
     public static final int CONTROLLER_15   = 15;
-    public static final int NUM_CONTROLLERS = CONTROLLER_15 + 1;
+    public static final int MAX_CONTROLLERS = CONTROLLER_15 + 1;
 
     // Ideal Joystick (https://github.com/sriharshachilakapati/SilenceEngine/wiki/Controller-Input/)
     public static final int BUTTON_A           = 0;
@@ -115,25 +118,36 @@ public final class Controller
     public static final int AXIS_9  = 9;
     public static final int AXIS_10 = 10;
 
-    public static final int NUM_BUTTONS = BUTTON_30 + 1;
-    public static final int NUM_AXES    = AXIS_10 + 1;
+    public static final int MAX_BUTTONS = BUTTON_30 + 1;
+    public static final int MAX_AXES    = AXIS_10 + 1;
 
-    public static final State[] states = new State[NUM_CONTROLLERS];
+    public static final State[] states = new State[MAX_CONTROLLERS];
 
     // Prevent construction
     private Controller()
     {
     }
 
+    public static int getNumConnected()
+    {
+        int count = 0;
+
+        for (int i = 0; i < MAX_CONTROLLERS; i++)
+            if (states[i].connected)
+                count++;
+
+        return count;
+    }
+
     static void init()
     {
-        for (int i = 0; i < NUM_CONTROLLERS; i++)
+        for (int i = 0; i < MAX_CONTROLLERS; i++)
             states[i] = new State();
     }
 
     static void update()
     {
-        for (int i = 0; i < NUM_CONTROLLERS; i++)
+        for (int i = 0; i < MAX_CONTROLLERS; i++)
             states[i].update();
     }
 
@@ -198,39 +212,105 @@ public final class Controller
 
     public static class State
     {
-        public final Button[] buttons = new Button[NUM_BUTTONS];
-        public final Axe[]    axes    = new Axe[NUM_AXES];
+        public final Button[] buttons = new Button[MAX_BUTTONS];
+        public final Axe[]    axes    = new Axe[MAX_AXES];
 
         public boolean connected;
         public boolean ideal;
 
         public String name;
 
+        public Mapping buttonMapping;
+        public Mapping axeMapping;
+
+        public int numButtons;
+        public int numAxes;
+
         private State()
         {
-            for (int i = 0; i < NUM_BUTTONS; i++)
+            for (int i = 0; i < MAX_BUTTONS; i++)
                 buttons[i] = new Button();
 
-            for (int i = 0; i < NUM_AXES; i++)
+            for (int i = 0; i < MAX_AXES; i++)
                 axes[i] = new Axe();
         }
 
         private void update()
         {
-            for (int i = 0; i < NUM_BUTTONS; i++)
+            for (int i = 0; i < MAX_BUTTONS; i++)
                 buttons[i].update();
 
-            for (int i = 0; i < NUM_AXES; i++)
+            for (int i = 0; i < MAX_AXES; i++)
                 axes[i].update();
         }
 
         void reset()
         {
-            for (int i = 0; i < NUM_BUTTONS; i++)
+            for (int i = 0; i < MAX_BUTTONS; i++)
                 buttons[i].reset();
 
-            for (int i = 0; i < NUM_AXES; i++)
+            for (int i = 0; i < MAX_AXES; i++)
                 axes[i].reset();
+        }
+
+        public Button getButton(int button)
+        {
+            return buttons[buttonMapping.getRawCode(button)];
+        }
+
+        public Axe getAxe(int axe)
+        {
+            return axes[axeMapping.getRawCode(axe)];
+        }
+
+        public boolean isButtonDown(int button)
+        {
+            return getButton(button).state != InputState.RELEASED;
+        }
+
+        public boolean isButtonTapped(int button)
+        {
+            return getButton(button).state == InputState.PRESSED;
+        }
+
+        public boolean isAxeDown(int axe)
+        {
+            return getAxe(axe).state != InputState.RELEASED;
+        }
+
+        public boolean isAxeTapped(int axe)
+        {
+            return getAxe(axe).state == InputState.PRESSED;
+        }
+    }
+
+    public static class Mapping
+    {
+        private Map<Integer, Integer> keyVal = new HashMap<>();
+        private Map<Integer, Integer> valKey = new HashMap<>();
+
+        public void clear()
+        {
+            keyVal.clear();
+            valKey.clear();
+        }
+
+        public void map(int rawCode, int idealCode)
+        {
+            keyVal.put(rawCode, idealCode);
+            valKey.put(idealCode, rawCode);
+        }
+
+        public int getIdealCode(int rawCode)
+        {
+            Integer val = keyVal.get(rawCode);
+            return val == null ? rawCode : val;
+        }
+
+        public int getRawCode(int idealCode)
+        {
+            Integer key = valKey.get(idealCode);
+            return key == null ? idealCode : key;
         }
     }
 }
