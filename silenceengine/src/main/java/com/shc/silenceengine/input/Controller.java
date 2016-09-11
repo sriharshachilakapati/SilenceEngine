@@ -70,10 +70,10 @@ public final class Controller
     public static final int BUTTON_LEFT_STICK  = 14;
     public static final int BUTTON_RIGHT_STICK = 15;
 
-    public static final int AXE_LEFT_X  = 0;
-    public static final int AXE_LEFT_Y  = 1;
-    public static final int AXE_RIGHT_X = 2;
-    public static final int AXE_RIGHT_Y = 3;
+    public static final int AXIS_LEFT_X  = 0;
+    public static final int AXIS_LEFT_Y  = 1;
+    public static final int AXIS_RIGHT_X = 2;
+    public static final int AXIS_RIGHT_Y = 3;
 
     // Generic joystick buttons and axes
     public static final int BUTTON_0  = 0;
