@@ -27,7 +27,7 @@ package com.shc.silenceengine.events;
 /**
  * @author Sri Harsha Chilakapati
  */
-public interface IControllerAxeEventHandler
+public interface IControllerAxisEventHandler
 {
-    void invoke(int controller, int axe, double amount);
+    void invoke(int controller, int axis, double amount);
 }

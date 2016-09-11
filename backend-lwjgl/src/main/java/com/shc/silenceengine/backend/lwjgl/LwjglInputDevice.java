@@ -115,7 +115,7 @@ public class LwjglInputDevice extends InputDevice
                 FloatBuffer axes = glfwGetJoystickAxes(i);
 
                 while (axes.hasRemaining())
-                    SilenceEngine.input.postControllerAxeEvent(i, axes.position(), axes.get());
+                    SilenceEngine.input.postControllerAxisEvent(i, axes.position(), axes.get());
             }
         }
     }

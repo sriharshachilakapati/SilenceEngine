@@ -26,7 +26,7 @@ package com.shc.silenceengine.input;
 
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.events.ControllerConnectionEvent;
-import com.shc.silenceengine.events.IControllerAxeEventHandler;
+import com.shc.silenceengine.events.IControllerAxisEventHandler;
 import com.shc.silenceengine.events.IControllerButtonEventHandler;
 import com.shc.silenceengine.events.IControllerConnectionEventHandler;
 import com.shc.silenceengine.events.IKeyEventHandler;
@@ -56,7 +56,7 @@ public abstract class InputDevice
 
     private List<IControllerConnectionEventHandler> controllerConnectionEventHandlers;
     private List<IControllerButtonEventHandler>     controllerButtonEventHandlers;
-    private List<IControllerAxeEventHandler>        controllerAxeEventHandlers;
+    private List<IControllerAxisEventHandler>       controllerAxisEventHandlers;
 
     private Queue<Object> eventHandlerAddQueue;
     private Queue<Object> eventHandlerRemQueue;
@@ -72,7 +72,7 @@ public abstract class InputDevice
 
         controllerConnectionEventHandlers = new ArrayList<>();
         controllerButtonEventHandlers = new ArrayList<>();
-        controllerAxeEventHandlers = new ArrayList<>();
+        controllerAxisEventHandlers = new ArrayList<>();
 
         eventHandlerAddQueue = new LinkedList<>();
         eventHandlerRemQueue = new LinkedList<>();
@@ -115,7 +115,7 @@ public abstract class InputDevice
         eventHandlerAddQueue.add(handler);
     }
 
-    public void addControllerAxeEventHandler(IControllerAxeEventHandler handler)
+    public void addControllerAxisEventHandler(IControllerAxisEventHandler handler)
     {
         eventHandlerAddQueue.add(handler);
     }
@@ -150,7 +150,7 @@ public abstract class InputDevice
         eventHandlerRemQueue.add(handler);
     }
 
-    public void removeControllerAxeEventHandler(IControllerAxeEventHandler handler)
+    public void removeControllerAxisEventHandler(IControllerAxisEventHandler handler)
     {
         eventHandlerRemQueue.add(handler);
     }
@@ -221,14 +221,14 @@ public abstract class InputDevice
             handler.invoke(controller, button, down);
     }
 
-    public void postControllerAxeEvent(int controller, int axe, double amount)
+    public void postControllerAxisEvent(int controller, int axis, double amount)
     {
         processEventHandlerQueues();
 
-        Controller.states[controller].axes[axe].amount = amount;
+        Controller.states[controller].axes[axis].amount = amount;
 
-        for (IControllerAxeEventHandler handler : controllerAxeEventHandlers)
-            handler.invoke(controller, axe, amount);
+        for (IControllerAxisEventHandler handler : controllerAxisEventHandlers)
+            handler.invoke(controller, axis, amount);
     }
 
     private void processEventHandlerQueues()
@@ -255,8 +255,8 @@ public abstract class InputDevice
             else if (handler instanceof IControllerButtonEventHandler)
                 controllerButtonEventHandlers.add((IControllerButtonEventHandler) handler);
 
-            else if (handler instanceof IControllerAxeEventHandler)
-                controllerAxeEventHandlers.add((IControllerAxeEventHandler) handler);
+            else if (handler instanceof IControllerAxisEventHandler)
+                controllerAxisEventHandlers.add((IControllerAxisEventHandler) handler);
         }
 
         while ((handler = eventHandlerRemQueue.poll()) != null)
@@ -279,8 +279,8 @@ public abstract class InputDevice
             else if (handler instanceof IControllerButtonEventHandler)
                 controllerButtonEventHandlers.remove(handler);
 
-            else if (handler instanceof IControllerAxeEventHandler)
-                controllerAxeEventHandlers.remove(handler);
+            else if (handler instanceof IControllerAxisEventHandler)
+                controllerAxisEventHandlers.remove(handler);
         }
     }
 

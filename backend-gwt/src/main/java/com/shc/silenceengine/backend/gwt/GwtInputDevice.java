@@ -196,7 +196,7 @@ public class GwtInputDevice extends InputDevice
                     var amount = gamepad.axes[j];
 
                     if (axe != -1)
-                        gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::postControllerAxeEvent(*)(id, axe, amount);
+                        gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::postControllerAxisEvent(*)(id, axe, amount);
                 }
             }
         }
