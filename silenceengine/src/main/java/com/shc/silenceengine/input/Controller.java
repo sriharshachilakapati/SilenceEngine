@@ -24,7 +24,9 @@
 
 package com.shc.silenceengine.input;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -137,6 +139,17 @@ public final class Controller
                 count++;
 
         return count;
+    }
+
+    public static List<Integer> getConnectedControllers()
+    {
+        List<Integer> controllers = new ArrayList<>();
+
+        for (int i = 0; i < MAX_CONTROLLERS; i++)
+            if (states[i].connected)
+                controllers.add(i);
+
+        return controllers;
     }
 
     static void init()
