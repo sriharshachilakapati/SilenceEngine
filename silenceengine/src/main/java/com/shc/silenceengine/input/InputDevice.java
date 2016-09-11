@@ -200,7 +200,7 @@ public abstract class InputDevice
         state.connected = event.controllerConnected;
         state.ideal = event.isControllerIdeal;
         state.name = event.controllerName;
-        state.axeMapping = event.axeMapping;
+        state.axisMapping = event.axisMapping;
         state.buttonMapping = event.buttonMapping;
         state.numAxes = event.numAxes;
         state.numButtons = event.numButtons;

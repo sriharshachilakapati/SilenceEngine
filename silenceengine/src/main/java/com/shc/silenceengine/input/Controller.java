@@ -234,7 +234,7 @@ public final class Controller
         public String name;
 
         public Mapping buttonMapping;
-        public Mapping axeMapping;
+        public Mapping axisMapping;
 
         public int numButtons;
         public int numAxes;
@@ -273,7 +273,7 @@ public final class Controller
 
         public Axis getAxis(int axe)
         {
-            return axes[axeMapping.getRawCode(axe)];
+            return axes[axisMapping.getRawCode(axe)];
         }
 
         public boolean isButtonDown(int button)

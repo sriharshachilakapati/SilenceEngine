@@ -39,5 +39,5 @@ public class ControllerConnectionEvent
     public int numAxes;
 
     public Controller.Mapping buttonMapping;
-    public Controller.Mapping axeMapping;
+    public Controller.Mapping axisMapping;
 }

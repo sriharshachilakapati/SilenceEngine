@@ -88,7 +88,7 @@ public class LwjglInputDevice extends InputDevice
             event.isControllerIdeal = false;
             event.controllerName = glfwGetJoystickName(joystick);
 
-            event.axeMapping = new Controller.Mapping();
+            event.axisMapping = new Controller.Mapping();
             event.buttonMapping = new Controller.Mapping();
 
             event.numButtons = glfwGetJoystickButtons(joystick).capacity();

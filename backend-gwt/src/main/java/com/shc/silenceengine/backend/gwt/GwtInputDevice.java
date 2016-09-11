@@ -208,7 +208,7 @@ public class GwtInputDevice extends InputDevice
         ControllerConnectionEvent event = new ControllerConnectionEvent();
 
         event.buttonMapping = new Controller.Mapping();
-        event.axeMapping = new Controller.Mapping();
+        event.axisMapping = new Controller.Mapping();
         event.isControllerIdeal = ideal;
         event.controllerConnected = connected;
         event.controllerName = name;
@@ -237,10 +237,10 @@ public class GwtInputDevice extends InputDevice
             event.buttonMapping.map(14, Controller.BUTTON_DPAD_LEFT);
             event.buttonMapping.map(15, Controller.BUTTON_DPAD_RIGHT);
 
-            event.axeMapping.map(0, Controller.AXIS_LEFT_X);
-            event.axeMapping.map(1, Controller.AXIS_LEFT_Y);
-            event.axeMapping.map(2, Controller.AXIS_RIGHT_X);
-            event.axeMapping.map(3, Controller.AXIS_RIGHT_Y);
+            event.axisMapping.map(0, Controller.AXIS_LEFT_X);
+            event.axisMapping.map(1, Controller.AXIS_LEFT_Y);
+            event.axisMapping.map(2, Controller.AXIS_RIGHT_X);
+            event.axisMapping.map(3, Controller.AXIS_RIGHT_Y);
         }
 
         postControllerConnectionEvent(id, event);
