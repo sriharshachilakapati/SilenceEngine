@@ -105,7 +105,7 @@ public class LwjglInputDevice extends InputDevice
     {
         for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; i++)
         {
-            if (Controller.states[i].connected)
+            if (glfwJoystickPresent(i))
             {
                 ByteBuffer buttons = glfwGetJoystickButtons(i);
 
