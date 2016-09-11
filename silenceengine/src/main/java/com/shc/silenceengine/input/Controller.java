@@ -193,12 +193,12 @@ public final class Controller
         }
     }
 
-    public static class Axe
+    public static class Axis
     {
         public InputState state;
         public double     amount;
 
-        private Axe()
+        private Axis()
         {
             reset();
         }
@@ -226,7 +226,7 @@ public final class Controller
     public static class State
     {
         public final Button[] buttons = new Button[MAX_BUTTONS];
-        public final Axe[]    axes    = new Axe[MAX_AXES];
+        public final Axis[]   axes    = new Axis[MAX_AXES];
 
         public boolean connected;
         public boolean ideal;
@@ -245,7 +245,7 @@ public final class Controller
                 buttons[i] = new Button();
 
             for (int i = 0; i < MAX_AXES; i++)
-                axes[i] = new Axe();
+                axes[i] = new Axis();
         }
 
         private void update()
@@ -271,7 +271,7 @@ public final class Controller
             return buttons[buttonMapping.getRawCode(button)];
         }
 
-        public Axe getAxe(int axe)
+        public Axis getAxis(int axe)
         {
             return axes[axeMapping.getRawCode(axe)];
         }
@@ -286,14 +286,14 @@ public final class Controller
             return getButton(button).state == InputState.PRESSED;
         }
 
-        public boolean isAxeDown(int axe)
+        public boolean isAxisDown(int axe)
         {
-            return getAxe(axe).state != InputState.RELEASED;
+            return getAxis(axe).state != InputState.RELEASED;
         }
 
-        public boolean isAxeTapped(int axe)
+        public boolean isAxisTapped(int axe)
         {
-            return getAxe(axe).state == InputState.PRESSED;
+            return getAxis(axe).state == InputState.PRESSED;
         }
     }
 
