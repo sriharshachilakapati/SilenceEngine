@@ -8,13 +8,13 @@ SilenceEngine is a 2D/3D game engine that takes care of low level aspects of gam
 
 The main feature of SilenceEngine is it's simplicity, and it greatly reduces the amount of code you need to write by taking care of almost everything automatically for you. Though it is meant to take care of everything automatically, it is also completely customizable. Here are a list of features of it.
 
+- __Truly Cross Platform__:
+
+    SilenceEngine games are truly cross platform, it lets you compile to Desktop (Windows / Linux / MacOS), Android and also HTML5, all from a single code base. You can chose which platform(s) to target, and also extend it with platform specific code easily.
+
 - __State Based Games__:
 
-    SilenceEngine supports separating the game logic into different states, like intro state, story state, play state, high score state, game over state, and any other state that you are going to create. This allows you to keep stuff separate and your code base clean and easy to read.
-
-- __Module Based Engine__:
-
-    SilenceEngine is based on different modules, it is a collection of modules called as _engines_. There are _core_ engine, _audio_ engine, _graphics_ engine, _input_ engine, and _collision_ engine, and all these engines make up the SilenceEngine. It is up to you on how you use it, you can use all these as a whole, or you could use each of them separately. Either way, they work.
+    SilenceEngine supports separating the game logic into different states, like intro state, story state, play state, high score state, game over state, and any other state that you are going to create. This allows you to keep stuff separate and your code base clean and easy to read.    
 
 - __Completely Customizable__:
 
