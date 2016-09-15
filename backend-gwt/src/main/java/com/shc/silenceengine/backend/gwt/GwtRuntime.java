@@ -59,6 +59,7 @@ public final class GwtRuntime
         GLContext.enable(GL_BLEND);
         GLContext.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+        SilenceEngine.init();
         game.init();
 
         // Prevent fullscreen requests in init

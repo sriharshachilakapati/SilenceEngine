@@ -42,6 +42,7 @@ public class Texture implements IResource
     private static int activeUnit;
 
     public static Texture CURRENT;
+    public static Texture EMPTY;
 
     private int     id;
     private float   width;
@@ -242,6 +243,8 @@ public class Texture implements IResource
         SilenceEngine.graphics.glDeleteTextures(id);
         GLError.check();
         disposed = true;
+
+        EMPTY.bind(activeUnit);
     }
 
     public int getID()

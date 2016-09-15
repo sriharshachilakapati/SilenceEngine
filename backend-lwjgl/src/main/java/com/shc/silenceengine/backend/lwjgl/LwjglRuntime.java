@@ -28,13 +28,10 @@ import com.shc.silenceengine.backend.lwjgl.glfw.GLFW3;
 import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
-import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.TaskManager;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
 import org.lwjgl.system.Configuration;
-
-import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
 /**
  * The LwjglRuntime initializes the LWJGL library, and starts the native event loop.
@@ -76,6 +73,9 @@ public final class LwjglRuntime
         // Initiate setting the icon
         SilenceEngine.display.setIcon(FilePath.getResourceFile("engine_resources/icon.png"), () ->
         {
+            // Initialize SilenceEngine
+            SilenceEngine.init();
+
             // Call the game's init method
             game.init();
 
@@ -86,10 +86,6 @@ public final class LwjglRuntime
             // Raise a resize event now
             SilenceEngine.eventManager.raiseResizeEvent();
         });
-
-        // Set the context to blend
-        GLContext.enable(GL_BLEND);
-        GLContext.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         // The native event loop
         while (!window.shouldClose())

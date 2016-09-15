@@ -84,6 +84,8 @@ public final class AndroidRuntime
             e.printStackTrace();
         }
 
+        SilenceEngine.init();
+
         // Now initialize the game
         game.init();
     }
