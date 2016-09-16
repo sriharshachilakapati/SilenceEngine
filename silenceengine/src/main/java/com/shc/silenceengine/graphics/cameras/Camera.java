@@ -31,7 +31,7 @@ import com.shc.silenceengine.math.Matrix4;
  */
 public abstract class Camera
 {
-    public static Camera CURRENT = new NullCamera();
+    public static Camera CURRENT;
 
     public void apply()
     {

@@ -28,6 +28,8 @@ import com.shc.silenceengine.audio.AudioDevice;
 import com.shc.silenceengine.core.gameloops.FixedTimeSteppedLoop;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.IGraphicsDevice;
+import com.shc.silenceengine.graphics.cameras.Camera;
+import com.shc.silenceengine.graphics.cameras.NullCamera;
 import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.InputDevice;
@@ -94,6 +96,9 @@ public final class SilenceEngine
      */
     public static void init()
     {
+        // Create the Null camera
+        Camera.CURRENT = new NullCamera();
+
         // Set the context to blend
         GLContext.enable(GL_BLEND);
         GLContext.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
