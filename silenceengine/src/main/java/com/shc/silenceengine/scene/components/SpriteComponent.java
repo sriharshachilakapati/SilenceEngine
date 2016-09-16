@@ -26,7 +26,7 @@ package com.shc.silenceengine.scene.components;
 
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Sprite;
-import com.shc.silenceengine.graphics.SpriteRenderer;
+import com.shc.silenceengine.graphics.SpriteBatch;
 import com.shc.silenceengine.scene.entity.Entity2D;
 
 /**
@@ -38,14 +38,15 @@ public class SpriteComponent implements IComponent2D
 
     public Sprite sprite;
     public float opacity = 1;
+    public int   layer   = 0;
 
     private TransformComponent2D transformComponent;
-    private SpriteRenderer       spriteRenderer;
+    private SpriteBatch          spriteBatch;
 
-    public SpriteComponent(Sprite sprite, SpriteRenderer renderer)
+    public SpriteComponent(Sprite sprite, SpriteBatch spriteBatch)
     {
         this.sprite = sprite;
-        this.spriteRenderer = renderer;
+        this.spriteBatch = spriteBatch;
     }
 
     @Override
@@ -63,7 +64,7 @@ public class SpriteComponent implements IComponent2D
     @Override
     public void render(float deltaTime)
     {
-        spriteRenderer.render(sprite, transformComponent.transform, tint, opacity);
+        spriteBatch.render(sprite, transformComponent.transform, tint, opacity, layer);
     }
 
     @Override
