@@ -37,7 +37,7 @@ import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
  * @author Sri Harsha Chilakapati
  * @author Kevin Beaucoral
  */
-public class FPSCamera extends BaseCamera
+public class FPSCamera extends Camera
 {
     // To limit the angle on the x axis
     private static final float ANGLE_LIMIT_X = 60;

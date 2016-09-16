@@ -26,7 +26,7 @@ package com.shc.silenceengine.graphics.programs;
 
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.DynamicRenderer;
-import com.shc.silenceengine.graphics.cameras.BaseCamera;
+import com.shc.silenceengine.graphics.cameras.Camera;
 import com.shc.silenceengine.graphics.opengl.Program;
 import com.shc.silenceengine.graphics.opengl.Shader;
 import com.shc.silenceengine.io.FilePath;
@@ -84,8 +84,8 @@ public class FontProgram extends Program
     {
         use();
 
-        setUniform("proj", BaseCamera.CURRENT.getProjection());
-        setUniform("view", BaseCamera.CURRENT.getView());
+        setUniform("proj", Camera.CURRENT.getProjection());
+        setUniform("view", Camera.CURRENT.getView());
         setUniform("tex", 0);
     }
 }

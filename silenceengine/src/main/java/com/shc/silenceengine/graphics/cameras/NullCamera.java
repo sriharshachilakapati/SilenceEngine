@@ -32,7 +32,7 @@ import com.shc.silenceengine.math.Matrix4;
  *
  * @author Sri Harsha Chilakapati
  */
-public class NullCamera extends BaseCamera
+public class NullCamera extends Camera
 {
     private Matrix4 mProj;
     private Matrix4 mView;

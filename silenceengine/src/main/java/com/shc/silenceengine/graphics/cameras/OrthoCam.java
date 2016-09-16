@@ -36,7 +36,7 @@ import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class OrthoCam extends BaseCamera
+public class OrthoCam extends Camera
 {
     private Matrix4 mProj;
     private Matrix4 mView;
@@ -100,16 +100,16 @@ public class OrthoCam extends BaseCamera
 
     public OrthoCam center(float x, float y)
     {
-        return center(new Vector2(x, y));
+        mView.initIdentity();
+        x = (width / 2) - x;
+        y = (height / 2) - y;
+
+        return translate(x, y);
     }
 
     public OrthoCam center(Vector2 v)
     {
-        mView.initIdentity();
-        float x = (width / 2) - v.x;
-        float y = (height / 2) - v.y;
-
-        return translate(x, y);
+        return center(v.x, v.y);
     }
 
     public OrthoCam translate(float x, float y)

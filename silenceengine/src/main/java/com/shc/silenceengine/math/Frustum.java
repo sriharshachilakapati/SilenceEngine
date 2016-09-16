@@ -24,7 +24,7 @@
 
 package com.shc.silenceengine.math;
 
-import com.shc.silenceengine.graphics.cameras.BaseCamera;
+import com.shc.silenceengine.graphics.cameras.Camera;
 import com.shc.silenceengine.math.geom2d.Polygon;
 import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.math.geom3d.Sphere;
@@ -133,7 +133,7 @@ public class Frustum
         frustumPolyhedron.addVertex(frustumCorners[TOP_RIGHT_FAR]);
     }
 
-    public Frustum update(BaseCamera camera)
+    public Frustum update(Camera camera)
     {
         return update(camera.getProjection(), camera.getView());
     }

@@ -36,7 +36,7 @@ import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class PerspCam extends BaseCamera
+public class PerspCam extends Camera
 {
     private Matrix4 mProj;
     private Matrix4 mView;

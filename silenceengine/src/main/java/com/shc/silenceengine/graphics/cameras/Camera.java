@@ -29,9 +29,9 @@ import com.shc.silenceengine.math.Matrix4;
 /**
  * @author Sri Harsha Chilakapati
  */
-public abstract class BaseCamera
+public abstract class Camera
 {
-    public static BaseCamera CURRENT = new NullCamera();
+    public static Camera CURRENT = new NullCamera();
 
     public void apply()
     {
