@@ -108,14 +108,45 @@ public final class SilenceEngine
         Texture.EMPTY.bind(0);
     }
 
+    /**
+     * An enumeration of platform identifiers. These are the platforms SilenceEngine runs on.
+     */
     public enum Platform
     {
+        /**
+         * 32-bit Windows
+         */
         WINDOWS_32,
+
+        /**
+         * 64-bit Windows
+         */
         WINDOWS_64,
+
+        /**
+         * 64-bit Linux
+         */
         LINUX_64,
+
+        /**
+         * MacOS X. There is no 32-bit version in MacOS X.
+         */
         MACOSX,
+
+        /**
+         * HTML5, or the Web platform. We're running in a browser.
+         */
         HTML5,
+
+        /**
+         * Android. Might be 64 bit or 32 bit.
+         */
         ANDROID,
+
+        /**
+         * Unknown platform. SilenceEngine is either running in a custom backend,
+         * or it failed to detect the platform.
+         */
         UNKNOWN
     }
 }
