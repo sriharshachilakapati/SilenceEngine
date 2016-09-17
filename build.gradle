@@ -25,6 +25,7 @@
 
 allprojects {
     apply plugin: "idea"
+    apply plugin: "eclipse"
 
     // Define the versions of all the dependencies
     project.ext {
@@ -57,8 +58,11 @@ buildscript {
     configurations.classpath.exclude group: "com.android.tools.external.lombok"
 }
 
+eclipse {
+    project.name = 'SilenceEngine-Root'
+}
+
 subprojects {
-    apply plugin: "eclipse"
     apply plugin: "maven"
 
     repositories {

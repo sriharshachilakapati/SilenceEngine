@@ -23,4 +23,8 @@ tests-gwt/gwt/
 .idea/
 out/
 .gradle/
+.settings/
+.project
+.classpath
+bin/
 local.properties
