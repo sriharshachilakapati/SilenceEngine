@@ -25,6 +25,7 @@
 package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.graphics.IGraphicsDevice;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.fonts.BitmapFont;
 import com.shc.silenceengine.graphics.fonts.BitmapFontRenderer;
@@ -33,7 +34,7 @@ import com.shc.silenceengine.input.Controller;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.io.FilePath;
 
-import static com.shc.silenceengine.input.InputState.RELEASED;
+import static com.shc.silenceengine.input.InputState.*;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -45,7 +46,8 @@ public class ControllerTest extends SilenceTest
     private BitmapFont         font;
     private BitmapFontRenderer renderer;
 
-    private int controllerId;
+    private int     controllerId;
+    private boolean useMappings;
 
     @Override
     public void init()
@@ -59,6 +61,7 @@ public class ControllerTest extends SilenceTest
         });
 
         controllerId = 0;
+        useMappings = false;
 
         SilenceEngine.input.addTextEventHandler(chars ->
         {
@@ -75,11 +78,18 @@ public class ControllerTest extends SilenceTest
         if (Keyboard.isKeyTapped(Keyboard.KEY_ESCAPE))
             SilenceEngine.display.close();
 
+        if (Keyboard.isKeyTapped(Keyboard.KEY_SPACE))
+            useMappings = !useMappings;
+
         if (Keyboard.isKeyTapped(Keyboard.KEY_PLUS) || Keyboard.isKeyTapped(Keyboard.KEY_KP_PLUS))
             controllerId++;
 
         if (Keyboard.isKeyTapped(Keyboard.KEY_MINUS) || Keyboard.isKeyTapped(Keyboard.KEY_KP_MINUS))
             controllerId--;
+
+        SilenceEngine.display.setTitle("Controller Test - Mapping Utility | FPS: " + SilenceEngine.gameLoop.getFPS() +
+                                       " | UPS: " + SilenceEngine.gameLoop.getUPS() +
+                                       " | RC: " + IGraphicsDevice.Data.renderCallsThisFrame);
     }
 
     @Override
@@ -102,6 +112,7 @@ public class ControllerTest extends SilenceTest
 
             renderer.render(font, "Controller " + controllerId + ": " + state.connected, 10, 10);
             renderer.render(font, "\nName: " + state.name, 10, 10);
+            renderer.render(font, "\n\nUsing Mappings: " + useMappings, 10, 10);
 
             String message = "Buttons: " + state.numButtons;
             renderer.render(font, message, SilenceEngine.display.getWidth() - font.getWidth(message) - 10, 10);
@@ -111,32 +122,36 @@ public class ControllerTest extends SilenceTest
             renderer.render(font, "\n\n" + message, SilenceEngine.display.getWidth() - font.getWidth(message) - 10, 10);
 
             float x = 10;
-            float y = 100;
+            float y = font.getHeight() * 4 + 10;
 
-            for (int i = 0; i < state.buttons.length; i++)
+            for (int i = 0; i < Math.min(state.buttons.length, state.numButtons); i++)
             {
                 if (y + font.getHeight() >= SilenceEngine.display.getHeight())
                 {
-                    y = 100;
+                    y = font.getHeight() * 4 + 10;
                     x += 150;
                 }
 
-                renderer.render(font, "B" + i + ": " + (state.buttons[i].state != RELEASED), x, y);
+                final int button = useMappings ? state.buttonMapping.getIdealCode(i) : i;
+
+                renderer.render(font, "B" + i + ": " + (state.buttons[button].state != RELEASED), x, y);
                 y += font.getHeight();
             }
 
             x += 150;
-            y = 100;
+            y = font.getHeight() * 4 + 10;
 
-            for (int i = 0; i < state.axes.length; i++)
+            for (int i = 0; i < Math.min(state.axes.length, state.numAxes); i++)
             {
                 if (y + font.getHeight() >= SilenceEngine.display.getHeight())
                 {
-                    y = 100;
+                    y = font.getHeight() * 4 + 10;
                     x += 150;
                 }
 
-                renderer.render(font, "A" + i + ": " + state.axes[i].amount, x, y);
+                final int axis = useMappings ? state.axisMapping.getIdealCode(i) : i;
+
+                renderer.render(font, "A" + i + ": " + state.axes[axis].amount, x, y);
                 y += font.getHeight();
             }
         }
