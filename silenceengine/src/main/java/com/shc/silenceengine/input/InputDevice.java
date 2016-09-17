@@ -211,14 +211,14 @@ public abstract class InputDevice
             eventHandler.invoke(controller, event);
     }
 
-    public void postControllerButtonEvent(int controller, int button, boolean down)
+    public void postControllerButtonEvent(int controller, int button, boolean down, double amount)
     {
         processEventHandlerQueues();
 
         Controller.states[controller].buttons[button].eventState = down;
 
         for (IControllerButtonEventHandler handler : controllerButtonEventHandlers)
-            handler.invoke(controller, button, down);
+            handler.invoke(controller, button, down, amount);
     }
 
     public void postControllerAxisEvent(int controller, int axis, double amount)

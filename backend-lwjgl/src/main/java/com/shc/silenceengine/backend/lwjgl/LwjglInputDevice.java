@@ -110,7 +110,10 @@ public class LwjglInputDevice extends InputDevice
                 ByteBuffer buttons = glfwGetJoystickButtons(i);
 
                 while (buttons.hasRemaining())
-                    SilenceEngine.input.postControllerButtonEvent(i, buttons.position(), buttons.get() == 1);
+                {
+                    final boolean down = buttons.get() == 1;
+                    SilenceEngine.input.postControllerButtonEvent(i, buttons.position(), down, down ? 1 : 0);
+                }
 
                 FloatBuffer axes = glfwGetJoystickAxes(i);
 

@@ -29,5 +29,5 @@ package com.shc.silenceengine.events;
  */
 public interface IControllerButtonEventHandler
 {
-    void invoke(int controller, int button, boolean down);
+    void invoke(int controller, int button, boolean down, double amount);
 }

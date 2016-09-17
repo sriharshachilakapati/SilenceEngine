@@ -167,6 +167,7 @@ public final class Controller
     public static class Button
     {
         public InputState state;
+        public double     amount;
 
         boolean eventState;
 

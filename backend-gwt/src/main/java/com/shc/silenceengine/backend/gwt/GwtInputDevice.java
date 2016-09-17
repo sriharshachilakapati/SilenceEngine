@@ -185,9 +185,10 @@ public class GwtInputDevice extends InputDevice
                 {
                     var button = j;
                     var state = gamepad.buttons[j].pressed;
+                    var amount = gamepad.buttons[j].value;
 
                     if (button != -1)
-                        gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::postControllerButtonEvent(*)(id, button, state)
+                        gid.@com.shc.silenceengine.backend.gwt.GwtInputDevice::postControllerButtonEvent(*)(id, button, state, value)
                 }
 
                 for (var j = 0; j < gamepad.axes.length; j++)
