@@ -87,78 +87,85 @@ public class BitmapFontRenderer
     public void render(BitmapFont font, String text, float x, float y, Color color)
     {
         final float startX = x;
+        final float startY = y;
 
-        BitmapFont.Char last = null;
+        BitmapFont.Char last;
 
-        for (char ch : text.toCharArray())
+        for (int page : font.pages.keySet())
         {
-            if (ch == '\n')
+            x = startX;
+            y = startY;
+            last = null;
+
+            end();
+            font.pages.get(page).bind(0);
+            begin();
+
+            for (char ch : text.toCharArray())
             {
-                x = startX;
-                y += font.common.lineHeight;
+                if (ch == '\n')
+                {
+                    x = startX;
+                    y += font.common.lineHeight;
 
-                continue;
+                    continue;
+                }
+
+                BitmapFont.Char fChar = font.chars.get((int) ch);
+                fChar = fChar == null ? font.chars.get((int) ' ') : fChar;
+
+                if (last != null)
+                    x += font.getKerning(last, fChar);
+
+                if (page == fChar.page)
+                {
+                    float sLeft = fChar.x;
+                    float sTop = fChar.y;
+                    float sRight = fChar.x + fChar.width;
+                    float sBot = fChar.y + fChar.height;
+
+                    float dLeft = x + fChar.xOffset;
+                    float dTop = y + fChar.yOffset;
+                    float dRight = dLeft + fChar.width;
+                    float dBot = dTop + fChar.height;
+
+                    // Draw the character here
+                    float u1 = sLeft / font.common.scaleW;
+                    float v1 = sTop / font.common.scaleH;
+                    float u2 = sRight / font.common.scaleW;
+                    float v2 = sBot / font.common.scaleH;
+
+                    renderer.flushOnOverflow(6);
+
+                    renderer.vertex(dLeft, dTop);
+                    renderer.texCoord(u1, v1);
+                    renderer.color(color);
+
+                    renderer.vertex(dRight, dTop);
+                    renderer.texCoord(u2, v1);
+                    renderer.color(color);
+
+                    renderer.vertex(dLeft, dBot);
+                    renderer.texCoord(u1, v2);
+                    renderer.color(color);
+
+                    renderer.vertex(dRight, dTop);
+                    renderer.texCoord(u2, v1);
+                    renderer.color(color);
+
+                    renderer.vertex(dRight, dBot);
+                    renderer.texCoord(u2, v2);
+                    renderer.color(color);
+
+                    renderer.vertex(dLeft, dBot);
+                    renderer.texCoord(u1, v2);
+                    renderer.color(color);
+                }
+
+                x += fChar.xAdvance;
+
+                last = fChar;
             }
-
-            BitmapFont.Char fChar = font.chars.get((int) ch);
-            fChar = fChar == null ? font.chars.get((int) ' ') : fChar;
-
-            if (last == null || fChar.page != last.page)
-            {
-                end();
-                begin();
-
-                font.pages.get(fChar.page).bind(0);
-            }
-
-            if (last != null)
-                x += font.getKerning(last, fChar);
-
-            float sLeft = fChar.x;
-            float sTop = fChar.y;
-            float sRight = fChar.x + fChar.width;
-            float sBot = fChar.y + fChar.height;
-
-            float dLeft = x + fChar.xOffset;
-            float dTop = y + fChar.yOffset;
-            float dRight = dLeft + fChar.width;
-            float dBot = dTop + fChar.height;
-
-            // Draw the character here
-            float u1 = sLeft / font.common.scaleW;
-            float v1 = sTop / font.common.scaleH;
-            float u2 = sRight / font.common.scaleW;
-            float v2 = sBot / font.common.scaleH;
-
-            renderer.flushOnOverflow(6);
-
-            renderer.vertex(dLeft, dTop);
-            renderer.texCoord(u1, v1);
-            renderer.color(color);
-
-            renderer.vertex(dRight, dTop);
-            renderer.texCoord(u2, v1);
-            renderer.color(color);
-
-            renderer.vertex(dLeft, dBot);
-            renderer.texCoord(u1, v2);
-            renderer.color(color);
-
-            renderer.vertex(dRight, dTop);
-            renderer.texCoord(u2, v1);
-            renderer.color(color);
-
-            renderer.vertex(dRight, dBot);
-            renderer.texCoord(u2, v2);
-            renderer.color(color);
-
-            renderer.vertex(dLeft, dBot);
-            renderer.texCoord(u1, v2);
-            renderer.color(color);
-
-            x += fChar.xAdvance;
-
-            last = fChar;
         }
     }
 
