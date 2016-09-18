@@ -81,21 +81,7 @@ public class LwjglInputDevice extends InputDevice
         window.setCharacterModsCallback((window1, codePoint, mods) ->
                 postTextEvent(Character.toChars(codePoint)));
 
-        GLFW3.setJoystickCallback((joystick, connected) ->
-        {
-            ControllerConnectionEvent event = new ControllerConnectionEvent();
-            event.controllerConnected = connected;
-            event.isControllerIdeal = false;
-            event.controllerName = glfwGetJoystickName(joystick);
-
-            event.axisMapping = new Controller.Mapping();
-            event.buttonMapping = new Controller.Mapping();
-
-            event.numButtons = glfwGetJoystickButtons(joystick).capacity();
-            event.numAxes = glfwGetJoystickAxes(joystick).capacity();
-
-            postControllerConnectionEvent(joystick, event);
-        });
+        GLFW3.setJoystickCallback(this::postControllerConnectionEvent);
 
         createKeyMap();
         createMouseMap();
@@ -107,12 +93,15 @@ public class LwjglInputDevice extends InputDevice
         {
             if (glfwJoystickPresent(i))
             {
+                if (!Controller.states[i].connected)
+                    ((LwjglInputDevice) SilenceEngine.input).postControllerConnectionEvent(i, true);
+
                 ByteBuffer buttons = glfwGetJoystickButtons(i);
 
                 while (buttons.hasRemaining())
                 {
                     final boolean down = buttons.get() == 1;
-                    SilenceEngine.input.postControllerButtonEvent(i, buttons.position(), down, down ? 1 : 0);
+                    SilenceEngine.input.postControllerButtonEvent(i, buttons.position() - 1, down, down ? 1 : 0);
                 }
 
                 FloatBuffer axes = glfwGetJoystickAxes(i);
@@ -120,7 +109,28 @@ public class LwjglInputDevice extends InputDevice
                 while (axes.hasRemaining())
                     SilenceEngine.input.postControllerAxisEvent(i, axes.position(), axes.get());
             }
+            else
+            {
+                if (Controller.states[i].connected)
+                    ((LwjglInputDevice) SilenceEngine.input).postControllerConnectionEvent(i, false);
+            }
         }
+    }
+
+    private void postControllerConnectionEvent(int joystick, boolean connected)
+    {
+        ControllerConnectionEvent event = new ControllerConnectionEvent();
+        event.controllerConnected = connected;
+        event.isControllerIdeal = false;
+        event.controllerName = glfwGetJoystickName(joystick);
+
+        event.axisMapping = new Controller.Mapping();
+        event.buttonMapping = new Controller.Mapping();
+
+        event.numButtons = connected ? glfwGetJoystickButtons(joystick).capacity() : 0;
+        event.numAxes = connected ? glfwGetJoystickAxes(joystick).capacity() : 0;
+
+        postControllerConnectionEvent(joystick, event);
     }
 
     private void createMouseMap()
