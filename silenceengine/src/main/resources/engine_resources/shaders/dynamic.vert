@@ -1,16 +1,12 @@
-#ifdef GL_ES
-    precision mediump float;
-#endif
-
 uniform mat4 proj;
 uniform mat4 view;
 
-attribute vec4 position;
-attribute vec4 color;
-attribute vec2 texCoords;
+in vec4 position;
+in vec4 color;
+in vec2 texCoords;
 
-varying vec4 vColor;
-varying vec2 vTexCoords;
+out vec4 vColor;
+out vec2 vTexCoords;
 
 void main()
 {

@@ -79,10 +79,10 @@ public class OpenGLTest extends SilenceTest
 
         // The vertex shader source
         String vsSource = "uniform mat4 transform;                                 \n" +
-                          "attribute vec2 position;                                \n" +
-                          "attribute vec2 texCoords;                               \n" +
+                          "in vec2 position;                                       \n" +
+                          "in vec2 texCoords;                                      \n" +
                           "                                                        \n" +
-                          "varying vec2 vTexCoords;                                \n" +
+                          "out vec2 vTexCoords;                                    \n" +
                           "                                                        \n" +
                           "void main()                                             \n" +
                           "{                                                       \n" +
@@ -91,23 +91,13 @@ public class OpenGLTest extends SilenceTest
                           "}";
 
         // The fragment shader source
-        String fsSource = "uniform sampler2D texUnit;                         \n" +
-                          "varying vec2 vTexCoords;                           \n" +
-                          "                                                   \n" +
-                          "void main()                                        \n" +
-                          "{                                                  \n" +
-                          "    gl_FragColor = texture2D(texUnit, vTexCoords); \n" +
+        String fsSource = "uniform sampler2D texUnit;                        \n" +
+                          "in vec2 vTexCoords;                               \n" +
+                          "                                                  \n" +
+                          "void main()                                       \n" +
+                          "{                                                 \n" +
+                          "    g_FragColor = texture2D(texUnit, vTexCoords); \n" +
                           "}";
-
-        if (SilenceEngine.display.getPlatform() == SilenceEngine.Platform.HTML5
-                || SilenceEngine.display.getPlatform() == SilenceEngine.Platform.ANDROID)
-        {
-            // Shaders need a small change, we need to set float precision
-            String precision = "precision mediump float;\n";
-
-            vsSource = precision + vsSource;
-            fsSource = precision + fsSource;
-        }
 
         // Create the vertex shader
         Shader vertexShader = new Shader(Shader.Type.VERTEX_SHADER);

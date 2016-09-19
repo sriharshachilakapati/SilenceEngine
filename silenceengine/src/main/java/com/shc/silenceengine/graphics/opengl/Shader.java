@@ -25,6 +25,7 @@
 package com.shc.silenceengine.graphics.opengl;
 
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.utils.ShaderTranslator;
 
 import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
@@ -39,6 +40,8 @@ public class Shader
     private int     id;
     private boolean disposed;
 
+    private Type type;
+
     /**
      * Creates a shader with a specified type. Valid types are GL_VERTEX_SHADER or GL_FRAGMENT_SHADER.
      *
@@ -47,6 +50,7 @@ public class Shader
     public Shader(int type)
     {
         id = SilenceEngine.graphics.glCreateShader(type);
+        this.type = type == GL_VERTEX_SHADER ? Type.VERTEX_SHADER : Type.FRAGMENT_SHADER;
         GLError.check();
     }
 
@@ -58,6 +62,7 @@ public class Shader
     public Shader(Type type)
     {
         id = SilenceEngine.graphics.glCreateShader(type.value);
+        this.type = type;
         GLError.check();
     }
 
@@ -72,7 +77,7 @@ public class Shader
         if (disposed)
             throw new GLException("Shader already disposed!");
 
-        SilenceEngine.graphics.glShaderSource(id, source);
+        SilenceEngine.graphics.glShaderSource(id, ShaderTranslator.makeSafe(type, source));
         GLError.check();
     }
 

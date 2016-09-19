@@ -53,10 +53,10 @@ public class DynamicRendererTest extends SilenceTest
         // The vertex shader source
         String vsSource = "uniform mat4 transform;                 \n" +
 
-                          "attribute vec4 position;                \n" +
-                          "attribute vec4 color;                   \n" +
+                          "in vec4 position;                       \n" +
+                          "in vec4 color;                          \n" +
 
-                          "varying vec4 vColor;                    \n" +
+                          "out vec4 vColor;                        \n" +
 
                           "void main()                             \n" +
                           "{                                       \n" +
@@ -65,22 +65,12 @@ public class DynamicRendererTest extends SilenceTest
                           "}";
 
         // The fragment shader source
-        String fsSource = "varying vec4 vColor;       \n" +
+        String fsSource = "in vec4 vColor;         \n" +
 
-                          "void main()                \n" +
-                          "{                          \n" +
-                          "    gl_FragColor = vColor; \n" +
+                          "void main()             \n" +
+                          "{                       \n" +
+                          "    g_FragColor = vColor; \n" +
                           "}";
-
-        if (SilenceEngine.display.getPlatform() == SilenceEngine.Platform.HTML5 ||
-            SilenceEngine.display.getPlatform() == SilenceEngine.Platform.ANDROID)
-        {
-            // Shaders need a small change, we need to set float precision
-            String precision = "precision mediump float;\n";
-
-            vsSource = precision + vsSource;
-            fsSource = precision + fsSource;
-        }
 
         Shader vertexShader = new Shader(Shader.Type.VERTEX_SHADER);
         vertexShader.source(vsSource);
