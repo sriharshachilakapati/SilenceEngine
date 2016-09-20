@@ -25,6 +25,7 @@
 package com.shc.silenceengine.utils;
 
 import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.utils.functional.Provider;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -41,9 +42,9 @@ public final class ReusableStack<T>
     private Deque<T> stack;
     private List<T>  list;
 
-    private ObjectProvider<T> objectProvider;
+    private Provider<T> objectProvider;
 
-    public ReusableStack(ObjectProvider<T> objectProvider)
+    public ReusableStack(Provider<T> objectProvider)
     {
         stack = new LinkedList<>();
         list = new ArrayList<>();
@@ -55,7 +56,7 @@ public final class ReusableStack<T>
         if (stack.size() == 0)
             try
             {
-                T object = objectProvider.createObject();
+                T object = objectProvider.provide();
 
                 list.add(object);
                 stack.push(object);
@@ -76,11 +77,5 @@ public final class ReusableStack<T>
     public List<T> getAsList()
     {
         return list;
-    }
-
-    @FunctionalInterface
-    public interface ObjectProvider<T>
-    {
-        T createObject();
     }
 }
