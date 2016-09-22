@@ -70,6 +70,11 @@ public final class LwjglRuntime
                 }
         };
 
+        final boolean[] gameDone = { false };
+
+        // Stop events from happening until game is initialized
+        SilenceEngine.eventManager.waitUntil(() -> gameDone[0]);
+
         // Initiate setting the icon
         SilenceEngine.display.setIcon(FilePath.getResourceFile("engine_resources/icon.png"), () ->
         {
@@ -78,6 +83,7 @@ public final class LwjglRuntime
 
             // Call the game's init method
             game.init();
+            gameDone[0] = true;
 
             // Replace the callback so that we now perform the game loop instead of flushing
             // tasks in TaskManager.
