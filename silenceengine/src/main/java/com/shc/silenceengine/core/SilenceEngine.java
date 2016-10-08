@@ -35,6 +35,7 @@ import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.InputDevice;
 import com.shc.silenceengine.io.IODevice;
 import com.shc.silenceengine.logging.ILogDevice;
+import com.shc.silenceengine.math.Vector3;
 
 import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
@@ -148,5 +149,15 @@ public final class SilenceEngine
          * or it failed to detect the platform.
          */
         UNKNOWN
+    }
+
+    public String getVersionString()
+    {
+        return "1.1.1";
+    }
+
+    public Vector3 getVersion()
+    {
+        return new Vector3(1, 1, 1);
     }
 }
