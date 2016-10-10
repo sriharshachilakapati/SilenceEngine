@@ -65,6 +65,6 @@ public class Circle
 
     public boolean intersects(Circle c)
     {
-        return MathUtils.point_distance(x, y, c.x, c.y) <= r + c.r;
+        return MathUtils.pointDistance(x, y, c.x, c.y) <= r + c.r;
     }
 }

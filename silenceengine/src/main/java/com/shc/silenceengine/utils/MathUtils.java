@@ -348,7 +348,7 @@ public final class MathUtils
      *
      * @return A random real number between x1 and x2
      */
-    public static int random_range(int x1, int x2)
+    public static int randomRange(int x1, int x2)
     {
         return (int) (Math.floor(x1 + (Math.random() * (x2 - x1))));
     }
@@ -432,7 +432,7 @@ public final class MathUtils
      *
      * @return The distance between two points
      */
-    public static double point_distance(double x1, double y1, double x2, double y2)
+    public static double pointDistance(double x1, double y1, double x2, double y2)
     {
         return Math.sqrt(((x2 - x1) * (x2 - x1))
                                 + ((y2 - y1) * (y2 - y1)));
