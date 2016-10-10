@@ -106,10 +106,10 @@ public class Grid implements IBroadphase2D
     {
         Rectangle bounds = entity.polygon.getBounds();
 
-        int topLeftX = MathUtils.clamp((int) (bounds.getX()) / cellWidth, 0, cols - 1);
-        int topLeftY = MathUtils.clamp((int) (bounds.getY()) / cellHeight, 0, rows - 1);
-        int bottomRightX = MathUtils.clamp((int) (bounds.getX() + bounds.getWidth() - 1) / cellWidth, 0, cols - 1);
-        int bottomRightY = MathUtils.clamp((int) (bounds.getY() + bounds.getHeight() - 1) / cellHeight, 0, rows - 1);
+        int topLeftX = MathUtils.clamp((int) (bounds.x) / cellWidth, 0, cols - 1);
+        int topLeftY = MathUtils.clamp((int) (bounds.y) / cellHeight, 0, rows - 1);
+        int bottomRightX = MathUtils.clamp((int) (bounds.x + bounds.width - 1) / cellWidth, 0, cols - 1);
+        int bottomRightY = MathUtils.clamp((int) (bounds.y + bounds.height - 1) / cellHeight, 0, rows - 1);
 
         for (int x = topLeftX; x <= bottomRightX; x++)
         {
@@ -129,10 +129,10 @@ public class Grid implements IBroadphase2D
     {
         Rectangle bounds = entity.polygon.getBounds();
 
-        int topLeftX = MathUtils.clamp((int) (bounds.getX()) / cellWidth, 0, cols - 1);
-        int topLeftY = MathUtils.clamp((int) (bounds.getY()) / cellHeight, 0, rows - 1);
-        int bottomRightX = MathUtils.clamp((int) (bounds.getX() + bounds.getWidth() - 1) / cellWidth, 0, cols - 1);
-        int bottomRightY = MathUtils.clamp((int) (bounds.getY() + bounds.getHeight() - 1) / cellHeight, 0, rows - 1);
+        int topLeftX = MathUtils.clamp((int) (bounds.x) / cellWidth, 0, cols - 1);
+        int topLeftY = MathUtils.clamp((int) (bounds.y) / cellHeight, 0, rows - 1);
+        int bottomRightX = MathUtils.clamp((int) (bounds.x + bounds.width - 1) / cellWidth, 0, cols - 1);
+        int bottomRightY = MathUtils.clamp((int) (bounds.y + bounds.height - 1) / cellHeight, 0, rows - 1);
 
         for (int x = topLeftX; x <= bottomRightX; x++)
         {
@@ -149,10 +149,10 @@ public class Grid implements IBroadphase2D
     {
         retrieveList.clear();
 
-        int topLeftX = MathUtils.clamp((int) (bounds.getX()) / cellWidth, 0, cols - 1);
-        int topLeftY = MathUtils.clamp((int) (bounds.getY()) / cellHeight, 0, rows - 1);
-        int bottomRightX = MathUtils.clamp((int) (bounds.getX() + bounds.getWidth() - 1) / cellWidth, 0, cols - 1);
-        int bottomRightY = MathUtils.clamp((int) (bounds.getY() + bounds.getHeight() - 1) / cellHeight, 0, rows - 1);
+        int topLeftX = MathUtils.clamp((int) (bounds.x) / cellWidth, 0, cols - 1);
+        int topLeftY = MathUtils.clamp((int) (bounds.y) / cellHeight, 0, rows - 1);
+        int bottomRightX = MathUtils.clamp((int) (bounds.x + bounds.width - 1) / cellWidth, 0, cols - 1);
+        int bottomRightY = MathUtils.clamp((int) (bounds.y + bounds.height - 1) / cellHeight, 0, rows - 1);
 
         for (int x = topLeftX; x <= bottomRightX; x++)
         {

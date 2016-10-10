@@ -29,17 +29,9 @@ import com.shc.silenceengine.math.Vector2;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Rectangle extends Polygon
+public class Rectangle
 {
-    private float width, height;
-
-    private Vector2 v1;
-    private Vector2 v2;
-    private Vector2 v3;
-    private Vector2 v4;
-
-    private Vector2 min;
-    private Vector2 max;
+    public float x, y, width, height;
 
     public Rectangle()
     {
@@ -48,20 +40,10 @@ public class Rectangle extends Polygon
 
     public Rectangle(float x, float y, float width, float height)
     {
+        this.x = x;
+        this.y = y;
         this.width = width;
         this.height = height;
-
-        v1 = new Vector2();
-        v2 = new Vector2();
-        v3 = new Vector2();
-        v4 = new Vector2();
-
-        min = new Vector2();
-        max = new Vector2();
-
-        setPosition(new Vector2(x, y));
-
-        updateVertices();
     }
 
     public Rectangle(float width, float height)
@@ -74,45 +56,47 @@ public class Rectangle extends Polygon
         this(min.x, min.y, max.x - min.x, max.y - min.y);
     }
 
-    private void updateVertices()
+    public Polygon createPolygon()
     {
-        clearVertices();
-
-        addVertex(v1.set(0, 0));
-        addVertex(v2.set(width, 0));
-        addVertex(v3.set(width, height));
-        addVertex(v4.set(0, height));
+        return createPolygon(null);
     }
 
-    public boolean intersects(Polygon p)
+    public Polygon createPolygon(Polygon polygon)
     {
-        if (p instanceof Rectangle && p.getRotation() == 0 && getRotation() == 0)
-        {
-            Rectangle r = (Rectangle) p;
+        if (polygon == null)
+            polygon = new Polygon();
 
-            float x = getPosition().x;
-            float y = getPosition().y;
+        polygon.clearVertices();
+        polygon.setRotation(0);
+        polygon.setScale(1, 1);
+        polygon.setPosition(x + width / 2, y + height / 2);
 
-            float rx = r.getX();
-            float ry = r.getY();
+        polygon.addVertex(-width / 2, -height / 2);
+        polygon.addVertex(+width / 2, -height / 2);
+        polygon.addVertex(+width / 2, +height / 2);
+        polygon.addVertex(-width / 2, +height / 2);
 
-            return (getX() < rx + r.width) && (rx < getX() + width) && (getY() < ry + r.height) && (ry < getY() + height);
-        }
-        else
-            return super.intersects(p);
+        return polygon;
     }
 
-    @Override
+    public boolean intersects(Rectangle r)
+    {
+        return (x < r.x + r.width) &&
+               (r.x < x + width) &&
+               (y < r.y + r.height) &&
+               (r.y < y + height);
+    }
+
     public Rectangle copy()
     {
-        return new Rectangle(getX(), getY(), width, height);
+        return new Rectangle(x, y, width, height);
     }
 
     @Override
     public int hashCode()
     {
-        int result = (getX() != +0.0f ? Float.floatToIntBits(getX()) : 0);
-        result = 31 * result + (getY() != +0.0f ? Float.floatToIntBits(getY()) : 0);
+        int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
+        result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
         result = 31 * result + (width != +0.0f ? Float.floatToIntBits(width) : 0);
         result = 31 * result + (height != +0.0f ? Float.floatToIntBits(height) : 0);
         return result;
@@ -128,8 +112,8 @@ public class Rectangle extends Polygon
 
         return Float.compare(rectangle.height, height) == 0 &&
                Float.compare(rectangle.width, width) == 0 &&
-               Float.compare(rectangle.getX(), getX()) == 0 &&
-               Float.compare(rectangle.getY(), getY()) == 0;
+               Float.compare(rectangle.x, x) == 0 &&
+               Float.compare(rectangle.y, y) == 0;
     }
 
     @Override
@@ -143,102 +127,43 @@ public class Rectangle extends Polygon
 
     public float getIntersectionWidth(Rectangle aabb)
     {
-        if (aabb.getRotation() != 0)
-            aabb = aabb.getBounds();
+        float tx1 = this.x;
+        float rx1 = aabb.x;
 
-        Rectangle self = getRotation() == 0 ? this : getBounds();
-
-        float tx1 = self.getX();
-        float rx1 = aabb.getX();
-
-        float tx2 = tx1 + self.getWidth();
-        float rx2 = rx1 + aabb.getWidth();
+        float tx2 = tx1 + this.width;
+        float rx2 = rx1 + aabb.width;
 
         return tx2 > rx2 ? rx2 - tx1 : tx2 - rx1;
     }
 
     public float getIntersectionHeight(Rectangle aabb)
     {
-        if (aabb.getRotation() != 0)
-            aabb = aabb.getBounds();
+        float ty1 = this.y;
+        float ry1 = aabb.y;
 
-        Rectangle self = getRotation() == 0 ? this : getBounds();
-
-        float ty1 = self.getY();
-        float ry1 = aabb.getY();
-
-        float ty2 = ty1 + self.getHeight();
-        float ry2 = ry1 + aabb.getHeight();
+        float ty2 = ty1 + this.height;
+        float ry2 = ry1 + aabb.height;
 
         return ty2 > ry2 ? ry2 - ty1 : ty2 - ry1;
     }
 
-    public float getX()
-    {
-        return getPosition().x;
-    }
-
-    public void setX(float x)
-    {
-        Vector2 position = getPosition();
-        position.x = x;
-        setPosition(position);
-    }
-
-    public float getY()
-    {
-        return getPosition().y;
-    }
-
-    public void setY(float y)
-    {
-        Vector2 position = getPosition();
-        position.y = y;
-        setPosition(position);
-    }
-
-    public float getWidth()
-    {
-        return width;
-    }
-
-    public void setWidth(float width)
-    {
-        this.width = width;
-        updateVertices();
-    }
-
-    public float getHeight()
-    {
-        return height;
-    }
-
-    public void setHeight(float height)
-    {
-        this.height = height;
-        updateVertices();
-    }
-
     public void set(float x, float y, float width, float height)
     {
-        setPosition(x, y);
-
+        this.x = x;
+        this.y = y;
         this.width = width;
         this.height = height;
-
-        float rotation = getRotation();
-        updateVertices();
-
-        setRotation(rotation);
     }
 
-    public Vector2 getMin()
+    public void setPosition(float x, float y)
     {
-        return min.set(getPosition()).add(v1);
+        this.x = x;
+        this.y = y;
     }
 
-    public Vector2 getMax()
+    public void setCenter(float x, float y)
     {
-        return max.set(min).add(v3);
+        this.x = x + width / 2;
+        this.y = y + height / 2;
     }
 }

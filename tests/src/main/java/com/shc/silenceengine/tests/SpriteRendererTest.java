@@ -142,12 +142,12 @@ public class SpriteRendererTest extends SilenceTest
         for (int i = 0; i < SilenceEngine.display.getWidth(); i += 48)
         {
             Entity2D wall = new Entity2D();
-            wall.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48)));
+            wall.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48).createPolygon()));
             wall.addComponent(new SpriteComponent(sprite, batch));
             wall.position.set(i + 24, 24);
 
             Entity2D wall2 = new Entity2D();
-            wall2.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48)));
+            wall2.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48).createPolygon()));
             wall2.addComponent(new SpriteComponent(sprite, batch));
             wall2.position.set(i + 24, SilenceEngine.display.getHeight() - 24);
 
@@ -158,12 +158,12 @@ public class SpriteRendererTest extends SilenceTest
         for (int i = 48; i < SilenceEngine.display.getHeight() - 48; i += 48)
         {
             Entity2D wall = new Entity2D();
-            wall.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48)));
+            wall.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48).createPolygon()));
             wall.addComponent(new SpriteComponent(sprite, batch));
             wall.position.set(24, i + 24);
 
             Entity2D wall2 = new Entity2D();
-            wall2.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48)));
+            wall2.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48).createPolygon()));
             wall2.addComponent(new SpriteComponent(sprite, batch));
             wall2.position.set(SilenceEngine.display.getWidth() - 24, i + 24);
 
@@ -185,13 +185,13 @@ public class SpriteRendererTest extends SilenceTest
         {
             position.set(SilenceEngine.display.getWidth() / 2 - 24, SilenceEngine.display.getHeight() / 2 - 24);
 
-            addComponent(new CollisionComponent2D(heroTag, new Rectangle(48, 48), this::onHeroCollision));
+            addComponent(new CollisionComponent2D(heroTag, new Rectangle(48, 48).createPolygon(), this::onHeroCollision));
             addComponent(renderComponent = new SpriteComponent(sprite, batch));
 
             subHero = new Entity2D();
             subHero.position.set(100, 30);
 
-            subHero.addComponent(new CollisionComponent2D(subHeroTag, new Rectangle(48, 48), this::onSubHeroCollision));
+            subHero.addComponent(new CollisionComponent2D(subHeroTag, new Rectangle(48, 48).createPolygon(), this::onSubHeroCollision));
             subHero.addComponent(subRenderComponent = new SpriteComponent(sprite, batch));
 
             addChild(subHero);

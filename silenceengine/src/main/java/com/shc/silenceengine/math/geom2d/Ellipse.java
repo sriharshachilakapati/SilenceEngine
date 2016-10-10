@@ -24,14 +24,15 @@
 
 package com.shc.silenceengine.math.geom2d;
 
-import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.utils.MathUtils;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Ellipse extends Polygon
+public class Ellipse
 {
+    public float x, y, rx, ry;
+
     public Ellipse(float rx, float ry)
     {
         this(0, 0, rx, ry);
@@ -39,47 +40,25 @@ public class Ellipse extends Polygon
 
     public Ellipse(float x, float y, float rx, float ry)
     {
-        this(new Vector2(x, y), rx, ry);
+        this.x = x;
+        this.y = y;
+        this.rx = rx;
+        this.ry = ry;
     }
 
-    public Ellipse(Vector2 center, float rx, float ry)
+    public void createPolygon(Polygon polygon)
     {
-        updateVertices(rx, ry);
-        setCenter(center);
-    }
+        if (polygon == null)
+            polygon = new Polygon();
 
-    private void updateVertices(float rx, float ry)
-    {
-        clearVertices();
+        polygon.clearVertices();
+        polygon.setRotation(0);
+        polygon.setScale(1, 1);
+        polygon.setPosition(x, y);
 
-        float x = getPosition().x;
-        float y = getPosition().y;
+        polygon.clearVertices();
 
         for (int i = 0; i < 360; i++)
-            addVertex(new Vector2(x + rx + MathUtils.cos(i) * rx, y + ry + MathUtils.sin(i) * ry));
-    }
-
-    public float getRadiusX()
-    {
-        return getBounds().getWidth() / 2;
-    }
-
-    public void setRadiusX(float rx)
-    {
-        float rotation = getRotation();
-        updateVertices(rx, getRadiusY());
-        setRotation(rotation);
-    }
-
-    public float getRadiusY()
-    {
-        return getBounds().getHeight() / 2;
-    }
-
-    public void setRadiusY(float ry)
-    {
-        float rotation = getRotation();
-        updateVertices(getRadiusX(), ry);
-        setRotation(rotation);
+            polygon.addVertex(x + rx + MathUtils.cos(i) * rx, y + ry + MathUtils.sin(i) * ry);
     }
 }

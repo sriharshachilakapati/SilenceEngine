@@ -36,7 +36,6 @@ import java.util.List;
 public class Polygon
 {
     private Vector2       position;
-    private Vector2       center;
     private List<Vector2> vertices;
     private float         rotation;
 
@@ -54,7 +53,6 @@ public class Polygon
     {
         this.vertices = new ArrayList<>();
         this.position = new Vector2();
-        this.center = new Vector2();
 
         scaleX = scaleY = 1;
 
@@ -167,27 +165,7 @@ public class Polygon
         this.position.set(v);
 
         if (bounds != null)
-            bounds.setPosition(position);
-    }
-
-    public Vector2 getCenter()
-    {
-        if (vertexCount() == 0)
-            center.set(position);
-        else
-            center.set(position).add((maxX - minX) / 2, (maxY - minY) / 2);
-
-        return center;
-    }
-
-    public void setCenter(Vector2 center)
-    {
-        this.center.set(center);
-
-        position.set(center);
-
-        if (vertexCount() != 0)
-            position.subtract((maxX - minX) / 2, (maxY - minY) / 2);
+            bounds.setCenter(position.x, position.y);
     }
 
     public void setPosition(float x, float y)
@@ -195,10 +173,8 @@ public class Polygon
         position.x = x;
         position.y = y;
 
-        center.set(position).add((maxX - minX) / 2, (maxY - minY) / 2);
-
         if (bounds != null)
-            bounds.setPosition(position);
+            bounds.setCenter(position.x, position.y);
     }
 
     public Rectangle getBounds()
@@ -225,7 +201,7 @@ public class Polygon
             maxY = Math.max(maxY, vertex.y);
         }
 
-        bounds.set(position.x + minX, position.y + minY, maxX - minX, maxY - minY);
+        bounds.set(position.x + minX + bounds.width / 2, position.y + minY + bounds.height / 2, maxX - minX, maxY - minY);
     }
 
     public float getRotation()
@@ -243,7 +219,7 @@ public class Polygon
 
     public void rotate(float angle)
     {
-        rotate(angle, (maxX - minX) / 2, (maxY - minY) / 2);
+        rotate(angle, 0, 0);
     }
 
     public void rotate(float angle, float originX, float originY)
@@ -267,7 +243,6 @@ public class Polygon
     public int hashCode()
     {
         int result = position.hashCode();
-        result = 31 * result + center.hashCode();
         result = 31 * result + vertices.hashCode();
         result = 31 * result + (rotation != +0.0f ? Float.floatToIntBits(rotation) : 0);
         result = 31 * result + (minX != +0.0f ? Float.floatToIntBits(minX) : 0);
@@ -292,7 +267,6 @@ public class Polygon
                Float.compare(polygon.minY, minY) == 0 &&
                Float.compare(polygon.rotation, rotation) == 0 &&
                bounds.equals(polygon.bounds) &&
-               center.equals(polygon.center) &&
                position.equals(polygon.position) &&
                vertices.equals(polygon.vertices);
     }
@@ -302,7 +276,6 @@ public class Polygon
     {
         return "Polygon{" +
                "position=" + position +
-               ", center=" + center +
                ", vertices=" + vertices +
                ", rotation=" + rotation +
                ", minX=" + minX +
@@ -336,5 +309,10 @@ public class Polygon
     public void setScale(Vector2 scale)
     {
         scale(scale.x / scaleX, scale.y / scaleY);
+    }
+
+    public void setScale(int sx, int sy)
+    {
+        scale(sx / scaleX, sy / scaleY);
     }
 }

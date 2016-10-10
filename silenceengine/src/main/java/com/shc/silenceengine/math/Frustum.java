@@ -196,7 +196,7 @@ public class Frustum
 
     public boolean intersects(Polygon polygon)
     {
-        Vector2 center = polygon.getCenter();
+        Vector2 center = polygon.getPosition();
 
         // If the center point is inside the frustum, then the polygon should be intersecting
         if (isInside(center.x, center.y, 0))
@@ -214,7 +214,7 @@ public class Frustum
     public boolean isInside(Polygon polygon)
     {
         // Definitely not inside if the center is not in frustum
-        if (!isInside(polygon.getCenter().x, polygon.getCenter().y, planes[NEAR].d))
+        if (!isInside(polygon.getPosition().x, polygon.getPosition().y, planes[NEAR].d))
             return false;
 
         boolean inside = false;

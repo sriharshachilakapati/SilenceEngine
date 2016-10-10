@@ -101,7 +101,7 @@ public class DynamicTree2D implements IBroadphase2D
     public List<CollisionComponent2D> retrieve(Rectangle rect)
     {
         retrieveList.clear();
-        queryNode(new AABB(rect.getPosition(), rect.getWidth(), rect.getHeight()), root);
+        queryNode(new AABB(new Vector2(rect.x, rect.y), rect.width, rect.height), root);
         return retrieveList;
     }
 

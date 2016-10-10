@@ -24,7 +24,6 @@
 
 package com.shc.silenceengine.math.geom2d;
 
-import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.utils.MathUtils;
 
 /**
@@ -32,9 +31,9 @@ import com.shc.silenceengine.utils.MathUtils;
  *
  * @author Sri Harsha Chilakapati
  */
-public class Circle extends Polygon
+public class Circle
 {
-    private float radius;
+    public float x, y, r;
 
     public Circle(float r)
     {
@@ -43,102 +42,29 @@ public class Circle extends Polygon
 
     public Circle(float x, float y, float r)
     {
-        this(new Vector2(x, y), r);
+        this.x = x;
+        this.y = y;
+        this.r = r;
     }
 
-    public Circle(Vector2 center, float r)
+    public void createPolygon(Polygon polygon)
     {
-        this.radius = r;
-        updateVertices(r);
-        setCenter(center);
-    }
+        if (polygon == null)
+            polygon = new Polygon();
 
-    private void updateVertices(float r)
-    {
-        clearVertices();
+        polygon.clearVertices();
+        polygon.setRotation(0);
+        polygon.setScale(1, 1);
+        polygon.setPosition(x, y);
 
-        float x = getPosition().x;
-        float y = getPosition().y;
+        polygon.clearVertices();
 
         for (int i = 0; i < 360; i++)
-            addVertex(new Vector2(x + r + MathUtils.cos(i) * r, y + r + MathUtils.sin(i) * r));
+            polygon.addVertex(x + r + MathUtils.cos(i) * r, y + r + MathUtils.sin(i) * r);
     }
 
-    /**
-     * Checks if a point exists inside this circle.
-     *
-     * @param p The point to check
-     *
-     * @return True if inside, else False.
-     */
-    @Override
-    public boolean contains(Vector2 p)
+    public boolean intersects(Circle c)
     {
-        return (((getX() - p.x) * (getX() - p.x)) + ((getY() - p.y) * (getY() - p.y))) < getRadius() * getRadius();
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = (getRadius() != +0.0f ? Float.floatToIntBits(getRadius()) : 0);
-        result = 31 * result + (getX() != +0.0f ? Float.floatToIntBits(getX()) : 0);
-        result = 31 * result + (getY() != +0.0f ? Float.floatToIntBits(getY()) : 0);
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Circle circle = (Circle) o;
-
-        return getRadius() == circle.getRadius() && getX() == circle.getX() && getY() == circle.getY();
-    }
-
-    @Override
-    public String toString()
-    {
-        return "Circle{" +
-               "x=" + getX() +
-               ", y=" + getY() +
-               ", r=" + getRadius() +
-               '}';
-    }
-
-    public float getX()
-    {
-        return getCenter().x;
-    }
-
-    public void setX(float x)
-    {
-        Vector2 center = getCenter();
-        center.x = x;
-        setCenter(center);
-    }
-
-    public float getY()
-    {
-        return getCenter().y;
-    }
-
-    public void setY(float y)
-    {
-        Vector2 center = getCenter();
-        center.y = y;
-        setCenter(center);
-    }
-
-    public float getRadius()
-    {
-        return getBounds().getWidth() / 2;
-    }
-
-    public void setRadius(float radius)
-    {
-        this.radius = radius;
-        updateVertices(radius);
+        return MathUtils.point_distance(x, y, c.x, c.y) <= r + c.r;
     }
 }

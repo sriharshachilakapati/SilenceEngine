@@ -432,10 +432,10 @@ public final class MathUtils
      *
      * @return The distance between two points
      */
-    public static int point_distance(int x1, int y1, int x2, int y2)
+    public static double point_distance(double x1, double y1, double x2, double y2)
     {
-        return (int) (Math.sqrt(((x2 - x1) * (x2 - x1))
-                                + ((y2 - y1) * (y2 - y1))));
+        return Math.sqrt(((x2 - x1) * (x2 - x1))
+                                + ((y2 - y1) * (y2 - y1)));
     }
 
     public static boolean chance(int percentage)

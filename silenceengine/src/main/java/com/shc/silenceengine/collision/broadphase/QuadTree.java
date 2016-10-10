@@ -181,11 +181,11 @@ public class QuadTree implements IBroadphase2D
     // Split the tree into 4 quadrants
     private void split()
     {
-        int subWidth = (int) (bounds.getWidth() / 2);
-        int subHeight = (int) (bounds.getHeight() / 2);
+        int subWidth = (int) (bounds.width / 2);
+        int subHeight = (int) (bounds.height / 2);
 
-        int x = (int) bounds.getX();
-        int y = (int) bounds.getY();
+        int x = (int) bounds.x;
+        int y = (int) bounds.y;
 
         nodes[0] = new QuadTree(level + 1, new Rectangle(x + subWidth, y, subWidth, subHeight));
         nodes[1] = new QuadTree(level + 1, new Rectangle(x, y, subWidth, subHeight));
@@ -204,13 +204,13 @@ public class QuadTree implements IBroadphase2D
     {
         int index = -1;
 
-        double verticalMidpoint = bounds.getX() + (bounds.getWidth() / 2);
-        double horizontalMidpoint = bounds.getY() + (bounds.getHeight() / 2);
+        double verticalMidpoint = bounds.x + (bounds.width / 2);
+        double horizontalMidpoint = bounds.y + (bounds.height / 2);
 
-        boolean topQuadrant = (r.getY() < horizontalMidpoint && r.getY() + r.getHeight() < horizontalMidpoint);
-        boolean bottomQuadrant = (r.getY() > horizontalMidpoint);
+        boolean topQuadrant = (r.y < horizontalMidpoint && r.y + r.height < horizontalMidpoint);
+        boolean bottomQuadrant = (r.y > horizontalMidpoint);
 
-        if (r.getX() < verticalMidpoint && r.getX() + r.getWidth() < verticalMidpoint)
+        if (r.x < verticalMidpoint && r.x + r.width < verticalMidpoint)
         {
             if (topQuadrant)
             {
@@ -221,7 +221,7 @@ public class QuadTree implements IBroadphase2D
                 index = 2;
             }
         }
-        else if (r.getX() > verticalMidpoint)
+        else if (r.x > verticalMidpoint)
         {
             if (topQuadrant)
             {

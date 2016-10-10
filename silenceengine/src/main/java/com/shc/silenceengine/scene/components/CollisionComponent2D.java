@@ -88,7 +88,7 @@ public class CollisionComponent2D implements IComponent2D
             parent = parent.parent;
         }
 
-        polygon.setCenter(tPosition);
+        polygon.setPosition(tPosition);
         polygon.setScale(tScale);
         polygon.setRotation(rotation);
 
