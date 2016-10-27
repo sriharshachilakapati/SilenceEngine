@@ -226,7 +226,7 @@ public class Polygon
     {
         rotation += angle;
 
-        if (angle == 0 || this instanceof Circle)
+        if (angle == 0)
             return;
 
         for (Vector2 vertex : vertices)

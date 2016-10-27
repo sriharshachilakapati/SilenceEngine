@@ -27,7 +27,6 @@ package com.shc.silenceengine.math;
 import com.shc.silenceengine.graphics.cameras.Camera;
 import com.shc.silenceengine.math.geom2d.Polygon;
 import com.shc.silenceengine.math.geom3d.Polyhedron;
-import com.shc.silenceengine.math.geom3d.Sphere;
 
 /**
  * This class represents the Frustum, the volume of the camera view. Contains useful functions to check whether a shape
@@ -244,10 +243,6 @@ public class Frustum
         // Now check if the AABB of the polyhedron intersects the frustum
         if (intersects(position, polyhedron.getWidth(), polyhedron.getHeight(), polyhedron.getThickness()))
         {
-            // Special case, if the polyhedron is a sphere, then there is no need to test fully
-            if (polyhedron instanceof Sphere)
-                return intersects(position, ((Sphere) polyhedron).getRadius());
-
             // Check if at least one point of the polyhedron is inside frustum.
             for (Vector3 v : polyhedron.getVertices())
                 if (isInside(v.x + position.x, v.y + position.y, v.z + position.z))

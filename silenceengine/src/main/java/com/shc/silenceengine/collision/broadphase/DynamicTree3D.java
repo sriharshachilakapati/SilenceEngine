@@ -26,7 +26,6 @@ package com.shc.silenceengine.collision.broadphase;
 
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.geom3d.Cuboid;
-import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.scene.components.CollisionComponent3D;
 
 import java.util.ArrayList;
@@ -98,13 +97,13 @@ public class DynamicTree3D implements IBroadphase3D
     }
 
     @Override
-    public List<CollisionComponent3D> retrieve(Polyhedron bounds)
+    public List<CollisionComponent3D> retrieve(Cuboid bounds)
     {
         retrieveList.clear();
 
         AABB aabb = new AABB();
-        aabb.min.set(bounds.getPosition()).subtract(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
-        aabb.max.set(bounds.getPosition()).add(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
+        aabb.min.set(bounds.position).subtract(bounds.width / 2, bounds.height / 2, bounds.thickness / 2);
+        aabb.max.set(bounds.position).add(bounds.width / 2, bounds.height / 2, bounds.thickness / 2);
 
         queryNode(aabb, root);
         return retrieveList;
@@ -166,8 +165,8 @@ public class DynamicTree3D implements IBroadphase3D
 
         Cuboid bounds = e.polyhedron.getBounds();
 
-        aabb.min.set(bounds.getPosition()).subtract(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
-        aabb.max.set(bounds.getPosition()).add(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2);
+        aabb.min.set(bounds.position).subtract(bounds.width / 2, bounds.height / 2, bounds.thickness / 2);
+        aabb.max.set(bounds.position).add(bounds.width / 2, bounds.height / 2, bounds.thickness / 2);
 
         return aabb;
     }
@@ -309,8 +308,8 @@ public class DynamicTree3D implements IBroadphase3D
         {
             Cuboid bounds = entity.polyhedron.getBounds();
 
-            return new AABB(bounds.getPosition().subtract(bounds.getWidth() / 2, bounds.getHeight() / 2, bounds.getThickness() / 2),
-                    bounds.getWidth(), bounds.getHeight(), bounds.getThickness());
+            return new AABB(bounds.position.subtract(bounds.width / 2, bounds.height / 2, bounds.thickness / 2),
+                    bounds.width, bounds.height, bounds.thickness);
         }
 
         public static AABB union(AABB aabb1, AABB aabb2, AABB store)
