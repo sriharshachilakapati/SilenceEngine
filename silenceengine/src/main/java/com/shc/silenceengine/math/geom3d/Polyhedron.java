@@ -228,7 +228,7 @@ public class Polyhedron
         this.position.set(position);
 
         if (bounds != null)
-            bounds.setPosition(position);
+            bounds.position.set(position);
     }
 
     public Vector3 getScale()

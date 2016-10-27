@@ -25,26 +25,33 @@
 package com.shc.silenceengine.math.geom3d;
 
 import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.utils.MathUtils;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Sphere extends Polyhedron
+public class Sphere
 {
-    private float radius;
+    public float   radius;
+    public Vector3 position;
 
     public Sphere(Vector3 position, float radius)
     {
-        setPosition(position);
-
+        this.position = new Vector3(position);
         this.radius = radius;
-
-        updateVertices();
     }
 
-    private void updateVertices()
+    public Polyhedron createPolyhedron()
     {
-        clearVertices();
+        return createPolyhedron(null);
+    }
+
+    public Polyhedron createPolyhedron(Polyhedron polyhedron)
+    {
+        if (polyhedron == null)
+            polyhedron = new Polyhedron();
+
+        polyhedron.clearVertices();
 
         // Algorithm copied from the article written by Polaris of hugi.scene.org available online at the url
         // http://hugi.scene.org/online/hugi27/hugi%2027%20-%20coding%20corner%20polaris%20sphere%20tessellation%20101.htm
@@ -73,12 +80,15 @@ public class Sphere extends Polyhedron
             float y = (float) (radius * Math.cos(xAngle));
             float z = (float) (radius * Math.sin(xAngle) * Math.cos(yAngle));
 
-            addVertex(new Vector3(x, y, z));
+            polyhedron.addVertex(x, y, z);
         }
+
+        return polyhedron;
     }
 
-    public float getRadius()
+    public boolean intersects(Sphere s)
     {
-        return getWidth() / 2;
+        return MathUtils.pointDistance(position.x, position.y, position.z,
+                s.position.x, s.position.y, s.position.z) <= radius + s.radius;
     }
 }

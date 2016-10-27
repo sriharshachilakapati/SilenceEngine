@@ -435,7 +435,26 @@ public final class MathUtils
     public static double pointDistance(double x1, double y1, double x2, double y2)
     {
         return Math.sqrt(((x2 - x1) * (x2 - x1))
-                                + ((y2 - y1) * (y2 - y1)));
+                         + ((y2 - y1) * (y2 - y1)));
+    }
+
+    /**
+     * Returns the distance between point (x1,y1,z1) and point (x2,y2,z2).
+     *
+     * @param x1 The abscissa of first point
+     * @param y1 The ordinate of first point
+     * @param z1 The depth of first point
+     * @param x2 The abscissa of second point
+     * @param y2 The ordinate of second point
+     * @param z2 The depth of second point
+     *
+     * @return The distance between two points
+     */
+    public static double pointDistance(double x1, double y1, double z1, double x2, double y2, double z2)
+    {
+        return Math.sqrt(((x2 - x1) * (x2 - x1))
+                         + ((y2 - y1) * (y2 - y1))
+                         + ((y2 - y1) * (y2 - y1)));
     }
 
     public static boolean chance(int percentage)

@@ -29,173 +29,139 @@ import com.shc.silenceengine.math.Vector3;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Cuboid extends Polyhedron
+public class Cuboid
 {
-    private float width;
-    private float height;
-    private float thickness;
-
-    private Vector3[] vertices;
+    public float   width;
+    public float   height;
+    public float   thickness;
+    public Vector3 position;
 
     public Cuboid(Vector3 position, float width, float height, float thickness)
     {
-        this();
-
         this.width = width;
         this.height = height;
         this.thickness = thickness;
 
-        setPosition(position);
-
-        updateVertices();
+        this.position = new Vector3(position);
     }
 
     public Cuboid()
     {
-        vertices = new Vector3[26];
-
-        for (int i = 0; i < vertices.length; i++)
-            vertices[i] = new Vector3();
-
         width = height = thickness = 1;
-
-        setPosition(Vector3.ZERO);
-        updateVertices();
+        position = new Vector3();
     }
 
     public Cuboid(Vector3 min, Vector3 max)
     {
-        this();
-
         Vector3 size = max.subtract(min);
 
         width = size.x;
         height = size.y;
         thickness = size.z;
 
-        setPosition(min.add(max).scale(0.5f));
+        max.add(min);
 
-        updateVertices();
+        position = new Vector3(min).add(max).scale(0.5f);
     }
 
-    private void updateVertices()
+    public Polyhedron createPolyhedron()
     {
-        clearVertices();
+        return createPolyhedron(null);
+    }
+
+    public Polyhedron createPolyhedron(Polyhedron polyhedron)
+    {
+        if (polyhedron == null)
+            polyhedron = new Polyhedron();
+
+        polyhedron.clearVertices();
+
+        // Precomputed dimensions
+        final float halfWidth = width / 2;
+        final float halfHeight = height / 2;
+        final float halfThickness = thickness / 2;
 
         // Front face
-        addVertex(vertices[0].set(-width / 2, -height / 2, +thickness / 2));
-        addVertex(vertices[1].set(+width / 2, -height / 2, +thickness / 2));
-        addVertex(vertices[2].set(-width / 2, +height / 2, +thickness / 2));
-        addVertex(vertices[3].set(+width / 2, +height / 2, +thickness / 2));
+        polyhedron.addVertex(-halfWidth, -halfHeight, +halfThickness);
+        polyhedron.addVertex(+halfWidth, -halfHeight, +halfThickness);
+        polyhedron.addVertex(-halfWidth, +halfHeight, +halfThickness);
+        polyhedron.addVertex(+halfWidth, +halfHeight, +halfThickness);
 
         // Right face
-        addVertex(vertices[4].set(+width / 2, +height / 2, +thickness / 2));
-        addVertex(vertices[5].set(+width / 2, -height / 2, +thickness / 2));
-        addVertex(vertices[6].set(+width / 2, +height / 2, -thickness / 2));
-        addVertex(vertices[7].set(+width / 2, -height / 2, -thickness / 2));
+        polyhedron.addVertex(+halfWidth, +halfHeight, +halfThickness);
+        polyhedron.addVertex(+halfWidth, -halfHeight, +halfThickness);
+        polyhedron.addVertex(+halfWidth, +halfHeight, -halfThickness);
+        polyhedron.addVertex(+halfWidth, -halfHeight, -halfThickness);
 
         // Back face
-        addVertex(vertices[8].set(+width / 2, -height / 2, -thickness / 2));
-        addVertex(vertices[9].set(-width / 2, -height / 2, -thickness / 2));
-        addVertex(vertices[10].set(+width / 2, +height / 2, -thickness / 2));
-        addVertex(vertices[11].set(-width / 2, +height / 2, -thickness / 2));
+        polyhedron.addVertex(+halfWidth, -halfHeight, -halfThickness);
+        polyhedron.addVertex(-halfWidth, -halfHeight, -halfThickness);
+        polyhedron.addVertex(+halfWidth, +halfHeight, -halfThickness);
+        polyhedron.addVertex(-halfWidth, +halfHeight, -halfThickness);
 
         // Left face
-        addVertex(vertices[12].set(-width / 2, +height / 2, -thickness / 2));
-        addVertex(vertices[13].set(-width / 2, -height / 2, -thickness / 2));
-        addVertex(vertices[14].set(-width / 2, +height / 2, +thickness / 2));
-        addVertex(vertices[15].set(-width / 2, -height / 2, +thickness / 2));
+        polyhedron.addVertex(-halfWidth, +halfHeight, -halfThickness);
+        polyhedron.addVertex(-halfWidth, -halfHeight, -halfThickness);
+        polyhedron.addVertex(-halfWidth, +halfHeight, +halfThickness);
+        polyhedron.addVertex(-halfWidth, -halfHeight, +halfThickness);
 
         // Bottom face
-        addVertex(vertices[16].set(-width / 2, -height / 2, +thickness / 2));
-        addVertex(vertices[17].set(-width / 2, -height / 2, -thickness / 2));
-        addVertex(vertices[18].set(+width / 2, -height / 2, +thickness / 2));
-        addVertex(vertices[19].set(+width / 2, -height / 2, -thickness / 2));
+        polyhedron.addVertex(-halfWidth, -halfHeight, +halfThickness);
+        polyhedron.addVertex(-halfWidth, -halfHeight, -halfThickness);
+        polyhedron.addVertex(+halfWidth, -halfHeight, +halfThickness);
+        polyhedron.addVertex(+halfWidth, -halfHeight, -halfThickness);
 
         // Move to top
-        addVertex(vertices[20].set(+width / 2, -height / 2, -thickness / 2));
-        addVertex(vertices[21].set(-width / 2, +height / 2, +thickness / 2));
+        polyhedron.addVertex(+halfWidth, -halfHeight, -halfThickness);
+        polyhedron.addVertex(-halfWidth, +halfHeight, +halfThickness);
 
         // Top face
-        addVertex(vertices[22].set(-width / 2, +height / 2, +thickness / 2));
-        addVertex(vertices[23].set(+width / 2, +height / 2, +thickness / 2));
-        addVertex(vertices[24].set(-width / 2, +height / 2, -thickness / 2));
-        addVertex(vertices[25].set(+width / 2, +height / 2, -thickness / 2));
-    }
+        polyhedron.addVertex(-halfWidth, +halfHeight, +halfThickness);
+        polyhedron.addVertex(+halfWidth, +halfHeight, +halfThickness);
+        polyhedron.addVertex(-halfWidth, +halfHeight, -halfThickness);
+        polyhedron.addVertex(+halfWidth, +halfHeight, -halfThickness);
 
-    @Override
-    public float getWidth()
-    {
-        return width;
-    }
-
-    @Override
-    public float getHeight()
-    {
-        return height;
-    }
-
-    @Override
-    public float getThickness()
-    {
-        return thickness;
+        return polyhedron;
     }
 
     public void set(float width, float height, float thickness, Vector3 position)
     {
-        setPosition(position);
+        this.position.set(position);
 
         this.width = width;
         this.height = height;
         this.thickness = thickness;
-
-        updateVertices();
     }
 
     public float getIntersectionWidth(Cuboid aabb)
     {
-        if (aabb.getRotationX() != 0 || aabb.getRotationY() != 0 || aabb.getRotationZ() != 0)
-            aabb = aabb.getBounds();
+        float tx1 = this.position.x - this.width / 2;
+        float rx1 = aabb.position.x - aabb.width / 2;
 
-        Cuboid self = (getRotationX() == 0 && getRotationY() == 0 && getRotationZ() == 0) ? this : getBounds();
-
-        float tx1 = self.getPosition().x - self.getWidth() / 2;
-        float rx1 = aabb.getPosition().x - aabb.getWidth() / 2;
-
-        float tx2 = tx1 + self.getWidth();
-        float rx2 = rx1 + aabb.getWidth();
+        float tx2 = tx1 + this.width;
+        float rx2 = rx1 + aabb.width;
 
         return tx2 > rx2 ? rx2 - tx1 : tx2 - rx1;
     }
 
     public float getIntersectionHeight(Cuboid aabb)
     {
-        if (aabb.getRotationX() != 0 || aabb.getRotationY() != 0 || aabb.getRotationZ() != 0)
-            aabb = aabb.getBounds();
+        float ty1 = this.position.y - this.height / 2;
+        float ry1 = aabb.position.y - aabb.height / 2;
 
-        Cuboid self = (getRotationX() == 0 && getRotationY() == 0 && getRotationZ() == 0) ? this : getBounds();
-
-        float ty1 = self.getPosition().y - self.getHeight() / 2;
-        float ry1 = aabb.getPosition().y - aabb.getHeight() / 2;
-
-        float ty2 = ty1 + self.getHeight();
-        float ry2 = ry1 + aabb.getHeight();
+        float ty2 = ty1 + this.height;
+        float ry2 = ry1 + aabb.height;
 
         return ty2 > ry2 ? ry2 - ty1 : ty2 - ry1;
     }
 
     public float getIntersectionThickness(Cuboid aabb)
     {
-        if (aabb.getRotationX() != 0 || aabb.getRotationY() != 0 || aabb.getRotationZ() != 0)
-            aabb = aabb.getBounds();
+        float tz1 = this.position.z - this.thickness / 2;
+        float rz1 = aabb.position.z - aabb.thickness / 2;
 
-        Cuboid self = (getRotationX() == 0 && getRotationY() == 0 && getRotationZ() == 0) ? this : getBounds();
-
-        float tz1 = self.getPosition().z - self.getThickness() / 2;
-        float rz1 = aabb.getPosition().z - aabb.getThickness() / 2;
-
-        float tz2 = tz1 + self.getThickness();
-        float rz2 = rz1 + aabb.getThickness();
+        float tz2 = tz1 + this.thickness;
+        float rz2 = rz1 + aabb.thickness;
 
         return tz2 > rz2 ? rz2 - tz1 : tz2 - rz1;
     }
