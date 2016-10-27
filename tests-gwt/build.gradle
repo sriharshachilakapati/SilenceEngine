@@ -34,7 +34,6 @@ gwt {
     minHeapSize = "512M";
     maxHeapSize = "1024M";
 
-    gwtVersion = "${gwtVersion}"
     modules "com.shc.silenceengine.tests.GwtTests"
     devModules "com.shc.silenceengine.tests.GwtTests"
 
