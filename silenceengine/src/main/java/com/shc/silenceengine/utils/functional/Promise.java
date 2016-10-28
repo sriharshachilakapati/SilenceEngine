@@ -33,16 +33,21 @@ public class Promise<T>
     public T value;
 
     private Promise<T> next;
-    private Throwable throwable;
+    private Throwable  throwable;
 
     private UniCallback<T>         onFulfilled;
     private UniCallback<Throwable> onRejected;
 
     public Promise(BiCallback<UniCallback<T>, UniCallback<Throwable>> function)
     {
+        this((self, resolve, reject) -> function.invoke(resolve, reject));
+    }
+
+    public Promise(TriCallback<Promise<T>, UniCallback<T>, UniCallback<Throwable>> function)
+    {
         try
         {
-            function.invoke(this::resolve, this::reject);
+            function.invoke(this, this::resolve, this::reject);
         }
         catch (Throwable throwable)
         {
@@ -56,8 +61,44 @@ public class Promise<T>
         this.onRejected = onRejected;
     }
 
+    public static Promise<Void> all(Promise<?>... promises)
+    {
+        return new Promise<>((resolve, reject) ->
+        {
+            final int[] done = { 0 };
+
+            for (Promise<?> promise : promises)
+                promise.then(v ->
+                {
+                    done[0]++;
+
+                    if (done[0] == promises.length)
+                        resolve.invoke(null);
+                }, reject);
+        });
+    }
+
+    public static Promise<Void> race(Promise<?>... promises)
+    {
+        return new Promise<>((self, resolve, reject) ->
+        {
+            for (Promise<?> promise : promises)
+                promise.then(v ->
+                {
+                    if (self.state != State.REJECTED)
+                        resolve.invoke(null);
+                }, reject);
+        });
+    }
+
     private void resolve(T value)
     {
+        if (state == State.FULFILLED)
+            throw new PromiseException("Cannot resolve more than once");
+
+        if (state == State.REJECTED)
+            throw new PromiseException("Cannot resolve an already rejected promise");
+
         this.value = value;
         this.state = State.FULFILLED;
 
@@ -70,6 +111,12 @@ public class Promise<T>
 
     private void reject(Throwable throwable)
     {
+        if (state == State.REJECTED)
+            throw new PromiseException("Cannot reject more than once");
+
+        if (state == State.FULFILLED)
+            throw new PromiseException("Cannot resolve an already fulfilled promise");
+
         this.value = null;
         this.state = State.REJECTED;
         this.throwable = throwable;
@@ -83,6 +130,9 @@ public class Promise<T>
 
     public Promise<T> then(UniCallback<T> onFulfilled, UniCallback<Throwable> onRejected)
     {
+        if (next != null)
+            return next.then(onFulfilled, onRejected);
+
         next = new Promise<>(onFulfilled, onRejected);
 
         switch (state)
@@ -116,5 +166,17 @@ public class Promise<T>
     public enum State
     {
         PENDING, FULFILLED, REJECTED
+    }
+
+    public static class PromiseException extends RuntimeException
+    {
+        public PromiseException(String message)
+        {
+            super(message);
+        }
+
+        public PromiseException()
+        {
+        }
     }
 }
