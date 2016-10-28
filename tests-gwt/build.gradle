@@ -22,10 +22,23 @@
  * SOFTWARE.
  */
 
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.akhikhl.gretty:gretty:1.4.0'
+    }
+}
 
 apply plugin: 'java'
 apply plugin: 'gwt'
-apply plugin: 'jetty'
+apply plugin: 'war'
+apply plugin: 'org.akhikhl.gretty'
+
+import de.richsource.gradle.plugins.gwt.GwtSuperDev
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -44,6 +57,10 @@ gwt {
     eclipse.addGwtContainer = false;
 }
 
+gretty {
+    servletContainer = 'jetty9'
+}
+
 javadoc {
     options.addStringOption("sourcepath", "")
 }
@@ -58,14 +75,11 @@ dependencies {
     providedCompile project(":tests")
 }
 
-task run(type: JettyRunWar) {
-    dependsOn war
-    webApp = war.archivePath
-    daemon = true
+farm {
+    webapp war.archivePath
 }
 
-task superDev(type: de.richsource.gradle.plugins.gwt.GwtSuperDev) {
-    dependsOn run
+task superDev(type: GwtSuperDev) {
     doFirst {
         gwt.modules = gwt.devModules
     }
