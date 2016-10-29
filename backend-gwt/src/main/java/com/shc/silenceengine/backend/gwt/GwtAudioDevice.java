@@ -142,17 +142,24 @@ public class GwtAudioDevice extends AudioDevice
     }
 
     @Override
-    public void readToALBuffer(AudioFormat format, DirectBuffer data, UniCallback<ALBuffer> onDecoded)
+    public void readToALBuffer(AudioFormat format, DirectBuffer data, UniCallback<ALBuffer> onDecoded, UniCallback<Throwable> onError)
     {
-        if (!isSupported(format))
-            throw new SilenceException("Audio format " + format + " is not supported.");
+        try
+        {
+            if (!isSupported(format))
+                throw new SilenceException("Audio format " + format + " is not supported.");
 
-        AudioDecoder.decodeAudio(((ArrayBufferView) data.nativeBuffer()).buffer(),
-                alBufferID -> onDecoded.invoke(new ALBuffer(alBufferID)),
-                reason ->
-                {
-                    throw new SilenceException("Error decoding: " + reason);
-                });
+            AudioDecoder.decodeAudio(((ArrayBufferView) data.nativeBuffer()).buffer(),
+                    alBufferID -> onDecoded.invoke(new ALBuffer(alBufferID)),
+                    reason ->
+                    {
+                        throw new SilenceException("Error decoding: " + reason);
+                    });
+        }
+        catch (Throwable e)
+        {
+            onError.invoke(e);
+        }
     }
 
     @Override

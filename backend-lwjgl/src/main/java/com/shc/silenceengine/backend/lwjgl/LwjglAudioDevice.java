@@ -150,42 +150,49 @@ public class LwjglAudioDevice extends AudioDevice
     }
 
     @Override
-    public void readToALBuffer(AudioFormat format, DirectBuffer data, UniCallback<ALBuffer> onDecoded)
+    public void readToALBuffer(AudioFormat format, DirectBuffer data, UniCallback<ALBuffer> onDecoded, UniCallback<Throwable> onError)
     {
-        if (!isSupported(format))
-            throw new SilenceException("Error, cannot decode unsupported format");
-
-        switch (format)
+        try
         {
-            case OGG:
+            if (!isSupported(format))
+                throw new SilenceException("Error, cannot decode unsupported format");
+
+            switch (format)
             {
-                OggReader reader = new OggReader(data);
-
-                TaskManager.runOnUpdate(() ->
+                case OGG:
                 {
-                    ALBuffer alBuffer = new ALBuffer();
-                    alBuffer.uploadData(new LwjglDirectBuffer(reader.getData()), reader.getFormat(), reader.getSampleRate());
+                    OggReader reader = new OggReader(data);
 
-                    onDecoded.invoke(alBuffer);
-                });
+                    TaskManager.runOnUpdate(() ->
+                    {
+                        ALBuffer alBuffer = new ALBuffer();
+                        alBuffer.uploadData(new LwjglDirectBuffer(reader.getData()), reader.getFormat(), reader.getSampleRate());
 
-                break;
-            }
+                        onDecoded.invoke(alBuffer);
+                    });
 
-            case WAV:
-            {
-                WaveReader reader = new WaveReader(data);
+                    break;
+                }
 
-                TaskManager.runOnUpdate(() ->
+                case WAV:
                 {
-                    ALBuffer alBuffer = new ALBuffer();
-                    alBuffer.uploadData(new LwjglDirectBuffer(reader.getData()), reader.getFormat(), reader.getSampleRate());
+                    WaveReader reader = new WaveReader(data);
 
-                    onDecoded.invoke(alBuffer);
-                });
+                    TaskManager.runOnUpdate(() ->
+                    {
+                        ALBuffer alBuffer = new ALBuffer();
+                        alBuffer.uploadData(new LwjglDirectBuffer(reader.getData()), reader.getFormat(), reader.getSampleRate());
 
-                break;
+                        onDecoded.invoke(alBuffer);
+                    });
+
+                    break;
+                }
             }
+        }
+        catch (Throwable e)
+        {
+            onError.invoke(e);
         }
     }
 

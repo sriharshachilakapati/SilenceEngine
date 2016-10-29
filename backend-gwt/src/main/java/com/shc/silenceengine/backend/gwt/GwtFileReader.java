@@ -25,6 +25,7 @@
 package com.shc.silenceengine.backend.gwt;
 
 import com.google.gwt.xhr.client.XMLHttpRequest;
+import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.io.FileReader;
@@ -36,7 +37,7 @@ import com.shc.silenceengine.utils.functional.UniCallback;
 public class GwtFileReader extends FileReader
 {
     @Override
-    public void readBinaryFile(FilePath file, UniCallback<DirectBuffer> onComplete)
+    public void readBinaryFile(FilePath file, UniCallback<DirectBuffer> onComplete, UniCallback<Throwable> onError)
     {
         // Create a XMLHttpRequest to load the file into a direct buffer
         XMLHttpRequest request = XMLHttpRequest.create();
@@ -47,8 +48,13 @@ public class GwtFileReader extends FileReader
         request.setOnReadyStateChange(xhr ->
         {
             if (request.getReadyState() == XMLHttpRequest.DONE)
-                // Invoke the onComplete handler
-                onComplete.invoke(new GwtDirectBuffer(request.getResponseArrayBuffer()));
+            {
+                if (request.getStatus() == 200)
+                    // Invoke the onComplete handler
+                    onComplete.invoke(new GwtDirectBuffer(request.getResponseArrayBuffer()));
+                else
+                    onError.invoke(new SilenceException("Error fetching the file: " + request.getStatusText()));
+            }
         });
 
         // Send the request
@@ -56,7 +62,7 @@ public class GwtFileReader extends FileReader
     }
 
     @Override
-    public void readTextFile(FilePath file, UniCallback<String> onComplete)
+    public void readTextFile(FilePath file, UniCallback<String> onComplete, UniCallback<Throwable> onError)
     {
         // Create a XMLHttpRequest to load the file into a direct buffer
         XMLHttpRequest request = XMLHttpRequest.create();
@@ -67,8 +73,13 @@ public class GwtFileReader extends FileReader
         request.setOnReadyStateChange(xhr ->
         {
             if (request.getReadyState() == XMLHttpRequest.DONE)
-                // Invoke the onComplete handler
-                onComplete.invoke(request.getResponseText());
+            {
+                if (request.getStatus() == 200)
+                    // Invoke the onComplete handler
+                    onComplete.invoke(request.getResponseText());
+                else
+                    onError.invoke(new SilenceException("Error fetching the file: " + request.getStatusText()));
+            }
         });
 
         // Send the request

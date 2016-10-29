@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.io;
 
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.utils.functional.UniCallback;
 
 /**
@@ -31,7 +32,17 @@ import com.shc.silenceengine.utils.functional.UniCallback;
  */
 public abstract class FileReader
 {
-    public abstract void readBinaryFile(FilePath file, UniCallback<DirectBuffer> uniCallback);
+    public void readBinaryFile(FilePath file, UniCallback<DirectBuffer> uniCallback)
+    {
+        readBinaryFile(file, uniCallback, SilenceEngine.log.getRootLogger()::error);
+    }
 
-    public abstract void readTextFile(FilePath file, UniCallback<String> uniCallback);
+    public void readTextFile(FilePath file, UniCallback<String> uniCallback)
+    {
+        readTextFile(file, uniCallback, SilenceEngine.log.getRootLogger()::error);
+    }
+
+    public abstract void readBinaryFile(FilePath file, UniCallback<DirectBuffer> uniCallback, UniCallback<Throwable> error);
+
+    public abstract void readTextFile(FilePath file, UniCallback<String> uniCallback, UniCallback<Throwable> error);
 }

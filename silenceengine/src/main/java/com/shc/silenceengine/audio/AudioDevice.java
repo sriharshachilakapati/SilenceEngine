@@ -25,6 +25,7 @@
 package com.shc.silenceengine.audio;
 
 import com.shc.silenceengine.audio.openal.ALBuffer;
+import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.utils.functional.UniCallback;
 
@@ -69,7 +70,12 @@ public abstract class AudioDevice
 
     public abstract void alDeleteSources(int... sources);
 
-    public abstract void readToALBuffer(AudioFormat format, DirectBuffer data, UniCallback<ALBuffer> onDecoded);
+    public void readToALBuffer(AudioFormat format, DirectBuffer data, UniCallback<ALBuffer> onDecoded)
+    {
+        readToALBuffer(format, data, onDecoded, SilenceEngine.log.getRootLogger()::error);
+    }
+
+    public abstract void readToALBuffer(AudioFormat format, DirectBuffer data, UniCallback<ALBuffer> onDecoded, UniCallback<Throwable> onError);
 
     public abstract boolean isSupported(AudioFormat format);
 

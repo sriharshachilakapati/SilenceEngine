@@ -44,39 +44,46 @@ import static org.lwjgl.stb.STBImage.*;
 public class LwjglImageReader extends ImageReader
 {
     @Override
-    public void readImage(DirectBuffer memory, UniCallback<Image> onComplete)
+    public void readImage(DirectBuffer memory, UniCallback<Image> onComplete, UniCallback<Throwable> onError)
     {
         new Thread(() ->
         {
-            IntBuffer width = BufferUtils.createIntBuffer(1);
-            IntBuffer height = BufferUtils.createIntBuffer(1);
-            IntBuffer components = BufferUtils.createIntBuffer(1);
-
-            ByteBuffer imageBuffer = stbi_load_from_memory((ByteBuffer) memory.nativeBuffer(), width, height, components, 4);
-
-            if (imageBuffer == null)
-                throw new SilenceException("Failed to load image: " + stbi_failure_reason());
-
-            Image image = new Image(width.get(0), height.get(0));
-
-            for (int y = 0; y < image.getHeight(); y++)
+            try
             {
-                for (int x = 0; x < image.getWidth(); x++)
+                IntBuffer width = BufferUtils.createIntBuffer(1);
+                IntBuffer height = BufferUtils.createIntBuffer(1);
+                IntBuffer components = BufferUtils.createIntBuffer(1);
+
+                ByteBuffer imageBuffer = stbi_load_from_memory((ByteBuffer) memory.nativeBuffer(), width, height, components, 4);
+
+                if (imageBuffer == null)
+                    throw new SilenceException("Failed to load image: " + stbi_failure_reason());
+
+                Image image = new Image(width.get(0), height.get(0));
+
+                for (int y = 0; y < image.getHeight(); y++)
                 {
-                    int start = 4 * (y * image.getWidth() + x);
+                    for (int x = 0; x < image.getWidth(); x++)
+                    {
+                        int start = 4 * (y * image.getWidth() + x);
 
-                    float r = (imageBuffer.get(start) & 0xff) / 255f;
-                    float g = (imageBuffer.get(start + 1) & 0xff) / 255f;
-                    float b = (imageBuffer.get(start + 2) & 0xff) / 255f;
-                    float a = (imageBuffer.get(start + 3) & 0xff) / 255f;
+                        float r = (imageBuffer.get(start) & 0xff) / 255f;
+                        float g = (imageBuffer.get(start + 1) & 0xff) / 255f;
+                        float b = (imageBuffer.get(start + 2) & 0xff) / 255f;
+                        float a = (imageBuffer.get(start + 3) & 0xff) / 255f;
 
-                    image.setPixel(x, y, new Color(r, g, b, a));
+                        image.setPixel(x, y, new Color(r, g, b, a));
+                    }
                 }
+
+                stbi_image_free(imageBuffer);
+
+                TaskManager.runOnUpdate(() -> onComplete.invoke(image));
             }
-
-            stbi_image_free(imageBuffer);
-
-            TaskManager.runOnUpdate(() -> onComplete.invoke(image));
+            catch (Throwable e)
+            {
+                onError.invoke(e);
+            }
         }).start();
     }
 }

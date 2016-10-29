@@ -172,32 +172,39 @@ public class AndroidAudioDevice extends AudioDevice
     }
 
     @Override
-    public void readToALBuffer(AudioFormat format, DirectBuffer data, UniCallback<ALBuffer> onDecoded)
+    public void readToALBuffer(AudioFormat format, DirectBuffer data, UniCallback<ALBuffer> onDecoded, UniCallback<Throwable> onError)
     {
-        if (!isSupported(format))
-            throw new SilenceException("Cannot parse sound. The format is unsupported: " + format);
+        try
+        {
+            if (!isSupported(format))
+                throw new SilenceException("Cannot parse sound. The format is unsupported: " + format);
 
-        if (format == AudioFormat.WAV)
-            new Thread(() ->
-            {
-                WavReader reader = new WavReader(data);
+            if (format == AudioFormat.WAV)
+                new Thread(() ->
+                {
+                    WavReader reader = new WavReader(data);
 
-                ALBuffer alBuffer = new ALBuffer();
-                alBuffer.uploadData(new AndroidDirectBuffer(reader.data), reader.alFormat, reader.sampleRate);
+                    ALBuffer alBuffer = new ALBuffer();
+                    alBuffer.uploadData(new AndroidDirectBuffer(reader.data), reader.alFormat, reader.sampleRate);
 
-                TaskManager.runOnUpdate(() -> onDecoded.invoke(alBuffer));
-            }).start();
+                    TaskManager.runOnUpdate(() -> onDecoded.invoke(alBuffer));
+                }).start();
 
-        else if (format == AudioFormat.OGG)
-            new Thread(() ->
-            {
-                OggReader reader = new OggReader(data);
+            else if (format == AudioFormat.OGG)
+                new Thread(() ->
+                {
+                    OggReader reader = new OggReader(data);
 
-                ALBuffer alBuffer = new ALBuffer();
-                alBuffer.uploadData(new AndroidDirectBuffer(reader.getData()), reader.getFormat(), reader.getSampleRate());
+                    ALBuffer alBuffer = new ALBuffer();
+                    alBuffer.uploadData(new AndroidDirectBuffer(reader.getData()), reader.getFormat(), reader.getSampleRate());
 
-                TaskManager.runOnUpdate(() -> onDecoded.invoke(alBuffer));
-            }).start();
+                    TaskManager.runOnUpdate(() -> onDecoded.invoke(alBuffer));
+                }).start();
+        }
+        catch (Throwable e)
+        {
+            onError.invoke(e);
+        }
     }
 
     @Override

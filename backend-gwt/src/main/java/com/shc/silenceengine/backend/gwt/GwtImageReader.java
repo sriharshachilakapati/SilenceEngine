@@ -27,6 +27,7 @@ package com.shc.silenceengine.backend.gwt;
 import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
+import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Image;
 import com.shc.silenceengine.io.DirectBuffer;
@@ -58,12 +59,12 @@ public class GwtImageReader extends ImageReader
     }
 
     @Override
-    public void readImage(DirectBuffer memory, UniCallback<Image> onComplete)
+    public void readImage(DirectBuffer memory, UniCallback<Image> onComplete, UniCallback<Throwable> onError)
     {
-        getImage(((ArrayBufferView) memory.nativeBuffer()).buffer(), onComplete);
+        getImage(((ArrayBufferView) memory.nativeBuffer()).buffer(), onComplete, e -> onError.invoke(new SilenceException(e)));
     }
 
-    private native void getImage(ArrayBuffer memory, UniCallback<Image> onComplete) /*-{
+    private native void getImage(ArrayBuffer memory, UniCallback<Image> onComplete, UniCallback<String> onError) /*-{
         var arrayBufferView = new Uint8Array(memory);
         var blob = new Blob([arrayBufferView], {type: "image/jpeg"});
 
@@ -105,6 +106,11 @@ public class GwtImageReader extends ImageReader
 
             @com.shc.silenceengine.backend.gwt.GwtImageReader::jsLoadedCallback(*)(pix, canvas.width, canvas.height,
                 img.width, img.height, onComplete);
+        };
+
+        img.onerror = function (e)
+        {
+            onError.@com.shc.silenceengine.utils.functional.UniCallback::invoke(*)("Image fetch failed, bad network");
         };
 
         $doc.body.appendChild(img);

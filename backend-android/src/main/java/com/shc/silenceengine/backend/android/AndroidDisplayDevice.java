@@ -32,6 +32,7 @@ import com.shc.silenceengine.core.IDisplayDevice;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
+import com.shc.silenceengine.utils.functional.UniCallback;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -123,7 +124,7 @@ public class AndroidDisplayDevice implements IDisplayDevice
     }
 
     @Override
-    public void setIcon(FilePath filePath, SimpleCallback success)
+    public void setIcon(FilePath filePath, SimpleCallback success, UniCallback<Throwable> error)
     {
     }
 

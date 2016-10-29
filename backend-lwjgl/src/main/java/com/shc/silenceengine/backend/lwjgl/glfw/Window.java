@@ -32,6 +32,7 @@ import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector4;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
+import com.shc.silenceengine.utils.functional.UniCallback;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
@@ -868,6 +869,23 @@ public class Window
             setIcon(image);
             success.invoke();
         });
+    }
+
+    /**
+     * Sets the icon for the window.
+     *
+     * @param imagePath The image to be used as an icon.
+     * @param success   The callback to be called upon successful icon set.
+     */
+    public void setIcon(FilePath imagePath, SimpleCallback success, UniCallback<Throwable> error)
+    {
+        SilenceEngine.io.getImageReader().readImage(imagePath, image ->
+        {
+            setIcon(image);
+            success.invoke();
+        },
+
+        error);
     }
 
     /**

@@ -24,7 +24,6 @@
 
 package com.shc.silenceengine.backend.lwjgl;
 
-import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.io.FileReader;
@@ -42,7 +41,7 @@ import java.io.InputStreamReader;
 public class LwjglFileReader extends FileReader
 {
     @Override
-    public void readBinaryFile(FilePath file, UniCallback<DirectBuffer> onComplete)
+    public void readBinaryFile(FilePath file, UniCallback<DirectBuffer> onComplete, UniCallback<Throwable> onError)
     {
         new Thread(() ->
         {
@@ -74,15 +73,15 @@ public class LwjglFileReader extends FileReader
 
                 TaskManager.runOnUpdate(() -> onComplete.invoke(directBuffer));
             }
-            catch (Exception e)
+            catch (Throwable e)
             {
-                SilenceEngine.log.getRootLogger().error(e);
+                onError.invoke(e);
             }
         }).start();
     }
 
     @Override
-    public void readTextFile(FilePath file, UniCallback<String> onComplete)
+    public void readTextFile(FilePath file, UniCallback<String> onComplete, UniCallback<Throwable> onError)
     {
         new Thread(() ->
         {
@@ -99,9 +98,9 @@ public class LwjglFileReader extends FileReader
 
                 TaskManager.runOnUpdate(() -> onComplete.invoke(stringBuilder.toString()));
             }
-            catch (Exception e)
+            catch (Throwable e)
             {
-                SilenceEngine.log.getRootLogger().error(e);
+                onError.invoke(e);
             }
 
         }).start();

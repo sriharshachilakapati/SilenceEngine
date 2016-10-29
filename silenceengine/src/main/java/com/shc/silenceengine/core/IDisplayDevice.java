@@ -30,6 +30,7 @@ import com.shc.silenceengine.annotations.PlatformHTML5;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.TimeUtils;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
+import com.shc.silenceengine.utils.functional.UniCallback;
 
 /**
  * The interface that abstracts the display between multiple platforms. SilenceEngine will only support one display per
@@ -177,7 +178,21 @@ public interface IDisplayDevice
      */
     @PlatformDesktop
     @PlatformHTML5
-    void setIcon(FilePath filePath, SimpleCallback success);
+    default void setIcon(FilePath filePath, SimpleCallback success)
+    {
+        setIcon(filePath, success, SilenceEngine.log.getRootLogger()::error);
+    }
+
+    /**
+     * Sets the icon of the display. Must point to an image (PNG, BMP, JPEG are supported). For HTML5, use a .ICO file.
+     *
+     * @param filePath The file path to the image.
+     * @param success  The success callback to be called after setting the icon.
+     * @param error    The error callback to be called after setting the icon.
+     */
+    @PlatformDesktop
+    @PlatformHTML5
+    void setIcon(FilePath filePath, SimpleCallback success, UniCallback<Throwable> error);
 
     /**
      * Makes the desktop window close, and the game to exit. This is not honoured in HTML5 platform, as the game can

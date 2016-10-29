@@ -42,34 +42,41 @@ import java.io.IOException;
 public class AndroidImageReader extends ImageReader
 {
     @Override
-    public void readImage(DirectBuffer memory, UniCallback<Image> uniCallback)
+    public void readImage(DirectBuffer memory, UniCallback<Image> uniCallback, UniCallback<Throwable> onError)
     {
         new Thread(() ->
         {
-            Bitmap bitmap = BitmapFactory.decodeStream(new DirectBufferInputStream(memory));
+            try
+            {
+                Bitmap bitmap = BitmapFactory.decodeStream(new DirectBufferInputStream(memory));
 
-            if (bitmap == null)
-                throw new SilenceException(new IOException("Error decoding image from memory"));
+                if (bitmap == null)
+                    throw new SilenceException(new IOException("Error decoding image from memory"));
 
-            Image image = new Image(bitmap.getWidth(), bitmap.getHeight());
+                Image image = new Image(bitmap.getWidth(), bitmap.getHeight());
 
-            for (int x = 0; x < image.getWidth(); x++)
-                for (int y = 0; y < image.getHeight(); y++)
-                {
-                    int pixel = bitmap.getPixel(x, y);
+                for (int x = 0; x < image.getWidth(); x++)
+                    for (int y = 0; y < image.getHeight(); y++)
+                    {
+                        int pixel = bitmap.getPixel(x, y);
 
-                    float a = android.graphics.Color.alpha(pixel) / 255f;
-                    float r = android.graphics.Color.red(pixel) / 255f;
-                    float g = android.graphics.Color.green(pixel) / 255f;
-                    float b = android.graphics.Color.blue(pixel) / 255f;
+                        float a = android.graphics.Color.alpha(pixel) / 255f;
+                        float r = android.graphics.Color.red(pixel) / 255f;
+                        float g = android.graphics.Color.green(pixel) / 255f;
+                        float b = android.graphics.Color.blue(pixel) / 255f;
 
-                    image.setPixel(x, y, new Color(r, g, b, a));
-                }
+                        image.setPixel(x, y, new Color(r, g, b, a));
+                    }
 
-            bitmap.recycle();
-            bitmap = null;
+                bitmap.recycle();
+                bitmap = null;
 
-            TaskManager.runOnUpdate(() -> uniCallback.invoke(image));
+                TaskManager.runOnUpdate(() -> uniCallback.invoke(image));
+            }
+            catch (Throwable e)
+            {
+                onError.invoke(e);
+            }
         }).start();
     }
 }

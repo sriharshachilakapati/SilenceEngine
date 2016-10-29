@@ -35,6 +35,11 @@ public abstract class ImageReader
 {
     public void readImage(FilePath filePath, UniCallback<Image> uniCallback)
     {
+        readImage(filePath, uniCallback, SilenceEngine.log.getRootLogger()::error);
+    }
+
+    public void readImage(FilePath filePath, UniCallback<Image> uniCallback, UniCallback<Throwable> error)
+    {
         SilenceEngine.io.getFileReader().readBinaryFile(filePath, directBuffer ->
                 readImage(directBuffer, image ->
                 {
@@ -43,8 +48,13 @@ public abstract class ImageReader
 
                     // Invoke the on complete handler
                     uniCallback.invoke(image);
-                }));
+                }, error), error);
     }
 
-    public abstract void readImage(DirectBuffer memory, UniCallback<Image> uniCallback);
+    public void readImage(DirectBuffer memory, UniCallback<Image> uniCallback)
+    {
+        readImage(memory, uniCallback, SilenceEngine.log.getRootLogger()::error);
+    }
+
+    public abstract void readImage(DirectBuffer memory, UniCallback<Image> uniCallback, UniCallback<Throwable> error);
 }

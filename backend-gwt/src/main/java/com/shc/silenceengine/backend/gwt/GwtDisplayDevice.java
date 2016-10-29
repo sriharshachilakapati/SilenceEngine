@@ -34,6 +34,7 @@ import com.shc.silenceengine.core.IDisplayDevice;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
+import com.shc.silenceengine.utils.functional.UniCallback;
 import com.shc.webgl4j.client.OES_vertex_array_object;
 import com.shc.webgl4j.client.TimeUtil;
 import com.shc.webgl4j.client.WebGL10;
@@ -265,7 +266,7 @@ public class GwtDisplayDevice implements IDisplayDevice
     }
 
     @Override
-    public void setIcon(FilePath filePath, SimpleCallback callback)
+    public void setIcon(FilePath filePath, SimpleCallback callback, UniCallback<Throwable> error)
     {
         setIcon(filePath.getPath());
         callback.invoke();
