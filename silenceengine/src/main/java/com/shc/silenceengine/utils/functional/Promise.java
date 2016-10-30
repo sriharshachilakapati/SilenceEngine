@@ -135,7 +135,7 @@ public class Promise<T>
             next.reject(throwable);
     }
 
-    public Promise<T> then(UniCallback<T> onFulfilled, UniCallback<Throwable> onRejected)
+    public synchronized Promise<T> then(UniCallback<T> onFulfilled, UniCallback<Throwable> onRejected)
     {
         if (next != null)
             return next.then(onFulfilled, onRejected);
@@ -156,14 +156,14 @@ public class Promise<T>
         return next;
     }
 
-    public Promise<T> then(UniCallback<T> onFulfilled)
+    public synchronized Promise<T> then(UniCallback<T> onFulfilled)
     {
         return then(onFulfilled, t ->
         {
         });
     }
 
-    public Promise<T> whenThrown(UniCallback<Throwable> onThrown)
+    public synchronized Promise<T> whenThrown(UniCallback<Throwable> onThrown)
     {
         return then(v ->
         {
