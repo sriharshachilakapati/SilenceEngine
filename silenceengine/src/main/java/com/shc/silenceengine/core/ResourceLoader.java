@@ -67,16 +67,22 @@ public class ResourceLoader
 
     private static void imageLoadHelper(FilePath path, ISubmitter<Image> submitter)
     {
-        SilenceEngine.io.getImageReader().readImage(path, image -> submitter.submit(image, path));
+        SilenceEngine.io.getImageReader()
+                .readImage(path)
+                .then(img -> submitter.submit(img, path))
+                .whenThrown(SilenceException::reThrow);
     }
 
     private static void textureLoadHelper(FilePath path, ISubmitter<Texture> submitter)
     {
-        SilenceEngine.io.getImageReader().readImage(path, image ->
-        {
-            submitter.submit(Texture.fromImage(image), path);
-            image.dispose();
-        });
+        SilenceEngine.io.getImageReader()
+                .readImage(path)
+                .then(img ->
+                {
+                    submitter.submit(Texture.fromImage(img), path);
+                    img.dispose();
+                })
+                .whenThrown(SilenceException::reThrow);
     }
 
     private static void alBufferLoadHelper(FilePath path, ISubmitter<ALBuffer> submitter)
@@ -108,9 +114,15 @@ public class ResourceLoader
                 format = AudioFormat.WEBM;
         }
 
-        final AudioFormat finalFormat = format;
-        SilenceEngine.io.getFileReader().readBinaryFile(path, data ->
-                SilenceEngine.audio.readToALBuffer(finalFormat, data, buffer -> submitter.submit(buffer, path)));
+        AudioFormat finalFormat = format;
+
+        SilenceEngine.io.getFileReader()
+                .readBinaryFile(path)
+                .then(data ->
+                        SilenceEngine.audio.readToALBuffer(finalFormat, data)
+                                .then(buffer -> submitter.submit(buffer, path))
+                                .whenThrown(SilenceException::reThrow))
+                .whenThrown(SilenceException::reThrow);
     }
 
     private static void soundLoadHelper(FilePath path, ISubmitter<Sound> submitter)
