@@ -38,6 +38,13 @@ public class Promise<T>
     private UniCallback<T>         onFulfilled;
     private UniCallback<Throwable> onRejected;
 
+    public Promise()
+    {
+        this((resolve, reject) ->
+        {
+        });
+    }
+
     public Promise(BiCallback<UniCallback<T>, UniCallback<Throwable>> function)
     {
         this((self, resolve, reject) -> function.invoke(resolve, reject));
@@ -91,7 +98,7 @@ public class Promise<T>
         });
     }
 
-    private void resolve(T value)
+    public void resolve(T value)
     {
         if (state == State.FULFILLED)
             throw new PromiseException("Cannot resolve more than once");
@@ -109,7 +116,7 @@ public class Promise<T>
             next.resolve(value);
     }
 
-    private void reject(Throwable throwable)
+    public void reject(Throwable throwable)
     {
         if (state == State.REJECTED)
             throw new PromiseException("Cannot reject more than once");
