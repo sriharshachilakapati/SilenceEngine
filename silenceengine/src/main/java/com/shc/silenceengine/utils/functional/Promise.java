@@ -98,7 +98,7 @@ public class Promise<T>
         });
     }
 
-    public void resolve(T value)
+    public synchronized void resolve(T value)
     {
         if (state == State.FULFILLED)
             throw new PromiseException("Cannot resolve more than once");
@@ -116,7 +116,7 @@ public class Promise<T>
             next.resolve(value);
     }
 
-    public void reject(Throwable throwable)
+    public synchronized void reject(Throwable throwable)
     {
         if (state == State.REJECTED)
             throw new PromiseException("Cannot reject more than once");
