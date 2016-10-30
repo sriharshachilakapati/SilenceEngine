@@ -31,6 +31,7 @@ import android.os.SystemClock;
 import com.shc.silenceengine.core.IDisplayDevice;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.utils.functional.Promise;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
 import com.shc.silenceengine.utils.functional.UniCallback;
 
@@ -119,8 +120,9 @@ public class AndroidDisplayDevice implements IDisplayDevice
     }
 
     @Override
-    public void setIcon(FilePath filePath)
+    public Promise<Void> setIcon(FilePath filePath)
     {
+        return new Promise<>((resolve, reject) -> resolve.invoke(null));
     }
 
     @Override

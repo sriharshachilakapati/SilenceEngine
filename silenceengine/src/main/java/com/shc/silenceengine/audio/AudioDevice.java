@@ -27,6 +27,7 @@ package com.shc.silenceengine.audio;
 import com.shc.silenceengine.audio.openal.ALBuffer;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.DirectBuffer;
+import com.shc.silenceengine.utils.functional.Promise;
 import com.shc.silenceengine.utils.functional.UniCallback;
 
 /**
@@ -69,6 +70,11 @@ public abstract class AudioDevice
     public abstract int alGetSourcei(int id, int parameter);
 
     public abstract void alDeleteSources(int... sources);
+
+    public Promise<ALBuffer> readToALBuffer(AudioFormat format, DirectBuffer data)
+    {
+        return new Promise<>((resolve, reject) -> readToALBuffer(format, data, resolve, reject));
+    }
 
     public void readToALBuffer(AudioFormat format, DirectBuffer data, UniCallback<ALBuffer> onDecoded)
     {

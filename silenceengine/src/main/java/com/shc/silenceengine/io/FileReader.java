@@ -25,6 +25,7 @@
 package com.shc.silenceengine.io;
 
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.utils.functional.Promise;
 import com.shc.silenceengine.utils.functional.UniCallback;
 
 /**
@@ -32,6 +33,16 @@ import com.shc.silenceengine.utils.functional.UniCallback;
  */
 public abstract class FileReader
 {
+    public Promise<DirectBuffer> readBinaryFile(FilePath file)
+    {
+        return new Promise<>((resolve, reject) -> readBinaryFile(file, resolve, reject));
+    }
+
+    public Promise<String> readTextFile(FilePath file)
+    {
+        return new Promise<>((resolve, reject) -> readTextFile(file, resolve, reject));
+    }
+
     public void readBinaryFile(FilePath file, UniCallback<DirectBuffer> uniCallback)
     {
         readBinaryFile(file, uniCallback, SilenceEngine.log.getRootLogger()::error);

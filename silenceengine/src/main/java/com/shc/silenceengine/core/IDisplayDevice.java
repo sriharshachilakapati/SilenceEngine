@@ -29,6 +29,7 @@ import com.shc.silenceengine.annotations.PlatformDesktop;
 import com.shc.silenceengine.annotations.PlatformHTML5;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.TimeUtils;
+import com.shc.silenceengine.utils.functional.Promise;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
 import com.shc.silenceengine.utils.functional.UniCallback;
 
@@ -160,14 +161,14 @@ public interface IDisplayDevice
      * Sets the icon of the display. Must point to an image (PNG, BMP, JPEG are supported). For HTML5, use a .ICO file.
      *
      * @param filePath The file path to the image.
+     *
+     * @return A void {@link Promise} that wraps the callbacks.
      */
     @PlatformDesktop
     @PlatformHTML5
-    default void setIcon(FilePath filePath)
+    default Promise<Void> setIcon(FilePath filePath)
     {
-        setIcon(filePath, () ->
-        {
-        });
+        return new Promise<>((resolve, reject) -> setIcon(filePath, () -> resolve.invoke(null), reject));
     }
 
     /**

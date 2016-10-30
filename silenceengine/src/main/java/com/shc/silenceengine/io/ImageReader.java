@@ -26,6 +26,7 @@ package com.shc.silenceengine.io;
 
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Image;
+import com.shc.silenceengine.utils.functional.Promise;
 import com.shc.silenceengine.utils.functional.UniCallback;
 
 /**
@@ -33,6 +34,11 @@ import com.shc.silenceengine.utils.functional.UniCallback;
  */
 public abstract class ImageReader
 {
+    public Promise<Image> readImage(FilePath file)
+    {
+        return new Promise<>((resolve, reject) -> readImage(file, resolve, reject));
+    }
+
     public void readImage(FilePath filePath, UniCallback<Image> uniCallback)
     {
         readImage(filePath, uniCallback, SilenceEngine.log.getRootLogger()::error);
