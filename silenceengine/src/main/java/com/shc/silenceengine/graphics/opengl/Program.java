@@ -331,4 +331,9 @@ public class Program
     {
         return disposed;
     }
+
+    public boolean isValid()
+    {
+        return SilenceEngine.graphics.glIsProgram(id);
+    }
 }

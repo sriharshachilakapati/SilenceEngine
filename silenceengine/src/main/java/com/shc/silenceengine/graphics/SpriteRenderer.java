@@ -63,7 +63,7 @@ public class SpriteRenderer
     {
         instances++;
 
-        if (program != null)
+        if (program != null && program.isValid())
         {
             onComplete.invoke(new SpriteRenderer());
             return;

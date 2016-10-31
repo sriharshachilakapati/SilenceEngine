@@ -66,6 +66,11 @@ public class SpriteRendererTest extends SilenceTest
     @Override
     public void init()
     {
+        // Needed because static variables persist between launches
+        renderer = null;
+        batch = null;
+
+        // Normal initialization
         camera = new OrthoCam(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
 
         SilenceEngine.io.getImageReader().readImage(FilePath.getResourceFile("test_resources/test_texture.png"), image ->
@@ -126,7 +131,6 @@ public class SpriteRendererTest extends SilenceTest
 
     private void init(SpriteRenderer renderer)
     {
-        SpriteRendererTest.renderer = renderer;
         batch = new SpriteBatch(renderer);
 
         if (SilenceEngine.display.getPlatform() != SilenceEngine.Platform.ANDROID)
@@ -172,6 +176,7 @@ public class SpriteRendererTest extends SilenceTest
         }
 
         scene.entities.add(new Hero());
+        SpriteRendererTest.renderer = renderer;
     }
 
     private static class Hero extends Entity2D

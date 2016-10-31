@@ -463,4 +463,10 @@ public class GwtGraphicsDevice implements IGraphicsDevice
         for (int id : vertexArray)
             VAOImpl.get().glDeleteVertexArray(id);
     }
+
+    @Override
+    public boolean glIsProgram(int id)
+    {
+        return WebGL10.glIsProgram(id);
+    }
 }

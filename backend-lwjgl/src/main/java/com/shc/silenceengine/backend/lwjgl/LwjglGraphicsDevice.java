@@ -441,4 +441,10 @@ public class LwjglGraphicsDevice implements IGraphicsDevice
         for (int id : vertexArray)
             GL30.glDeleteVertexArrays(id);
     }
+
+    @Override
+    public boolean glIsProgram(int id)
+    {
+        return GL20.glIsProgram(id);
+    }
 }

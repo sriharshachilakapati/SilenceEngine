@@ -176,6 +176,8 @@ public interface IGraphicsDevice
 
     void glDeleteVertexArrays(int... vertexArray);
 
+    boolean glIsProgram(int id);
+
     final class Constants
     {
         public static final int GL_NO_ERROR                                     = 0x0000;

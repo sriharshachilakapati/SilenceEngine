@@ -455,4 +455,10 @@ public class AndroidGraphicsDevice implements IGraphicsDevice
     {
         GLES30.glDeleteVertexArrays(vertexArray.length, vertexArray, 0);
     }
+
+    @Override
+    public boolean glIsProgram(int id)
+    {
+        return GLES30.glIsProgram(id);
+    }
 }
