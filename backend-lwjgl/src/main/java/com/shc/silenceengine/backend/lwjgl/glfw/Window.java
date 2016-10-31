@@ -876,6 +876,7 @@ public class Window
      *
      * @param imagePath The image to be used as an icon.
      * @param success   The callback to be called upon successful icon set.
+     * @param error     The callback to be called upon an error.
      */
     public void setIcon(FilePath imagePath, SimpleCallback success, UniCallback<Throwable> error)
     {
@@ -883,9 +884,7 @@ public class Window
         {
             setIcon(image);
             success.invoke();
-        },
-
-        error);
+        }, error);
     }
 
     /**
