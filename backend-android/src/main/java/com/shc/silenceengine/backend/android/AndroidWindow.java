@@ -38,6 +38,8 @@ public class AndroidWindow implements GLSurfaceView.Renderer
 {
     private SimpleCallback startCallback;
 
+    private static final Object lock = new Object();
+
     public AndroidWindow(SimpleCallback startCallback)
     {
         this.startCallback = startCallback;
@@ -46,20 +48,29 @@ public class AndroidWindow implements GLSurfaceView.Renderer
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config)
     {
-        SilenceEngine.eventManager.clearAllHandlers();
-        SilenceEngine.gameLoop.onFocusLost();
-        startCallback.invoke();
+        synchronized (lock)
+        {
+            SilenceEngine.eventManager.clearAllHandlers();
+            SilenceEngine.gameLoop.onFocusLost();
+            startCallback.invoke();
+        }
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height)
     {
-        SilenceEngine.eventManager.raiseResizeEvent();
+        synchronized (lock)
+        {
+            SilenceEngine.eventManager.raiseResizeEvent();
+        }
     }
 
     @Override
     public void onDrawFrame(GL10 gl)
     {
-        SilenceEngine.gameLoop.performLoopFrame();
+        synchronized (lock)
+        {
+            SilenceEngine.gameLoop.performLoopFrame();
+        }
     }
 }

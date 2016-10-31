@@ -61,7 +61,7 @@ public final class EventManager
     {
     }
 
-    public void addUpdateHandler(IUpdateEventHandler handler)
+    public synchronized void addUpdateHandler(IUpdateEventHandler handler)
     {
         EventHandlerQueueObject<IUpdateEventHandler> eventHandlersQueueObject = new EventHandlerQueueObject<>();
         eventHandlersQueueObject.handler = handler;
@@ -71,7 +71,7 @@ public final class EventManager
         eventHandlersQueue.add(eventHandlersQueueObject);
     }
 
-    public void addRenderHandler(IRenderEventHandler handler)
+    public synchronized void addRenderHandler(IRenderEventHandler handler)
     {
         EventHandlerQueueObject<IRenderEventHandler> eventHandlersQueueObject = new EventHandlerQueueObject<>();
         eventHandlersQueueObject.handler = handler;
@@ -81,7 +81,7 @@ public final class EventManager
         eventHandlersQueue.add(eventHandlersQueueObject);
     }
 
-    public void addResizeHandler(IResizeEventHandler handler)
+    public synchronized void addResizeHandler(IResizeEventHandler handler)
     {
         EventHandlerQueueObject<IResizeEventHandler> eventHandlersQueueObject = new EventHandlerQueueObject<>();
         eventHandlersQueueObject.handler = handler;
@@ -91,7 +91,7 @@ public final class EventManager
         eventHandlersQueue.add(eventHandlersQueueObject);
     }
 
-    public void addDisposeHandler(IDisposeEventHandler handler)
+    public synchronized void addDisposeHandler(IDisposeEventHandler handler)
     {
         EventHandlerQueueObject<IDisposeEventHandler> eventHandlersQueueObject = new EventHandlerQueueObject<>();
         eventHandlersQueueObject.handler = handler;
@@ -101,7 +101,7 @@ public final class EventManager
         eventHandlersQueue.add(eventHandlersQueueObject);
     }
 
-    public void removeUpdateHandler(IUpdateEventHandler handler)
+    public synchronized void removeUpdateHandler(IUpdateEventHandler handler)
     {
         EventHandlerQueueObject<IUpdateEventHandler> eventHandlersQueueObject = new EventHandlerQueueObject<>();
         eventHandlersQueueObject.handler = handler;
@@ -111,7 +111,7 @@ public final class EventManager
         eventHandlersQueue.add(eventHandlersQueueObject);
     }
 
-    public void removeRenderHandler(IRenderEventHandler handler)
+    public synchronized void removeRenderHandler(IRenderEventHandler handler)
     {
         EventHandlerQueueObject<IRenderEventHandler> eventHandlersQueueObject = new EventHandlerQueueObject<>();
         eventHandlersQueueObject.handler = handler;
@@ -121,7 +121,7 @@ public final class EventManager
         eventHandlersQueue.add(eventHandlersQueueObject);
     }
 
-    public void removeResizeHandler(IResizeEventHandler handler)
+    public synchronized void removeResizeHandler(IResizeEventHandler handler)
     {
         EventHandlerQueueObject<IResizeEventHandler> eventHandlersQueueObject = new EventHandlerQueueObject<>();
         eventHandlersQueueObject.handler = handler;
@@ -131,7 +131,7 @@ public final class EventManager
         eventHandlersQueue.add(eventHandlersQueueObject);
     }
 
-    public void removeDisposeHandler(IDisposeEventHandler handler)
+    public synchronized void removeDisposeHandler(IDisposeEventHandler handler)
     {
         EventHandlerQueueObject<IDisposeEventHandler> eventHandlersQueueObject = new EventHandlerQueueObject<>();
         eventHandlersQueueObject.handler = handler;
@@ -150,7 +150,7 @@ public final class EventManager
      *
      * @param condition A provider that provides a condition on how much time to wait.
      */
-    public void waitUntil(Provider<Boolean> condition)
+    public synchronized void waitUntil(Provider<Boolean> condition)
     {
         waitCondition = condition;
 
@@ -217,7 +217,7 @@ public final class EventManager
     }
 
     @SuppressWarnings({ "suspicious", "SuspiciousMethodCalls" })
-    private void processHandlers()
+    private synchronized void processHandlers()
     {
         while (!eventHandlersQueue.isEmpty())
         {
