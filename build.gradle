@@ -36,7 +36,7 @@ allprojects {
         streamsVersion       = "1.0.3"
         openAlAndroidVersion = "0.1-SNAPSHOT"
         retrolambdaVersion   = "2.3.0"
-        lwjglVersion         = "3.1.0-SNAPSHOT"
+        lwjglVersion         = "3.1.0"
         easyXmlVersion       = "0.1"
         easyJsonVersion      = "0.3"
     }
