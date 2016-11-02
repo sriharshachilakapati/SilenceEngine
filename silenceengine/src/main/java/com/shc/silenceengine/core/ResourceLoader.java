@@ -53,6 +53,8 @@ public class ResourceLoader
     private int done  = 0;
     private int count = 0;
 
+    private boolean active;
+
     public ResourceLoader()
     {
         toBeLoaded = new HashMap<>();
@@ -171,6 +173,8 @@ public class ResourceLoader
 
             iterator.remove();
         }
+
+        active = true;
     }
 
     public float getPercentage()
@@ -187,6 +191,11 @@ public class ResourceLoader
     {
         for (IResource resource : loaded.values())
             resource.dispose();
+    }
+
+    public boolean isActive()
+    {
+        return active;
     }
 
     @FunctionalInterface
