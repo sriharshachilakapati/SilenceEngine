@@ -43,7 +43,7 @@ public class AndroidFileReader extends FileReader
     @Override
     public void readBinaryFile(FilePath file, UniCallback<DirectBuffer> onComplete, UniCallback<Throwable> onError)
     {
-        new Thread(() ->
+        AsyncRunner.runAsync(() ->
         {
             try
             {
@@ -77,13 +77,13 @@ public class AndroidFileReader extends FileReader
             {
                 onError.invoke(e);
             }
-        }).start();
+        });
     }
 
     @Override
     public void readTextFile(FilePath file, UniCallback<String> onComplete, UniCallback<Throwable> onError)
     {
-        new Thread(() ->
+        AsyncRunner.runAsync(() ->
         {
             try (
                     InputStream inputStream = ((AndroidFilePath) file).getInputStream();
@@ -103,6 +103,6 @@ public class AndroidFileReader extends FileReader
                 onError.invoke(e);
             }
 
-        }).start();
+        });
     }
 }

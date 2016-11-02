@@ -44,7 +44,7 @@ public class AndroidImageReader extends ImageReader
     @Override
     public void readImage(DirectBuffer memory, UniCallback<Image> uniCallback, UniCallback<Throwable> onError)
     {
-        new Thread(() ->
+        AsyncRunner.runAsync(() ->
         {
             try
             {
@@ -77,6 +77,6 @@ public class AndroidImageReader extends ImageReader
             {
                 onError.invoke(e);
             }
-        }).start();
+        });
     }
 }

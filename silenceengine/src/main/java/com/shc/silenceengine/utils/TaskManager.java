@@ -40,34 +40,63 @@ public final class TaskManager
 
     private static boolean initialized = false;
 
+    private final static Object updateTasksLock = new Object();
+    private final static Object renderTasksLock = new Object();
+
     public static void runOnUpdate(SimpleCallback task)
     {
-        updateTasks.add(task);
+        synchronized (updateTasksLock)
+        {
+            updateTasks.add(task);
+        }
+
         checkInitialized();
     }
 
     public static void runOnRender(SimpleCallback task)
     {
-        renderTasks.add(task);
+        synchronized (renderTasksLock)
+        {
+            renderTasks.add(task);
+        }
+
         checkInitialized();
+    }
+
+    public static void clearUpdateTasks()
+    {
+        synchronized (updateTasksLock)
+        {
+            updateTasks.clear();
+        }
+    }
+
+    public static void clearRenderTasks()
+    {
+        synchronized (renderTasksLock)
+        {
+            renderTasks.clear();
+        }
     }
 
     public static void forceUpdateTasks(float deltaTime)
     {
-        while (!updateTasks.isEmpty())
+        synchronized (updateTasksLock)
         {
             SimpleCallback task;
-            if ((task = updateTasks.poll()) != null)
+
+            while ((task = updateTasks.poll()) != null)
                 task.invoke();
         }
     }
 
     public static void forceRenderTasks(float delta)
     {
-        while (!renderTasks.isEmpty())
+        synchronized (renderTasksLock)
         {
             SimpleCallback task;
-            if ((task = renderTasks.poll()) != null)
+
+            while ((task = renderTasks.poll()) != null)
                 task.invoke();
         }
     }

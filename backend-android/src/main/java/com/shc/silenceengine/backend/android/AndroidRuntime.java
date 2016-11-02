@@ -84,6 +84,12 @@ public final class AndroidRuntime
             e.printStackTrace();
         }
 
+        // Clear any pending tasks in the TaskManager from the previous runs
+        // due to persistent processes in Android
+        TaskManager.clearUpdateTasks();
+        TaskManager.clearRenderTasks();
+
+        // Initialize the SilenceEngine
         SilenceEngine.init();
 
         // Now initialize the game
