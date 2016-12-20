@@ -144,7 +144,10 @@ public class GwtFilePath extends FilePath
 
             request.setOnReadyStateChange(xhr ->
             {
-                if (request.getReadyState() == XMLHttpRequest.DONE)
+                if (request.getStatus() == 404)
+                    resolve.invoke(-1L);
+
+                else if (request.getReadyState() == XMLHttpRequest.DONE && request.getStatus() == 200)
                     try
                     {
                         resolve.invoke(Long.parseLong(request.getResponseHeader("Content-Length")));
