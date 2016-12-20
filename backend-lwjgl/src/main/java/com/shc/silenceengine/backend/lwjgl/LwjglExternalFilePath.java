@@ -24,9 +24,10 @@
 
 package com.shc.silenceengine.backend.lwjgl;
 
-import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.utils.functional.BiCallback;
+import com.shc.silenceengine.utils.functional.Promise;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,61 +50,108 @@ public class LwjglExternalFilePath extends LwjglFilePath
     }
 
     @Override
-    public boolean exists()
+    public Promise<Boolean> exists()
     {
-        return Files.exists(Paths.get(getPath()));
+        return new Promise<>((resolve, reject) -> resolve.invoke(Files.exists(Paths.get(getPath()))));
     }
 
     @Override
-    public boolean isDirectory()
+    public Promise<Boolean> isDirectory()
     {
-        return Files.isDirectory(Paths.get(getPath()));
+        return new Promise<>((resolve, reject) -> resolve.invoke(Files.isDirectory(Paths.get(getPath()))));
     }
 
     @Override
-    public boolean isFile()
+    public Promise<Void> moveTo(FilePath path)
     {
-        return !isDirectory();
-    }
-
-    @Override
-    public void moveTo(FilePath path) throws IOException
-    {
-        Files.move(Paths.get(this.path), Paths.get(path.getPath()));
-    }
-
-    @Override
-    public void mkdirs() throws IOException
-    {
-        if (isFile() && !exists())
-            getParent().mkdirs();
-        else
-            Files.createDirectories(Paths.get(path));
-    }
-
-    @Override
-    public void createFile() throws IOException
-    {
-        if (isDirectory())
-            throw new SilenceException("Cannot convert a directory to a file");
-
-        Files.createFile(Paths.get(path));
-    }
-
-    @Override
-    public boolean delete() throws IOException
-    {
-        if (!exists())
-            throw new SilenceException("Cannot delete non existing file.");
-
-        if (isDirectory())
+        return new Promise<>((resolve, reject) ->
         {
-            // Delete all the children first
-            for (FilePath filePath : listFiles())
-                filePath.delete();
-        }
+            try
+            {
+                Files.move(Paths.get(this.path), Paths.get(path.getPath()));
+                resolve.invoke(null);
+            }
+            catch (IOException e)
+            {
+                reject.invoke(e);
+            }
+        });
+    }
 
-        return Files.deleteIfExists(Paths.get(path));
+    @Override
+    public Promise<Void> mkdirs()
+    {
+        return new Promise<>((resolve, reject) ->
+        {
+            BiCallback<Boolean, Boolean> function = (isFile, exists) ->
+            {
+                try
+                {
+                    if (isFile && !exists)
+                        getParent().mkdirs();
+                    else
+                        Files.createDirectories(Paths.get(path));
+
+                    resolve.invoke(null);
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                    reject.invoke(e);
+                }
+            };
+
+            isFile().then(isFile -> exists().then(exists -> function.invoke(isFile, exists), reject), reject);
+        });
+    }
+
+    @Override
+    public Promise<Void> createFile()
+    {
+        return new Promise<>((resolve, reject) ->
+        {
+            try
+            {
+                Files.createFile(Paths.get(path));
+                resolve.invoke(null);
+            }
+            catch (IOException e)
+            {
+                reject.invoke(e);
+            }
+        });
+    }
+
+    @Override
+    public Promise<Boolean> delete()
+    {
+        return new Promise<>((resolve, reject) ->
+                exists().then(exists ->
+                        isDirectory().then(isDirectory ->
+                        {
+                            try
+                            {
+                                if (!exists)
+                                    throw new SilenceException("Cannot delete non existing file.");
+
+                                if (isDirectory)
+                                {
+                                    listFiles().then(files ->
+                                    {
+                                        // Delete all the children first
+                                        for (FilePath filePath : files)
+                                            filePath.delete();
+                                    }, reject);
+                                }
+
+                                Files.deleteIfExists(Paths.get(path));
+                                resolve.invoke(null);
+                            }
+                            catch (IOException e)
+                            {
+                                reject.invoke(e);
+                            }
+                        }, reject), reject));
     }
 
     @Override
@@ -113,41 +161,52 @@ public class LwjglExternalFilePath extends LwjglFilePath
     }
 
     @Override
-    public long sizeInBytes()
+    public Promise<Long> sizeInBytes()
     {
-        try
-        {
-            if (exists())
-                return Files.size(Paths.get(path));
-        }
-        catch (IOException e)
-        {
-            SilenceEngine.log.getRootLogger().error(e);
-        }
-
-        return -1;
+        return new Promise<>((resolve, reject) ->
+                exists().then(exists ->
+                {
+                    if (exists)
+                        try
+                        {
+                            resolve.invoke(Files.size(Paths.get(path)));
+                        }
+                        catch (IOException e)
+                        {
+                            reject.invoke(e);
+                        }
+                    else
+                        resolve.invoke(-1L);
+                }, reject));
     }
 
     @Override
-    public List<FilePath> listFiles() throws IOException
+    public Promise<List<FilePath>> listFiles()
     {
-        if (!isDirectory())
-            throw new SilenceException("Cannot list files in a path which is not a directory.");
+        return new Promise<>((resolve, reject) ->
+        {
+            isDirectory().then(isDirectory ->
+                    exists().then(exists ->
+                    {
+                        if (!isDirectory)
+                            throw new SilenceException("Cannot list files in a path which is not a directory.");
 
-        if (!exists())
-            throw new SilenceException("Cannot list files in a non existing directory.");
+                        if (!exists)
+                            throw new SilenceException("Cannot list files in a non existing directory.");
 
-        List<FilePath> list = new ArrayList<>();
+                        List<FilePath> list = new ArrayList<>();
 
-        File file = new File(path);
+                        File file = new File(path);
 
-        File[] children = file.listFiles();
+                        File[] children = file.listFiles();
 
-        if (children != null)
-            for (File child : children)
-                list.add(new LwjglExternalFilePath(path + SEPARATOR + child.getPath().replace(file.getPath(), "")));
+                        if (children != null)
+                            for (File child : children)
+                                list.add(new LwjglExternalFilePath(path + SEPARATOR + child.getPath().replace(file.getPath(), "")));
 
-        return Collections.unmodifiableList(list);
+                        resolve.invoke(Collections.unmodifiableList(list));
+                    }, reject), reject);
+        });
     }
 
     @Override

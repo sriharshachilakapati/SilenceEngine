@@ -29,6 +29,7 @@ import android.content.res.AssetManager;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.utils.functional.Promise;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,67 +52,71 @@ public class AndroidResourceFilePath extends AndroidFilePath
     }
 
     @Override
-    public boolean exists()
+    public Promise<Boolean> exists()
     {
-        try
+        return new Promise<>((resolve, reject) ->
         {
-            AssetFileDescriptor desc = assetManager.openFd(path);
-            desc.close();
-        }
-        catch (Exception e)
-        {
-            return true;
-        }
-
-        return false;
+            try
+            {
+                AssetFileDescriptor desc = assetManager.openFd(path);
+                desc.close();
+                resolve.invoke(false);
+            }
+            catch (Exception e)
+            {
+                resolve.invoke(true);
+            }
+        });
     }
 
     @Override
-    public boolean isDirectory()
+    public Promise<Boolean> isDirectory()
     {
-        if (!exists())
-            return false;
-
-        try
-        {
-            return assetManager.list(getPath()).length != 0;
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        return false;
+        return new Promise<>((resolve, reject) ->
+                exists().then(exists ->
+                {
+                    if (!exists)
+                        resolve.invoke(false);
+                    else
+                        try
+                        {
+                            resolve.invoke(assetManager.list(getPath()).length != 0);
+                        }
+                        catch (IOException e)
+                        {
+                            resolve.invoke(false);
+                        }
+                }));
     }
 
     @Override
-    public boolean isFile()
+    public Promise<Boolean> isFile()
     {
-        return !isDirectory();
+        return new Promise<>((resolve, reject) -> isDirectory().then(isDirectory -> resolve.invoke(!isDirectory)));
     }
 
     @Override
-    public void moveTo(FilePath path) throws IOException
+    public Promise<Void> moveTo(FilePath path)
     {
-        throw new IOException("Cannot move an in-jar resource.");
+        return new Promise<>((resolve, reject) -> reject.invoke(new IOException("Cannot move an in-jar resource.")));
     }
 
     @Override
-    public void mkdirs() throws IOException
+    public Promise<Void> mkdirs()
     {
-        throw new IOException("Cannot create directory inside a jar");
+        return new Promise<>((resolve, reject) -> reject.invoke(new IOException("Cannot create directory inside a jar")));
     }
 
     @Override
-    public void createFile() throws IOException
+    public Promise<Void> createFile()
     {
-        throw new IOException("Cannot create a file inside jar");
+        return new Promise<>((resolve, reject) -> reject.invoke(new IOException("Cannot create a file inside jar")));
     }
 
     @Override
-    public boolean delete() throws IOException
+    public Promise<Boolean> delete()
     {
-        throw new IOException("Cannot delete an in-jar resource");
+        return new Promise<>((resolve, reject) -> reject.invoke(new IOException("Cannot delete an in-jar resource")));
     }
 
     @Override
@@ -121,43 +126,58 @@ public class AndroidResourceFilePath extends AndroidFilePath
     }
 
     @Override
-    public long sizeInBytes()
+    public Promise<Long> sizeInBytes()
     {
-        if (!exists())
-            return -1;
+        return new Promise<>((resolve, reject) ->
+                exists().then(exists ->
+                {
+                    if (!exists)
+                        resolve.invoke(-1L);
+                    else
+                        try
+                        {
+                            AssetFileDescriptor fd = assetManager.openFd(getPath());
 
-        try
-        {
-            AssetFileDescriptor fd = assetManager.openFd(getPath());
+                            long size = fd.getLength();
+                            fd.close();
 
-            long size = fd.getLength();
-            fd.close();
-
-            return size;
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        return -1;
+                            resolve.invoke(size);
+                        }
+                        catch (IOException e)
+                        {
+                            resolve.invoke(-1L);
+                        }
+                }));
     }
 
     @Override
-    public List<FilePath> listFiles() throws IOException
+    public Promise<List<FilePath>> listFiles()
     {
-        if (!isDirectory())
-            throw new SilenceException("Cannot list files in a path which is not a directory.");
+        return new Promise<>((resolve, reject) ->
+                isDirectory().then(isDirectory ->
+                        exists().then(exists ->
+                        {
+                            try
+                            {
+                                if (!isDirectory)
+                                    throw new SilenceException("Cannot list files in a path which is not a directory.");
 
-        if (!exists())
-            throw new SilenceException("Cannot list files in a non existing directory.");
+                                if (!exists)
+                                    throw new SilenceException("Cannot list files in a non existing directory.");
 
-        List<FilePath> filePaths = new ArrayList<>();
+                                List<FilePath> filePaths = new ArrayList<>();
 
-        for (String s : assetManager.list(getPath()))
-            filePaths.add(new AndroidResourceFilePath(getPath() + SEPARATOR + s));
+                                for (String s : assetManager.list(getPath()))
+                                    filePaths.add(new AndroidResourceFilePath(getPath() + SEPARATOR + s));
 
-        return Collections.unmodifiableList(filePaths);
+                                resolve.invoke(Collections.unmodifiableList(filePaths));
+                            }
+                            catch (IOException e)
+                            {
+                                reject.invoke(e);
+                            }
+
+                        }, reject), reject));
     }
 
     @Override

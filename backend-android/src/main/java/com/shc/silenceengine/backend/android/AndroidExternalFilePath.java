@@ -27,6 +27,8 @@ package com.shc.silenceengine.backend.android;
 import android.os.Environment;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.utils.functional.BiCallback;
+import com.shc.silenceengine.utils.functional.Promise;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,59 +54,95 @@ public class AndroidExternalFilePath extends AndroidFilePath
     }
 
     @Override
-    public boolean exists()
+    public Promise<Boolean> exists()
     {
-        return file.exists();
+        return new Promise<>((resolve, reject) -> resolve.invoke(file.exists()));
     }
 
     @Override
-    public boolean isDirectory()
+    public Promise<Boolean> isDirectory()
     {
-        return file.isDirectory();
+        return new Promise<>((resolve, reject) -> resolve.invoke(file.isDirectory()));
     }
 
     @Override
-    public boolean isFile()
+    public Promise<Boolean> isFile()
     {
-        return !isDirectory();
+        return new Promise<>((resolve, reject) -> resolve.invoke(!file.isDirectory()));
     }
 
     @Override
-    public void moveTo(FilePath path) throws IOException
+    public Promise<Void> moveTo(FilePath path)
     {
-        InputStream in = getInputStream();
-        OutputStream out = ((AndroidFilePath) path).getOutputStream();
-
-        byte[] buffer = new byte[1024];
-        int read;
-        while ((read = in.read(buffer)) != -1)
+        return new Promise<>((resolve, reject) ->
         {
-            out.write(buffer, 0, read);
-        }
-        in.close();
+            InputStream in = null;
+            try
+            {
+                in = getInputStream();
+                OutputStream out = ((AndroidFilePath) path).getOutputStream();
 
-        out.flush();
-        out.close();
+                byte[] buffer = new byte[1024];
+                int read;
+                while ((read = in.read(buffer)) != -1)
+                {
+                    out.write(buffer, 0, read);
+                }
+                in.close();
 
-        delete();
+                out.flush();
+                out.close();
+
+                delete().then(deleted -> resolve.invoke(null), reject);
+            }
+            catch (IOException e)
+            {
+                reject.invoke(e);
+            }
+        });
     }
 
     @Override
-    public void mkdirs() throws IOException
+    public Promise<Void> mkdirs()
     {
-        if (isFile() && !exists())
-            getParent().mkdirs();
-        else
-            file.mkdirs();
+        BiCallback<Boolean, Boolean> function = (isFile, exists) ->
+        {
+            if (isFile && !exists)
+                getParent().mkdirs();
+            else
+                file.mkdirs();
+        };
+
+        return new Promise<>((resolve, reject) ->
+                isFile().then(isFile ->
+                        exists().then(exists ->
+                        {
+                            function.invoke(isFile, exists);
+                            resolve.invoke(null);
+                        }, reject), reject));
     }
 
     @Override
-    public void createFile() throws IOException
+    public Promise<Void> createFile()
     {
-        if (isDirectory())
-            throw new SilenceException("Cannot convert a directory to a file");
+        return new Promise<>((resolve, reject) ->
+        {
+            isDirectory().then(isDirectory ->
+            {
+                if (isDirectory)
+                    throw new SilenceException("Cannot convert a directory to a file");
 
-        file.createNewFile();
+                try
+                {
+                    file.createNewFile();
+                    resolve.invoke(null);
+                }
+                catch (IOException e)
+                {
+                    reject.invoke(e);
+                }
+            });
+        });
     }
 
     @Override
@@ -114,21 +152,27 @@ public class AndroidExternalFilePath extends AndroidFilePath
     }
 
     @Override
-    public boolean delete() throws IOException
+    public Promise<Boolean> delete()
     {
-        if (!exists())
-            throw new SilenceException("Cannot delete non existing file.");
+        return new Promise<>((resolve, reject) ->
+                exists().then(exists ->
+                        isDirectory().then(isDirectory ->
+                        {
+                            if (!exists)
+                                throw new SilenceException("Cannot delete non existing file.");
 
-        if (isDirectory())
-        {
-            // Delete all the children first
-            for (FilePath filePath : listFiles())
-                filePath.delete();
-        }
+                            if (isDirectory)
+                            {
+                                listFiles().then(files ->
+                                {
+                                    // Delete all the children first
+                                    for (FilePath filePath : files)
+                                        filePath.delete();
+                                });
+                            }
 
-        file.delete();
-
-        return true;
+                            resolve.invoke(file.delete());
+                        }, reject), reject));
     }
 
     @Override
@@ -138,29 +182,34 @@ public class AndroidExternalFilePath extends AndroidFilePath
     }
 
     @Override
-    public long sizeInBytes()
+    public Promise<Long> sizeInBytes()
     {
-        return file.exists() ? file.length() : -1;
+        return new Promise<>((resolve, reject) -> resolve.invoke(file.exists() ? file.length() : -1L));
     }
 
     @Override
-    public List<FilePath> listFiles() throws IOException
+    public Promise<List<FilePath>> listFiles()
     {
-        if (!isDirectory())
-            throw new SilenceException("Cannot list files in a path which is not a directory.");
+        return new Promise<>((resolve, reject) ->
+                isDirectory().then(isDirectory ->
+                        exists().then(exists ->
+                        {
+                            if (!isDirectory)
+                                throw new SilenceException("Cannot list files in a path which is not a directory.");
 
-        if (!exists())
-            throw new SilenceException("Cannot list files in a non existing directory.");
+                            if (!exists)
+                                throw new SilenceException("Cannot list files in a non existing directory.");
 
-        List<FilePath> list = new ArrayList<>();
+                            List<FilePath> list = new ArrayList<>();
 
-        File[] children = file.listFiles();
+                            File[] children = file.listFiles();
 
-        if (children != null)
-            for (File child : children)
-                list.add(new AndroidExternalFilePath(path + SEPARATOR + child.getPath().replace(file.getPath(), "")));
+                            if (children != null)
+                                for (File child : children)
+                                    list.add(new AndroidExternalFilePath(path + SEPARATOR + child.getPath().replace(file.getPath(), "")));
 
-        return Collections.unmodifiableList(list);
+                            resolve.invoke(Collections.unmodifiableList(list));
+                        }, reject), reject));
     }
 
     @Override

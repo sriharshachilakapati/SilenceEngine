@@ -26,8 +26,8 @@ package com.shc.silenceengine.io;
 
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
+import com.shc.silenceengine.utils.functional.Promise;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -108,47 +108,49 @@ public abstract class FilePath
     /**
      * Checks if the file resolved to from this FilePath instance actually exists, or whether it is a hypothetical one.
      *
-     * @return True if the file exists, or else False.
+     * @return A promise that returns true if the file exists, or else False.
      */
-    public abstract boolean exists();
+    public abstract Promise<Boolean> exists();
 
     /**
      * Checks if this FilePath is a directory, or a file.
      *
-     * @return True if a directory, else false.
+     * @return A promise that returns true if a directory, else false.
      */
-    public abstract boolean isDirectory();
+    public abstract Promise<Boolean> isDirectory();
 
     /**
      * Checks if this FilePath is a file, or a directory.
      *
-     * @return True if a file, else false.
+     * @return A promise that returns true if a file, else false.
      */
-    public abstract boolean isFile();
+    public abstract Promise<Boolean> isFile();
 
     /**
      * Copies the contents of this FilePath into another FilePath replacing the destination contents.
      *
      * @param path The destination FilePath where to copy the contents of this FilePath.
      *
-     * @throws IOException      If an I/O error occurs.
+     * @return A promise that can be used to know when the process completed
+     *
      * @throws SilenceException If either this or the destination are directories, or if this path doesn't exist.
      */
-    public abstract void copyTo(FilePath path) throws IOException;
+    public abstract Promise<Void> copyTo(FilePath path);
 
     /**
      * Moves this path to another path, overwriting the destination if something exists there already.
      *
      * @param path The destination path to move the contents of this path into.
      *
-     * @throws IOException      If an I/O error occurs.
+     * @return A promise that can be used to know when the process completed
+     *
      * @throws SilenceException If either the source or the destinations are resources.
      */
-    public abstract void moveTo(FilePath path) throws IOException;
+    public abstract Promise<Void> moveTo(FilePath path);
 
-    public abstract void mkdirs() throws IOException;
+    public abstract Promise<Void> mkdirs();
 
-    public abstract void createFile() throws IOException;
+    public abstract Promise<Void> createFile();
 
     /**
      * Gets a new FilePath that represents the parent directory of this FilePath.
@@ -193,12 +195,6 @@ public abstract class FilePath
      */
     public FilePath getChild(String path)
     {
-        if (!isDirectory())
-            throw new SilenceException("Cannot get a child for a file.");
-
-        if (!exists())
-            throw new SilenceException("Cannot get a child for a non existing directory.");
-
         return type == Type.RESOURCE ? SilenceEngine.io.createResourceFilePath(this.path + SEPARATOR + path)
                                      : SilenceEngine.io.createExternalFilePath(this.path + SEPARATOR + path);
     }
@@ -217,12 +213,11 @@ public abstract class FilePath
     /**
      * Deletes the file resolved by this FilePath instance.
      *
-     * @return True if the attempt is successful or false otherwise.
+     * @return A promise returning true if the attempt is successful or false otherwise.
      *
-     * @throws IOException      If an I/O error occurs.
      * @throws SilenceException If this file is a resource, or if this doesn't exist.
      */
-    public abstract boolean delete() throws IOException;
+    public abstract Promise<Boolean> delete();
 
     /**
      * Marks this FilePath to be deleted on JVM exit.
@@ -238,9 +233,6 @@ public abstract class FilePath
      */
     public String getExtension()
     {
-        if (isDirectory())
-            return "";
-
         String[] parts = getPath().split("\\.(?=[^\\.]+$)");
         return parts.length > 1 ? parts[1] : "";
     }
@@ -274,19 +266,18 @@ public abstract class FilePath
      * Returns the file size of this path in number of bytes. In case of a directory, the size will be the sum of the
      * sizes of all it's children. If this file path does not exist, a value of {@code -1} is returned.
      *
-     * @return The size of the file in bytes.
+     * @return A promise returning the size of the file in bytes.
      */
-    public abstract long sizeInBytes();
+    public abstract Promise<Long> sizeInBytes();
 
     /**
      * Returns a list of FilePaths for the children of this directory.
      *
-     * @return An un-modifiable list of FilePaths for all the children of this directory.
+     * @return A promise returning an un-modifiable list of FilePaths for all the children of this directory.
      *
-     * @throws IOException      If an I/O error occurs.
      * @throws SilenceException If this is not a directory, of if this doesn't exist.
      */
-    public abstract List<FilePath> listFiles() throws IOException;
+    public abstract Promise<List<FilePath>> listFiles();
 
     @Override
     public int hashCode()

@@ -27,6 +27,7 @@ package com.shc.silenceengine.backend.gwt;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.xhr.client.XMLHttpRequest;
 import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.utils.functional.Promise;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,9 +43,6 @@ public class GwtFilePath extends FilePath
 
     private static String resourcesRoot;
 
-    private boolean exists;
-    private int     size;
-
     /**
      * Constructs an instance of FilePath by taking a path string, and a type.
      *
@@ -54,69 +52,64 @@ public class GwtFilePath extends FilePath
     protected GwtFilePath(String path, Type type)
     {
         super(path, type);
+    }
 
-        XMLHttpRequest request = XMLHttpRequest.create();
-
-        request.open("HEAD", getAbsolutePath());
-
-        request.setOnReadyStateChange(xhr ->
+    @Override
+    public Promise<Boolean> exists()
+    {
+        return new Promise<>((resolve, reject) ->
         {
-            if (request.getReadyState() == XMLHttpRequest.DONE)
-                try
-                {
-                    size = Integer.parseInt(request.getResponseHeader("Content-Length"));
-                }
-                catch (Exception e)
-                {
-                    size = 0;
-                }
+            XMLHttpRequest request = XMLHttpRequest.create();
+
+            request.open("HEAD", getAbsolutePath());
+
+            request.setOnReadyStateChange(xhr ->
+            {
+                if (request.getStatus() == 404)
+                    resolve.invoke(false);
+
+                else if (request.getReadyState() == XMLHttpRequest.DONE && request.getStatus() == 200)
+                    resolve.invoke(true);
+            });
+
+            request.send();
         });
-
-        request.send();
-
-        exists = request.getStatus() != 404;
     }
 
     @Override
-    public boolean exists()
+    public Promise<Boolean> isDirectory()
     {
-        return exists;
+        return exists();
     }
 
     @Override
-    public boolean isDirectory()
+    public Promise<Boolean> isFile()
     {
-        return exists;
+        return exists();
     }
 
     @Override
-    public boolean isFile()
+    public Promise<Void> copyTo(FilePath path)
     {
-        return exists;
+        return new Promise<>((resolve, reject) -> reject.invoke(new IOException("Cannot copy files in HTML5 platform.")));
     }
 
     @Override
-    public void copyTo(FilePath path) throws IOException
+    public Promise<Void> moveTo(FilePath path)
     {
-        throw new IOException("Cannot copy files in HTML5 platform.");
+        return new Promise<>((resolve, reject) -> reject.invoke(new IOException("Cannot move files in HTML5 platform.")));
     }
 
     @Override
-    public void moveTo(FilePath path) throws IOException
+    public Promise<Void> mkdirs()
     {
-        throw new IOException("Cannot move files in HTML5 platform.");
+        return new Promise<>((resolve, reject) -> reject.invoke(new IOException("Cannot create directories in HTML5 platform.")));
     }
 
     @Override
-    public void mkdirs() throws IOException
+    public Promise<Void> createFile()
     {
-        throw new IOException("Cannot create directories in HTML5 platform.");
-    }
-
-    @Override
-    public void createFile() throws IOException
-    {
-        throw new IOException("Cannot create files in HTML5 platform.");
+        return new Promise<>((resolve, reject) -> reject.invoke(new IOException("Cannot create files in HTML5 platform.")));
     }
 
     @Override
@@ -129,9 +122,9 @@ public class GwtFilePath extends FilePath
     }
 
     @Override
-    public boolean delete() throws IOException
+    public Promise<Boolean> delete()
     {
-        throw new IOException("Cannot delete files in HTML5 platform.");
+        return new Promise<>((resolve, reject) -> reject.invoke(new IOException("Cannot delete files in HTML5 platform.")));
     }
 
     @Override
@@ -141,15 +134,35 @@ public class GwtFilePath extends FilePath
     }
 
     @Override
-    public long sizeInBytes()
+    public Promise<Long> sizeInBytes()
     {
-        return size;
+        return new Promise<>((resolve, reject) ->
+        {
+            XMLHttpRequest request = XMLHttpRequest.create();
+
+            request.open("HEAD", getAbsolutePath());
+
+            request.setOnReadyStateChange(xhr ->
+            {
+                if (request.getReadyState() == XMLHttpRequest.DONE)
+                    try
+                    {
+                        resolve.invoke(Long.parseLong(request.getResponseHeader("Content-Length")));
+                    }
+                    catch (Exception e)
+                    {
+                        resolve.invoke(0L);
+                    }
+            });
+
+            request.send();
+        });
     }
 
     @Override
-    public List<FilePath> listFiles() throws IOException
+    public Promise<List<FilePath>> listFiles()
     {
-        return EMPTY_LIST;
+        return new Promise<>((resolve, reject) -> resolve.invoke(EMPTY_LIST));
     }
 
     static

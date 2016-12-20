@@ -27,6 +27,8 @@ package com.shc.silenceengine.backend.lwjgl;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.FilePath;
+import com.shc.silenceengine.utils.functional.Promise;
+import com.shc.silenceengine.utils.functional.SimpleCallback;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,63 +66,62 @@ public class LwjglResourceFilePath extends LwjglFilePath
     }
 
     @Override
-    public boolean exists()
+    public Promise<Boolean> exists()
     {
-        return LwjglResourceFilePath.class.getClassLoader().getResource(path) != null;
+        return new Promise<>((resolve, reject) ->
+                resolve.invoke(LwjglResourceFilePath.class.getClassLoader().getResource(path) != null));
     }
 
     @Override
-    public boolean isDirectory()
+    public Promise<Boolean> isDirectory()
     {
-        if (!exists())
-            return false;
+        return new Promise<>((resolve, reject) ->
+                exists().then(exists ->
+                {
+                    if (!exists) resolve.invoke(false);
 
-        try
-        {
-            if (getResourceType() == ResourceType.FILE)
-                return Files.isDirectory(Paths.get(getIDEPath()));
+                    try
+                    {
+                        if (getResourceType() == ResourceType.FILE)
+                            resolve.invoke(Files.isDirectory(Paths.get(getIDEPath())));
+                        else
+                        {
+                            List<JarEntry> entries = getJarEntries();
 
-            List<JarEntry> entries = getJarEntries();
-
-            // Size greater than 1 for directories, since they contain files
-            return entries.size() > 1 || entries.get(0).isDirectory();
-        }
-        catch (IOException e)
-        {
-            SilenceEngine.log.getRootLogger().error(e);
-        }
-
-        return false;
+                            // Size greater than 1 for directories, since they contain files
+                            resolve.invoke(entries.size() > 1 || entries.get(0).isDirectory());
+                        }
+                    }
+                    catch (IOException e)
+                    {
+                        SilenceEngine.log.getRootLogger().error(e);
+                        reject.invoke(e);
+                    }
+                }, reject));
     }
 
     @Override
-    public boolean isFile()
+    public Promise<Void> moveTo(FilePath path)
     {
-        return !isDirectory();
+        return new Promise<>((resolve, reject) -> reject.invoke(new IOException("Cannot move an in-jar resource.")));
     }
 
     @Override
-    public void moveTo(FilePath path) throws IOException
+    public Promise<Void> mkdirs()
     {
-        throw new IOException("Cannot move an in-jar resource.");
+        return new Promise<>((resolve, reject) -> reject.invoke(new IOException("Cannot create directory inside a jar")));
     }
 
     @Override
-    public void mkdirs() throws IOException
+    public Promise<Void> createFile()
     {
-        throw new IOException("Cannot create directory inside a jar");
+        return new Promise<>((resolve, reject) -> reject.invoke(new IOException("Cannot create a file inside jar")));
     }
 
     @Override
-    public void createFile() throws IOException
+    public Promise<Boolean> delete()
     {
-        throw new IOException("Cannot create a file inside jar");
-    }
-
-    @Override
-    public boolean delete() throws IOException
-    {
-        throw new IOException("Cannot delete an in-jar resource");
+        return new Promise<>((resolve, reject) -> reject.invoke(new IOException("Cannot delete an in-jar resource")));
     }
 
     @Override
@@ -130,61 +131,99 @@ public class LwjglResourceFilePath extends LwjglFilePath
     }
 
     @Override
-    public long sizeInBytes()
+    public Promise<Long> sizeInBytes()
     {
-        if (!exists())
-            return -1;
+        return new Promise<>((resolve, reject) ->
+                exists().then(exists ->
+                {
+                    if (!exists)
+                        resolve.invoke(-1L);
 
-        try
-        {
-            if (getResourceType() == ResourceType.FILE)
-                return Files.size(Paths.get(getIDEPath()));
+                    try
+                    {
+                        if (getResourceType() == ResourceType.FILE)
+                            resolve.invoke(Files.size(Paths.get(getIDEPath())));
 
-            List<JarEntry> entries = getJarEntries();
+                        List<JarEntry> entries = getJarEntries();
 
-            long size = 0;
+                        long size = 0;
 
-            for (JarEntry entry : entries)
-                size += entry.getSize();
+                        for (JarEntry entry : entries)
+                            size += entry.getSize();
 
-            return size;
-        }
-        catch (IOException e)
-        {
-            SilenceEngine.log.getRootLogger().error(e);
-        }
+                        resolve.invoke(size);
+                    }
+                    catch (IOException e)
+                    {
+                        SilenceEngine.log.getRootLogger().error(e);
+                        reject.invoke(e);
+                    }
 
-        return -1;
+                    resolve.invoke(-1L);
+                }, reject));
     }
 
     @Override
-    public List<FilePath> listFiles() throws IOException
+    public Promise<List<FilePath>> listFiles()
     {
-        if (!isDirectory())
-            throw new SilenceException("Cannot list files in a path which is not a directory.");
-
-        if (!exists())
-            throw new SilenceException("Cannot list files in a non existing directory.");
-
-        List<FilePath> filePaths = new ArrayList<>();
-
-        if (getResourceType() == ResourceType.FILE)
+        return new Promise<>((resolve, reject) ->
         {
-            File file = new File(getIDEPath());
+            boolean[] values = new boolean[2];
 
-            File[] children = file.listFiles();
+            SimpleCallback function = () ->
+            {
+                if (!values[0])
+                    throw new SilenceException("Cannot list files in a path which is not a directory.");
 
-            if (children != null)
-                for (File child : children)
-                    filePaths.add(new LwjglResourceFilePath(path + SEPARATOR + child.getPath().replace(file.getPath(), "")));
-        }
-        else
-        {
-            List<JarEntry> entries = getJarEntries();
-            entries.forEach(e -> filePaths.add(FilePath.getResourceFile(e.getName())));
-        }
+                if (!values[1])
+                    throw new SilenceException("Cannot list files in a non existing directory.");
 
-        return Collections.unmodifiableList(filePaths);
+                List<FilePath> filePaths = new ArrayList<>();
+
+                try
+                {
+                    if (getResourceType() == ResourceType.FILE)
+                    {
+                        File file = null;
+                        file = new File(getIDEPath());
+
+                        File[] children = file.listFiles();
+
+                        if (children != null)
+                        {
+                            for (File child : children)
+                                filePaths.add(new LwjglResourceFilePath(path + SEPARATOR + child.getPath().replace(file.getPath(), "")));
+                        }
+                    }
+                    else
+                    {
+                        List<JarEntry> entries = null;
+                        entries = getJarEntries();
+
+                        entries.forEach(e -> filePaths.add(FilePath.getResourceFile(e.getName())));
+                    }
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                    reject.invoke(e);
+                }
+
+                resolve.invoke(Collections.unmodifiableList(filePaths));
+            };
+
+            isDirectory().then(value0 ->
+            {
+                values[0] = value0;
+
+                exists().then(value1 ->
+                {
+                    values[1] = value1;
+                    function.invoke();
+
+                }, reject);
+            }, reject);
+        });
     }
 
     @Override
