@@ -35,6 +35,7 @@ import com.shc.silenceengine.graphics.fonts.BitmapFontRenderer;
 import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.graphics.programs.DynamicProgram;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
 
@@ -43,6 +44,7 @@ import com.shc.silenceengine.utils.functional.SimpleCallback;
  */
 public class ResourceLoadingState extends GameState
 {
+    private DynamicProgram dynamicProgram;
     private OrthoCam camera;
 
     private ResourceLoader loader;
@@ -62,12 +64,17 @@ public class ResourceLoadingState extends GameState
 
         BitmapFont.load(FilePath.getResourceFile("engine_resources/fonts/roboto32px.fnt"), font -> this.font = font);
         BitmapFontRenderer.create(fontRenderer -> this.fontRenderer = fontRenderer);
+        DynamicProgram.create(dynamicProgram ->
+        {
+            this.dynamicProgram = dynamicProgram;
+            dynamicProgram.applyToRenderer(dynamicRenderer);
+        });
     }
 
     @Override
     public void update(float delta)
     {
-        if (!loader.isActive() && fontRenderer != null && font != null)
+        if (!loader.isActive() && fontRenderer != null && font != null && dynamicProgram != null)
             loader.start();
 
         if (loader.isDone())
@@ -77,9 +84,13 @@ public class ResourceLoadingState extends GameState
     @Override
     public void render(float delta)
     {
+        if (dynamicProgram == null)
+            return;
+
         camera.apply();
         Texture.EMPTY.bind(0);
 
+        dynamicProgram.use();
         float percentage = MathUtils.convertRange(loader.getPercentage(), 0, 100, 100, SilenceEngine.display.getWidth() - 100);
 
         dynamicRenderer.begin(Primitive.TRIANGLE_FAN);
@@ -90,10 +101,10 @@ public class ResourceLoadingState extends GameState
             dynamicRenderer.vertex(percentage, SilenceEngine.display.getHeight() - 110);
             dynamicRenderer.color(Color.GREEN);
 
-            dynamicRenderer.vertex(percentage, SilenceEngine.display.getHeight() - 50);
+            dynamicRenderer.vertex(percentage, SilenceEngine.display.getHeight() - 70);
             dynamicRenderer.color(Color.GREEN);
 
-            dynamicRenderer.vertex(100, SilenceEngine.display.getHeight() - 50);
+            dynamicRenderer.vertex(100, SilenceEngine.display.getHeight() - 70);
             dynamicRenderer.color(Color.DARK_GREEN);
         }
         dynamicRenderer.end();
@@ -113,6 +124,9 @@ public class ResourceLoadingState extends GameState
             fontRenderer.dispose();
 
         dynamicRenderer.dispose();
+
+        if (dynamicProgram != null)
+            dynamicProgram.dispose();
     }
 
     @Override
