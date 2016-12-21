@@ -39,6 +39,8 @@ import java.util.List;
  */
 public final class ReusableStack<T>
 {
+    private final Object lock = new Object();
+
     private Deque<T> stack;
     private List<T>  list;
 
@@ -53,25 +55,31 @@ public final class ReusableStack<T>
 
     public T pop()
     {
-        if (stack.size() == 0)
-            try
-            {
-                T object = objectProvider.provide();
+        synchronized (lock)
+        {
+            if (stack.size() == 0)
+                try
+                {
+                    T object = objectProvider.provide();
 
-                list.add(object);
-                stack.push(object);
-            }
-            catch (Exception e)
-            {
-                SilenceException.reThrow(e);
-            }
+                    list.add(object);
+                    stack.push(object);
+                }
+                catch (Exception e)
+                {
+                    SilenceException.reThrow(e);
+                }
 
-        return stack.pop();
+            return stack.pop();
+        }
     }
 
     public void push(T value)
     {
-        stack.push(value);
+        synchronized (lock)
+        {
+            stack.push(value);
+        }
     }
 
     public List<T> getAsList()
