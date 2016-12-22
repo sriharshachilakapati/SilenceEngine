@@ -141,10 +141,7 @@ public class SceneCollider2D
                     CollisionComponent2D collision = (CollisionComponent2D) component;
 
                     if (entity.transformComponent.transformed)
-                    {
-                        broadphase.remove(collision);
-                        broadphase.insert(collision);
-                    }
+                        broadphase.update(collision);
                 }
             }
         }

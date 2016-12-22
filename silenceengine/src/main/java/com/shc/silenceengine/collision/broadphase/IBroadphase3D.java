@@ -41,6 +41,12 @@ public interface IBroadphase3D
 
     void remove(CollisionComponent3D e);
 
+    default void update(CollisionComponent3D e)
+    {
+        remove(e);
+        insert(e);
+    }
+
     default List<CollisionComponent3D> retrieve(CollisionComponent3D e)
     {
         return retrieve(e.polyhedron.getBounds());

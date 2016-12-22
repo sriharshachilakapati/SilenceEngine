@@ -40,6 +40,12 @@ public interface IBroadphase2D
 
     void remove(CollisionComponent2D e);
 
+    default void update(CollisionComponent2D e)
+    {
+        remove(e);
+        insert(e);
+    }
+
     default List<CollisionComponent2D> retrieve(CollisionComponent2D e)
     {
         return retrieve(e.polygon.getBounds());
