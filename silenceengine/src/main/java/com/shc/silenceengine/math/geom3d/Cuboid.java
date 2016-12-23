@@ -64,6 +64,35 @@ public class Cuboid
         position = new Vector3(min).add(max).scale(0.5f);
     }
 
+    public boolean intersects(Cuboid c)
+    {
+        final float tHalfWidth = width / 2;
+        final float tHalfHeight = height / 2;
+        final float tHalfThickness = thickness / 2;
+
+        final float cHalfWidth = c.width / 2;
+        final float cHalfHeight = c.height / 2;
+        final float cHalfThickness = c.thickness / 2;
+
+        final float aMinX = position.x - tHalfWidth;
+        final float aMaxX = position.x + tHalfWidth;
+        final float aMinY = position.y - tHalfHeight;
+        final float aMaxY = position.y + tHalfHeight;
+        final float aMinZ = position.z - tHalfThickness;
+        final float aMaxZ = position.z + tHalfThickness;
+
+        final float bMinX = c.position.x - cHalfWidth;
+        final float bMaxX = c.position.x + cHalfWidth;
+        final float bMinY = c.position.y - cHalfHeight;
+        final float bMaxY = c.position.y + cHalfHeight;
+        final float bMinZ = c.position.z - cHalfThickness;
+        final float bMaxZ = c.position.z + cHalfThickness;
+
+        return (aMinX <= bMaxX && aMaxX >= bMinX) &&
+               (aMinY <= bMaxY && aMaxY >= bMinY) &&
+               (aMinZ <= bMaxZ && aMaxZ >= bMinZ);
+    }
+
     public Polyhedron createPolyhedron()
     {
         return createPolyhedron(null);
@@ -164,5 +193,13 @@ public class Cuboid
         float rz2 = rz1 + aabb.thickness;
 
         return tz2 > rz2 ? rz2 - tz1 : tz2 - rz1;
+    }
+
+    public void set(Cuboid cuboid)
+    {
+        position.set(cuboid.position);
+        width = cuboid.width;
+        height = cuboid.height;
+        thickness = cuboid.thickness;
     }
 }

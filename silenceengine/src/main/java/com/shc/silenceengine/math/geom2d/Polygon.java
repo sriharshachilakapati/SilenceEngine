@@ -201,7 +201,7 @@ public class Polygon
             maxY = Math.max(maxY, vertex.y);
         }
 
-        bounds.set(position.x + minX + bounds.width / 2, position.y + minY + bounds.height / 2, maxX - minX, maxY - minY);
+        bounds.set(position.x + minX, position.y + minY, maxX - minX, maxY - minY);
     }
 
     public float getRotation()

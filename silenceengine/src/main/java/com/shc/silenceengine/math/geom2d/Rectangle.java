@@ -166,4 +166,9 @@ public class Rectangle
         this.x = x + width / 2;
         this.y = y + height / 2;
     }
+
+    public void set(Rectangle rect)
+    {
+        set(rect.x, rect.y, rect.width, rect.height);
+    }
 }
