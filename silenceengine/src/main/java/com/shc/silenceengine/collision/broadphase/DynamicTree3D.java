@@ -24,8 +24,6 @@
 
 package com.shc.silenceengine.collision.broadphase;
 
-import com.shc.silenceengine.math.geom2d.Polygon;
-import com.shc.silenceengine.math.geom2d.Rectangle;
 import com.shc.silenceengine.math.geom3d.Cuboid;
 import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.scene.components.CollisionComponent3D;
