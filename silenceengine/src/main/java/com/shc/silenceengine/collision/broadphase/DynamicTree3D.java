@@ -24,343 +24,150 @@
 
 package com.shc.silenceengine.collision.broadphase;
 
-import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.math.geom2d.Polygon;
+import com.shc.silenceengine.math.geom2d.Rectangle;
 import com.shc.silenceengine.math.geom3d.Cuboid;
+import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.scene.components.CollisionComponent3D;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author Sri Harsha Chilakapati
+ * @author Josh "ShadowLordAlpha"
  */
 public class DynamicTree3D implements IBroadphase3D
 {
-    private Node root;
+    private DynamicTree<AABB, CollisionComponent3D> dynamicTree;
+    private Map<CollisionComponent3D, Integer>      proxyMap;
 
-    private List<CollisionComponent3D> retrieveList;
-
-    private Map<Long, Node> nodeMap;
-    private Map<Long, AABB> aabbMap;
-
-    private AABB tmpUnion = new AABB();
-    private AABB tmpU     = new AABB();
+    private AABB queryAABB;
 
     public DynamicTree3D()
     {
-        nodeMap = new HashMap<>();
-        aabbMap = new HashMap<>();
+        dynamicTree = new DynamicTree<>(AABB::new, AABB::intersects);
+        proxyMap = new HashMap<>();
 
-        retrieveList = new ArrayList<>();
+        queryAABB = new AABB();
     }
 
     @Override
     public void clear()
     {
-        nodeMap.clear();
-        root = null;
+        for (int proxy : proxyMap.values())
+            dynamicTree.destroyProxy(proxy);
+
+        proxyMap.clear();
     }
 
     @Override
     public void insert(CollisionComponent3D e)
     {
-        Node node = new Node();
-        node.entity = e;
-        node.aabb = getAABB(e);
-
-        nodeMap.put(e.id, node);
-
-        insert(node);
+        int proxy = dynamicTree.createProxy(new AABB(e.polyhedron), e);
+        proxyMap.put(e, proxy);
     }
 
     @Override
     public void remove(CollisionComponent3D e)
     {
-        Node node = nodeMap.get(e.id);
-
-        if (node != null)
-        {
-            remove(node);
-            nodeMap.remove(e.id);
-            aabbMap.remove(e.id);
-        }
+        int proxy = proxyMap.remove(e);
+        dynamicTree.destroyProxy(proxy);
     }
 
     @Override
-    public List<CollisionComponent3D> retrieve(CollisionComponent3D e)
+    public void update(CollisionComponent3D e)
     {
-        retrieveList.clear();
-        queryNode(getAABB(e), root);
-        return retrieveList;
+        int proxy = proxyMap.get(e);
+        AABB aabb = dynamicTree.getAABB(proxy);
+        aabb.update();
+        dynamicTree.updateProxy(proxy);
     }
 
     @Override
-    public List<CollisionComponent3D> retrieve(Cuboid bounds)
+    public List<CollisionComponent3D> retrieve(Cuboid cuboid)
     {
-        retrieveList.clear();
-
-        AABB aabb = new AABB();
-        aabb.min.set(bounds.position).subtract(bounds.width / 2, bounds.height / 2, bounds.thickness / 2);
-        aabb.max.set(bounds.position).add(bounds.width / 2, bounds.height / 2, bounds.thickness / 2);
-
-        queryNode(aabb, root);
-        return retrieveList;
+        queryAABB.cuboid.set(cuboid);
+        return dynamicTree.query(queryAABB);
     }
 
-    private void remove(Node node)
+    private static class AABB implements DynamicTree.AABB
     {
-        if (root == null) return;
+        Cuboid     cuboid;
+        Polyhedron polyhedron;
 
-        if (node == root)
+        AABB()
         {
-            root = null;
-            return;
+            cuboid = new Cuboid();
         }
 
-        Node parent = node.parent;
-        Node grandParent = parent.parent;
-
-        Node other = (parent.left == node) ? parent.right : parent.left;
-
-        if (grandParent != null)
+        AABB(Polyhedron polyhedron)
         {
-            if (grandParent.left == parent)
-                grandParent.left = other;
-            else
-                grandParent.right = other;
-
-            other.parent = grandParent;
-
-            Node n = grandParent;
-            while (n != null)
-            {
-                Node left = n.left;
-                Node right = n.right;
-
-                n.aabb = AABB.union(left.aabb, right.aabb, n.aabb);
-
-                n = n.parent;
-            }
-        }
-        else
-        {
-            root = other;
-            other.parent = null;
-        }
-    }
-
-    private AABB getAABB(CollisionComponent3D e)
-    {
-        AABB aabb;
-
-        if (aabbMap.containsKey(e.id))
-            aabb = aabbMap.get(e.id);
-        else
-        {
-            aabb = AABB.create(e);
-            aabbMap.put(e.id, aabb);
+            this.polyhedron = polyhedron;
+            this.cuboid = polyhedron.getBounds();
         }
 
-        Cuboid bounds = e.polyhedron.getBounds();
-
-        aabb.min.set(bounds.position).subtract(bounds.width / 2, bounds.height / 2, bounds.thickness / 2);
-        aabb.max.set(bounds.position).add(bounds.width / 2, bounds.height / 2, bounds.thickness / 2);
-
-        return aabb;
-    }
-
-    private void insert(Node item)
-    {
-        if (root == null)
+        public static boolean intersects(AABB aabb1, AABB aabb2)
         {
-            root = item;
-            return;
+            return aabb1.cuboid.intersects(aabb2.cuboid);
         }
 
-        AABB itemAABB = item.aabb;
-
-        Node node = root;
-
-        while (!node.isLeaf())
-        {
-            AABB aabb = node.aabb;
-
-            float perimeter = aabb.getPerimeter();
-
-            AABB union = AABB.union(aabb, itemAABB, tmpUnion);
-            float unionPerimeter = union.getPerimeter();
-
-            float cost = 2 * unionPerimeter;
-            float descendCost = 2 * (unionPerimeter - perimeter);
-
-            Node left = node.left;
-            Node right = node.right;
-
-            float costLeft;
-            if (left.isLeaf())
-            {
-                AABB u = AABB.union(left.aabb, itemAABB, tmpU);
-                costLeft = u.getPerimeter() + descendCost;
-            }
-            else
-            {
-                AABB u = AABB.union(left.aabb, itemAABB, tmpU);
-                costLeft = u.getPerimeter() - left.aabb.getPerimeter() + descendCost;
-            }
-
-            float costRight;
-            if (right.isLeaf())
-            {
-                AABB u = AABB.union(right.aabb, itemAABB, tmpU);
-                costRight = u.getPerimeter() + descendCost;
-            }
-            else
-            {
-                AABB u = AABB.union(right.aabb, itemAABB, tmpU);
-                costRight = u.getPerimeter() - right.aabb.getPerimeter() + descendCost;
-            }
-
-            if (cost < costLeft && cost < costRight)
-                break;
-
-            node = (costLeft < costRight) ? left : right;
-        }
-
-        Node parent = node.parent;
-        Node newParent = new Node();
-        newParent.parent = node.parent;
-        newParent.aabb = AABB.union(node.aabb, itemAABB, newParent.aabb);
-
-        if (parent != null)
-        {
-            if (parent.left == node)
-                parent.left = newParent;
-            else
-                parent.right = newParent;
-
-            newParent.left = node;
-            newParent.right = item;
-
-            node.parent = newParent;
-            item.parent = newParent;
-        }
-        else
-        {
-            newParent.left = node;
-            newParent.right = item;
-
-            node.parent = newParent;
-            item.parent = newParent;
-
-            root = newParent;
-        }
-
-        node = item.parent;
-
-        while (node != null)
-        {
-            Node left = node.left;
-            Node right = node.right;
-
-            node.aabb = AABB.union(left.aabb, right.aabb, node.aabb);
-
-            node = node.parent;
-        }
-    }
-
-    private void queryNode(AABB aabb, Node node)
-    {
-        if (node == null)
-            return;
-
-        if (node.aabb.intersects(aabb))
-        {
-            if (node.isLeaf())
-                retrieveList.add(node.entity);
-            else
-            {
-                queryNode(aabb, node.left);
-                queryNode(aabb, node.right);
-            }
-        }
-    }
-
-    private static class AABB
-    {
-        public Vector3 min;
-        public Vector3 max;
-
-        public AABB()
-        {
-            min = new Vector3();
-            max = new Vector3();
-        }
-
-        public AABB(Vector3 min, float width, float height, float thickness)
-        {
-            this.min = min.copy();
-            this.max = min.add(width, height, thickness);
-        }
-
-        public static AABB create(CollisionComponent3D entity)
-        {
-            Cuboid bounds = entity.polyhedron.getBounds();
-
-            return new AABB(bounds.position.subtract(bounds.width / 2, bounds.height / 2, bounds.thickness / 2),
-                    bounds.width, bounds.height, bounds.thickness);
-        }
-
-        public static AABB union(AABB aabb1, AABB aabb2, AABB store)
-        {
-            if (store == null)
-                store = new AABB();
-
-            store.min.set(aabb1.min);
-            store.max.set(aabb1.max);
-
-            store.union(aabb2);
-
-            return store;
-        }
-
-        public void union(AABB aabb)
-        {
-            min.x = Math.min(aabb.min.x, min.x);
-            min.y = Math.min(aabb.min.y, min.y);
-            min.z = Math.min(aabb.min.z, min.z);
-
-            max.x = Math.max(aabb.max.x, max.x);
-            max.y = Math.max(aabb.max.y, max.y);
-            max.z = Math.max(aabb.max.z, max.z);
-        }
-
-        public boolean intersects(AABB aabb)
-        {
-            return !(min.x > aabb.max.x || max.x < aabb.min.x) &&
-                   !(min.y > aabb.max.y || max.y < aabb.min.y) &&
-                   !(min.z > aabb.max.z || max.z < aabb.min.z);
-        }
-
+        @Override
         public float getPerimeter()
         {
-            return 2 * (max.x - min.x + max.y - min.y + max.z - min.z);
+            return 2f * (cuboid.width + cuboid.height);
         }
-    }
 
-    private static class Node
-    {
-        public Node parent;
-        public Node left;
-        public Node right;
-
-        public CollisionComponent3D entity;
-        public AABB                 aabb;
-
-        public boolean isLeaf()
+        @Override
+        public void setToCombine(DynamicTree.AABB aabb1, DynamicTree.AABB aabb2)
         {
-            return left == null;
+            Cuboid c1 = ((AABB) aabb1).cuboid;
+            Cuboid c2 = ((AABB) aabb2).cuboid;
+
+            final float c1HalfWidth = c1.width / 2f;
+            final float c1HalfHeight = c1.height / 2f;
+            final float c1HalfThickness = c1.thickness / 2f;
+
+            final float c2HalfWidth = c2.width / 2f;
+            final float c2HalfHeight = c2.height / 2f;
+            final float c2HalfThickness = c2.thickness / 2f;
+
+            final float c1MinX = c1.position.x - c1HalfWidth;
+            final float c1MinY = c1.position.y - c1HalfHeight;
+            final float c1MinZ = c1.position.z - c1HalfThickness;
+            final float c1MaxX = c1.position.x + c1HalfWidth;
+            final float c1MaxY = c1.position.y + c1HalfHeight;
+            final float c1MaxZ = c1.position.z + c1HalfThickness;
+
+            final float c2MinX = c2.position.x - c2HalfWidth;
+            final float c2MinY = c2.position.y - c2HalfHeight;
+            final float c2MinZ = c2.position.z - c2HalfThickness;
+            final float c2MaxX = c2.position.x + c2HalfWidth;
+            final float c2MaxY = c2.position.y + c2HalfHeight;
+            final float c2MaxZ = c2.position.z + c2HalfThickness;
+
+            final float minX = Math.min(c1MinX, c2MinX);
+            final float minY = Math.min(c1MinY, c2MinY);
+            final float minZ = Math.min(c1MinZ, c2MinZ);
+            final float maxX = Math.max(c1MaxX, c2MaxX);
+            final float maxY = Math.max(c1MaxY, c2MaxY);
+            final float maxZ = Math.max(c1MaxZ, c2MaxZ);
+
+            final float width = maxX - minX;
+            final float height = maxY - minY;
+            final float thickness = maxZ - minZ;
+
+            cuboid.position.set(minX + width / 2, minY + height / 2, minZ + thickness / 2);
+            cuboid.width = width;
+            cuboid.height = height;
+            cuboid.thickness = thickness;
+        }
+
+        void update()
+        {
+            if (polyhedron != null)
+                cuboid = polyhedron.getBounds();
         }
     }
 }

@@ -24,11 +24,10 @@
 
 package com.shc.silenceengine.collision.broadphase;
 
-import com.shc.silenceengine.math.Vector2;
+import com.shc.silenceengine.math.geom2d.Polygon;
 import com.shc.silenceengine.math.geom2d.Rectangle;
 import com.shc.silenceengine.scene.components.CollisionComponent2D;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,334 +38,113 @@ import java.util.Map;
  */
 public class DynamicTree2D implements IBroadphase2D
 {
-    private Node root;
+    private DynamicTree<AABB, CollisionComponent2D> dynamicTree;
+    private Map<CollisionComponent2D, Integer>      proxyMap;
 
-    private List<CollisionComponent2D> retrieveList;
-
-    private Map<Long, Node> nodeMap;
-    private Map<Long, AABB> aabbMap;
-
-    private AABB tmpUnion = new AABB();
-    private AABB tmpU     = new AABB();
+    private AABB queryAABB;
 
     public DynamicTree2D()
     {
-        nodeMap = new HashMap<>();
-        aabbMap = new HashMap<>();
+        dynamicTree = new DynamicTree<>(AABB::new, AABB::intersects);
+        proxyMap = new HashMap<>();
 
-        retrieveList = new ArrayList<>();
+        queryAABB = new AABB();
     }
 
     @Override
     public void clear()
     {
-        nodeMap.clear();
-        root = null;
+        for (int proxy : proxyMap.values())
+            dynamicTree.destroyProxy(proxy);
+
+        proxyMap.clear();
     }
 
     @Override
     public void insert(CollisionComponent2D e)
     {
-        Node node = new Node();
-        node.component = e;
-        node.aabb = getAABB(e);
-
-        nodeMap.put(e.id, node);
-
-        insert(node);
+        int proxy = dynamicTree.createProxy(new AABB(e.polygon), e);
+        proxyMap.put(e, proxy);
     }
 
     @Override
     public void remove(CollisionComponent2D e)
     {
-        Node node = nodeMap.get(e.id);
-
-        if (node != null)
-        {
-            remove(node);
-            nodeMap.remove(e.id);
-            aabbMap.remove(e.id);
-        }
+        int proxy = proxyMap.remove(e);
+        dynamicTree.destroyProxy(proxy);
     }
 
     @Override
-    public List<CollisionComponent2D> retrieve(CollisionComponent2D e)
+    public void update(CollisionComponent2D e)
     {
-        retrieveList.clear();
-        queryNode(getAABB(e), root);
-        return retrieveList;
+        int proxy = proxyMap.get(e);
+        AABB aabb = dynamicTree.getAABB(proxy);
+        aabb.update();
+        dynamicTree.updateProxy(proxy);
     }
 
     @Override
     public List<CollisionComponent2D> retrieve(Rectangle rect)
     {
-        retrieveList.clear();
-        queryNode(new AABB(new Vector2(rect.x, rect.y), rect.width, rect.height), root);
-        return retrieveList;
+        queryAABB.rect.set(rect);
+        return dynamicTree.query(queryAABB);
     }
 
-    private void remove(Node node)
+    private static class AABB implements DynamicTree.AABB
     {
-        if (root == null) return;
+        Rectangle rect;
+        Polygon   polygon;
 
-        if (node == root)
+        AABB()
         {
-            root = null;
-            return;
+            rect = new Rectangle();
         }
 
-        Node parent = node.parent;
-        Node grandParent = parent.parent;
-
-        Node other = (parent.left == node) ? parent.right : parent.left;
-
-        if (grandParent != null)
+        AABB(Polygon polygon)
         {
-            if (grandParent.left == parent)
-                grandParent.left = other;
-            else
-                grandParent.right = other;
-
-            other.parent = grandParent;
-
-            Node n = grandParent;
-            while (n != null)
-            {
-                Node left = n.left;
-                Node right = n.right;
-
-                n.aabb = AABB.union(left.aabb, right.aabb, n.aabb);
-
-                n = n.parent;
-            }
-        }
-        else
-        {
-            root = other;
-            other.parent = null;
-        }
-    }
-
-    private AABB getAABB(CollisionComponent2D e)
-    {
-        AABB aabb;
-
-        if (aabbMap.containsKey(e.id))
-            aabb = aabbMap.get(e.id);
-        else
-        {
-            aabb = new AABB(new Vector2(), new Vector2());
-            aabbMap.put(e.id, aabb);
+            this.polygon = polygon;
+            this.rect = polygon.getBounds();
         }
 
-        aabb.min.set(e.polygon.getMinX(), e.polygon.getMinY());
-        aabb.max.set(e.polygon.getMaxX(), e.polygon.getMaxY());
-
-        return aabb;
-    }
-
-    private void insert(Node item)
-    {
-        if (root == null)
+        public static boolean intersects(AABB aabb1, AABB aabb2)
         {
-            root = item;
-            return;
+            return aabb1.rect.intersects(aabb2.rect);
         }
 
-        AABB itemAABB = item.aabb;
-
-        Node node = root;
-
-        while (!node.isLeaf())
-        {
-            AABB aabb = node.aabb;
-
-            float perimeter = aabb.getPerimeter();
-
-            AABB union = AABB.union(aabb, itemAABB, tmpUnion);
-            float unionPerimeter = union.getPerimeter();
-
-            float cost = 2 * unionPerimeter;
-            float descendCost = 2 * (unionPerimeter - perimeter);
-
-            Node left = node.left;
-            Node right = node.right;
-
-            float costLeft;
-            if (left.isLeaf())
-            {
-                AABB u = AABB.union(left.aabb, itemAABB, tmpU);
-                costLeft = u.getPerimeter() + descendCost;
-            }
-            else
-            {
-                AABB u = AABB.union(left.aabb, itemAABB, tmpU);
-                costLeft = u.getPerimeter() - left.aabb.getPerimeter() + descendCost;
-            }
-
-            float costRight;
-            if (right.isLeaf())
-            {
-                AABB u = AABB.union(right.aabb, itemAABB, tmpU);
-                costRight = u.getPerimeter() + descendCost;
-            }
-            else
-            {
-                AABB u = AABB.union(right.aabb, itemAABB, tmpU);
-                costRight = u.getPerimeter() - right.aabb.getPerimeter() + descendCost;
-            }
-
-            if (cost < costLeft && cost < costRight)
-                break;
-
-            node = (costLeft < costRight) ? left : right;
-        }
-
-        Node parent = node.parent;
-        Node newParent = new Node();
-        newParent.parent = node.parent;
-        newParent.aabb = AABB.union(node.aabb, itemAABB, newParent.aabb);
-
-        if (parent != null)
-        {
-            if (parent.left == node)
-                parent.left = newParent;
-            else
-                parent.right = newParent;
-
-            newParent.left = node;
-            newParent.right = item;
-
-            node.parent = newParent;
-            item.parent = newParent;
-        }
-        else
-        {
-            newParent.left = node;
-            newParent.right = item;
-
-            node.parent = newParent;
-            item.parent = newParent;
-
-            root = newParent;
-        }
-
-        node = item.parent;
-
-        while (node != null)
-        {
-            Node left = node.left;
-            Node right = node.right;
-
-            node.aabb = AABB.union(left.aabb, right.aabb, node.aabb);
-
-            node = node.parent;
-        }
-    }
-
-    private void queryNode(AABB aabb, Node node)
-    {
-        if (node == null)
-            return;
-
-        if (node.aabb.intersects(aabb))
-        {
-            if (node.isLeaf())
-                retrieveList.add(node.component);
-            else
-            {
-                queryNode(aabb, node.left);
-                queryNode(aabb, node.right);
-            }
-        }
-    }
-
-    private static class AABB
-    {
-        public Vector2 min;
-        public Vector2 max;
-
-        public AABB()
-        {
-            min = new Vector2();
-            max = new Vector2();
-        }
-
-        public AABB(Vector2 min, Vector2 max)
-        {
-            this.min = min.copy();
-            this.max = max.copy();
-        }
-
-        public AABB(Vector2 min, float width, float height)
-        {
-            this.min = min.copy();
-            this.max = min.add(width, height);
-        }
-
-        // Unused method should possibly delete
-        public static AABB create(CollisionComponent2D c)
-        {
-            Vector2 min = Vector2.REUSABLE_STACK.pop();
-            Vector2 max = Vector2.REUSABLE_STACK.pop();
-
-            min.set(c.polygon.getMinX(), c.polygon.getMinY());
-            max.set(c.polygon.getMaxX(), c.polygon.getMaxY());
-
-            AABB aabb = new AABB(min, max);
-
-            Vector2.REUSABLE_STACK.push(min);
-            Vector2.REUSABLE_STACK.push(max);
-
-            return aabb;
-        }
-
-        public static AABB union(AABB aabb1, AABB aabb2, AABB store)
-        {
-            if (store == null)
-                store = new AABB();
-
-            store.min.set(aabb1.min);
-            store.max.set(aabb1.max);
-
-            store.union(aabb2);
-
-            return store;
-        }
-
-        public void union(AABB aabb)
-        {
-            min.x = Math.min(aabb.min.x, min.x);
-            min.y = Math.min(aabb.min.y, min.y);
-
-            max.x = Math.max(aabb.max.x, max.x);
-            max.y = Math.max(aabb.max.y, max.y);
-        }
-
-        public boolean intersects(AABB aabb)
-        {
-            return !(min.x > aabb.max.x || max.x < aabb.min.x) &&
-                   !(min.y > aabb.max.y || max.y < aabb.min.y);
-        }
-
+        @Override
         public float getPerimeter()
         {
-            return 2 * (this.max.x - this.min.x + this.max.y - this.min.y);
+            return 2f * (rect.width + rect.height);
         }
-    }
 
-    private static class Node
-    {
-        public Node parent;
-        public Node left;
-        public Node right;
-
-        public CollisionComponent2D component;
-        public AABB                 aabb;
-
-        public boolean isLeaf()
+        @Override
+        public void setToCombine(DynamicTree.AABB aabb1, DynamicTree.AABB aabb2)
         {
-            return left == null;
+            Rectangle rect1 = ((AABB) aabb1).rect;
+            Rectangle rect2 = ((AABB) aabb2).rect;
+
+            final float r1MinX = rect1.x;
+            final float r1MinY = rect1.y;
+            final float r1MaxX = rect1.x + rect1.width;
+            final float r1MaxY = rect1.y + rect1.height;
+
+            final float r2MinX = rect2.x;
+            final float r2MinY = rect2.y;
+            final float r2MaxX = rect2.x + rect2.width;
+            final float r2MaxY = rect2.y + rect2.height;
+
+            final float minX = Math.min(r1MinX, r2MinX);
+            final float minY = Math.min(r1MinY, r2MinY);
+            final float maxX = Math.max(r1MaxX, r2MaxX);
+            final float maxY = Math.max(r1MaxY, r2MaxY);
+
+            rect.set(minX, minY, maxX - minX, maxY - minY);
+        }
+
+        void update()
+        {
+            if (polygon != null)
+                rect = polygon.getBounds();
         }
     }
 }
