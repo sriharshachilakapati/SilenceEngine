@@ -114,7 +114,11 @@ public class DynamicTree3D implements IBroadphase3D
         @Override
         public float getPerimeter()
         {
-            return 2f * (cuboid.width + cuboid.height);
+            final float HW = cuboid.height * cuboid.width;
+            final float HT = cuboid.height * cuboid.thickness;
+            final float WT = cuboid.width * cuboid.thickness;
+
+            return 2f * (HW + HT + WT);
         }
 
         @Override
