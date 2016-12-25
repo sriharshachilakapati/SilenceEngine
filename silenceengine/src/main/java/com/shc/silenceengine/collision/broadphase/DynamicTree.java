@@ -191,7 +191,6 @@ class DynamicTree<AABBType extends DynamicTree.AABB, CollisionType>
 
     private void insertLeaf(int leaf)
     {
-
         if (root == Node.NULL)
         {
             root = leaf;
