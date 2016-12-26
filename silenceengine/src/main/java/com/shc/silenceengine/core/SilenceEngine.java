@@ -153,11 +153,11 @@ public final class SilenceEngine
 
     public String getVersionString()
     {
-        return "1.1.1";
+        return "1.2.1";
     }
 
     public Vector3 getVersion()
     {
-        return new Vector3(1, 1, 1);
+        return new Vector3(1, 2, 1);
     }
 }
