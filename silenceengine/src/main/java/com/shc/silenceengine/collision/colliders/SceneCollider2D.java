@@ -25,6 +25,7 @@
 package com.shc.silenceengine.collision.colliders;
 
 import com.shc.silenceengine.collision.CollisionTag;
+import com.shc.silenceengine.collision.broadphase.DynamicTree2D;
 import com.shc.silenceengine.collision.broadphase.IBroadphase2D;
 import com.shc.silenceengine.scene.Scene2D;
 import com.shc.silenceengine.scene.components.CollisionComponent2D;
@@ -67,6 +68,11 @@ public class SceneCollider2D
 
     // The list of entities
     private List<Entity2D> entities;
+
+    public SceneCollider2D()
+    {
+        this(new DynamicTree2D());
+    }
 
     public SceneCollider2D(IBroadphase2D broadphase)
     {

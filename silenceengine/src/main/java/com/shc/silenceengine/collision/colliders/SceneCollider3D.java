@@ -25,6 +25,7 @@
 package com.shc.silenceengine.collision.colliders;
 
 import com.shc.silenceengine.collision.CollisionTag;
+import com.shc.silenceengine.collision.broadphase.DynamicTree3D;
 import com.shc.silenceengine.collision.broadphase.IBroadphase3D;
 import com.shc.silenceengine.scene.Scene3D;
 import com.shc.silenceengine.scene.components.CollisionComponent3D;
@@ -67,6 +68,11 @@ public class SceneCollider3D
 
     // The list of entities
     private List<Entity3D> entities;
+
+    public SceneCollider3D()
+    {
+        this(new DynamicTree3D());
+    }
 
     public SceneCollider3D(IBroadphase3D broadphase)
     {
