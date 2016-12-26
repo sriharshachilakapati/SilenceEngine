@@ -69,7 +69,7 @@ public class LwjglDisplayDevice implements IDisplayDevice
         windowWidth = 800;
         windowHeight = 600;
 
-        window = new Window(windowWidth, windowHeight, "SilenceEngine Window");
+        window = new Window(windowWidth, windowHeight);
 
         centerOnScreen();
         window.show();

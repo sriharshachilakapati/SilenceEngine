@@ -151,12 +151,12 @@ public final class SilenceEngine
         UNKNOWN
     }
 
-    public String getVersionString()
+    public static String getVersionString()
     {
         return "1.2.1";
     }
 
-    public Vector3 getVersion()
+    public static Vector3 getVersion()
     {
         return new Vector3(1, 2, 1);
     }

@@ -195,7 +195,7 @@ public class Window
      */
     public Window(int width, int height, Monitor monitor, Window share)
     {
-        this(width, height, "SilenceEngine Window", monitor, share);
+        this(width, height, "SilenceEngine Window | SilenceEngine " + SilenceEngine.getVersionString(), monitor, share);
     }
 
     /**

@@ -54,6 +54,7 @@ public final class GwtRuntime
         SilenceEngine.graphics = new GwtGraphicsDevice();
         SilenceEngine.audio = new GwtAudioDevice();
 
+        SilenceEngine.display.setTitle("SilenceEngine " + SilenceEngine.getVersionString());
         SilenceEngine.display.setIcon(FilePath.getResourceFile("engine_resources/icon.png"));
 
         GLContext.enable(GL_BLEND);
