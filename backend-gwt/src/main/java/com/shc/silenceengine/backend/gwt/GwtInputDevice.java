@@ -44,9 +44,9 @@ import java.util.Map;
  */
 public class GwtInputDevice extends InputDevice
 {
-    private final Map<Integer, Integer> keysMap             = new HashMap<>();
-    private final Map<Integer, Integer> mouseMap            = new HashMap<>();
-    private final Map<Integer, Integer> keyShortCircuitMap  = new HashMap<>();
+    private final Map<Integer, Integer> keysMap            = new HashMap<>();
+    private final Map<Integer, Integer> mouseMap           = new HashMap<>();
+    private final Map<Integer, Integer> keyShortCircuitMap = new HashMap<>();
 
     private boolean gamepadsExist = false;
 

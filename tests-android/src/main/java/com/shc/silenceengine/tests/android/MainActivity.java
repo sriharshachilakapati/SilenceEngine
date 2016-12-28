@@ -70,7 +70,8 @@ public class MainActivity extends ListActivity
         adapter.notifyDataSetChanged();
 
         ListView listView = getListView();
-        listView.setOnItemClickListener((parent, view, position, id) -> {
+        listView.setOnItemClickListener((parent, view, position, id) ->
+        {
             String key = adapter.getItem(position);
             Intent intent = new Intent(this, tests.get(key));
             startActivity(intent);

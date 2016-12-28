@@ -32,6 +32,11 @@ import com.shc.silenceengine.utils.functional.SimpleCallback;
  */
 public class AsyncRunner extends AsyncTask<SimpleCallback, Void, Void>
 {
+    public static void runAsync(SimpleCallback callback)
+    {
+        new AsyncRunner().execute(callback);
+    }
+
     @Override
     protected Void doInBackground(SimpleCallback... params)
     {
@@ -39,10 +44,5 @@ public class AsyncRunner extends AsyncTask<SimpleCallback, Void, Void>
             callback.invoke();
 
         return null;
-    }
-
-    public static void runAsync(SimpleCallback callback)
-    {
-        new AsyncRunner().execute(callback);
     }
 }

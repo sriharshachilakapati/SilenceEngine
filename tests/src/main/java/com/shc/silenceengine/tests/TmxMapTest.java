@@ -44,7 +44,7 @@ public class TmxMapTest extends SilenceTest
     private OrthoCam camera;
     private TmxMap   map;
 
-    private TmxMapRenderer mapRenderer;
+    private TmxMapRenderer  mapRenderer;
     private DynamicRenderer dynamicRenderer;
 
     private DynamicProgram dynamicProgram;
@@ -77,17 +77,6 @@ public class TmxMapTest extends SilenceTest
     }
 
     @Override
-    public void resized()
-    {
-        if (mapRenderer == null)
-            return;
-
-        camera.initProjection(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
-        camera.center(map.getWidth() * map.getTileWidth() / 2, map.getHeight() * map.getTileHeight() / 2);
-        GLContext.viewport(0, 0, SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
-    }
-
-    @Override
     public void update(float delta)
     {
         if (Keyboard.isKeyTapped(Keyboard.KEY_ESCAPE))
@@ -112,6 +101,17 @@ public class TmxMapTest extends SilenceTest
         dynamicProgram.use();
         dynamicProgram.applyToRenderer(dynamicRenderer);
         mapRenderer.render(dynamicRenderer);
+    }
+
+    @Override
+    public void resized()
+    {
+        if (mapRenderer == null)
+            return;
+
+        camera.initProjection(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
+        camera.center(map.getWidth() * map.getTileWidth() / 2, map.getHeight() * map.getTileHeight() / 2);
+        GLContext.viewport(0, 0, SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
     }
 
     @Override

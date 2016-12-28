@@ -36,9 +36,9 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class AndroidWindow implements GLSurfaceView.Renderer
 {
-    private SimpleCallback startCallback;
-
     private static final Object lock = new Object();
+
+    private SimpleCallback startCallback;
 
     public AndroidWindow(SimpleCallback startCallback)
     {

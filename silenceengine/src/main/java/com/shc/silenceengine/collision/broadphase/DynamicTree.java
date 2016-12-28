@@ -526,6 +526,7 @@ class DynamicTree<AABBType extends DynamicTree.AABB, CollisionType>
     interface AABB
     {
         float getPerimeter();
+
         void setToCombine(AABB aabb1, AABB aabb2);
     }
 

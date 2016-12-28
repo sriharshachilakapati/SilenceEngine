@@ -46,11 +46,6 @@ public class KeyboardTest extends SilenceTest
         logger.info("Test initialized successfully");
     }
 
-    private void textInputCallback(char... chars)
-    {
-        logger.info("Got text " + new String(chars));
-    }
-
     @Override
     public void update(float delta)
     {
@@ -68,5 +63,10 @@ public class KeyboardTest extends SilenceTest
     public void dispose()
     {
         logger.info("Dispose event!! Success.");
+    }
+
+    private void textInputCallback(char... chars)
+    {
+        logger.info("Got text " + new String(chars));
     }
 }

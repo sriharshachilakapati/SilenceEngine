@@ -109,6 +109,16 @@ public final class SilenceEngine
         Texture.EMPTY.bind(0);
     }
 
+    public static String getVersionString()
+    {
+        return "1.2.1";
+    }
+
+    public static Vector3 getVersion()
+    {
+        return new Vector3(1, 2, 1);
+    }
+
     /**
      * An enumeration of platform identifiers. These are the platforms SilenceEngine runs on.
      */
@@ -149,15 +159,5 @@ public final class SilenceEngine
          * or it failed to detect the platform.
          */
         UNKNOWN
-    }
-
-    public static String getVersionString()
-    {
-        return "1.2.1";
-    }
-
-    public static Vector3 getVersion()
-    {
-        return new Vector3(1, 2, 1);
     }
 }

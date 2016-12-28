@@ -45,7 +45,7 @@ import com.shc.silenceengine.utils.functional.SimpleCallback;
 public class ResourceLoadingState extends GameState
 {
     private DynamicProgram dynamicProgram;
-    private OrthoCam camera;
+    private OrthoCam       camera;
 
     private ResourceLoader loader;
     private SimpleCallback doneCallback;
@@ -118,6 +118,13 @@ public class ResourceLoadingState extends GameState
     }
 
     @Override
+    public void resized()
+    {
+        camera.initProjection(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
+        GLContext.viewport(0, 0, SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
+    }
+
+    @Override
     public void onLeave()
     {
         if (fontRenderer != null)
@@ -127,12 +134,5 @@ public class ResourceLoadingState extends GameState
 
         if (dynamicProgram != null)
             dynamicProgram.dispose();
-    }
-
-    @Override
-    public void resized()
-    {
-        camera.initProjection(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
-        GLContext.viewport(0, 0, SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
     }
 }

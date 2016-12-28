@@ -60,15 +60,6 @@ public class FontRendererTest extends SilenceTest
     }
 
     @Override
-    public void resized()
-    {
-        camera.initProjection(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
-        camera.apply();
-
-        GLContext.viewport(0, 0, SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
-    }
-
-    @Override
     public void update(float deltaTime)
     {
         if (Keyboard.isKeyTapped(Keyboard.KEY_ESCAPE))
@@ -89,6 +80,15 @@ public class FontRendererTest extends SilenceTest
             fontRenderer.render(bitmapFont, "\n\n\nRC: " + IGraphicsDevice.Data.renderCallsThisFrame, 10, 10);
         }
         fontRenderer.end();
+    }
+
+    @Override
+    public void resized()
+    {
+        camera.initProjection(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
+        camera.apply();
+
+        GLContext.viewport(0, 0, SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
     }
 
     @Override

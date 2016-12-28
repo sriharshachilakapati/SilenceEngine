@@ -69,7 +69,8 @@ public class OpenGLTest extends SilenceTest
         GLContext.enable(GL_BLEND);
         GLContext.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        SilenceEngine.io.getImageReader().readImage(FilePath.getResourceFile("engine_resources/logo.png"), image -> {
+        SilenceEngine.io.getImageReader().readImage(FilePath.getResourceFile("engine_resources/logo.png"), image ->
+        {
             texture = Texture.fromImage(image);
             image.dispose();
 

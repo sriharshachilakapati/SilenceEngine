@@ -68,7 +68,8 @@ public class ResourceLoaderTest extends SilenceTest
         texID = loader.define(Texture.class, FilePath.getResourceFile("test_resources/test_texture.png"));
         sndID = loader.define(Sound.class, FilePath.getResourceFile("test_resources/shoot.wav"));
 
-        DynamicProgram.create(program -> {
+        DynamicProgram.create(program ->
+        {
             this.program = program;
             program.use();
 
