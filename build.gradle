@@ -36,7 +36,7 @@ allprojects {
         streamsVersion       = "1.0.3"
         openAlAndroidVersion = "0.1-SNAPSHOT"
         retrolambdaVersion   = "2.3.0"
-        lwjglVersion         = "3.1.0"
+        lwjglVersion         = "3.1.1"
         easyXmlVersion       = "0.1"
         easyJsonVersion      = "0.3"
     }
@@ -129,6 +129,7 @@ project(":backend-lwjgl") {
         compile "org.lwjgl:lwjgl-jemalloc:${lwjglVersion}"
         compile "org.lwjgl:lwjgl-opengl:${lwjglVersion}"
         compile "org.lwjgl:lwjgl-openal:${lwjglVersion}"
+        compile "org.lwjgl:lwjgl-tinyfd:${lwjglVersion}"
 
         compile "org.lwjgl:lwjgl:${lwjglVersion}:natives-windows"
         compile "org.lwjgl:lwjgl:${lwjglVersion}:natives-macos"
@@ -145,6 +146,12 @@ project(":backend-lwjgl") {
         compile "org.lwjgl:lwjgl-openal:${lwjglVersion}:natives-windows"
         compile "org.lwjgl:lwjgl-openal:${lwjglVersion}:natives-macos"
         compile "org.lwjgl:lwjgl-openal:${lwjglVersion}:natives-linux"
+        compile "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-windows"
+        compile "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-macos"
+        compile "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-linux"
+        compile "org.lwjgl:lwjgl-tinyfd:${lwjglVersion}:natives-windows"
+        compile "org.lwjgl:lwjgl-tinyfd:${lwjglVersion}:natives-macos"
+        compile "org.lwjgl:lwjgl-tinyfd:${lwjglVersion}:natives-linux"
     }
 }
 
