@@ -39,6 +39,7 @@ import org.lwjgl.glfw.GLFW;
 
 import static com.shc.silenceengine.core.SilenceEngine.*;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.util.tinyfd.TinyFileDialogs.*;
 
 /**
  * An implementation of the Display using GLFW as the windowing backend.
@@ -259,6 +260,29 @@ public class LwjglDisplayDevice implements IDisplayDevice
             window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         else
             window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
+    @Override
+    public String prompt(String message, String defaultValue)
+    {
+        // This is because of a bug in TinyFileDialogs, the build crashes if there
+        // are \t or \n characters in the message shown to the user.
+        if (platform == Platform.WINDOWS_32 || platform == Platform.WINDOWS_64)
+            message = message.replaceAll("[\\t\\n]", "");
+
+        return tinyfd_inputBox(getTitle(), message, defaultValue);
+    }
+
+    @Override
+    public boolean confirm(String message)
+    {
+        return tinyfd_messageBox(getTitle(), message, "yesno", "question", true);
+    }
+
+    @Override
+    public void alert(String message)
+    {
+        tinyfd_messageBox(getTitle(), message, "ok", "info", true);
     }
 
     private void cleanUp()

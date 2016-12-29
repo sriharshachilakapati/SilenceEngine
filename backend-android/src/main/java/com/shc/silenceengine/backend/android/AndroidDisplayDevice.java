@@ -156,4 +156,28 @@ public class AndroidDisplayDevice implements IDisplayDevice
     public void setGrabMouse(boolean grabMouse)
     {
     }
+
+    @Override
+    public String prompt(String message, String defaultValue)
+    {
+        return BlockingDialogs.prompt(message, defaultValue, activity);
+    }
+
+    @Override
+    public String prompt(String message)
+    {
+        return prompt(message, "");
+    }
+
+    @Override
+    public boolean confirm(String message)
+    {
+        return BlockingDialogs.confirm(message, activity);
+    }
+
+    @Override
+    public void alert(String message)
+    {
+        BlockingDialogs.alert(message, activity);
+    }
 }

@@ -300,6 +300,24 @@ public class GwtDisplayDevice implements IDisplayDevice
         grabMouseImpl(grabMouse, canvas.getCanvasElement());
     }
 
+    @Override
+    public String prompt(String message, String defaultValue)
+    {
+        return Window.prompt(message, defaultValue);
+    }
+
+    @Override
+    public boolean confirm(String message)
+    {
+        return Window.confirm(message);
+    }
+
+    @Override
+    public void alert(String message)
+    {
+        Window.alert(message);
+    }
+
     private native void grabMouseImpl(boolean grabMouse, CanvasElement canvas) /*-{
         if (grabMouse)
         {

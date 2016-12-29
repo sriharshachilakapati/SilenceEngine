@@ -252,4 +252,60 @@ public interface IDisplayDevice
     @PlatformDesktop
     @PlatformHTML5
     void setGrabMouse(boolean grabMouse);
+
+    /**
+     * Displays a native dialog prompting the user to input text. The dialog is modal, so the game will not respond
+     * while the prompt is active. This should not be called in the {@link Game#init()} method.
+     *
+     * @param message      The message to be shown to the user.
+     * @param defaultValue The default value to be present in the input field.
+     *
+     * @return The string if value is edited, or {@code null} if canceled.
+     */
+    @PlatformDesktop
+    @PlatformHTML5
+    @PlatformAndroid
+    String prompt(String message, String defaultValue);
+
+    /**
+     * Displays a native dialog prompting the user to input text. The dialog is modal, so the game will not respond
+     * while the prompt is active. This should not be called in the {@link Game#init()} method.
+     *
+     * @param message The message to be shown to the user.
+     *
+     * @return The string if value is edited, or {@code null} if canceled.
+     */
+    @PlatformDesktop
+    @PlatformHTML5
+    @PlatformAndroid
+    default String prompt(String message)
+    {
+        return prompt(message, "");
+    }
+
+    /**
+     * Displays a native yes-no dialog with a message and returns true or false based on the option selected by the
+     * user. The dialog is modal, so the game will not respond while the prompt is active. Note that on some platforms,
+     * the button texts may be okay-cancel etc., that is, it is determined by the native platform. This should not be
+     * called in the {@link Game#init()} method.
+     *
+     * @param message The message to be shown to the user.
+     *
+     * @return {@code true} if the user clicked the Yes button, {@code false} otherwise.
+     */
+    @PlatformDesktop
+    @PlatformHTML5
+    @PlatformAndroid
+    boolean confirm(String message);
+
+    /**
+     * Displays a native message box with a message in it. The dialog is modal, so the game will not respond while the
+     * dialog is active. This should not be called in the {@link Game#init()} method.
+     *
+     * @param message The message to be shown to the user.
+     */
+    @PlatformAndroid
+    @PlatformHTML5
+    @PlatformDesktop
+    void alert(String message);
 }

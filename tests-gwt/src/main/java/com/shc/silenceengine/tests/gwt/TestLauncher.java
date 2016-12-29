@@ -30,20 +30,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.shc.silenceengine.backend.gwt.GwtRuntime;
-import com.shc.silenceengine.tests.ControllerTest;
-import com.shc.silenceengine.tests.DynamicRendererTest;
-import com.shc.silenceengine.tests.EntityCollisionTest2D;
-import com.shc.silenceengine.tests.FontRendererTest;
-import com.shc.silenceengine.tests.GameTest;
-import com.shc.silenceengine.tests.KeyboardTest;
-import com.shc.silenceengine.tests.OpenGLTest;
-import com.shc.silenceengine.tests.ResourceLoaderTest;
-import com.shc.silenceengine.tests.SilenceTest;
-import com.shc.silenceengine.tests.SoundTest;
-import com.shc.silenceengine.tests.SpriteRendererTest;
-import com.shc.silenceengine.tests.TestRunner;
-import com.shc.silenceengine.tests.TmxMapTest;
-import com.shc.silenceengine.tests.TouchTest;
+import com.shc.silenceengine.tests.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -114,6 +101,7 @@ public class TestLauncher implements EntryPoint
         tests.put("TmxMapTestOrthogonal", () -> new TmxMapTest("test_resources/example.tmx"));
         tests.put("TmxMapTestIsometric", () -> new TmxMapTest("test_resources/example-isometric.tmx"));
         tests.put("ControllerTest", ControllerTest::new);
+        tests.put("DialogsTest", DialogsTest::new);
     }
 
     @FunctionalInterface
