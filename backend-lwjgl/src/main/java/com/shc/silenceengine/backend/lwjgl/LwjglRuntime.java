@@ -79,18 +79,19 @@ public final class LwjglRuntime
         SilenceEngine.display.setIcon(FilePath.getResourceFile("engine_resources/icon.png"), () ->
         {
             // Initialize SilenceEngine
-            SilenceEngine.init();
+            SilenceEngine.init(() ->
+            {
+                // Call the game's init method
+                game.init();
+                gameDone[0] = true;
 
-            // Call the game's init method
-            game.init();
-            gameDone[0] = true;
+                // Replace the callback so that we now perform the game loop instead of flushing
+                // tasks in TaskManager.
+                performLoopFrame[0] = SilenceEngine.gameLoop::performLoopFrame;
 
-            // Replace the callback so that we now perform the game loop instead of flushing
-            // tasks in TaskManager.
-            performLoopFrame[0] = SilenceEngine.gameLoop::performLoopFrame;
-
-            // Raise a resize event now
-            SilenceEngine.eventManager.raiseResizeEvent();
+                // Raise a resize event now
+                SilenceEngine.eventManager.raiseResizeEvent();
+            });
         });
 
         // The native event loop

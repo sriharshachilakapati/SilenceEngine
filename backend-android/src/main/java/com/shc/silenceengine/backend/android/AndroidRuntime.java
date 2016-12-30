@@ -89,10 +89,7 @@ public final class AndroidRuntime
         TaskManager.clearUpdateTasks();
         TaskManager.clearRenderTasks();
 
-        // Initialize the SilenceEngine
-        SilenceEngine.init();
-
-        // Now initialize the game
-        game.init();
+        // Initialize the SilenceEngine and initialize the game after the engine is initialized
+        SilenceEngine.init(game::init);
     }
 }

@@ -36,6 +36,7 @@ import com.shc.silenceengine.input.InputDevice;
 import com.shc.silenceengine.io.IODevice;
 import com.shc.silenceengine.logging.ILogDevice;
 import com.shc.silenceengine.math.Vector3;
+import com.shc.silenceengine.utils.functional.SimpleCallback;
 
 import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
@@ -94,8 +95,10 @@ public final class SilenceEngine
     /**
      * Initializes SilenceEngine. Not to be called by the users, but will be called by the backends once the devices are
      * initialized.
+     *
+     * @param success Callback to be called after successful loading.
      */
-    public static void init()
+    public static void init(SimpleCallback success)
     {
         // Create the Null camera
         Camera.CURRENT = new NullCamera();
@@ -107,6 +110,8 @@ public final class SilenceEngine
         // Initialize the empty texture
         Texture.EMPTY = Texture.fromColor(Color.TRANSPARENT, 32, 32);
         Texture.EMPTY.bind(0);
+
+        success.invoke();
     }
 
     public static String getVersionString()
