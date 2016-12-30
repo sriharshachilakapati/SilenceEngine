@@ -37,6 +37,10 @@ import com.shc.silenceengine.io.IODevice;
 import com.shc.silenceengine.logging.ILogDevice;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
+import com.shc.silenceengine.utils.functional.UniCallback;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
@@ -48,6 +52,9 @@ import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
  */
 public final class SilenceEngine
 {
+    // A list of callbacks (extensions) to be called after the engine done loading
+    private static List<UniCallback<SimpleCallback>> callbacksOnInit = new LinkedList<>();
+
     /**
      * The {@link IGameLoop} that generates events in the game.
      */
@@ -93,6 +100,58 @@ public final class SilenceEngine
     }
 
     /**
+     * <p>Adds a callback to be run after the engine is initialized. There can be many callbacks added via this method,
+     * and it is guaranteed that they will be called in the order they are added.</p>
+     *
+     * <pre>
+     *     SilenceEngine.runOnInit((next) ->
+     *     {
+     *         // Do the task here. After the task is done, invoke next,
+     *         // which tells SilenceEngine that this is done successfully
+     *         // and SilenceEngine can call the next on-init callback
+     *
+     *         next.invoke();
+     *     });
+     * </pre>
+     *
+     * <p>Note that this only works if called before the platform specific Runtime is started. To make sure these gets
+     * called always, keep the calls to this method in the class initializer or the game's constructor.</p>
+     *
+     * <p>Placing these calls in the static constructor will not work on Android, since the activity might not be
+     * destroyed from previous run and can cause issues.</p>
+     *
+     * @param callback The callback function to be invoked after the engine is initialized.
+     */
+    public static void runOnInit(UniCallback<SimpleCallback> callback)
+    {
+        // Callback chaining works by iterating all the callbacks, and hence, the chain will start executing from the
+        // last callback, in the reverse order. To call them in the order of addition, we insert the callback at the
+        // start of the list.
+        callbacksOnInit.add(0, callback);
+    }
+
+    /*
+     * (non-Javadoc)
+     * Utility method to chain callbacks. Creates a chained callback that calls the next callback in the order.
+     */
+    private static UniCallback<SimpleCallback> chainCallback(UniCallback<SimpleCallback> newCB,
+                                                             UniCallback<SimpleCallback> oldCB)
+    {
+        // Create a new callback that chains the new callback and the old callback
+        return (finalCallback) ->
+        {
+            // If the new callback is null, that means we are at the end of the initializer chains.
+            // So call the final callback.
+            if (newCB == null)
+                finalCallback.invoke();
+
+                // Otherwise call the new callback which invokes the old callback and passes the finalCallback.
+            else
+                newCB.invoke(() -> oldCB.invoke(finalCallback));
+        };
+    }
+
+    /**
      * Initializes SilenceEngine. Not to be called by the users, but will be called by the backends once the devices are
      * initialized.
      *
@@ -100,6 +159,33 @@ public final class SilenceEngine
      */
     public static void init(SimpleCallback success)
     {
+        // Queue the default initializations (we call add directly since engine callbacks need to be the first).
+        // All the callbacks registered by the user are called after the engine init callbacks are executed.
+        callbacksOnInit.add(SilenceEngine::initGraphics);
+
+        // Build the callback list to be called after initialization
+        UniCallback<SimpleCallback> callbackOnInit = chainCallback(null, null);
+
+        for (UniCallback<SimpleCallback> callback : callbacksOnInit)
+            callbackOnInit = chainCallback(callback, callbackOnInit);
+
+        // Call all the callbacks that are registered by extensions
+        callbackOnInit.invoke(() ->
+        {
+            SilenceEngine.log.getRootLogger().info("Finished initialization, starting game");
+            success.invoke();
+            callbacksOnInit.clear();
+        });
+    }
+
+    /*
+     * (non-Javadoc)
+     * Initializes the graphics part of SilenceEngine
+     */
+    private static void initGraphics(SimpleCallback next)
+    {
+        SilenceEngine.log.getRootLogger().info("Initializing " + graphics.getClass().getSimpleName());
+
         // Create the Null camera
         Camera.CURRENT = new NullCamera();
 
@@ -111,7 +197,8 @@ public final class SilenceEngine
         Texture.EMPTY = Texture.fromColor(Color.TRANSPARENT, 32, 32);
         Texture.EMPTY.bind(0);
 
-        success.invoke();
+        // Invoke the next onInit callback in order
+        next.invoke();
     }
 
     public static String getVersionString()

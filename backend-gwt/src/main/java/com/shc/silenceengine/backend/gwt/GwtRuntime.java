@@ -27,10 +27,7 @@ package com.shc.silenceengine.backend.gwt;
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.shc.silenceengine.core.Game;
 import com.shc.silenceengine.core.SilenceEngine;
-import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.io.FilePath;
-
-import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
 /**
  * The GwtRuntime class creates the GWT configuration, creates the display. It starts the native event loop and emits
@@ -56,9 +53,6 @@ public final class GwtRuntime
 
         SilenceEngine.display.setTitle("SilenceEngine " + SilenceEngine.getVersionString());
         SilenceEngine.display.setIcon(FilePath.getResourceFile("engine_resources/icon.png"));
-
-        GLContext.enable(GL_BLEND);
-        GLContext.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         SilenceEngine.init(() ->
         {
