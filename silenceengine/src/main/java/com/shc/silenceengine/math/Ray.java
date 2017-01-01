@@ -43,7 +43,7 @@ public class Ray
     /**
      * The origin of the ray
      */
-    public final Vector3 origin    = new Vector3();
+    public final Vector3 origin = new Vector3();
 
     /**
      * The direction of propagation of the ray
