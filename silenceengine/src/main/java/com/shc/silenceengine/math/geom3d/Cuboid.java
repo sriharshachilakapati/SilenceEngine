@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.math.geom3d;
 
+import com.shc.silenceengine.math.Ray;
 import com.shc.silenceengine.math.Vector3;
 
 /**
@@ -91,6 +92,41 @@ public class Cuboid
         return (aMinX <= bMaxX && aMaxX >= bMinX) &&
                (aMinY <= bMaxY && aMaxY >= bMinY) &&
                (aMinZ <= bMaxZ && aMaxZ >= bMinZ);
+    }
+
+    public boolean intersects(Ray ray)
+    {
+        final float dirFracX = 1f / ray.direction.x;
+        final float dirFracY = 1f / ray.direction.y;
+        final float dirFracZ = 1f / ray.direction.z;
+
+        final float halfWidth = width / 2;
+        final float halfHeight = height / 2;
+        final float halfThickness = thickness / 2;
+
+        final float minX = position.x - halfWidth;
+        final float maxX = position.x + halfWidth;
+        final float minY = position.y - halfHeight;
+        final float maxY = position.y + halfHeight;
+        final float minZ = position.z - halfThickness;
+        final float maxZ = position.z + halfThickness;
+
+        float t1 = (minX - ray.origin.x) * dirFracX;
+        float t2 = (maxX - ray.origin.x) * dirFracX;
+        float t3 = (minY - ray.origin.y) * dirFracY;
+        float t4 = (maxY - ray.origin.y) * dirFracY;
+        float t5 = (minZ - ray.origin.z) * dirFracZ;
+        float t6 = (maxZ - ray.origin.z) * dirFracZ;
+
+        float tMin = Math.max(Math.max(Math.min(t1, t2), Math.min(t3, t4)), Math.min(t5, t6));
+        float tMax = Math.min(Math.min(Math.max(t1, t2), Math.max(t3, t4)), Math.max(t5, t6));
+
+        // if tMax < 0, ray (line) is intersecting AABB, but whole AABB is behind us
+        if (tMax < 0)
+            return false;
+
+        // if tMin > tMax, ray doesn't intersect AABB
+        return tMin <= tMax;
     }
 
     public Polyhedron createPolyhedron()

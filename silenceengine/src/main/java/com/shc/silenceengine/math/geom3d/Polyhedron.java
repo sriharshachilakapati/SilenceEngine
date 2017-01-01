@@ -26,6 +26,7 @@ package com.shc.silenceengine.math.geom3d;
 
 import com.shc.silenceengine.collision.Collision3D;
 import com.shc.silenceengine.math.Quaternion;
+import com.shc.silenceengine.math.Ray;
 import com.shc.silenceengine.math.Vector3;
 
 import java.util.ArrayList;
@@ -175,6 +176,11 @@ public class Polyhedron
     public boolean intersects(Polyhedron other)
     {
         return Collision3D.testPolyhedronCollision(this, other);
+    }
+
+    public boolean intersects(Ray ray)
+    {
+        return Collision3D.testPolyhedronRay(this, ray);
     }
 
     public boolean contains(Vector3 p)

@@ -24,11 +24,14 @@
 
 package com.shc.silenceengine.collision;
 
+import com.shc.silenceengine.math.Ray;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.geom3d.Polyhedron;
 
 import java.util.List;
+
+import static com.shc.silenceengine.utils.MathUtils.*;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -214,6 +217,107 @@ public class Collision3D
         Vector2.REUSABLE_STACK.push(tmpRangeB);
 
         return false;
+    }
+
+    public static boolean testPolyhedronRay(Polyhedron polyhedron, Ray ray)
+    {
+        Vector3 v1, v2, v3;
+
+        for (int v = 0; v < polyhedron.vertexCount() - 2; v++)
+        {
+            if ((v & 1) != 0)
+            {
+                // The Clock-Wise order
+                v1 = polyhedron.getVertex(v);
+                v2 = polyhedron.getVertex(v + 1);
+                v3 = polyhedron.getVertex(v + 2);
+            }
+            else
+            {
+                // The Counter-Clock-Wise order
+                v1 = polyhedron.getVertex(v);
+                v2 = polyhedron.getVertex(v + 2);
+                v3 = polyhedron.getVertex(v + 1);
+            }
+
+            if (testTriangleRay(v1, v2, v3, ray))
+                return true;
+        }
+
+        return false;
+    }
+
+    public static boolean testTriangleRay(Vector3 v1, Vector3 v2, Vector3 v3, Ray ray)
+    {
+        // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+        boolean result = false;
+
+        // Find vectors for two edges sharing v1
+        Vector3 e1 = Vector3.REUSABLE_STACK.pop();
+        Vector3 e2 = Vector3.REUSABLE_STACK.pop();
+
+        e1.set(v2).subtract(v1);  // e1 = v2 - v1
+        e2.set(v3).subtract(v1);  // e2 = v3 - v1
+
+        // Begin calculating determinant - also used for calculating u perimeter
+        Vector3 p = Vector3.REUSABLE_STACK.pop();
+        p.set(ray.direction).cross(e2);  // p = cross(rayDir, e2)
+
+        // If determinant is near zero, ray lies in plane of triangle or ray is parallel to plan of triangle
+        float det = e1.dot(p);
+
+        Vector3 t1 = null;
+        Vector3 q = null;
+
+        // Not culling
+        if (det > -EPSILON && det < EPSILON)
+            result = false;
+        else
+        {
+            float invDet = 1f / det;
+
+            t1 = Vector3.REUSABLE_STACK.pop();
+            t1.set(ray.origin).subtract(v1); // t1 = rayOrigin - v1
+
+            // Calculate u perimeter and test bound
+            float u = t1.dot(p) * invDet;
+
+            // The intersection lies outside of the triangle
+            if (u < 0f || u > 1f)
+                result = false;
+            else
+            {
+                // Prepare to test v parameter
+                q = Vector3.REUSABLE_STACK.pop();
+                q.set(t1).cross(e1); // q = cross(t1, e1)
+
+                // Calculate v parameter and test bound
+                float v = ray.direction.dot(q) * invDet;
+
+                // The intersection lies outside of the triangle
+                if (v < 0f || v + u > 1f)
+                    result = false;
+                else
+                {
+                    float t = e2.dot(q) * invDet;
+                    if (t > EPSILON)
+                        // Intersection!!
+                        result = true;
+                }
+            }
+        }
+
+        // Free all temporary variables
+        Vector3.REUSABLE_STACK.push(e1);
+        Vector3.REUSABLE_STACK.push(e2);
+        Vector3.REUSABLE_STACK.push(p);
+
+        if (t1 != null)
+            Vector3.REUSABLE_STACK.push(t1);
+        if (q != null)
+            Vector3.REUSABLE_STACK.push(q);
+
+        return result;
     }
 
     private static Vector2 flattenPoints(List<Vector3> vertices, Vector3 axis, Vector2 projection)

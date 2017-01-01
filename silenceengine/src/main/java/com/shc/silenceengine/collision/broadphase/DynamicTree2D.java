@@ -45,7 +45,7 @@ public class DynamicTree2D implements IBroadphase2D
 
     public DynamicTree2D()
     {
-        dynamicTree = new DynamicTree<>(AABB::new, AABB::intersects);
+        dynamicTree = new DynamicTree<>(AABB::new);
         proxyMap = new HashMap<>();
 
         queryAABB = new AABB();
@@ -87,7 +87,7 @@ public class DynamicTree2D implements IBroadphase2D
     public List<CollisionComponent2D> retrieve(Rectangle rect)
     {
         queryAABB.rect.set(rect);
-        return dynamicTree.query(queryAABB);
+        return dynamicTree.query(queryAABB, AABB::intersects);
     }
 
     private static class AABB implements DynamicTree.AABB

@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.collision.broadphase;
 
+import com.shc.silenceengine.math.Ray;
 import com.shc.silenceengine.math.geom3d.Cuboid;
 import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.scene.components.CollisionComponent3D;
@@ -45,7 +46,7 @@ public class DynamicTree3D implements IBroadphase3D
 
     public DynamicTree3D()
     {
-        dynamicTree = new DynamicTree<>(AABB::new, AABB::intersects);
+        dynamicTree = new DynamicTree<>(AABB::new);
         proxyMap = new HashMap<>();
 
         queryAABB = new AABB();
@@ -87,7 +88,13 @@ public class DynamicTree3D implements IBroadphase3D
     public List<CollisionComponent3D> retrieve(Cuboid cuboid)
     {
         queryAABB.cuboid.set(cuboid);
-        return dynamicTree.query(queryAABB);
+        return dynamicTree.query(queryAABB, AABB::intersects);
+    }
+
+    @Override
+    public List<CollisionComponent3D> retrieve(Ray ray)
+    {
+        return dynamicTree.query(ray, AABB::intersects);
     }
 
     private static class AABB implements DynamicTree.AABB
@@ -170,6 +177,11 @@ public class DynamicTree3D implements IBroadphase3D
         {
             if (polyhedron != null)
                 cuboid = polyhedron.getBounds();
+        }
+
+        public static boolean intersects(AABB aabb, Ray ray)
+        {
+            return aabb.cuboid.intersects(ray) && aabb.polyhedron.intersects(ray);
         }
     }
 }

@@ -52,8 +52,7 @@ class DynamicTree<AABBType extends DynamicTree.AABB, CollisionType>
 
     private List<CollisionType> retrieveList;
 
-    private BiPredicate<AABBType, AABBType> intersector;
-    private Provider<AABBType>              aabbCreator;
+    private Provider<AABBType> aabbCreator;
 
     /**
      * The original source uses a plain array for the nodes, and resizes them using realloc. However,
@@ -67,13 +66,12 @@ class DynamicTree<AABBType extends DynamicTree.AABB, CollisionType>
      */
     private Deque<Integer> stack;
 
-    DynamicTree(Provider<AABBType> aabbCreator, BiPredicate<AABBType, AABBType> intersector)
+    DynamicTree(Provider<AABBType> aabbCreator)
     {
         tempAABB1 = aabbCreator.provide();
         tempAABB2 = aabbCreator.provide();
 
         this.aabbCreator = aabbCreator;
-        this.intersector = intersector;
 
         nodeCapacity = 16;
         nodeCount = 0;
@@ -94,7 +92,7 @@ class DynamicTree<AABBType extends DynamicTree.AABB, CollisionType>
         return nodes.get(proxyID).aabb;
     }
 
-    List<CollisionType> query(AABBType aabb)
+    <T> List<CollisionType> query(T obj, BiPredicate<AABBType, T> intersector)
     {
         retrieveList.clear();
         stack.push(root);
@@ -108,7 +106,7 @@ class DynamicTree<AABBType extends DynamicTree.AABB, CollisionType>
 
             Node<CollisionType, AABBType> node = nodes.get(nodeID);
 
-            if (intersector.test(node.aabb, aabb))
+            if (intersector.test(node.aabb, obj))
             {
                 if (node.isLeaf())
                     retrieveList.add(node.collision);

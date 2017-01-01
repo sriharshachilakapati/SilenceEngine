@@ -24,6 +24,7 @@
 
 package com.shc.silenceengine.collision.broadphase;
 
+import com.shc.silenceengine.math.Ray;
 import com.shc.silenceengine.math.geom3d.Cuboid;
 import com.shc.silenceengine.math.geom3d.Polyhedron;
 import com.shc.silenceengine.scene.components.CollisionComponent3D;
@@ -53,6 +54,8 @@ public interface IBroadphase3D
     }
 
     List<CollisionComponent3D> retrieve(Cuboid polyhedron);
+
+    List<CollisionComponent3D> retrieve(Ray ray);
 
     default List<CollisionComponent3D> retrieve(Polyhedron polyhedron)
     {
