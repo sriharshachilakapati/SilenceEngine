@@ -104,7 +104,7 @@ public final class SilenceEngine
      * and it is guaranteed that they will be called in the order they are added.</p>
      *
      * <pre>
-     *     SilenceEngine.runOnInit((next) ->
+     *     SilenceEngine.runOnInit((next) -&gt;
      *     {
      *         // Do the task here. After the task is done, invoke next,
      *         // which tells SilenceEngine that this is done successfully

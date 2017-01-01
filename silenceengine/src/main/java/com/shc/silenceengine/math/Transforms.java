@@ -26,6 +26,8 @@ package com.shc.silenceengine.math;
 
 import com.shc.silenceengine.utils.MathUtils;
 
+import static com.shc.silenceengine.utils.MathUtils.EPSILON;
+
 /**
  * <p>This class is the core of the SilenceEngine's GraphicsEngine, and does the job of creating transformation matrices
  * and transformation quaternions. All the other functions call-back to this class.</p>
@@ -220,7 +222,7 @@ public final class Transforms
 
         float dot = negativeZ.dot(forward);
 
-        if (Math.abs(dot + 1) < 0.000001f)
+        if (Math.abs(dot + 1) < EPSILON)
         {
             Vector3.REUSABLE_STACK.push(temp1);
             Vector3.REUSABLE_STACK.push(temp2);
@@ -228,7 +230,7 @@ public final class Transforms
             return dest.set(up.x, up.y, up.z, (float) Math.PI);
         }
 
-        if (Math.abs(dot - 1) < 0.000001f)
+        if (Math.abs(dot - 1) < EPSILON)
         {
             Vector3.REUSABLE_STACK.push(temp1);
             Vector3.REUSABLE_STACK.push(temp2);

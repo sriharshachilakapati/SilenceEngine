@@ -149,7 +149,7 @@ public class Vector2
 
     public float distance(Vector2 v)
     {
-        return MathUtils.sqrt(distanceSquared(v));
+        return (float) Math.sqrt(distanceSquared(v));
     }
 
     public float distanceSquared(Vector2 v)

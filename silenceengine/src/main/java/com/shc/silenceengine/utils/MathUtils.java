@@ -29,244 +29,365 @@ import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.Vector4;
 
 /**
+ * Contains some Math utility functions, and trigonometry functions that accept degrees as the angle units.
+ * SilenceEngine uses degrees everywhere instead of radians.
+ *
  * @author Sri Harsha Chilakapati
  */
 public final class MathUtils
 {
+    /**
+     * The Epsilon, useful for comparing in math algorithms.
+     */
+    public static final double EPSILON = 0.000001;
+
     private MathUtils()
     {
     }
 
-    public static int abs(int value)
-    {
-        return Math.abs(value);
-    }
-
-    public static float abs(float value)
-    {
-        return Math.abs(value);
-    }
-
-    public static short abs(short value)
-    {
-        return (short) Math.abs(value);
-    }
-
-    public static double abs(double value)
-    {
-        return Math.abs(value);
-    }
-
-    public static long abs(long value)
-    {
-        return Math.abs(value);
-    }
-
-    public static float cot(float angle)
-    {
-        return 1f / tan(angle);
-    }
-
+    /**
+     * Returns the trigonomic tangent of an angle in degrees. The result will be NaN if the angle is NaN or Infinity.
+     *
+     * @param angle The angle in degrees.
+     *
+     * @return The trigonomic tangent.
+     */
     public static float tan(float angle)
     {
-        return sin(angle) / cos(angle);
+        return (float) Math.tan(Math.toRadians(angle));
     }
 
+    /**
+     * Returns the trigonomic sine of an angle in degrees. The result will be NaN if the angle is NaN or Infinity.
+     *
+     * @param angle The angle in degrees.
+     *
+     * @return The trigonomic sine.
+     */
     public static float sin(float angle)
     {
         return (float) Math.sin(Math.toRadians(angle));
     }
 
+    /**
+     * Returns the trigonomic cosine of an angle in degrees. The result will be NaN if the angle is NaN or Infinity.
+     *
+     * @param angle The angle in degrees.
+     *
+     * @return The trigonomic cosine.
+     */
     public static float cos(float angle)
     {
         return (float) Math.cos(Math.toRadians(angle));
     }
 
-    public static float sec(float angle)
-    {
-        return 1f / cos(angle);
-    }
-
-    public static float csc(float angle)
-    {
-        return 1f / sin(angle);
-    }
-
+    /**
+     * Returns the trigonomic arc-cosine of a value in degrees. The result will be NaN if the value is NaN, or if its
+     * absolute value is greater than 1.
+     *
+     * @param value The value whose arc-cosine has to be calculated
+     *
+     * @return The arc-cosine in degrees.
+     */
     public static float acos(float value)
     {
         return (float) Math.toDegrees(Math.acos(value));
     }
 
+    /**
+     * Returns the trigonomic arc-sine of a value in degrees. The result will be NaN if the value is NaN, or if its
+     * absolute value is greater than 1.
+     *
+     * @param value The value whose arc-sine has to be calculated
+     *
+     * @return The arc-sine in degrees.
+     */
     public static float asin(float value)
     {
         return (float) Math.toDegrees(Math.asin(value));
     }
 
+    /**
+     * Returns the trigonomic arc-tangent of a value in degrees. The result will be NaN if the value is NaN, or if its
+     * absolute value is greater than 1.
+     *
+     * @param value The value whose arc-tangent has to be calculated
+     *
+     * @return The arc-tangent in degrees.
+     */
+    public static float atan(float value)
+    {
+        return (float) Math.toDegrees(Math.atan(value));
+    }
+
+    /**
+     * Returns the angle <i>theta</i> from the conversion of rectangular coordinates ({@code x},&nbsp;{@code y}) to
+     * polar coordinates (r,&nbsp;<i>theta</i>). This method computes the phase <i>theta</i> by computing an arc tangent
+     * of {@code y/x} in the range of -<i>pi</i> to <i>pi</i> and returns the angle in degrees. All the special cases
+     * of {@code Math.atan2} apply here.
+     *
+     * @param y the ordinate coordinate
+     * @param x the abscissa coordinate
+     *
+     * @return the <i>theta</i> component of the point (<i>r</i>,&nbsp;<i>theta</i>) in polar coordinates that
+     * corresponds to the point (<i>x</i>,&nbsp;<i>y</i>) in Cartesian coordinates.
+     */
     public static float atan2(float y, float x)
     {
         return (float) Math.toDegrees(Math.atan2(y, x));
     }
 
-    public static int sqrt(int value)
-    {
-        return (int) Math.sqrt(value);
-    }
-
-    public static float sqrt(float value)
-    {
-        return (float) Math.sqrt(value);
-    }
-
-    public static short sqrt(short value)
-    {
-        return (short) Math.sqrt(value);
-    }
-
-    public static long sqrt(long value)
-    {
-        return (long) Math.sqrt(value);
-    }
-
-    public static double sqrt(double value)
-    {
-        return Math.sqrt(value);
-    }
-
+    /**
+     * Returns a new vector which is component-wise minimum of the given two vectors.
+     *
+     * @param v1 The first vector
+     * @param v2 The second vector
+     *
+     * @return The new component-wise vector
+     */
     public static Vector2 min(Vector2 v1, Vector2 v2)
     {
         return new Vector2(v1.x < v2.x ? v1.x : v2.x, v1.y < v2.y ? v1.y : v2.y);
     }
 
+    /**
+     * Returns a new vector which is component-wise minimum of the given two vectors.
+     *
+     * @param v1   The first vector
+     * @param v2   The second vector
+     * @param dest The destination vector
+     *
+     * @return The new component-wise vector
+     */
     public static Vector2 min(Vector2 v1, Vector2 v2, Vector2 dest)
     {
         return dest.set(v1.x < v2.x ? v1.x : v2.x, v1.y < v2.y ? v1.y : v2.y);
     }
 
+    /**
+     * Returns a new vector which is component-wise maximum of the given two vectors.
+     *
+     * @param v1 The first vector
+     * @param v2 The second vector
+     *
+     * @return The new component-wise vector
+     */
     public static Vector2 max(Vector2 v1, Vector2 v2)
     {
         return new Vector2(v1.x > v2.x ? v1.x : v2.x, v1.y > v2.y ? v1.y : v2.y);
     }
 
+    /**
+     * Returns a new vector which is component-wise maximum of the given two vectors.
+     *
+     * @param v1   The first vector
+     * @param v2   The second vector
+     * @param dest The destination vector
+     *
+     * @return The new component-wise vector
+     */
     public static Vector2 max(Vector2 v1, Vector2 v2, Vector2 dest)
     {
         return dest.set(v1.x > v2.x ? v1.x : v2.x, v1.y > v2.y ? v1.y : v2.y);
     }
 
+    /**
+     * Returns a new vector which is component-wise minimum of the given two vectors.
+     *
+     * @param v1 The first vector
+     * @param v2 The second vector
+     *
+     * @return The new component-wise vector
+     */
     public static Vector3 min(Vector3 v1, Vector3 v2)
     {
         return new Vector3(v1.x < v2.x ? v1.x : v2.x, v1.y < v2.y ? v1.y : v2.y, v1.z < v2.z ? v1.z : v2.z);
     }
 
+    /**
+     * Returns a new vector which is component-wise minimum of the given two vectors.
+     *
+     * @param v1   The first vector
+     * @param v2   The second vector
+     * @param dest The destination vector
+     *
+     * @return The new component-wise vector
+     */
     public static Vector3 min(Vector3 v1, Vector3 v2, Vector3 dest)
     {
         return dest.set(v1.x < v2.x ? v1.x : v2.x, v1.y < v2.y ? v1.y : v2.y, v1.z < v2.z ? v1.z : v2.z);
     }
 
+    /**
+     * Returns a new vector which is component-wise maximum of the given two vectors.
+     *
+     * @param v1 The first vector
+     * @param v2 The second vector
+     *
+     * @return The new component-wise vector
+     */
     public static Vector3 max(Vector3 v1, Vector3 v2)
     {
         return new Vector3(v1.x > v2.x ? v1.x : v2.x, v1.y > v2.y ? v1.y : v2.y, v1.z > v2.z ? v1.z : v2.z);
     }
 
+    /**
+     * Returns a new vector which is component-wise maximum of the given two vectors.
+     *
+     * @param v1   The first vector
+     * @param v2   The second vector
+     * @param dest The destination vector
+     *
+     * @return The new component-wise vector
+     */
     public static Vector3 max(Vector3 v1, Vector3 v2, Vector3 dest)
     {
         return dest.set(v1.x > v2.x ? v1.x : v2.x, v1.y > v2.y ? v1.y : v2.y, v1.z > v2.z ? v1.z : v2.z);
     }
 
+    /**
+     * Returns a new vector which is component-wise minimum of the given two vectors.
+     *
+     * @param v1 The first vector
+     * @param v2 The second vector
+     *
+     * @return The new component-wise vector
+     */
     public static Vector4 min(Vector4 v1, Vector4 v2)
     {
         return new Vector4(v1.x < v2.x ? v1.x : v2.x, v1.y < v2.y ? v1.y : v2.y, v1.z < v2.z ? v1.z : v2.z, v1.w < v2.w ? v1.w : v2.w);
     }
 
+    /**
+     * Returns a new vector which is component-wise minimum of the given two vectors.
+     *
+     * @param v1   The first vector
+     * @param v2   The second vector
+     * @param dest The destination vector
+     *
+     * @return The new component-wise vector
+     */
     public static Vector4 min(Vector4 v1, Vector4 v2, Vector4 dest)
     {
         return dest.set(v1.x < v2.x ? v1.x : v2.x, v1.y < v2.y ? v1.y : v2.y, v1.z < v2.z ? v1.z : v2.z, v1.w < v2.w ? v1.w : v2.w);
     }
 
+    /**
+     * Returns a new vector which is component-wise maximum of the given two vectors.
+     *
+     * @param v1 The first vector
+     * @param v2 The second vector
+     *
+     * @return The new component-wise vector
+     */
     public static Vector4 max(Vector4 v1, Vector4 v2)
     {
         return new Vector4(v1.x > v2.x ? v1.x : v2.x, v1.y > v2.y ? v1.y : v2.y, v1.z > v2.z ? v1.z : v2.z, v1.w > v2.w ? v1.w : v2.w);
     }
 
+    /**
+     * Returns a new vector which is component-wise maximum of the given two vectors.
+     *
+     * @param v1   The first vector
+     * @param v2   The second vector
+     * @param dest The destination vector
+     *
+     * @return The new component-wise vector
+     */
     public static Vector4 max(Vector4 v1, Vector4 v2, Vector4 dest)
     {
         return dest.set(v1.x > v2.x ? v1.x : v2.x, v1.y > v2.y ? v1.y : v2.y, v1.z > v2.z ? v1.z : v2.z, v1.w > v2.w ? v1.w : v2.w);
     }
 
+    /**
+     * Converts a {@code value} in range {@code (oldMin, oldMax)} to the new range {@code (newMin, newMax)}.
+     *
+     * @param value  The value in the old range
+     * @param oldMin The minimum (inclusive) value of the old range
+     * @param oldMax The maximum (inclusive) value of the old range
+     * @param newMin The minimum (inclusive) value of the new range
+     * @param newMax The maximum (inclusive) value of the new range
+     *
+     * @return The value in the new range defined by {@code (newMin, newMax)}
+     */
     public static int convertRange(int value, int oldMin, int oldMax, int newMin, int newMax)
     {
         return (((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
     }
 
+    /**
+     * Converts a {@code value} in range {@code (oldMin, oldMax)} to the new range {@code (newMin, newMax)}.
+     *
+     * @param value  The value in the old range
+     * @param oldMin The minimum (inclusive) value of the old range
+     * @param oldMax The maximum (inclusive) value of the old range
+     * @param newMin The minimum (inclusive) value of the new range
+     * @param newMax The maximum (inclusive) value of the new range
+     *
+     * @return The value in the new range defined by {@code (newMin, newMax)}
+     */
     public static float convertRange(float value, float oldMin, float oldMax, float newMin, float newMax)
     {
         return (((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
     }
 
+    /**
+     * Converts a {@code value} in range {@code (oldMin, oldMax)} to the new range {@code (newMin, newMax)}.
+     *
+     * @param value  The value in the old range
+     * @param oldMin The minimum (inclusive) value of the old range
+     * @param oldMax The maximum (inclusive) value of the old range
+     * @param newMin The minimum (inclusive) value of the new range
+     * @param newMax The maximum (inclusive) value of the new range
+     *
+     * @return The value in the new range defined by {@code (newMin, newMax)}
+     */
     public static short convertRange(short value, short oldMin, short oldMax, short newMin, short newMax)
     {
         return (short) ((((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin);
     }
 
+    /**
+     * Converts a {@code value} in range {@code (oldMin, oldMax)} to the new range {@code (newMin, newMax)}.
+     *
+     * @param value  The value in the old range
+     * @param oldMin The minimum (inclusive) value of the old range
+     * @param oldMax The maximum (inclusive) value of the old range
+     * @param newMin The minimum (inclusive) value of the new range
+     * @param newMax The maximum (inclusive) value of the new range
+     *
+     * @return The value in the new range defined by {@code (newMin, newMax)}
+     */
     public static long convertRange(long value, long oldMin, long oldMax, long newMin, long newMax)
     {
         return (((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
     }
 
+    /**
+     * Converts a {@code value} in range {@code (oldMin, oldMax)} to the new range {@code (newMin, newMax)}.
+     *
+     * @param value  The value in the old range
+     * @param oldMin The minimum (inclusive) value of the old range
+     * @param oldMax The maximum (inclusive) value of the old range
+     * @param newMin The minimum (inclusive) value of the new range
+     * @param newMax The maximum (inclusive) value of the new range
+     *
+     * @return The value in the new range defined by {@code (newMin, newMax)}
+     */
     public static double convertRange(double value, double oldMin, double oldMax, double newMin, double newMax)
     {
         return (((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
     }
 
-    public static int floor(int value)
-    {
-        return (int) Math.floor(value);
-    }
-
-    public static float floor(float value)
-    {
-        return (float) Math.floor(value);
-    }
-
-    public static short floor(short value)
-    {
-        return (short) Math.floor(value);
-    }
-
-    public static long floor(long value)
-    {
-        return (long) Math.floor(value);
-    }
-
-    public static double floor(double value)
-    {
-        return (double) Math.floor(value);
-    }
-
-    public static int ceil(int value)
-    {
-        return (int) Math.ceil(value);
-    }
-
-    public static float ceil(float value)
-    {
-        return (float) Math.ceil(value);
-    }
-
-    public static short ceil(short value)
-    {
-        return (short) Math.ceil(value);
-    }
-
-    public static long ceil(long value)
-    {
-        return (long) Math.ceil(value);
-    }
-
-    public static double ceil(double value)
-    {
-        return (double) Math.ceil(value);
-    }
-
+    /**
+     * Clamps a given {@code value} between the provided {@code min} and {@code max} values.
+     *
+     * @param val The value to be clamped
+     * @param min The minimum value
+     * @param max The maximum value
+     *
+     * @return The clamped value
+     */
     public static int clamp(int val, int min, int max)
     {
         val = Math.min(val, max);
@@ -275,6 +396,15 @@ public final class MathUtils
         return val;
     }
 
+    /**
+     * Clamps a given {@code value} between the provided {@code min} and {@code max} values.
+     *
+     * @param val The value to be clamped
+     * @param min The minimum value
+     * @param max The maximum value
+     *
+     * @return The clamped value
+     */
     public static long clamp(long val, long min, long max)
     {
         val = Math.min(val, max);
@@ -283,6 +413,15 @@ public final class MathUtils
         return val;
     }
 
+    /**
+     * Clamps a given {@code value} between the provided {@code min} and {@code max} values.
+     *
+     * @param val The value to be clamped
+     * @param min The minimum value
+     * @param max The maximum value
+     *
+     * @return The clamped value
+     */
     public static double clamp(double val, double min, double max)
     {
         val = Math.min(val, max);
@@ -291,6 +430,15 @@ public final class MathUtils
         return val;
     }
 
+    /**
+     * Clamps a given {@code value} between the provided {@code min} and {@code max} values.
+     *
+     * @param val The value to be clamped
+     * @param min The minimum value
+     * @param max The maximum value
+     *
+     * @return The clamped value
+     */
     public static short clamp(short val, short min, short max)
     {
         val = (short) Math.min(val, max);
@@ -299,6 +447,32 @@ public final class MathUtils
         return val;
     }
 
+    /**
+     * Clamps a given {@code value} between the provided {@code min} and {@code max} values.
+     *
+     * @param val The value to be clamped
+     * @param min The minimum value
+     * @param max The maximum value
+     *
+     * @return The clamped value
+     */
+    public static float clamp(float val, float min, float max)
+    {
+        val = Math.min(val, max);
+        val = Math.max(val, min);
+
+        return val;
+    }
+
+    /**
+     * Clamps a given {@code vector} between the provided {@code min} and {@code max} vectors component-wise.
+     *
+     * @param vector The value to be clamped
+     * @param min    The minimum value
+     * @param max    The maximum value
+     *
+     * @return The clamped vector
+     */
     public static Vector2 clamp(Vector2 vector, Vector2 min, Vector2 max)
     {
         Vector2 result = new Vector2();
@@ -309,14 +483,15 @@ public final class MathUtils
         return result;
     }
 
-    public static float clamp(float val, float min, float max)
-    {
-        val = Math.min(val, max);
-        val = Math.max(val, min);
-
-        return val;
-    }
-
+    /**
+     * Clamps a given {@code vector} between the provided {@code min} and {@code max} vectors component-wise.
+     *
+     * @param vector The value to be clamped
+     * @param min    The minimum value
+     * @param max    The maximum value
+     *
+     * @return The clamped vector
+     */
     public static Vector3 clamp(Vector3 vector, Vector3 min, Vector3 max)
     {
         Vector3 result = new Vector3();
@@ -328,6 +503,15 @@ public final class MathUtils
         return result;
     }
 
+    /**
+     * Clamps a given {@code vector} between the provided {@code min} and {@code max} vectors component-wise.
+     *
+     * @param vector The value to be clamped
+     * @param min    The minimum value
+     * @param max    The maximum value
+     *
+     * @return The clamped vector
+     */
     public static Vector4 clamp(Vector4 vector, Vector4 min, Vector4 max)
     {
         Vector4 result = new Vector4();
@@ -390,19 +574,6 @@ public final class MathUtils
     }
 
     /**
-     * Returns x to the power n.
-     *
-     * @param x The base
-     * @param n The exponent
-     *
-     * @return x to the power n.
-     */
-    public static int power(int x, int n)
-    {
-        return (int) (Math.pow(x, n));
-    }
-
-    /**
      * Returns the average of the values.
      *
      * @param values The array of integers
@@ -457,6 +628,14 @@ public final class MathUtils
                          + ((y2 - y1) * (y2 - y1)));
     }
 
+    /**
+     * Returns whether there is a chance of given {@code percentage}. It works by generating a random number from 0 to
+     * 100, and checking if the given {@code percentage} is greater than the generated random number.
+     *
+     * @param percentage The percentage (between 0 - 100, inclusive) to test chance
+     *
+     * @return True if there is a chance, otherwise false
+     */
     public static boolean chance(int percentage)
     {
         return random(100) <= percentage;
@@ -477,134 +656,151 @@ public final class MathUtils
         return atan((y2 - y1) / (x2 - x1));
     }
 
-    public static float atan(float value)
-    {
-        return (float) Math.toDegrees(Math.atan(value));
-    }
-
+    /**
+     * Tests if a given {@code object} is a boolean value. Unlike {@code instanceof} test, this method also returns for
+     * strings whose values are matched by the regular expression {@code (true)|(false)|(yes)|(no)}.
+     *
+     * @param object The object to be tested as a Boolean
+     *
+     * @return True if the value is a boolean, otherwise false
+     */
     public static boolean isBoolean(Object object)
     {
-        boolean bool = object instanceof Boolean;
+        if (object instanceof Boolean)
+            return true;
 
-        if (bool) return true;
-
-        boolean result;
-
-        try
-        {
-            result = Boolean.parseBoolean(object.toString());
-            bool = true;
-        }
-        catch (Exception e)
-        {
-            bool = false;
-        }
-
-        return bool;
+        // If it is not a Boolean instance, it can be a string instance with a boolean value
+        return object instanceof String &&
+               ((String) object).matches("(true)|(false)|(yes)|(no)");
     }
 
+    /**
+     * Tests if a given {@code object} is an integer value. Unlike {@code instanceof} test, this method also returns for
+     * strings whose values are successfully parsed by {@link Integer#parseInt(String)} method.
+     *
+     * @param object The object to be tested as a Integer
+     *
+     * @return True if the value is an integer, otherwise false
+     */
     public static boolean isInteger(Object object)
     {
-        boolean bool = object instanceof Integer;
+        if (object instanceof Integer)
+            return true;
 
-        if (bool) return true;
+        if (object instanceof String)
+            try
+            {
+                return ("" + Integer.parseInt((String) object)).equalsIgnoreCase((String) object);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
 
-        int result;
-
-        try
-        {
-            result = Integer.parseInt(object.toString());
-            bool = true;
-        }
-        catch (Exception e)
-        {
-            bool = false;
-        }
-
-        return bool;
+        return false;
     }
 
+    /**
+     * Tests if a given {@code object} is an Short value. Unlike {@code instanceof} test, this method also returns for
+     * strings whose values are successfully parsed by {@link Short#parseShort(String)} method.
+     *
+     * @param object The object to be tested as a short
+     *
+     * @return True if the value is a short, otherwise false
+     */
     public static boolean isShort(Object object)
     {
-        boolean bool = object instanceof Short;
+        if (object instanceof Short)
+            return true;
 
-        if (bool) return true;
+        if (object instanceof String)
+            try
+            {
+                return ("" + Short.parseShort((String) object)).equalsIgnoreCase((String) object);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
 
-        short result;
-
-        try
-        {
-            result = Short.parseShort(object.toString());
-            bool = true;
-        }
-        catch (Exception e)
-        {
-            bool = false;
-        }
-
-        return bool;
+        return false;
     }
 
+    /**
+     * Tests if a given {@code object} is an Float value. Unlike {@code instanceof} test, this method also returns for
+     * strings whose values are successfully parsed by {@link Float#parseFloat(String)} method.
+     *
+     * @param object The object to be tested as a float
+     *
+     * @return True if the value is a float, otherwise false
+     */
     public static boolean isFloat(Object object)
     {
-        boolean bool = object instanceof Float;
+        if (object instanceof Float)
+            return true;
 
-        if (bool) return true;
+        if (object instanceof String)
+            try
+            {
+                return ("" + Float.parseFloat((String) object)).equalsIgnoreCase((String) object);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
 
-        float result;
-
-        try
-        {
-            result = Float.parseFloat(object.toString());
-            bool = true;
-        }
-        catch (Exception e)
-        {
-            bool = false;
-        }
-
-        return bool;
+        return false;
     }
 
+    /**
+     * Tests if a given {@code object} is an Long value. Unlike {@code instanceof} test, this method also returns for
+     * strings whose values are successfully parsed by {@link Long#parseLong(String)} method.
+     *
+     * @param object The object to be tested as a long
+     *
+     * @return True if the value is a long, otherwise false
+     */
     public static boolean isLong(Object object)
     {
-        boolean bool = object instanceof Long;
+        if (object instanceof Long)
+            return true;
 
-        if (bool) return true;
+        if (object instanceof String)
+            try
+            {
+                return ("" + Long.parseLong((String) object)).equalsIgnoreCase((String) object);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
 
-        long result;
-
-        try
-        {
-            result = Long.parseLong(object.toString());
-            bool = true;
-        }
-        catch (Exception e)
-        {
-            bool = false;
-        }
-
-        return bool;
+        return false;
     }
 
+    /**
+     * Tests if a given {@code object} is an Double value. Unlike {@code instanceof} test, this method also returns for
+     * strings whose values are successfully parsed by {@link Double#parseDouble(String)} method.
+     *
+     * @param object The object to be tested as a double
+     *
+     * @return True if the value is a double, otherwise false
+     */
     public static boolean isDouble(Object object)
     {
-        boolean bool = object instanceof Double;
+        if (object instanceof Double)
+            return true;
 
-        if (bool) return true;
+        if (object instanceof String)
+            try
+            {
+                return ("" + Double.parseDouble((String) object)).equalsIgnoreCase((String) object);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
 
-        double result;
-
-        try
-        {
-            result = Double.parseDouble(object.toString());
-            bool = true;
-        }
-        catch (Exception e)
-        {
-            bool = false;
-        }
-
-        return bool;
+        return false;
     }
 }

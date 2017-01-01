@@ -24,7 +24,6 @@
 
 package com.shc.silenceengine.math;
 
-import com.shc.silenceengine.utils.MathUtils;
 import com.shc.silenceengine.utils.ReusableStack;
 
 /**
@@ -206,7 +205,7 @@ public class Vector3
 
     public float distance(float x, float y, float z)
     {
-        return MathUtils.sqrt(distanceSquared(x, y, z));
+        return (float) Math.sqrt(distanceSquared(x, y, z));
     }
 
     public float distanceSquared(float x, float y, float z)
@@ -220,7 +219,7 @@ public class Vector3
 
     public float distance(Vector3 v)
     {
-        return MathUtils.sqrt(distanceSquared(v));
+        return (float) Math.sqrt(distanceSquared(v));
     }
 
     public float distanceSquared(Vector3 v)
@@ -230,7 +229,7 @@ public class Vector3
 
     public float distance(Vector2 v)
     {
-        return MathUtils.sqrt(distanceSquared(v));
+        return (float) Math.sqrt(distanceSquared(v));
     }
 
     public float distanceSquared(Vector2 v)
