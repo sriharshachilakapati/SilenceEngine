@@ -181,7 +181,10 @@ public class DynamicTree3D implements IBroadphase3D
 
         public static boolean intersects(AABB aabb, Ray ray)
         {
-            return aabb.cuboid.intersects(ray) && aabb.polyhedron.intersects(ray);
+            if (aabb.polyhedron != null)
+                return aabb.cuboid.intersects(ray) && aabb.polyhedron.intersects(ray);
+            else
+                return aabb.cuboid.intersects(ray);
         }
     }
 }
