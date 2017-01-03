@@ -24,8 +24,16 @@
 
 package com.shc.silenceengine.graphics;
 
+import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.graphics.cameras.Camera;
+import com.shc.silenceengine.graphics.cameras.NullCamera;
+import com.shc.silenceengine.graphics.opengl.GLContext;
+import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.DirectFloatBuffer;
+import com.shc.silenceengine.utils.functional.SimpleCallback;
+
+import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
 /**
  * Describes a graphics device which is used to provide OpenGL functions on a target platform.
@@ -177,6 +185,31 @@ public interface IGraphicsDevice
     void glDeleteVertexArrays(int... vertexArray);
 
     boolean glIsProgram(int id);
+
+    /**
+     * Method called by SilenceEngine to initialize the graphics device. This is an on-init callback, and is not
+     * for the users to call themselves explicitly.
+     *
+     * @param next The next callback connector.
+     */
+    static void init(SimpleCallback next)
+    {
+        SilenceEngine.log.getRootLogger().info("Initializing " + SilenceEngine.graphics.getClass().getSimpleName());
+
+        // Create the Null camera
+        Camera.CURRENT = new NullCamera();
+
+        // Set the context to blend
+        GLContext.enable(GL_BLEND);
+        GLContext.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // Initialize the empty texture
+        Texture.EMPTY = Texture.fromColor(Color.TRANSPARENT, 32, 32);
+        Texture.EMPTY.bind(0);
+
+        // Invoke the next onInit callback in order
+        next.invoke();
+    }
 
     final class Constants
     {

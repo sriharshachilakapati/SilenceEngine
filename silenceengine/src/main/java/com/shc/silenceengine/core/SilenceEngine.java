@@ -26,12 +26,7 @@ package com.shc.silenceengine.core;
 
 import com.shc.silenceengine.audio.AudioDevice;
 import com.shc.silenceengine.core.gameloops.FixedTimeSteppedLoop;
-import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.IGraphicsDevice;
-import com.shc.silenceengine.graphics.cameras.Camera;
-import com.shc.silenceengine.graphics.cameras.NullCamera;
-import com.shc.silenceengine.graphics.opengl.GLContext;
-import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.InputDevice;
 import com.shc.silenceengine.io.IODevice;
 import com.shc.silenceengine.logging.ILogDevice;
@@ -41,8 +36,6 @@ import com.shc.silenceengine.utils.functional.UniCallback;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
 /**
  * The SilenceEngine class is the core of the entire engine, and contains all the devices for a platform that we are
@@ -161,7 +154,7 @@ public final class SilenceEngine
     {
         // Queue the default initializations (we call add directly since engine callbacks need to be the first).
         // All the callbacks registered by the user are called after the engine init callbacks are executed.
-        callbacksOnInit.add(SilenceEngine::initGraphics);
+        callbacksOnInit.add(IGraphicsDevice::init);
 
         // Build the callback list to be called after initialization
         UniCallback<SimpleCallback> callbackOnInit = chainCallback(null, null);
@@ -176,29 +169,6 @@ public final class SilenceEngine
             success.invoke();
             callbacksOnInit.clear();
         });
-    }
-
-    /*
-     * (non-Javadoc)
-     * Initializes the graphics part of SilenceEngine
-     */
-    private static void initGraphics(SimpleCallback next)
-    {
-        SilenceEngine.log.getRootLogger().info("Initializing " + graphics.getClass().getSimpleName());
-
-        // Create the Null camera
-        Camera.CURRENT = new NullCamera();
-
-        // Set the context to blend
-        GLContext.enable(GL_BLEND);
-        GLContext.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        // Initialize the empty texture
-        Texture.EMPTY = Texture.fromColor(Color.TRANSPARENT, 32, 32);
-        Texture.EMPTY.bind(0);
-
-        // Invoke the next onInit callback in order
-        next.invoke();
     }
 
     public static String getVersionString()
