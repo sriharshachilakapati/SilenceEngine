@@ -41,6 +41,39 @@ import java.io.IOException;
  */
 public class AndroidImageReader extends ImageReader
 {
+    private static int calculateInSampleSize(BitmapFactory.Options options)
+    {
+        float width = options.outWidth;
+        float height = options.outHeight;
+
+        double inSampleSize = 1D;
+
+        float reqWidth = width;
+        float reqHeight = height;
+
+        if (reqWidth > reqHeight)
+        {
+            reqWidth = Math.min(2048, reqWidth);
+            reqHeight = reqWidth * (height / width);
+        }
+        else
+        {
+            reqHeight = Math.min(2048, reqHeight);
+            reqWidth = reqHeight * (width / height);
+        }
+
+        if (width > reqWidth || height > reqHeight)
+        {
+            int halfWidth = (int) (width / 2);
+            int halfHeight = (int) (height / 2);
+
+            while (halfWidth / inSampleSize > reqWidth && halfHeight / inSampleSize > reqHeight)
+                inSampleSize *= 2;
+        }
+
+        return (int) inSampleSize;
+    }
+
     @Override
     public void readImage(DirectBuffer memory, UniCallback<Image> uniCallback, UniCallback<Throwable> onError)
     {
@@ -48,12 +81,23 @@ public class AndroidImageReader extends ImageReader
         {
             try
             {
-                Bitmap bitmap = BitmapFactory.decodeStream(new DirectBufferInputStream(memory));
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+
+                BitmapFactory.decodeStream(new DirectBufferInputStream(memory), null, options);
+
+                int originalWidth = options.outWidth;
+                int originalHeight = options.outHeight;
+
+                options.inSampleSize = calculateInSampleSize(options);
+                options.inJustDecodeBounds = false;
+
+                Bitmap bitmap = BitmapFactory.decodeStream(new DirectBufferInputStream(memory), null, options);
 
                 if (bitmap == null)
                     throw new SilenceException(new IOException("Error decoding image from memory"));
 
-                Image image = new Image(bitmap.getWidth(), bitmap.getHeight());
+                Image image = new Image(bitmap.getWidth(), bitmap.getHeight(), originalWidth, originalHeight);
 
                 for (int x = 0; x < image.getWidth(); x++)
                     for (int y = 0; y < image.getHeight(); y++)
