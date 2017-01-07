@@ -52,10 +52,13 @@ import static com.shc.silenceengine.audio.AudioDevice.Constants.*;
  */
 public class AndroidAudioDevice extends AudioDevice
 {
+    private static ALCdevice  device;
+    private static ALCcontext context;
+
     // List of all the sources, and the paused sources. The sources will be paused on out of focus,
     // and will be resumed automatically on getting focus back.
-    private final List<Integer> sources       = new ArrayList<>();
-    private final List<Integer> pausedSources = new ArrayList<>();
+    private static final List<Integer> sources       = new ArrayList<>();
+    private static final List<Integer> pausedSources = new ArrayList<>();
 
     // The temp buffer is used to store the result from AndroidOpenAL.
     private final IntBuffer temp = ByteBuffer.allocateDirect(PrimitiveSize.INT)
@@ -64,8 +67,19 @@ public class AndroidAudioDevice extends AudioDevice
 
     public AndroidAudioDevice()
     {
-        ALCdevice device = ALC.alcOpenDevice();
-        ALCcontext context = ALC.alcCreateContext(device, null);
+        // Destroy old device and context if exist
+        if (device != null)
+            ALC.alcCloseDevice(device);
+
+        if (context != null)
+            ALC.alcDestroyContext(context);
+
+        sources.clear();
+        pausedSources.clear();
+
+        // Create a new device and context
+        device = ALC.alcOpenDevice();
+        context = ALC.alcCreateContext(device, null);
 
         ALC.alcMakeContextCurrent(context);
     }
