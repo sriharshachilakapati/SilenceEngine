@@ -80,7 +80,7 @@ public class AndroidExternalFilePath extends AndroidFilePath
             try
             {
                 in = getInputStream();
-                OutputStream out = ((AndroidFilePath) path).getOutputStream();
+                OutputStream out = ((AndroidFilePath) path).getOutputStream(false);
 
                 byte[] buffer = new byte[1024];
                 int read;
@@ -219,8 +219,8 @@ public class AndroidExternalFilePath extends AndroidFilePath
     }
 
     @Override
-    public OutputStream getOutputStream() throws IOException
+    public OutputStream getOutputStream(boolean append) throws IOException
     {
-        return new FileOutputStream(file);
+        return new FileOutputStream(file, append);
     }
 }

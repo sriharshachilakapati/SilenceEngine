@@ -28,6 +28,7 @@ import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.io.FileReader;
+import com.shc.silenceengine.io.FileWriter;
 import com.shc.silenceengine.io.IODevice;
 import com.shc.silenceengine.io.ImageReader;
 
@@ -40,6 +41,7 @@ import java.util.List;
 public class LwjglIODevice implements IODevice
 {
     private FileReader  fileReader  = new LwjglFileReader();
+    private FileWriter  fileWriter  = new LwjglFileWriter();
     private ImageReader imageReader = new LwjglImageReader();
 
     private List<DirectBuffer> directBuffers = new ArrayList<>();
@@ -91,5 +93,11 @@ public class LwjglIODevice implements IODevice
     public ImageReader getImageReader()
     {
         return imageReader;
+    }
+
+    @Override
+    public FileWriter getFileWriter()
+    {
+        return fileWriter;
     }
 }

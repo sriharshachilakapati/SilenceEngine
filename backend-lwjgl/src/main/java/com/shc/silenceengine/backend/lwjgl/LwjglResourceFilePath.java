@@ -233,7 +233,7 @@ public class LwjglResourceFilePath extends LwjglFilePath
     }
 
     @Override
-    public OutputStream getOutputStream() throws IOException
+    public OutputStream getOutputStream(boolean append) throws IOException
     {
         throw new IOException("Cannot open an OutputStream for in-jar resources.");
     }

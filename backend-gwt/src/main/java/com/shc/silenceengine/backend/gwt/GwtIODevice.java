@@ -27,6 +27,7 @@ package com.shc.silenceengine.backend.gwt;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.io.FileReader;
+import com.shc.silenceengine.io.FileWriter;
 import com.shc.silenceengine.io.IODevice;
 import com.shc.silenceengine.io.ImageReader;
 
@@ -72,5 +73,11 @@ public class GwtIODevice implements IODevice
     public ImageReader getImageReader()
     {
         return imageReader;
+    }
+
+    @Override
+    public FileWriter getFileWriter()
+    {
+        return null;
     }
 }

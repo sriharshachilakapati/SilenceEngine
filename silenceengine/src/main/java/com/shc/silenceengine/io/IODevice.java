@@ -40,4 +40,6 @@ public interface IODevice
     FileReader getFileReader();
 
     ImageReader getImageReader();
+
+    FileWriter getFileWriter();
 }

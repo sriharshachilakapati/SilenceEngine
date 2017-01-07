@@ -51,7 +51,7 @@ public abstract class LwjglFilePath extends FilePath
 
     public abstract InputStream getInputStream() throws IOException;
 
-    public abstract OutputStream getOutputStream() throws IOException;
+    public abstract OutputStream getOutputStream(boolean append) throws IOException;
 
     @Override
     public Promise<Boolean> isFile()
@@ -76,7 +76,7 @@ public abstract class LwjglFilePath extends FilePath
             byte[] buffer = new byte[1024];
             int length;
 
-            try (InputStream inputStream = getInputStream(); OutputStream outputStream = ((LwjglFilePath) path).getOutputStream())
+            try (InputStream inputStream = getInputStream(); OutputStream outputStream = ((LwjglFilePath) path).getOutputStream(false))
             {
                 while ((length = inputStream.read(buffer)) > 0)
                     outputStream.write(buffer, 0, length);

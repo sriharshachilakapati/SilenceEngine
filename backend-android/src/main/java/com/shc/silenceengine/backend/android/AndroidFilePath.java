@@ -51,7 +51,7 @@ public abstract class AndroidFilePath extends FilePath
 
     public abstract InputStream getInputStream() throws IOException;
 
-    public abstract OutputStream getOutputStream() throws IOException;
+    public abstract OutputStream getOutputStream(boolean append) throws IOException;
 
     @Override
     public Promise<Void> copyTo(FilePath path)
@@ -70,7 +70,7 @@ public abstract class AndroidFilePath extends FilePath
             byte[] buffer = new byte[1024];
             int length;
 
-            try (InputStream inputStream = getInputStream(); OutputStream outputStream = ((AndroidFilePath) path).getOutputStream())
+            try (InputStream inputStream = getInputStream(); OutputStream outputStream = ((AndroidFilePath) path).getOutputStream(false))
             {
                 while ((length = inputStream.read(buffer)) > 0)
                     outputStream.write(buffer, 0, length);

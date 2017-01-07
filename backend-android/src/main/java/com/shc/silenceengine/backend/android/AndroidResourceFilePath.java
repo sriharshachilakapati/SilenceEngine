@@ -187,7 +187,7 @@ public class AndroidResourceFilePath extends AndroidFilePath
     }
 
     @Override
-    public OutputStream getOutputStream() throws IOException
+    public OutputStream getOutputStream(boolean append) throws IOException
     {
         throw new IOException("Cannot open an OutputStream for resources.");
     }

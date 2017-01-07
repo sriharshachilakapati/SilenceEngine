@@ -216,7 +216,7 @@ public class LwjglExternalFilePath extends LwjglFilePath
     }
 
     @Override
-    public OutputStream getOutputStream() throws IOException
+    public OutputStream getOutputStream(boolean append) throws IOException
     {
         return Files.newOutputStream(Paths.get(getPath()));
     }
