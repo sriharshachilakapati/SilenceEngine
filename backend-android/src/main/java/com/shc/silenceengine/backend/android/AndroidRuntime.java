@@ -89,7 +89,17 @@ public final class AndroidRuntime
         TaskManager.clearUpdateTasks();
         TaskManager.clearRenderTasks();
 
+        // Clear any pending AsyncRunners from the previous runs
+        AsyncRunner.cancelAll();
+
         // Initialize the SilenceEngine and initialize the game after the engine is initialized
-        SilenceEngine.init(game::init);
+        SilenceEngine.init(() ->
+        {
+            game.init();
+
+            // Start raising game events only after initializing the game
+            AndroidLauncher.instance.renderer.loopFrame = SilenceEngine.gameLoop::performLoopFrame;
+            AndroidLauncher.instance.renderer.resized = SilenceEngine.eventManager::raiseResizeEvent;
+        });
     }
 }

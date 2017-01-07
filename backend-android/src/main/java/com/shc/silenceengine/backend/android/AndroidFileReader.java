@@ -71,11 +71,11 @@ public class AndroidFileReader extends FileReader
                 for (int i = 0; i < bytes.length; i++)
                     directBuffer.writeByte(i, bytes[i]);
 
-                TaskManager.runOnUpdate(() -> onComplete.invoke(directBuffer));
+                return () -> TaskManager.runOnUpdate(() -> onComplete.invoke(directBuffer));
             }
             catch (Throwable e)
             {
-                onError.invoke(e);
+                return () -> onError.invoke(e);
             }
         });
     }
@@ -96,13 +96,13 @@ public class AndroidFileReader extends FileReader
                 while ((line = bufferedReader.readLine()) != null)
                     stringBuilder.append(line).append("\n");
 
-                TaskManager.runOnUpdate(() -> onComplete.invoke(stringBuilder.toString()));
+                return () ->
+                        TaskManager.runOnUpdate(() -> onComplete.invoke(stringBuilder.toString()));
             }
             catch (Throwable e)
             {
-                onError.invoke(e);
+                return () -> onError.invoke(e);
             }
-
         });
     }
 }

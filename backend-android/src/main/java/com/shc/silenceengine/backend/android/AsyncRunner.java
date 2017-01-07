@@ -25,24 +25,45 @@
 package com.shc.silenceengine.backend.android;
 
 import android.os.AsyncTask;
+import com.shc.silenceengine.utils.functional.Provider;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AsyncRunner extends AsyncTask<SimpleCallback, Void, Void>
+public class AsyncRunner extends AsyncTask<Provider<SimpleCallback>, Void, SimpleCallback>
 {
-    public static void runAsync(SimpleCallback callback)
+    private static List<AsyncRunner> runners = Collections.synchronizedList(new ArrayList<>());
+
+    @SuppressWarnings({"unchecked"})
+    public static void runAsync(Provider<SimpleCallback> callback)
     {
-        new AsyncRunner().execute(callback);
+        runners.add((AsyncRunner) new AsyncRunner().execute(callback));
+    }
+
+    public static void cancelAll()
+    {
+        for (AsyncRunner runner : runners)
+            runner.cancel(true);
+
+        runners.clear();
+    }
+
+    @SafeVarargs
+    @Override
+    protected final SimpleCallback doInBackground(Provider<SimpleCallback>... params)
+    {
+        return params[0].provide();
     }
 
     @Override
-    protected Void doInBackground(SimpleCallback... params)
+    protected void onPostExecute(SimpleCallback result)
     {
-        for (SimpleCallback callback : params)
-            callback.invoke();
-
-        return null;
+        if (!isCancelled())
+            result.invoke();
     }
 }

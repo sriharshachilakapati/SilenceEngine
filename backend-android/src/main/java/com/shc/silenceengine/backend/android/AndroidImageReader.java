@@ -71,11 +71,11 @@ public class AndroidImageReader extends ImageReader
                 bitmap.recycle();
                 bitmap = null;
 
-                TaskManager.runOnUpdate(() -> uniCallback.invoke(image));
+                return () -> TaskManager.runOnUpdate(() -> uniCallback.invoke(image));
             }
             catch (Throwable e)
             {
-                onError.invoke(e);
+                return () -> onError.invoke(e);
             }
         });
     }

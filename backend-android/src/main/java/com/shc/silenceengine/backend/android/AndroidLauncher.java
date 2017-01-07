@@ -38,8 +38,8 @@ public abstract class AndroidLauncher extends Activity
 {
     public static AndroidLauncher instance;
 
-    public GLSurfaceView          surfaceView;
-    public GLSurfaceView.Renderer renderer;
+    public GLSurfaceView surfaceView;
+    public AndroidWindow renderer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

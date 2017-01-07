@@ -26,6 +26,7 @@ package com.shc.silenceengine.backend.android;
 
 import android.opengl.GLSurfaceView;
 import com.shc.silenceengine.core.SilenceEngine;
+import com.shc.silenceengine.utils.TaskManager;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -36,7 +37,8 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class AndroidWindow implements GLSurfaceView.Renderer
 {
-    private static final Object lock = new Object();
+    public SimpleCallback loopFrame;
+    public SimpleCallback resized;
 
     private SimpleCallback startCallback;
 
@@ -48,29 +50,31 @@ public class AndroidWindow implements GLSurfaceView.Renderer
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config)
     {
-        synchronized (lock)
+        loopFrame = () ->
         {
-            SilenceEngine.eventManager.clearAllHandlers();
-            SilenceEngine.gameLoop.onFocusLost();
-            startCallback.invoke();
-        }
+            // Assume 100 seconds so that tasks are force flushed
+            TaskManager.forceUpdateTasks(100);
+            TaskManager.forceRenderTasks(100);
+        };
+
+        resized = () ->
+        {
+        };
+
+        SilenceEngine.eventManager.clearAllHandlers();
+        SilenceEngine.gameLoop.onFocusLost();
+        startCallback.invoke();
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height)
     {
-        synchronized (lock)
-        {
-            SilenceEngine.eventManager.raiseResizeEvent();
-        }
+        resized.invoke();
     }
 
     @Override
     public void onDrawFrame(GL10 gl)
     {
-        synchronized (lock)
-        {
-            SilenceEngine.gameLoop.performLoopFrame();
-        }
+        loopFrame.invoke();
     }
 }
