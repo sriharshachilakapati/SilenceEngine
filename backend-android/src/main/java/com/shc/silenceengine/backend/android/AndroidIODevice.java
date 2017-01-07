@@ -24,6 +24,11 @@
 
 package com.shc.silenceengine.backend.android;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import com.shc.easyjson.JSON;
+import com.shc.easyjson.JSONObject;
+import com.shc.easyjson.ParseException;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.io.FileReader;
@@ -80,5 +85,26 @@ public class AndroidIODevice implements IODevice
     public FileWriter getFileWriter()
     {
         return fileWriter;
+    }
+
+    @Override
+    public JSONObject getPreferences(String name)
+    {
+        SharedPreferences prefs = AndroidLauncher.instance.getSharedPreferences(name, Context.MODE_PRIVATE);
+        try
+        {
+            return JSON.parse(prefs.getString("json", "{}"));
+        }
+        catch (ParseException e)
+        {
+            return new JSONObject();
+        }
+    }
+
+    @Override
+    public void savePreferences(String name, JSONObject preferences)
+    {
+        SharedPreferences prefs = AndroidLauncher.instance.getSharedPreferences(name, Context.MODE_PRIVATE);
+        prefs.edit().putString("json", JSON.write(preferences)).apply();
     }
 }

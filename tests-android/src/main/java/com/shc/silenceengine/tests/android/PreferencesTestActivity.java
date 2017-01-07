@@ -22,30 +22,21 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.io;
+package com.shc.silenceengine.tests.android;
 
-import com.shc.easyjson.JSONObject;
+import com.shc.silenceengine.backend.android.AndroidLauncher;
+import com.shc.silenceengine.backend.android.AndroidRuntime;
+import com.shc.silenceengine.tests.PreferencesTest;
+import com.shc.silenceengine.tests.TestRunner;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public interface IODevice
+public class PreferencesTestActivity extends AndroidLauncher
 {
-    DirectBuffer create(int sizeInBytes);
-
-    void free(DirectBuffer directBuffer);
-
-    FilePath createResourceFilePath(String path);
-
-    FilePath createExternalFilePath(String path);
-
-    FileReader getFileReader();
-
-    ImageReader getImageReader();
-
-    FileWriter getFileWriter();
-
-    JSONObject getPreferences(String name);
-
-    void savePreferences(String name, JSONObject preferences);
+    @Override
+    public void launchGame()
+    {
+        AndroidRuntime.start(new TestRunner(new PreferencesTest()));
+    }
 }

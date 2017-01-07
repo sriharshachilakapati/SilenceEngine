@@ -102,6 +102,7 @@ public class TestLauncher implements EntryPoint
         tests.put("TmxMapTestIsometric", () -> new TmxMapTest("test_resources/example-isometric.tmx"));
         tests.put("ControllerTest", ControllerTest::new);
         tests.put("DialogsTest", DialogsTest::new);
+        tests.put("PreferencesTest", PreferencesTest::new);
     }
 
     @FunctionalInterface

@@ -22,30 +22,19 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.io;
+package com.shc.silenceengine.tests.lwjgl;
 
-import com.shc.easyjson.JSONObject;
+import com.shc.silenceengine.backend.lwjgl.LwjglRuntime;
+import com.shc.silenceengine.tests.PreferencesTest;
+import com.shc.silenceengine.tests.TestRunner;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public interface IODevice
+public class PreferencesTestRun
 {
-    DirectBuffer create(int sizeInBytes);
-
-    void free(DirectBuffer directBuffer);
-
-    FilePath createResourceFilePath(String path);
-
-    FilePath createExternalFilePath(String path);
-
-    FileReader getFileReader();
-
-    ImageReader getImageReader();
-
-    FileWriter getFileWriter();
-
-    JSONObject getPreferences(String name);
-
-    void savePreferences(String name, JSONObject preferences);
+    public static void main(String[] args)
+    {
+        LwjglRuntime.start(new TestRunner(new PreferencesTest()));
+    }
 }

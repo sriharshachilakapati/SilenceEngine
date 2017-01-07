@@ -47,6 +47,7 @@
         <activity android:name=".TmxMapTestOrthogonalActivity"/>
         <activity android:name=".TmxMapTestIsometricActivity"/>
         <activity android:name=".DialogsTestActivity"/>
+        <activity android:name=".PreferencesTestActivity"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>

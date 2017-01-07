@@ -24,6 +24,8 @@
 
 package com.shc.silenceengine.backend.lwjgl;
 
+import com.shc.easyjson.JSON;
+import com.shc.easyjson.JSONObject;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.FilePath;
@@ -32,6 +34,8 @@ import com.shc.silenceengine.io.FileWriter;
 import com.shc.silenceengine.io.IODevice;
 import com.shc.silenceengine.io.ImageReader;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,5 +103,26 @@ public class LwjglIODevice implements IODevice
     public FileWriter getFileWriter()
     {
         return fileWriter;
+    }
+
+    @Override
+    public JSONObject getPreferences(String name)
+    {
+        try
+        {
+            String json = new String(Files.readAllBytes(Paths.get(System.getenv("userprofile"), name)));
+            return JSON.parse(json);
+        }
+        catch (Exception e)
+        {
+            return new JSONObject();
+        }
+    }
+
+    @Override
+    public void savePreferences(String name, JSONObject preferences)
+    {
+        fileWriter.write(JSON.write(preferences), FilePath.getExternalFile(System.getenv("userprofile") + "\\" + name),
+                false);
     }
 }

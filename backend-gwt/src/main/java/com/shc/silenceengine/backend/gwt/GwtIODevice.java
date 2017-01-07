@@ -24,6 +24,10 @@
 
 package com.shc.silenceengine.backend.gwt;
 
+import com.google.gwt.storage.client.Storage;
+import com.shc.easyjson.JSON;
+import com.shc.easyjson.JSONObject;
+import com.shc.easyjson.ParseException;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.io.FileReader;
@@ -79,5 +83,35 @@ public class GwtIODevice implements IODevice
     public FileWriter getFileWriter()
     {
         return null;
+    }
+
+    @Override
+    public JSONObject getPreferences(String name)
+    {
+        Storage localStorage = Storage.getLocalStorageIfSupported();
+
+        if (localStorage == null)
+            return new JSONObject();
+
+        try
+        {
+            String json = localStorage.getItem(name);
+            return JSON.parse(json == null ? "{}" : json);
+        }
+        catch (ParseException e)
+        {
+            return new JSONObject();
+        }
+    }
+
+    @Override
+    public void savePreferences(String name, JSONObject preferences)
+    {
+        Storage localStorage = Storage.getLocalStorageIfSupported();
+
+        if (localStorage == null)
+            return;
+
+        localStorage.setItem(name, JSON.write(preferences));
     }
 }

@@ -29,6 +29,7 @@
     <!-- Inherit the core Web Toolkit stuff.                  -->
     <inherits name='com.google.gwt.user.User'/>
     <inherits name="com.google.gwt.xml.XML"/>
+    <inherits name="com.google.gwt.storage.Storage"/>
 
     <inherits name="com.shc.webgl4j.client"/>
     <inherits name="com.shc.gwtal.client"/>
