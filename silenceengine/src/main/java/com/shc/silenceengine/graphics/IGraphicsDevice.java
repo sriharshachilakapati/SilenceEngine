@@ -27,10 +27,14 @@ package com.shc.silenceengine.graphics;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.cameras.Camera;
 import com.shc.silenceengine.graphics.cameras.NullCamera;
+import com.shc.silenceengine.graphics.fonts.BitmapFontRenderer;
 import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.graphics.programs.DynamicProgram;
+import com.shc.silenceengine.graphics.programs.FontProgram;
 import com.shc.silenceengine.io.DirectBuffer;
 import com.shc.silenceengine.io.DirectFloatBuffer;
+import com.shc.silenceengine.logging.Logger;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
 
 import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
@@ -42,6 +46,61 @@ import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
  */
 public interface IGraphicsDevice
 {
+    /**
+     * Method called by SilenceEngine to initialize the graphics device. This is an on-init callback, and is not
+     * for the users to call themselves explicitly.
+     *
+     * @param next The next callback connector.
+     */
+    static void init(SimpleCallback next)
+    {
+        Logger logger = SilenceEngine.log.getRootLogger();
+
+        logger.info("Initializing " + SilenceEngine.graphics.getClass().getSimpleName());
+
+        // Create the Null camera
+        Camera.CURRENT = new NullCamera();
+
+        // Set the context to blend
+        GLContext.enable(GL_BLEND);
+        GLContext.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // Initialize the empty texture
+        Texture.EMPTY = Texture.fromColor(Color.TRANSPARENT, 32, 32);
+        Texture.EMPTY.bind(0);
+
+        logger.info("Loading dynamic shader program");
+        DynamicProgram.create(dynamicProgram ->
+        {
+            Programs.dynamic = dynamicProgram;
+
+            logger.info("Loading font shader program");
+            FontProgram.create(fontProgram ->
+            {
+                Programs.font = fontProgram;
+
+                logger.info("Creating dynamic renderer");
+                Renderers.dynamic = new DynamicRenderer();
+                Programs.dynamic.applyToRenderer(Renderers.dynamic);
+
+                logger.info("Creating bitmap font renderer");
+                BitmapFontRenderer.create(bitmapFontRenderer ->
+                {
+                    Renderers.bitmapFont = bitmapFontRenderer;
+
+                    logger.info("Creating sprite renderer");
+                    SpriteRenderer.create(spriteRenderer ->
+                    {
+                        Renderers.sprite = spriteRenderer;
+
+                        // Invoke the next onInit callback in order
+                        next.invoke();
+                    });
+                });
+            });
+        });
+    }
+
     int glGenBuffers();
 
     boolean glIsBuffer(int buffer);
@@ -185,31 +244,6 @@ public interface IGraphicsDevice
     void glDeleteVertexArrays(int... vertexArray);
 
     boolean glIsProgram(int id);
-
-    /**
-     * Method called by SilenceEngine to initialize the graphics device. This is an on-init callback, and is not
-     * for the users to call themselves explicitly.
-     *
-     * @param next The next callback connector.
-     */
-    static void init(SimpleCallback next)
-    {
-        SilenceEngine.log.getRootLogger().info("Initializing " + SilenceEngine.graphics.getClass().getSimpleName());
-
-        // Create the Null camera
-        Camera.CURRENT = new NullCamera();
-
-        // Set the context to blend
-        GLContext.enable(GL_BLEND);
-        GLContext.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        // Initialize the empty texture
-        Texture.EMPTY = Texture.fromColor(Color.TRANSPARENT, 32, 32);
-        Texture.EMPTY.bind(0);
-
-        // Invoke the next onInit callback in order
-        next.invoke();
-    }
 
     final class Constants
     {
@@ -523,5 +557,18 @@ public interface IGraphicsDevice
     {
         public static int totalRenderCalls     = 0;
         public static int renderCallsThisFrame = 0;
+    }
+
+    final class Programs
+    {
+        public static DynamicProgram dynamic;
+        public static FontProgram    font;
+    }
+
+    final class Renderers
+    {
+        public static DynamicRenderer    dynamic;
+        public static BitmapFontRenderer bitmapFont;
+        public static SpriteRenderer     sprite;
     }
 }

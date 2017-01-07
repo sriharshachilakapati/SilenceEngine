@@ -33,7 +33,6 @@ import com.shc.silenceengine.graphics.DynamicRenderer;
 import com.shc.silenceengine.graphics.IGraphicsDevice;
 import com.shc.silenceengine.graphics.Sprite;
 import com.shc.silenceengine.graphics.SpriteBatch;
-import com.shc.silenceengine.graphics.SpriteRenderer;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.graphics.opengl.Primitive;
@@ -55,27 +54,24 @@ import com.shc.silenceengine.scene.entity.Entity2D;
  */
 public class SpriteRendererTest extends SilenceTest
 {
-    private static SpriteRenderer  renderer;
-    private static DynamicRenderer dynamicRenderer;
-    private static DynamicProgram  dynamicProgram;
-    private static SpriteBatch     batch;
-
     private static CollisionTag heroTag    = new CollisionTag();
     private static CollisionTag subHeroTag = new CollisionTag();
     private static CollisionTag wallsTag   = new CollisionTag();
 
-    private static Sprite sprite;
-
-    private OrthoCam        camera;
-    private Scene2D         scene;
     private SceneCollider2D collider;
+
+    private Scene2D  scene;
+    private Sprite   sprite;
+    private OrthoCam camera;
+
+    private SpriteBatch batch;
 
     @Override
     public void init()
     {
         // Needed because static variables persist between launches
-        renderer = null;
         batch = null;
+        IGraphicsDevice.Programs.dynamic.applyToRenderer(IGraphicsDevice.Renderers.dynamic);
 
         // Normal initialization
         camera = new OrthoCam(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
@@ -84,14 +80,7 @@ public class SpriteRendererTest extends SilenceTest
         {
             sprite = new Sprite(Texture.fromImage(image).getSubTexture(0, 0, 1, 1, 48, 48));
             image.dispose();
-            DynamicProgram.create(dynamicProgram ->
-            {
-                dynamicRenderer = new DynamicRenderer();
-
-                SpriteRendererTest.dynamicProgram = dynamicProgram;
-                dynamicProgram.applyToRenderer(dynamicRenderer);
-                SpriteRenderer.create(this::init);
-            });
+            initTest();
         });
     }
 
@@ -101,7 +90,7 @@ public class SpriteRendererTest extends SilenceTest
         if (Keyboard.isKeyTapped(Keyboard.KEY_ESCAPE))
             SilenceEngine.display.close();
 
-        if (renderer == null || dynamicProgram == null)
+        if (scene == null)
             return;
 
         scene.update(deltaTime);
@@ -116,7 +105,10 @@ public class SpriteRendererTest extends SilenceTest
     @Override
     public void render(float deltaTime)
     {
-        if (renderer == null || dynamicProgram == null)
+        DynamicRenderer dynamicRenderer = IGraphicsDevice.Renderers.dynamic;
+        DynamicProgram dynamicProgram = IGraphicsDevice.Programs.dynamic;
+
+        if (scene == null)
             return;
 
         camera.apply();
@@ -131,30 +123,14 @@ public class SpriteRendererTest extends SilenceTest
     @Override
     public void resized()
     {
-        if (renderer == null || dynamicProgram == null)
-            return;
-
         camera.initProjection(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
         camera.apply();
         GLContext.viewport(0, 0, SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
     }
 
-    @Override
-    public void dispose()
+    private void initTest()
     {
-        if (renderer != null)
-            renderer.dispose();
-
-        if (dynamicProgram != null)
-            dynamicProgram.dispose();
-
-        if (dynamicRenderer != null)
-            dynamicRenderer.dispose();
-    }
-
-    private void init(SpriteRenderer renderer)
-    {
-        batch = new SpriteBatch(renderer);
+        batch = new SpriteBatch(IGraphicsDevice.Renderers.sprite);
 
         if (SilenceEngine.display.getPlatform() != SilenceEngine.Platform.ANDROID)
             SilenceEngine.input.setSimulateTouch(true);
@@ -209,8 +185,7 @@ public class SpriteRendererTest extends SilenceTest
             scene.entities.add(wall2);
         }
 
-        scene.entities.add(new Hero());
-        SpriteRendererTest.renderer = renderer;
+        scene.entities.add(new Hero(sprite, batch));
     }
 
     private static class Hero extends Entity2D
@@ -220,7 +195,7 @@ public class SpriteRendererTest extends SilenceTest
 
         private Entity2D subHero;
 
-        Hero()
+        Hero(Sprite sprite, SpriteBatch batch)
         {
             position.set(SilenceEngine.display.getWidth() / 2 - 24, SilenceEngine.display.getHeight() / 2 - 24);
 
@@ -283,6 +258,8 @@ public class SpriteRendererTest extends SilenceTest
         public void render(float deltaTime)
         {
             Rectangle rect = polygon.getBounds();
+
+            DynamicRenderer dynamicRenderer = IGraphicsDevice.Renderers.dynamic;
 
             dynamicRenderer.vertex(rect.x, rect.y);
             dynamicRenderer.color(Color.RED);

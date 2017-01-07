@@ -29,11 +29,11 @@ import com.shc.silenceengine.core.ResourceLoader;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.DynamicRenderer;
+import com.shc.silenceengine.graphics.IGraphicsDevice;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.graphics.programs.DynamicProgram;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Touch;
 import com.shc.silenceengine.io.FilePath;
@@ -49,9 +49,6 @@ public class ResourceLoaderTest extends SilenceTest
     private Texture texture;
     private Sound   sound;
 
-    private DynamicRenderer renderer;
-    private DynamicProgram  program;
-
     private long texID, sndID;
 
     private boolean loaded = false;
@@ -62,23 +59,16 @@ public class ResourceLoaderTest extends SilenceTest
         SilenceEngine.display.setTitle("ResourceLoaderTest");
         camera = new OrthoCam();
 
-        renderer = new DynamicRenderer();
         loader = new ResourceLoader();
 
         texID = loader.define(Texture.class, FilePath.getResourceFile("test_resources/test_texture.png"));
         sndID = loader.define(Sound.class, FilePath.getResourceFile("test_resources/shoot.wav"));
 
-        DynamicProgram.create(program ->
-        {
-            this.program = program;
-            program.use();
-
-            program.applyToRenderer(renderer);
-
-            loader.start();
-        });
+        loader.start();
 
         GLContext.clearColor(Color.DARK_RED);
+
+        IGraphicsDevice.Programs.dynamic.applyToRenderer(IGraphicsDevice.Renderers.dynamic);
     }
 
     @Override
@@ -113,8 +103,8 @@ public class ResourceLoaderTest extends SilenceTest
         if (loaded)
         {
             texture.bind();
-            program.use();
 
+            DynamicRenderer renderer = IGraphicsDevice.Renderers.dynamic;
             renderer.begin(Primitive.TRIANGLE_FAN);
             {
                 renderer.vertex(100, 100);
@@ -137,7 +127,5 @@ public class ResourceLoaderTest extends SilenceTest
     public void dispose()
     {
         loader.disposeAll();
-        program.dispose();
-        renderer.dispose();
     }
 }

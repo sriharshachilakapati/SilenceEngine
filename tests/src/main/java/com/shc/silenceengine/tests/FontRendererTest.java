@@ -39,10 +39,8 @@ import com.shc.silenceengine.io.FilePath;
  */
 public class FontRendererTest extends SilenceTest
 {
-    private BitmapFontRenderer fontRenderer;
-    private BitmapFont         bitmapFont;
-
-    private OrthoCam camera;
+    private BitmapFont bitmapFont;
+    private OrthoCam   camera;
 
     @Override
     public void init()
@@ -50,10 +48,7 @@ public class FontRendererTest extends SilenceTest
         SilenceEngine.display.setTitle("FontRendererTest");
 
         BitmapFont.load(FilePath.getResourceFile("/engine_resources/fonts/roboto32px.fnt"), font ->
-        {
-            bitmapFont = font;
-            BitmapFontRenderer.create(renderer -> fontRenderer = renderer);
-        });
+                bitmapFont = font);
 
         camera = new OrthoCam(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
         camera.apply();
@@ -69,8 +64,10 @@ public class FontRendererTest extends SilenceTest
     @Override
     public void render(float delta)
     {
-        if (fontRenderer == null)
+        if (bitmapFont == null)
             return;
+
+        BitmapFontRenderer fontRenderer = IGraphicsDevice.Renderers.bitmapFont;
 
         fontRenderer.begin();
         {
@@ -96,8 +93,5 @@ public class FontRendererTest extends SilenceTest
     {
         if (bitmapFont != null)
             bitmapFont.dispose();
-
-        if (fontRenderer != null)
-            fontRenderer.dispose();
     }
 }

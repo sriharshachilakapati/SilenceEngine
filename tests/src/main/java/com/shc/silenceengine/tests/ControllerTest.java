@@ -43,8 +43,7 @@ public class ControllerTest extends SilenceTest
 {
     private OrthoCam camera;
 
-    private BitmapFont         font;
-    private BitmapFontRenderer renderer;
+    private BitmapFont font;
 
     private int     controllerId;
     private boolean useMappings;
@@ -54,11 +53,8 @@ public class ControllerTest extends SilenceTest
     {
         camera = new OrthoCam(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
 
-        BitmapFont.load(FilePath.getResourceFile("engine_resources/fonts/roboto32px.fnt"), font ->
-        {
-            this.font = font;
-            BitmapFontRenderer.create(renderer -> this.renderer = renderer);
-        });
+        font = null;
+        BitmapFont.load(FilePath.getResourceFile("engine_resources/fonts/roboto32px.fnt"), font -> this.font = font);
 
         controllerId = 0;
         useMappings = false;
@@ -97,8 +93,10 @@ public class ControllerTest extends SilenceTest
     {
         camera.apply();
 
-        if (renderer == null)
+        if (font == null)
             return;
+
+        BitmapFontRenderer renderer = IGraphicsDevice.Renderers.bitmapFont;
 
         if (controllerId < Controller.CONTROLLER_0 || controllerId > Controller.CONTROLLER_15)
         {
@@ -168,9 +166,6 @@ public class ControllerTest extends SilenceTest
     @Override
     public void dispose()
     {
-        if (renderer != null)
-            renderer.dispose();
-
         if (font != null)
             font.dispose();
     }

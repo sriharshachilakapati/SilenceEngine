@@ -27,6 +27,7 @@ package com.shc.silenceengine.tests;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.DynamicRenderer;
+import com.shc.silenceengine.graphics.IGraphicsDevice;
 import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Program;
@@ -40,14 +41,12 @@ import com.shc.silenceengine.math.Vector3;
  */
 public class DynamicRendererTest extends SilenceTest
 {
-    private DynamicRenderer renderer;
-    private Program         program;
-    private Transform       transform;
+    private Transform transform;
+    private Program   program;
 
     @Override
     public void init()
     {
-        renderer = new DynamicRenderer();
         transform = new Transform();
 
         // The vertex shader source
@@ -88,8 +87,11 @@ public class DynamicRendererTest extends SilenceTest
 
         program.use();
 
+        DynamicRenderer renderer = IGraphicsDevice.Renderers.dynamic;
         renderer.setVertexLocation(program.getAttribute("position"));
         renderer.setColorLocation(program.getAttribute("color"));
+        renderer.setNormalLocation(-1);
+        renderer.setTexCoordLocation(-1);
     }
 
     @Override
@@ -105,6 +107,7 @@ public class DynamicRendererTest extends SilenceTest
     public void render(float deltaTime)
     {
         program.setUniform("transform", transform);
+        DynamicRenderer renderer = IGraphicsDevice.Renderers.dynamic;
 
         renderer.begin(Primitive.TRIANGLES);
         {
@@ -129,7 +132,6 @@ public class DynamicRendererTest extends SilenceTest
     @Override
     public void dispose()
     {
-        renderer.dispose();
         program.dispose();
     }
 }

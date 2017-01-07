@@ -31,14 +31,11 @@ import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.DynamicRenderer;
 import com.shc.silenceengine.graphics.IGraphicsDevice;
+import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.graphics.opengl.Primitive;
-import com.shc.silenceengine.graphics.opengl.Program;
-import com.shc.silenceengine.graphics.opengl.Shader;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Touch;
-import com.shc.silenceengine.math.Matrix4;
-import com.shc.silenceengine.math.Transforms;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.geom2d.Rectangle;
 import com.shc.silenceengine.scene.Scene2D;
@@ -51,14 +48,11 @@ import com.shc.silenceengine.scene.entity.Entity2D;
  */
 public class EntityCollisionTest2D extends SilenceTest
 {
-    private static DynamicRenderer renderer;
-    private static Program         program;
-
     private static CollisionTag heroTag    = new CollisionTag();
     private static CollisionTag subHeroTag = new CollisionTag();
     private static CollisionTag wallsTag   = new CollisionTag();
 
-    private Matrix4         camera;
+    private OrthoCam        camera;
     private Scene2D         scene;
     private SceneCollider2D collider;
 
@@ -68,52 +62,9 @@ public class EntityCollisionTest2D extends SilenceTest
         if (SilenceEngine.display.getPlatform() != SilenceEngine.Platform.ANDROID)
             SilenceEngine.input.setSimulateTouch(true);
 
-        renderer = new DynamicRenderer();
-        camera = new Matrix4();
+        camera = new OrthoCam(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
 
-        // The vertex shader source
-        String vsSource = "uniform mat4 camera;                 \n" +
-
-                          "in vec4 position;                    \n" +
-                          "in vec4 color;                       \n" +
-
-                          "out vec4 vColor;                     \n" +
-
-                          "void main()                          \n" +
-                          "{                                    \n" +
-                          "    vColor = color;                  \n" +
-                          "    gl_Position = camera * position; \n" +
-                          "}";
-
-        // The fragment shader source
-        String fsSource = "in vec4 vColor;         \n" +
-
-                          "void main()             \n" +
-                          "{                       \n" +
-                          "    g_FragColor = vColor; \n" +
-                          "}";
-
-        Shader vertexShader = new Shader(Shader.Type.VERTEX_SHADER);
-        vertexShader.source(vsSource);
-        vertexShader.compile();
-
-        Shader fragmentShader = new Shader(Shader.Type.FRAGMENT_SHADER);
-        fragmentShader.source(fsSource);
-        fragmentShader.compile();
-
-        program = new Program();
-
-        program.attach(vertexShader);
-        program.attach(fragmentShader);
-        program.link();
-
-        program.use();
-
-        renderer.setVertexLocation(program.getAttribute("position"));
-        renderer.setColorLocation(program.getAttribute("color"));
-
-        Transforms.createOrtho2d(0, SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight(), 0, -1, 1, camera);
-        program.setUniform("camera", camera);
+        IGraphicsDevice.Programs.dynamic.applyToRenderer(IGraphicsDevice.Renderers.dynamic);
 
         scene = new Scene2D();
         collider = new SceneCollider2D(new DynamicTree2D());
@@ -175,24 +126,21 @@ public class EntityCollisionTest2D extends SilenceTest
     @Override
     public void render(float deltaTime)
     {
+        camera.apply();
+
+        DynamicRenderer renderer = IGraphicsDevice.Renderers.dynamic;
         renderer.begin(Primitive.LINES);
-        scene.render(deltaTime);
+        {
+            scene.render(deltaTime);
+        }
         renderer.end();
     }
 
     @Override
     public void resized()
     {
-        Transforms.createOrtho2d(0, SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight(), 0, 1, -1, camera);
-        program.setUniform("camera", camera);
+        camera.initProjection(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
         GLContext.viewport(0, 0, SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
-    }
-
-    @Override
-    public void dispose()
-    {
-        renderer.dispose();
-        program.dispose();
     }
 
     private static class Hero extends Entity2D
@@ -279,6 +227,8 @@ public class EntityCollisionTest2D extends SilenceTest
             {
                 Vector2 v1 = collisionComponent.polygon.getVertex(i);
                 Vector2 v2 = collisionComponent.polygon.getVertex((i + 1) % n);
+
+                DynamicRenderer renderer = IGraphicsDevice.Renderers.dynamic;
 
                 renderer.vertex(temp.set(v1).add(collisionComponent.polygon.getPosition()));
                 renderer.color(color);
