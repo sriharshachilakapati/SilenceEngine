@@ -110,7 +110,7 @@ public class LwjglIODevice implements IODevice
     {
         try
         {
-            String json = new String(Files.readAllBytes(Paths.get(System.getenv("userprofile"), name)));
+            String json = new String(Files.readAllBytes(Paths.get(System.getProperty("user.home"), name)));
             return JSON.parse(json);
         }
         catch (Exception e)
@@ -122,7 +122,7 @@ public class LwjglIODevice implements IODevice
     @Override
     public void savePreferences(String name, JSONObject preferences)
     {
-        fileWriter.write(JSON.write(preferences), FilePath.getExternalFile(System.getenv("userprofile") + "\\" + name),
+        fileWriter.write(JSON.write(preferences), FilePath.getExternalFile(System.getProperty("user.home") + "\\" + name),
                 false);
     }
 }
