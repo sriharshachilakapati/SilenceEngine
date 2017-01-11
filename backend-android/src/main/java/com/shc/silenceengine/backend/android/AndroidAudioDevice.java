@@ -87,9 +87,8 @@ class AndroidAudioDevice extends AudioDevice
     @Override
     public int alGenBuffers()
     {
-        IntBuffer intBuffer = ByteBuffer.allocateDirect(PrimitiveSize.INT).order(ByteOrder.nativeOrder()).asIntBuffer();
-        AL.alGenBuffers(1, intBuffer);
-        return intBuffer.get(0);
+        AL.alGenBuffers(1, temp);
+        return temp.get(0);
     }
 
     @Override
@@ -115,10 +114,9 @@ class AndroidAudioDevice extends AudioDevice
     @Override
     public int alGenSources()
     {
-        IntBuffer intBuffer = ByteBuffer.allocateDirect(PrimitiveSize.INT).order(ByteOrder.nativeOrder()).asIntBuffer();
-        AL.alGenSources(1, intBuffer);
+        AL.alGenSources(1, temp);
 
-        int source = intBuffer.get(0);
+        int source = temp.get(0);
         sources.add(source);
 
         return source;
