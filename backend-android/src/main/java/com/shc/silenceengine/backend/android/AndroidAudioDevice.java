@@ -50,7 +50,7 @@ import static com.shc.silenceengine.audio.AudioDevice.Constants.*;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidAudioDevice extends AudioDevice
+class AndroidAudioDevice extends AudioDevice
 {
     private static ALCdevice  device;
     private static ALCcontext context;
@@ -65,7 +65,7 @@ public class AndroidAudioDevice extends AudioDevice
             .order(ByteOrder.nativeOrder())
             .asIntBuffer();
 
-    public AndroidAudioDevice()
+    AndroidAudioDevice()
     {
         // Destroy old device and context if exist
         if (device != null)
@@ -182,7 +182,7 @@ public class AndroidAudioDevice extends AudioDevice
         DirectBuffer.free(directBuffer);
 
         for (int i : sources)
-            this.sources.remove((Integer) i);
+            AndroidAudioDevice.sources.remove((Integer) i);
     }
 
     @Override
@@ -194,26 +194,26 @@ public class AndroidAudioDevice extends AudioDevice
                 throw new SilenceException("Cannot parse sound. The format is unsupported: " + format);
 
             if (format == AudioFormat.WAV)
-                new Thread(() ->
+                AsyncRunner.runAsync(() ->
                 {
                     WavReader reader = new WavReader(data);
 
                     ALBuffer alBuffer = new ALBuffer();
                     alBuffer.uploadData(new AndroidDirectBuffer(reader.data), reader.alFormat, reader.sampleRate);
 
-                    TaskManager.runOnUpdate(() -> onDecoded.invoke(alBuffer));
-                }).start();
+                    return () -> TaskManager.runOnUpdate(() -> onDecoded.invoke(alBuffer));
+                });
 
             else if (format == AudioFormat.OGG)
-                new Thread(() ->
+                AsyncRunner.runAsync(() ->
                 {
                     OggReader reader = new OggReader(data);
 
                     ALBuffer alBuffer = new ALBuffer();
                     alBuffer.uploadData(new AndroidDirectBuffer(reader.getData()), reader.getFormat(), reader.getSampleRate());
 
-                    TaskManager.runOnUpdate(() -> onDecoded.invoke(alBuffer));
-                }).start();
+                    return () -> TaskManager.runOnUpdate(() -> onDecoded.invoke(alBuffer));
+                });
         }
         catch (Throwable e)
         {
@@ -236,7 +236,7 @@ public class AndroidAudioDevice extends AudioDevice
         return false;
     }
 
-    public void onFocusLost()
+    void onFocusLost()
     {
         pausedSources.clear();
 
@@ -253,7 +253,7 @@ public class AndroidAudioDevice extends AudioDevice
         }
     }
 
-    public void onFocusGain()
+    void onFocusGain()
     {
         for (int source : pausedSources)
             alSourcePlay(source);
