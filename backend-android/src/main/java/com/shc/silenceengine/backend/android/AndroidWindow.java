@@ -35,14 +35,14 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidWindow implements GLSurfaceView.Renderer
+class AndroidWindow implements GLSurfaceView.Renderer
 {
-    public SimpleCallback loopFrame;
-    public SimpleCallback resized;
+    SimpleCallback loopFrame;
+    SimpleCallback resized;
 
     private SimpleCallback startCallback;
 
-    public AndroidWindow(SimpleCallback startCallback)
+    AndroidWindow(SimpleCallback startCallback)
     {
         this.startCallback = startCallback;
     }

@@ -39,8 +39,6 @@ import java.lang.reflect.Method;
  */
 public final class AndroidRuntime
 {
-    public static Game game;
-
     private AndroidRuntime()
     {
     }
@@ -53,8 +51,6 @@ public final class AndroidRuntime
         SilenceEngine.audio = new AndroidAudioDevice();
         SilenceEngine.display = new AndroidDisplayDevice();
         SilenceEngine.input = new AndroidInputDevice();
-
-        AndroidRuntime.game = game;
 
         // Notify the game loop that we got focus
         SilenceEngine.gameLoop.onFocusGain();

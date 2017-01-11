@@ -38,7 +38,7 @@ import java.io.InputStreamReader;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidFileReader extends FileReader
+class AndroidFileReader extends FileReader
 {
     @Override
     public void readBinaryFile(FilePath file, UniCallback<DirectBuffer> onComplete, UniCallback<Throwable> onError)

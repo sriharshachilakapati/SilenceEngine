@@ -43,11 +43,11 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidExternalFilePath extends AndroidFilePath
+class AndroidExternalFilePath extends AndroidFilePath
 {
     private File file;
 
-    public AndroidExternalFilePath(String path)
+    AndroidExternalFilePath(String path)
     {
         super(path, Type.EXTERNAL);
         file = new File(Environment.getExternalStorageDirectory(), getPath());
@@ -126,23 +126,21 @@ public class AndroidExternalFilePath extends AndroidFilePath
     public Promise<Void> createFile()
     {
         return new Promise<>((resolve, reject) ->
-        {
-            isDirectory().then(isDirectory ->
-            {
-                if (isDirectory)
-                    throw new SilenceException("Cannot convert a directory to a file");
+                isDirectory().then(isDirectory ->
+                {
+                    if (isDirectory)
+                        throw new SilenceException("Cannot convert a directory to a file");
 
-                try
-                {
-                    file.createNewFile();
-                    resolve.invoke(null);
-                }
-                catch (IOException e)
-                {
-                    reject.invoke(e);
-                }
-            });
-        });
+                    try
+                    {
+                        file.createNewFile();
+                        resolve.invoke(null);
+                    }
+                    catch (IOException e)
+                    {
+                        reject.invoke(e);
+                    }
+                }));
     }
 
     @Override

@@ -26,7 +26,6 @@ package com.shc.silenceengine.backend.android;
 
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
-import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.utils.functional.Promise;
@@ -41,14 +40,14 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidResourceFilePath extends AndroidFilePath
+class AndroidResourceFilePath extends AndroidFilePath
 {
     private AssetManager assetManager;
 
-    public AndroidResourceFilePath(String path)
+    AndroidResourceFilePath(String path)
     {
         super(path, Type.RESOURCE);
-        assetManager = ((AndroidDisplayDevice) SilenceEngine.display).activity.getAssets();
+        assetManager = AndroidLauncher.instance.getAssets();
     }
 
     @Override

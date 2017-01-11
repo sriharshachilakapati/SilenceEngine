@@ -36,10 +36,10 @@ import com.shc.silenceengine.core.SilenceEngine;
  */
 public abstract class AndroidLauncher extends Activity
 {
-    public static AndroidLauncher instance;
+    static AndroidLauncher instance;
 
-    public GLSurfaceView surfaceView;
-    public AndroidWindow renderer;
+    GLSurfaceView surfaceView;
+    AndroidWindow renderer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

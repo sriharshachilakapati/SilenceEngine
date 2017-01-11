@@ -30,7 +30,7 @@ import com.shc.silenceengine.logging.Logger;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidLogDevice implements ILogDevice
+class AndroidLogDevice implements ILogDevice
 {
     private Logger rootLogger = new AndroidLogger("SilenceEngine");
 

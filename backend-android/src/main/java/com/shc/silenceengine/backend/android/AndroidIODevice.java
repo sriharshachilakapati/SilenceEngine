@@ -39,7 +39,7 @@ import com.shc.silenceengine.io.ImageReader;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidIODevice implements IODevice
+class AndroidIODevice implements IODevice
 {
     private FileReader  fileReader  = new AndroidFileReader();
     private FileWriter  fileWriter  = new AndroidFileWriter();

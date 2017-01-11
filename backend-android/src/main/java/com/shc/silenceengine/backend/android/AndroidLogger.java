@@ -30,9 +30,9 @@ import com.shc.silenceengine.logging.Logger;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidLogger extends Logger
+class AndroidLogger extends Logger
 {
-    public AndroidLogger(String name)
+    AndroidLogger(String name)
     {
         super(name);
     }

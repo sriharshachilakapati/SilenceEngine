@@ -26,7 +26,6 @@ package com.shc.silenceengine.backend.android;
 
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
-import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 import com.shc.silenceengine.core.IDisplayDevice;
 import com.shc.silenceengine.core.SilenceEngine;
@@ -38,18 +37,16 @@ import com.shc.silenceengine.utils.functional.UniCallback;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidDisplayDevice implements IDisplayDevice
+class AndroidDisplayDevice implements IDisplayDevice
 {
-    public GLSurfaceView   surfaceView;
-    public AndroidLauncher activity;
+    private AndroidLauncher activity;
 
     private double startTime;
 
-    public AndroidDisplayDevice()
+    AndroidDisplayDevice()
     {
         this.startTime = SystemClock.elapsedRealtimeNanos();
         this.activity = AndroidLauncher.instance;
-        this.surfaceView = activity.surfaceView;
 
         setSize(800, 600);
     }

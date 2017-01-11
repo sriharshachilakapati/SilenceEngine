@@ -32,17 +32,17 @@ import java.nio.ByteOrder;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidDirectBuffer extends DirectBuffer
+class AndroidDirectBuffer extends DirectBuffer
 {
     private ByteBuffer nativeBuffer;
 
-    public AndroidDirectBuffer(ByteBuffer buffer)
+    AndroidDirectBuffer(ByteBuffer buffer)
     {
         super(buffer.capacity());
         nativeBuffer = buffer;
     }
 
-    public AndroidDirectBuffer(int sizeInBytes)
+    AndroidDirectBuffer(int sizeInBytes)
     {
         super(sizeInBytes);
         nativeBuffer = ByteBuffer.allocateDirect(sizeInBytes).order(ByteOrder.nativeOrder());

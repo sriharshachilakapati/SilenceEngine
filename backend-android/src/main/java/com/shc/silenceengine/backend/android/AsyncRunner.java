@@ -35,17 +35,17 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AsyncRunner extends AsyncTask<Provider<SimpleCallback>, Void, SimpleCallback>
+class AsyncRunner extends AsyncTask<Provider<SimpleCallback>, Void, SimpleCallback>
 {
     private static List<AsyncRunner> runners = Collections.synchronizedList(new ArrayList<>());
 
     @SuppressWarnings({"unchecked"})
-    public static void runAsync(Provider<SimpleCallback> callback)
+    static void runAsync(Provider<SimpleCallback> callback)
     {
         runners.add((AsyncRunner) new AsyncRunner().execute(callback));
     }
 
-    public static void cancelAll()
+    static void cancelAll()
     {
         for (AsyncRunner runner : runners)
             runner.cancel(true);

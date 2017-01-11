@@ -39,7 +39,7 @@ import java.io.IOException;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidImageReader extends ImageReader
+class AndroidImageReader extends ImageReader
 {
     private static int calculateInSampleSize(BitmapFactory.Options options)
     {

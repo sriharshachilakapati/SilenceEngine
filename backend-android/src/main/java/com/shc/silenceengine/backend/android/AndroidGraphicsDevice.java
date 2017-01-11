@@ -34,7 +34,7 @@ import java.nio.ByteBuffer;
 /**
  * @author Sri Harsha Chilakapti
  */
-public class AndroidGraphicsDevice implements IGraphicsDevice
+class AndroidGraphicsDevice implements IGraphicsDevice
 {
     @Override
     public int glGenBuffers()

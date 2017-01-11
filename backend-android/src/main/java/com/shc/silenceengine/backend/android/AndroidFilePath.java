@@ -36,7 +36,7 @@ import java.io.OutputStream;
 /**
  * @author Sri Harsha Chilakapati
  */
-public abstract class AndroidFilePath extends FilePath
+abstract class AndroidFilePath extends FilePath
 {
     /**
      * Constructs an instance of FilePath by taking a path string, and a type.
@@ -44,7 +44,7 @@ public abstract class AndroidFilePath extends FilePath
      * @param path The path string of the path
      * @param type The type of the file, one of {@link Type#EXTERNAL} or {@link Type#RESOURCE}.
      */
-    protected AndroidFilePath(String path, Type type)
+    AndroidFilePath(String path, Type type)
     {
         super(path, type);
     }

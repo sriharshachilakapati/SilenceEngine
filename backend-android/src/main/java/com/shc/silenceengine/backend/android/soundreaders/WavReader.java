@@ -77,7 +77,7 @@ public class WavReader
 
     private void loadFromStreamImpl(InputStream aIn) throws IOException
     {
-        /**
+        /*
          * references:
          * http://www.sonicspot.com/guide/wavefiles.html
          * https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
@@ -111,7 +111,7 @@ public class WavReader
 
             short sChannels = 0, sSampleSizeInBits = 0;
             long sampleRate = 0;
-            long chunkLength = 0;
+            long chunkLength;
 
             while (!foundData)
             {

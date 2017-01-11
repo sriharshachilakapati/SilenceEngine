@@ -28,7 +28,6 @@ import android.opengl.GLSurfaceView;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.input.InputDevice;
 
 import java.util.HashMap;
@@ -41,15 +40,15 @@ import static com.shc.silenceengine.input.Touch.*;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class AndroidInputDevice extends InputDevice
+class AndroidInputDevice extends InputDevice
 {
     private static Map<Integer, Integer> keyMap;
 
     private GLSurfaceView surfaceView;
 
-    public AndroidInputDevice()
+    AndroidInputDevice()
     {
-        surfaceView = ((AndroidDisplayDevice) SilenceEngine.display).surfaceView;
+        surfaceView = AndroidLauncher.instance.surfaceView;
         surfaceView.setOnKeyListener(this::onKey);
         surfaceView.setOnTouchListener(this::onTouch);
 
