@@ -91,7 +91,7 @@ war {
     from files(project(":tests").sourceSets.main.output.resourcesDir)
 }
 
-task addSource << {
+task addSource {
     sourceSets.main.compileClasspath += files(project(":silenceengine").sourceSets.main.allSource)
     sourceSets.main.compileClasspath += files(project(":backend-gwt").sourceSets.main.allSource)
     sourceSets.main.compileClasspath += files(project(":tests").sourceSets.main.allSource)

@@ -52,7 +52,7 @@ android {
     ]
 }
 
-task beforeRetrolambda << {
+task beforeRetrolambda {
     copy {
         configurations.provided.asFileTree.each {
             from(zipTree(it))
