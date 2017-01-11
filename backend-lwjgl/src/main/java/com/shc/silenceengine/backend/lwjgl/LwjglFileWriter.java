@@ -51,14 +51,7 @@ class LwjglFileWriter extends FileWriter
                 if (file.getType() == FilePath.Type.RESOURCE)
                     throw new IOException("Cannot write to resource files");
 
-                try (
-                        OutputStream outputStream = ((LwjglFilePath) file).getOutputStream(append);
-                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))
-                )
-                {
-                    writer.write(text);
-                    writer.flush();
-                }
+                writeSync(text, file, append);
 
                 TaskManager.runOnUpdate(onSuccess);
             }
@@ -67,6 +60,18 @@ class LwjglFileWriter extends FileWriter
                 onError.invoke(e);
             }
         }).start();
+    }
+
+    void writeSync(String text, FilePath file, boolean append) throws IOException
+    {
+        try (
+                OutputStream outputStream = ((LwjglFilePath) file).getOutputStream(append);
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))
+        )
+        {
+            writer.write(text);
+            writer.flush();
+        }
     }
 
     @Override
