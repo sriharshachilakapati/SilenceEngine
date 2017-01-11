@@ -48,7 +48,8 @@ import com.shc.webgl4j.client.WebGLContext;
  */
 public class GwtDisplayDevice implements IDisplayDevice
 {
-    public  Canvas       canvas;
+    Canvas canvas;
+
     private WebGLContext context;
 
     private String title;
@@ -56,7 +57,7 @@ public class GwtDisplayDevice implements IDisplayDevice
     private boolean fullScreenRequested;
     private boolean focus = true;
 
-    public GwtDisplayDevice()
+    GwtDisplayDevice()
     {
         // Create the canvas
         canvas = Canvas.createIfSupported();
@@ -151,6 +152,9 @@ public class GwtDisplayDevice implements IDisplayDevice
         canvas.addTouchEndHandler(event -> checkRequestFullscreen());
         canvas.addTouchMoveHandler(event -> checkRequestFullscreen());
         canvas.addTouchCancelHandler(event -> checkRequestFullscreen());
+
+        canvas.addFocusHandler(event -> focus = true);
+        canvas.addBlurHandler(event -> focus = false);
 
         hookFocusCallbacks(this);
     }
@@ -291,7 +295,7 @@ public class GwtDisplayDevice implements IDisplayDevice
     @Override
     public boolean hasFocus()
     {
-        return false;
+        return focus;
     }
 
     @Override

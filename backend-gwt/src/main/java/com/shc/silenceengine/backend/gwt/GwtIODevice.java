@@ -38,7 +38,7 @@ import com.shc.silenceengine.io.ImageReader;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class GwtIODevice implements IODevice
+class GwtIODevice implements IODevice
 {
     private FileReader  fileReader  = new GwtFileReader();
     private ImageReader imageReader = new GwtImageReader();

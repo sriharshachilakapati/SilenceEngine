@@ -29,7 +29,7 @@ import com.shc.silenceengine.logging.Logger;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class GwtLogger extends Logger
+class GwtLogger extends Logger
 {
     public GwtLogger(String name)
     {

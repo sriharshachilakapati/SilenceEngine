@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class GwtFilePath extends FilePath
+class GwtFilePath extends FilePath
 {
     private static final List<FilePath> EMPTY_LIST = Collections.unmodifiableList(new ArrayList<>());
 
@@ -49,7 +49,7 @@ public class GwtFilePath extends FilePath
      * @param path The path string of the path
      * @param type The type of the file, one of {@link Type#EXTERNAL} or {@link Type#RESOURCE}.
      */
-    protected GwtFilePath(String path, Type type)
+    GwtFilePath(String path, Type type)
     {
         super(path, type);
     }

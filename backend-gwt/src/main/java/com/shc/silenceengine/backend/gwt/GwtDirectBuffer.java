@@ -33,36 +33,36 @@ import com.shc.silenceengine.io.DirectBuffer;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class GwtDirectBuffer extends DirectBuffer
+class GwtDirectBuffer extends DirectBuffer
 {
-    private static boolean littleEndian = false;
-    private static boolean endiannness  = false;
+    private static boolean littleEndian    = false;
+    private static boolean foundEndianness = false;
 
     private ArrayBuffer buffer;
     private DataView    view;
 
-    public GwtDirectBuffer(ArrayBuffer data)
+    GwtDirectBuffer(ArrayBuffer data)
     {
         super(data.byteLength());
 
-        if (!endiannness)
+        if (!foundEndianness)
         {
             littleEndian = getEndianness();
-            endiannness = true;
+            foundEndianness = true;
         }
 
         this.buffer = data;
         view = DataViewNative.create(buffer);
     }
 
-    public GwtDirectBuffer(int sizeInBytes)
+    GwtDirectBuffer(int sizeInBytes)
     {
         super(sizeInBytes);
 
-        if (!endiannness)
+        if (!foundEndianness)
         {
             littleEndian = getEndianness();
-            endiannness = true;
+            foundEndianness = true;
         }
 
         buffer = ArrayBufferNative.create(sizeInBytes);

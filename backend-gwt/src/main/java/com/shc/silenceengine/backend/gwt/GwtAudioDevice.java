@@ -40,15 +40,13 @@ import com.shc.silenceengine.utils.functional.UniCallback;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class GwtAudioDevice extends AudioDevice
+class GwtAudioDevice extends AudioDevice
 {
-    private ALContext context;
-
-    public GwtAudioDevice()
+    GwtAudioDevice()
     {
         try
         {
-            context = ALContext.create();
+            ALContext context = ALContext.create();
             AL.setCurrentContext(context);
         }
         catch (AudioContextException e)

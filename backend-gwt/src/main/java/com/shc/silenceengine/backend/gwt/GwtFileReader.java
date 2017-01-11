@@ -34,7 +34,7 @@ import com.shc.silenceengine.utils.functional.UniCallback;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class GwtFileReader extends FileReader
+class GwtFileReader extends FileReader
 {
     @Override
     public void readBinaryFile(FilePath file, UniCallback<DirectBuffer> onComplete, UniCallback<Throwable> onError)

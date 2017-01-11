@@ -37,7 +37,7 @@ import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class GwtGraphicsDevice implements IGraphicsDevice
+class GwtGraphicsDevice implements IGraphicsDevice
 {
     @Override
     public int glGenBuffers()

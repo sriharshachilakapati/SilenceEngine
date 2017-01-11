@@ -42,7 +42,7 @@ import java.util.Map;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class GwtInputDevice extends InputDevice
+class GwtInputDevice extends InputDevice
 {
     private final Map<Integer, Integer> keysMap            = new HashMap<>();
     private final Map<Integer, Integer> mouseMap           = new HashMap<>();
@@ -50,7 +50,7 @@ public class GwtInputDevice extends InputDevice
 
     private boolean gamepadsExist = false;
 
-    public GwtInputDevice()
+    GwtInputDevice()
     {
         createKeyMapping();
         createMouseMapping();
@@ -162,7 +162,7 @@ public class GwtInputDevice extends InputDevice
         registerControllerConnectionEvents(this, Controller.MAX_CONTROLLERS);
     }
 
-    public static void pollControllers()
+    static void pollControllers()
     {
         GwtInputDevice inputDevice = (GwtInputDevice) SilenceEngine.input;
 

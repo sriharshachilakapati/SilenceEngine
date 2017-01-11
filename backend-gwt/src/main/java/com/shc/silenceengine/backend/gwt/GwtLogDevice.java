@@ -30,7 +30,7 @@ import com.shc.silenceengine.logging.Logger;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class GwtLogDevice implements ILogDevice
+class GwtLogDevice implements ILogDevice
 {
     private Logger rootLogger = new GwtLogger("SilenceEngine");
 

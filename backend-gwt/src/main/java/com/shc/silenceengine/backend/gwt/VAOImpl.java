@@ -31,11 +31,11 @@ import com.shc.webgl4j.client.WebGL20;
 /**
  * @author Sri Harsha Chilakapati
  */
-public abstract class VAOImpl
+abstract class VAOImpl
 {
     private static VAOImpl instance = null;
 
-    public static VAOImpl get()
+    static VAOImpl get()
     {
         if (instance == null)
             instance = WebGL20.isContextCompatible() ? new WebGL2() : new Extension();
@@ -43,23 +43,23 @@ public abstract class VAOImpl
         return instance;
     }
 
-    public abstract int glGenVertexArrays();
+    abstract int glGenVertexArrays();
 
-    public abstract void glBindVertexArray(int vertexArray);
+    abstract void glBindVertexArray(int vertexArray);
 
-    public abstract boolean glIsVertexArray(int vertexArray);
+    abstract boolean glIsVertexArray(int vertexArray);
 
-    public abstract void glEnableVertexAttribArray(int index);
+    abstract void glEnableVertexAttribArray(int index);
 
-    public abstract void glDisableVertexAttribArray(int index);
+    abstract void glDisableVertexAttribArray(int index);
 
-    public abstract void glVertexAttribPointer(int index, int count, int type, boolean normalized, int stride, long offset);
+    abstract void glVertexAttribPointer(int index, int count, int type, boolean normalized, int stride, long offset);
 
-    public abstract void glDeleteVertexArray(int vertexArray);
+    abstract void glDeleteVertexArray(int vertexArray);
 
-    public static class Extension extends VAOImpl
+    private static class Extension extends VAOImpl
     {
-        public Extension()
+        Extension()
         {
             OES_vertex_array_object.enableExtension();
         }
@@ -107,7 +107,7 @@ public abstract class VAOImpl
         }
     }
 
-    public static class WebGL2 extends VAOImpl
+    private static class WebGL2 extends VAOImpl
     {
         @Override
         public int glGenVertexArrays()

@@ -37,7 +37,7 @@ import com.shc.silenceengine.utils.functional.UniCallback;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class GwtImageReader extends ImageReader
+class GwtImageReader extends ImageReader
 {
     private static void jsLoadedCallback(ImageData pixels, int width, int height, int oWidth, int oHeight,
                                          UniCallback<Image> onComplete)
