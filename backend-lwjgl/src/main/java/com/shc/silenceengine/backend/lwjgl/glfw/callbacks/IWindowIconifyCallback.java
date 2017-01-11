@@ -27,8 +27,8 @@ package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 
 /**
- * Functional Interface describing the signature of the <code>GLFWwindowiconifyfun</code> in Java 8 environment. To set
- * an iconify callback on a window, use the function <code>setIconifyCallback()</code> on a <code>Window</code> object.
+ * Functional Interface describing the signature of the {@code GLFWwindowiconifyfun} in Java 8 environment. To set
+ * an iconify callback on a window, use the function {@code setIconifyCallback()} on a {@code Window} object.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -36,7 +36,7 @@ import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 public interface IWindowIconifyCallback
 {
     /**
-     * The signature of the <code>GLFWwindowiconifyfun</code> method. This method is invoked by GLFW to notify you when
+     * The signature of the {@code GLFWwindowiconifyfun} method. This method is invoked by GLFW to notify you when
      * the window is either iconified (minimized) or restored.
      *
      * @param window  The Window that received the event.

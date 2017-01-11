@@ -27,8 +27,8 @@ package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 
 /**
- * Functional Interface describing the signature of the <code>GLFWkeyfun</code> in Java 8 environment. To set a key
- * callback on a window, use the function <code>setKeyCallback()</code> on a <code>Window</code> object.
+ * Functional Interface describing the signature of the {@code GLFWkeyfun} in Java 8 environment. To set a key
+ * callback on a window, use the function {@code setKeyCallback()} on a {@code Window} object.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -36,13 +36,13 @@ import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 public interface IKeyCallback
 {
     /**
-     * The signature of the <code>GLFWkeyfun</code> method. This method is invoked by GLFW to notify you whenever a key
+     * The signature of the {@code GLFWkeyfun} method. This method is invoked by GLFW to notify you whenever a key
      * input has occurred.
      *
      * @param window   The Window that received the event.
      * @param key      The keycode of the key that was released or pressed.
      * @param scanCode The system-specific scan code of the key.
-     * @param action   <code>GLFW_PRESS, GLFW_RELEASE</code> or <code>GLFW_REPEAT</code>.
+     * @param action   {@code GLFW_PRESS, GLFW_RELEASE} or {@code GLFW_REPEAT}.
      * @param mods     Bit field describing which modifier keys were held down.
      */
     void invoke(Window window, int key, int scanCode, int action, int mods);

@@ -27,8 +27,8 @@ package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 
 /**
- * Functional Interface describing the signature of the <code>GLFWcursorenterfun</code> in Java 8 environment. To set a
- * character enter callback on a window, use the function <code>setCursorEnterCallback()</code> on a <code>Window</code>
+ * Functional Interface describing the signature of the {@code GLFWcursorenterfun} in Java 8 environment. To set a
+ * character enter callback on a window, use the function {@code setCursorEnterCallback()} on a {@code Window}
  * object.
  *
  * @author Sri Harsha Chilakapati
@@ -37,7 +37,7 @@ import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 public interface ICursorEnterCallback
 {
     /**
-     * The signature of the <code>GLFWcursorenterfun</code> method. This method is invoked by GLFW to notify the whether
+     * The signature of the {@code GLFWcursorenterfun} method. This method is invoked by GLFW to notify the whether
      * the cursor entered or left the window.
      *
      * @param window  The Window that received the event.

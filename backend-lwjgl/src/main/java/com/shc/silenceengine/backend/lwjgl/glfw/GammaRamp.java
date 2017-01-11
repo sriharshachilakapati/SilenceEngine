@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 /**
  * <p> This class describes the Gamma Ramp of a monitor. To set the gamma ramp, you have to use the
- * <code>setGammaRamp</code> method on the <code>Monitor</code> object.</p>
+ * {@code setGammaRamp} method on the {@code Monitor} object.</p>
  *
  * <pre>
  *     short[] red   = new short[256];

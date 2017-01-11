@@ -75,7 +75,7 @@ public class BufferObject
 
     /**
      * Uploads the data in the specified NIO Buffer to this VertexBufferObject by calling the
-     * <code>glBufferData()</code> function.
+     * {@code glBufferData()} function.
      *
      * @param data  The NIO buffer with data to be copied into the data store
      * @param usage How the is intended to be used. Valid usage values are GL_STREAM_DRAW, GL_STATIC_DRAW or
@@ -110,7 +110,7 @@ public class BufferObject
     }
 
     /**
-     * Uploads NULL data to this VertexBufferObject by calling the <code>glBufferData()</code> function.
+     * Uploads NULL data to this VertexBufferObject by calling the {@code glBufferData()} function.
      *
      * @param capacity The capacity of the data store to be created
      * @param usage    How the is intended to be used. Valid usage values are GL_STREAM_DRAW, GL_STATIC_DRAW or

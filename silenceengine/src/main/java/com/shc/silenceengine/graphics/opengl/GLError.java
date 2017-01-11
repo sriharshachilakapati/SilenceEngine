@@ -31,7 +31,7 @@ import static com.shc.silenceengine.graphics.IGraphicsDevice.Constants.*;
 
 /**
  * Static Utility class to check for OpenGL errors. If you want to check for errors anytime, just make a call to
- * <code>GlError.check()</code> and you are done.
+ * {@code GlError.check()} and you are done.
  *
  * @author Sri Harsha Chilakapati
  */

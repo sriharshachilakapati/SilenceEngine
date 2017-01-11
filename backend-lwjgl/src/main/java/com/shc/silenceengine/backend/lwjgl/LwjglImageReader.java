@@ -41,7 +41,7 @@ import static org.lwjgl.stb.STBImage.*;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class LwjglImageReader extends ImageReader
+class LwjglImageReader extends ImageReader
 {
     @Override
     public void readImage(DirectBuffer memory, UniCallback<Image> onComplete, UniCallback<Throwable> onError)

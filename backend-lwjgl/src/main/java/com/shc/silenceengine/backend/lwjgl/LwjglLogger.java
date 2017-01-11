@@ -29,9 +29,9 @@ import com.shc.silenceengine.logging.Logger;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class LwjglLogger extends Logger
+class LwjglLogger extends Logger
 {
-    public LwjglLogger(String name)
+    LwjglLogger(String name)
     {
         super(name);
     }

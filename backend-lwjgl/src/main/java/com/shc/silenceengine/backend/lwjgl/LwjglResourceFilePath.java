@@ -48,14 +48,14 @@ import java.util.stream.Collectors;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class LwjglResourceFilePath extends LwjglFilePath
+class LwjglResourceFilePath extends LwjglFilePath
 {
-    public LwjglResourceFilePath(String path)
+    LwjglResourceFilePath(String path)
     {
         super(path, Type.RESOURCE);
     }
 
-    public ResourceType getResourceType()
+    private ResourceType getResourceType()
     {
         URL url = LwjglResourceFilePath.class.getClassLoader().getResource(getPath());
 
@@ -283,7 +283,7 @@ public class LwjglResourceFilePath extends LwjglFilePath
     /**
      * The ResourceType specifies whether the resource file is inside a JAR or on the disk (run from IDE).
      */
-    public enum ResourceType
+    private enum ResourceType
     {
         JAR,  // Resource contained within a JAR file in classpath
         FILE  // Resource is a file on the disk (must be run from the IDE)

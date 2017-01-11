@@ -42,9 +42,9 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class LwjglExternalFilePath extends LwjglFilePath
+class LwjglExternalFilePath extends LwjglFilePath
 {
-    public LwjglExternalFilePath(String path)
+    LwjglExternalFilePath(String path)
     {
         super(path, Type.EXTERNAL);
     }
@@ -139,8 +139,7 @@ public class LwjglExternalFilePath extends LwjglFilePath
                                     listFiles().then(files ->
                                     {
                                         // Delete all the children first
-                                        for (FilePath filePath : files)
-                                            filePath.delete();
+                                        files.forEach(FilePath::delete);
                                     }, reject);
                                 }
 
@@ -184,29 +183,27 @@ public class LwjglExternalFilePath extends LwjglFilePath
     public Promise<List<FilePath>> listFiles()
     {
         return new Promise<>((resolve, reject) ->
-        {
-            isDirectory().then(isDirectory ->
-                    exists().then(exists ->
-                    {
-                        if (!isDirectory)
-                            throw new SilenceException("Cannot list files in a path which is not a directory.");
+                isDirectory().then(isDirectory ->
+                        exists().then(exists ->
+                        {
+                            if (!isDirectory)
+                                throw new SilenceException("Cannot list files in a path which is not a directory.");
 
-                        if (!exists)
-                            throw new SilenceException("Cannot list files in a non existing directory.");
+                            if (!exists)
+                                throw new SilenceException("Cannot list files in a non existing directory.");
 
-                        List<FilePath> list = new ArrayList<>();
+                            List<FilePath> list = new ArrayList<>();
 
-                        File file = new File(path);
+                            File file = new File(path);
 
-                        File[] children = file.listFiles();
+                            File[] children = file.listFiles();
 
-                        if (children != null)
-                            for (File child : children)
-                                list.add(new LwjglExternalFilePath(path + SEPARATOR + child.getPath().replace(file.getPath(), "")));
+                            if (children != null)
+                                for (File child : children)
+                                    list.add(new LwjglExternalFilePath(path + SEPARATOR + child.getPath().replace(file.getPath(), "")));
 
-                        resolve.invoke(Collections.unmodifiableList(list));
-                    }, reject), reject);
-        });
+                            resolve.invoke(Collections.unmodifiableList(list));
+                        }, reject), reject));
     }
 
     @Override

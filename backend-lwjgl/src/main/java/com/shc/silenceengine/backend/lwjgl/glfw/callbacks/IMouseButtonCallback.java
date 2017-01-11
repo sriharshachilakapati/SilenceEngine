@@ -27,8 +27,8 @@ package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 
 /**
- * Functional Interface describing the signature of the <code>GLFWmousebuttonfun</code> in Java 8 environment. To set a
- * mouse button callback on a window, use the function <code>setMouseButtonCallback()</code> on a <code>Window</code>
+ * Functional Interface describing the signature of the {@code GLFWmousebuttonfun} in Java 8 environment. To set a
+ * mouse button callback on a window, use the function {@code setMouseButtonCallback()} on a {@code Window}
  * object.
  *
  * @author Sri Harsha Chilakapati
@@ -36,12 +36,12 @@ import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 public interface IMouseButtonCallback
 {
     /**
-     * The signature of the <code>GLFWmousebuttonfun</code> method. This method is invoked by GLFW to notify you
+     * The signature of the {@code GLFWmousebuttonfun} method. This method is invoked by GLFW to notify you
      * whenever a mouse button input has occurred.
      *
      * @param window The Window that received the event.
      * @param button The code of the mouse button that was used.
-     * @param action <code>GLFW_PRESS, GLFW_RELEASE</code> or <code>GLFW_REPEAT</code>.
+     * @param action {@code GLFW_PRESS, GLFW_RELEASE} or {@code GLFW_REPEAT}.
      * @param mods   Bit field describing which modifier keys were held down.
      */
     void invoke(Window window, int button, int action, int mods);

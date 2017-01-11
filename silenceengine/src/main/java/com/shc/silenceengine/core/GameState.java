@@ -35,7 +35,7 @@ package com.shc.silenceengine.core;
 public abstract class GameState
 {
     /**
-     * Called when the game switches to this <code>GameState</code> through <code>setGameState()</code>.
+     * Called when the game switches to this {@code GameState} through {@code setGameState()}.
      *
      * @see com.shc.silenceengine.core.Game#setGameState(GameState)
      */

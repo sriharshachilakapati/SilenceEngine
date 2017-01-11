@@ -46,12 +46,12 @@ import static org.lwjgl.openal.ALC10.*;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class LwjglAudioDevice extends AudioDevice
+class LwjglAudioDevice extends AudioDevice
 {
     private long device;
     private long context;
 
-    public LwjglAudioDevice()
+    LwjglAudioDevice()
     {
         device = alcOpenDevice((ByteBuffer) null);
         ALCCapabilities deviceCaps = ALC.createCapabilities(device);

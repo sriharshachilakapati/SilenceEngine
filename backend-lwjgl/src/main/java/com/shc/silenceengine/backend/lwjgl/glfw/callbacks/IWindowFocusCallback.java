@@ -27,8 +27,8 @@ package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 
 /**
- * Functional Interface describing the signature of the <code>GLFWwindowfocusfun</code> in Java 8 environment. To set a
- * focus callback on a window, use the function <code>setFocusCallback()</code> on a <code>Window</code> object.
+ * Functional Interface describing the signature of the {@code GLFWwindowfocusfun} in Java 8 environment. To set a
+ * focus callback on a window, use the function {@code setFocusCallback()} on a {@code Window} object.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -36,7 +36,7 @@ import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 public interface IWindowFocusCallback
 {
     /**
-     * The signature of the <code>GLFWwindowfocusfun</code> method. This method is invoked by GLFW to notify you when
+     * The signature of the {@code GLFWwindowfocusfun} method. This method is invoked by GLFW to notify you when
      * the focus of a window has been changed.
      *
      * @param window The Window that received the event.

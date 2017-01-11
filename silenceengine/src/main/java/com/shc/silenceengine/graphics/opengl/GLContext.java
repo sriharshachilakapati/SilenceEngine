@@ -81,7 +81,7 @@ public final class GLContext
     }
 
     /**
-     * Calls <code>glClear()</code> on <code>buffers</code>
+     * Calls {@code glClear()} on {@code buffers}
      *
      * @param buffers The buffer to be cleared
      */
@@ -94,10 +94,10 @@ public final class GLContext
     /**
      * Binds a {@link VertexArray} and draws it to the screen
      *
-     * @param vao         The <code>VertexArray</code> to be drawn
+     * @param vao         The {@code VertexArray} to be drawn
      * @param mode        The GL Primitive to be used for drawing (Primitive.TRIANGLE is recommended)
-     * @param offset      The position in the <code>vao</code> to begin drawing (Use 0 for the beginning)
-     * @param vertexCount The amount of vertices in the <code>vao</code>
+     * @param offset      The position in the {@code vao} to begin drawing (Use 0 for the beginning)
+     * @param vertexCount The amount of vertices in the {@code vao}
      */
     public static void drawArrays(VertexArray vao, Primitive mode, int offset, int vertexCount)
     {

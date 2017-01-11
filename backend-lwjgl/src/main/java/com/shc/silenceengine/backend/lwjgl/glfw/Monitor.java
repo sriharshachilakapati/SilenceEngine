@@ -102,9 +102,9 @@ public class Monitor
      * This function sets the monitor configuration callback, or removes the currently set callback. This is called when
      * a monitor is connected to or disconnected from the system.
      *
-     * @param callback The new callback, or <code>null</code> to remove the currently set callback.
+     * @param callback The new callback, or {@code null} to remove the currently set callback.
      *
-     * @return The previously set callback, or <code>null</code> if no callback was set or the library had not been
+     * @return The previously set callback, or {@code null} if no callback was set or the library had not been
      * initialized.
      */
     public static IMonitorCallback setCallback(IMonitorCallback callback)
@@ -231,7 +231,7 @@ public class Monitor
     /**
      * This method returns the current gamma ramp of the specified monitor.
      *
-     * @return The current GammaRamp, or <code>null</code> if an error occurred.
+     * @return The current GammaRamp, or {@code null} if an error occurred.
      */
     public GammaRamp getGammaRamp()
     {

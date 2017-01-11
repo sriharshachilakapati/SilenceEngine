@@ -32,13 +32,13 @@ import java.io.InputStream;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class DirectBufferInputStream extends InputStream
+class DirectBufferInputStream extends InputStream
 {
     private DirectBuffer directBuffer;
 
     private int index;
 
-    public DirectBufferInputStream(DirectBuffer directBuffer)
+    DirectBufferInputStream(DirectBuffer directBuffer)
     {
         this.directBuffer = directBuffer;
     }

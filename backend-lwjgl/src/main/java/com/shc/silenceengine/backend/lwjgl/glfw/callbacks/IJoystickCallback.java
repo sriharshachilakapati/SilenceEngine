@@ -25,8 +25,8 @@
 package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 
 /**
- * Functional Interface describing the signature of the <code>GLFWJoystickfun</code> in Java 8 environment. To
- * set a joystick callback use the function <code>setJoystickCallback()</code> from <code>GLFW3</code> class.
+ * Functional Interface describing the signature of the {@code GLFWJoystickfun} in Java 8 environment. To
+ * set a joystick callback use the function {@code setJoystickCallback()} from {@code GLFW3} class.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -34,7 +34,7 @@ package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 public interface IJoystickCallback
 {
     /**
-     * The signature of the <code>GLFWJoystickfun</code> method. This method is invoked by GLFW to notify you
+     * The signature of the {@code GLFWJoystickfun} method. This method is invoked by GLFW to notify you
      * that a joystick event occurred like disconnected or connected.
      *
      * @param joystick  The ID of the joystick for which the event occurred.

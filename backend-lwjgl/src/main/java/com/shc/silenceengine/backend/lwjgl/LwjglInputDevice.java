@@ -44,12 +44,12 @@ import static org.lwjgl.glfw.GLFW.*;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class LwjglInputDevice extends InputDevice
+class LwjglInputDevice extends InputDevice
 {
     private final Map<Integer, Integer> keyMap   = new HashMap<>();
     private final Map<Integer, Integer> mouseMap = new HashMap<>();
 
-    public LwjglInputDevice()
+    LwjglInputDevice()
     {
         Window window = ((LwjglDisplayDevice) SilenceEngine.display).window;
 

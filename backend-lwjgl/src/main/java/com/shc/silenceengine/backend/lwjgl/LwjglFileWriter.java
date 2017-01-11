@@ -39,7 +39,7 @@ import java.io.OutputStreamWriter;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class LwjglFileWriter extends FileWriter
+class LwjglFileWriter extends FileWriter
 {
     @Override
     public void write(String text, FilePath file, boolean append, SimpleCallback onSuccess, UniCallback<Throwable> onError)

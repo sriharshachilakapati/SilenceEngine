@@ -41,7 +41,7 @@ import java.nio.ByteBuffer;
  *
  * @author Sri Harsha Chilakapati
  */
-public class LwjglGraphicsDevice implements IGraphicsDevice
+class LwjglGraphicsDevice implements IGraphicsDevice
 {
     @Override
     public int glGenBuffers()

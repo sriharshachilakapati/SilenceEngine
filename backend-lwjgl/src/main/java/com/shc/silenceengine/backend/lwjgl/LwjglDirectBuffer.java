@@ -32,17 +32,17 @@ import java.nio.ByteBuffer;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class LwjglDirectBuffer extends DirectBuffer
+class LwjglDirectBuffer extends DirectBuffer
 {
     private ByteBuffer nativeBuffer;
 
-    public LwjglDirectBuffer(ByteBuffer buffer)
+    LwjglDirectBuffer(ByteBuffer buffer)
     {
         super(buffer.capacity());
         nativeBuffer = buffer;
     }
 
-    public LwjglDirectBuffer(int sizeInBytes)
+    LwjglDirectBuffer(int sizeInBytes)
     {
         super(sizeInBytes);
         nativeBuffer = MemoryUtil.memAlloc(sizeInBytes);

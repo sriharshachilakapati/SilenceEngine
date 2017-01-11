@@ -27,9 +27,9 @@ package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 
 /**
- * Functional Interface describing the signature of the <code>GLFWCursorposfun</code> in Java 8 environment. To set a
- * cursor position callback on a window, use the function <code>setCursorPositionCallback()</code> on a
- * <code>Window</code> object.
+ * Functional Interface describing the signature of the {@code GLFWCursorposfun} in Java 8 environment. To set a
+ * cursor position callback on a window, use the function {@code setCursorPositionCallback()} on a
+ * {@code Window} object.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -37,7 +37,7 @@ import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 public interface ICursorPositionCallback
 {
     /**
-     * The signature of the <code>GLFWcursorposfun</code> method. This method is invoked by GLFW to notify the cursor
+     * The signature of the {@code GLFWcursorposfun} method. This method is invoked by GLFW to notify the cursor
      * position when the cursor is moved.
      *
      * @param window The Window that received the event.

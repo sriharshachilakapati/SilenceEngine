@@ -24,9 +24,9 @@
 
 /**
  * This package contains the functional interfaces for the GLFW function callback types. These interfaces are present
- * here because the LWJGL's callback interfaces confuse the newbies with their usage of <code>long</code> for all
+ * here because the LWJGL's callback interfaces confuse the newbies with their usage of {@code long} for all
  * pointer types. These callbacks use the Java classes that wrap the GLFW types instead of using the primitive
- * <code>long</code> for all the pointers. The conversion happens from the LWJGL's interfaces happen internally to the
+ * {@code long} for all the pointers. The conversion happens from the LWJGL's interfaces happen internally to the
  * GLFW classes.
  *
  * @author Sri Harsha Chilakapati

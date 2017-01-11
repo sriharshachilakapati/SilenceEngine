@@ -27,8 +27,8 @@ package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 
 /**
- * Functional Interface describing the signature of the <code>GLFWwindowposfun</code> in Java 8 environment. To set a
- * position callback on a window, use the function <code>setPositionCallback()</code> on a <code>Window</code> object.
+ * Functional Interface describing the signature of the {@code GLFWwindowposfun} in Java 8 environment. To set a
+ * position callback on a window, use the function {@code setPositionCallback()} on a {@code Window} object.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -36,7 +36,7 @@ import com.shc.silenceengine.backend.lwjgl.glfw.Window;
 public interface IWindowPositionCallback
 {
     /**
-     * The signature of the <code>GLFWwindowposfun</code> method. This method is invoked by GLFW to notify you when the
+     * The signature of the {@code GLFWwindowposfun} method. This method is invoked by GLFW to notify you when the
      * window is moved on the screen and the position (screen-coordinate of the top-left corner) is changed.
      *
      * @param window The Window that received the event.

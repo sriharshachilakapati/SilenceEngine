@@ -42,7 +42,7 @@ import java.util.List;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class LwjglIODevice implements IODevice
+class LwjglIODevice implements IODevice
 {
     private FileReader  fileReader  = new LwjglFileReader();
     private FileWriter  fileWriter  = new LwjglFileWriter();
@@ -50,7 +50,7 @@ public class LwjglIODevice implements IODevice
 
     private List<DirectBuffer> directBuffers = new ArrayList<>();
 
-    public LwjglIODevice()
+    LwjglIODevice()
     {
         // Free all the direct buffers at the end
         SilenceEngine.eventManager.addDisposeHandler(() ->

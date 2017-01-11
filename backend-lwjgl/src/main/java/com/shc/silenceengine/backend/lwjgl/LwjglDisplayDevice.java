@@ -46,7 +46,7 @@ import static org.lwjgl.util.tinyfd.TinyFileDialogs.*;
  *
  * @author Sri Harsha Chilakapati
  */
-public class LwjglDisplayDevice implements IDisplayDevice
+class LwjglDisplayDevice implements IDisplayDevice
 {
     public  Window   window;
     private Platform platform;
@@ -57,7 +57,7 @@ public class LwjglDisplayDevice implements IDisplayDevice
     private boolean fullscreen;
     private boolean focus = true;
 
-    public LwjglDisplayDevice()
+    LwjglDisplayDevice()
     {
         GLFW3.init();
 

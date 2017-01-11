@@ -25,8 +25,8 @@
 package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 
 /**
- * Functional Interface describing the signature of the <code>GLFWerrorfun</code> in Java 8 environment. To set an error
- * callback, use the static function <code>setErrorCallback()</code> in the <code>GLFW3</code> class.
+ * Functional Interface describing the signature of the {@code GLFWerrorfun} in Java 8 environment. To set an error
+ * callback, use the static function {@code setErrorCallback()} in the {@code GLFW3} class.
  *
  * @author Sri Harsha Chilakapati
  */
@@ -34,7 +34,7 @@ package com.shc.silenceengine.backend.lwjgl.glfw.callbacks;
 public interface IErrorCallback
 {
     /**
-     * The signature of the <code>GLFWerrorfun</code> method. This method is invoked by GLFW to notify of any error that
+     * The signature of the {@code GLFWerrorfun} method. This method is invoked by GLFW to notify of any error that
      * occurred internally in the GLFW library.
      *
      * @param error       The error code as defined in the GLFW3 header files.

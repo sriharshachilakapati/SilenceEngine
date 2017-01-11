@@ -38,7 +38,7 @@ import java.io.InputStreamReader;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class LwjglFileReader extends FileReader
+class LwjglFileReader extends FileReader
 {
     @Override
     public void readBinaryFile(FilePath file, UniCallback<DirectBuffer> onComplete, UniCallback<Throwable> onError)

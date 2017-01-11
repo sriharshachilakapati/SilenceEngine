@@ -40,7 +40,7 @@ import java.nio.ByteBuffer;
 
 /**
  * <p> A sound reader based on the JavaSound API. That means, this class is able to read sound samples from any format
- * that JavaSound's <code>AudioInputStream</code> class is able to decode. Currently, it can read from .wav, .wave, .au,
+ * that JavaSound's {@code AudioInputStream} class is able to decode. Currently, it can read from .wav, .wave, .au,
  * .aif, .aiff, .mid, .midi formats. </p>
  *
  * @author Sri Harsha Chilakapati

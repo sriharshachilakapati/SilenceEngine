@@ -190,8 +190,8 @@ public class Window
      *
      * @param width   The desired width, in screen coordinates, of the window. This must be greater than zero.
      * @param height  The desired height, in screen coordinates, of the window. This must be greater than zero.
-     * @param monitor The monitor to use for full screen mode, or <code>null</code> to use windowed mode.
-     * @param share   The window whose context to share resources with, or <code>null</code> to not share resources.
+     * @param monitor The monitor to use for full screen mode, or {@code null} to use windowed mode.
+     * @param share   The window whose context to share resources with, or {@code null} to not share resources.
      */
     public Window(int width, int height, Monitor monitor, Window share)
     {
@@ -218,7 +218,7 @@ public class Window
      * mode is set for the specified monitor.</p>
      *
      * <p> By default, newly created windows use the placement recommended by the window system. To create the window at
-     * a specific position, make it initially invisible using the <code>GLFW_VISIBLE</code> window hint, set its
+     * a specific position, make it initially invisible using the {@code GLFW_VISIBLE} window hint, set its
      * position and then show it.</p>
      *
      * <p> If a full screen window has input focus, the screensaver is prohibited from starting.</p>
@@ -229,8 +229,8 @@ public class Window
      * @param width   The desired width, in screen coordinates, of the window. This must be greater than zero.
      * @param height  The desired height, in screen coordinates, of the window. This must be greater than zero.
      * @param title   The desired title string of the Window. This can also contain UTF-8 characters.
-     * @param monitor The monitor to use for full screen mode, or <code>null</code> to use windowed mode.
-     * @param share   The window whose context to share resources with, or <code>null</code> to not share resources.
+     * @param monitor The monitor to use for full screen mode, or {@code null} to use windowed mode.
+     * @param share   The window whose context to share resources with, or {@code null} to not share resources.
      */
     public Window(int width, int height, String title, Monitor monitor, Window share)
     {
@@ -257,7 +257,7 @@ public class Window
      * mode is set for the specified monitor.</p>
      *
      * <p> By default, newly created windows use the placement recommended by the window system. To create the window at
-     * a specific position, make it initially invisible using the <code>GLFW_VISIBLE</code> window hint, set its
+     * a specific position, make it initially invisible using the {@code GLFW_VISIBLE} window hint, set its
      * position and then show it.</p>
      *
      * <p> If a full screen window has input focus, the screensaver is prohibited from starting.</p>
@@ -268,9 +268,9 @@ public class Window
      * @param width       The desired width, in screen coordinates, of the window. This must be greater than zero.
      * @param height      The desired height, in screen coordinates, of the window. This must be greater than zero.
      * @param title       The desired title string of the Window. This can also contain UTF-8 characters.
-     * @param monitor     The monitor to use for full screen mode, or <code>null</code> to use windowed mode.
+     * @param monitor     The monitor to use for full screen mode, or {@code null} to use windowed mode.
      * @param refreshRate The refresh rate to be used for the window. This is ignored for windowed mode windows.
-     * @param share       The window whose context to share resources with, or <code>null</code> to not share
+     * @param share       The window whose context to share resources with, or {@code null} to not share
      *                    resources.
      */
     public Window(int width, int height, String title, Monitor monitor, int refreshRate, Window share)
@@ -296,10 +296,10 @@ public class Window
 
     /**
      * This constructor creates a fullscreen mode window that fills the monitor. The resolution will be set to the
-     * default resolution of the monitor supplied. If the monitor is supplied as <code>null</code>, then a windowed mode
+     * default resolution of the monitor supplied. If the monitor is supplied as {@code null}, then a windowed mode
      * window is created instead which is 800 by 600 in size.
      *
-     * @param monitor The monitor to use for full screen mode, or <code>null</code> to use windowed mode.
+     * @param monitor The monitor to use for full screen mode, or {@code null} to use windowed mode.
      */
     public Window(Monitor monitor)
     {
@@ -312,7 +312,7 @@ public class Window
      *
      * @param width   The desired width, in screen coordinates, of the window. This must be greater than zero.
      * @param height  The desired height, in screen coordinates, of the window. This must be greater than zero.
-     * @param monitor The monitor to use for full screen mode, or <code>null</code> to use windowed mode.
+     * @param monitor The monitor to use for full screen mode, or {@code null} to use windowed mode.
      */
     public Window(int width, int height, Monitor monitor)
     {
@@ -326,7 +326,7 @@ public class Window
      * @param width   The desired width, in screen coordinates, of the window. This must be greater than zero.
      * @param height  The desired height, in screen coordinates, of the window. This must be greater than zero.
      * @param title   The desired title string of the Window. This can also contain UTF-8 characters.
-     * @param monitor The monitor to use for full screen mode, or <code>null</code> to use windowed mode.
+     * @param monitor The monitor to use for full screen mode, or {@code null} to use windowed mode.
      */
     public Window(int width, int height, String title, Monitor monitor)
     {
@@ -477,7 +477,7 @@ public class Window
     }
 
     /**
-     * Returns the native pointer of the window. This value can be casted to a <code>GLFWwindow*</code> in the native
+     * Returns the native pointer of the window. This value can be casted to a {@code GLFWwindow*} in the native
      * code. This is useful if you want to use the native glfw functions from the {@link GLFW} class.
      *
      * @return The native handle that corresponds to this window.
@@ -614,10 +614,10 @@ public class Window
 
     /**
      * <p> This method returns the last state reported for the specified key to the specified window. The returned state
-     * is one of <code>GLFW_PRESS</code> or <code>GLFW_RELEASE</code>. The higher-level action <code>GLFW_REPEAT</code>
+     * is one of {@code GLFW_PRESS} or {@code GLFW_RELEASE}. The higher-level action {@code GLFW_REPEAT}
      * is only reported to the key callback.</p>
      *
-     * <p> If the <code>GLFW_STICKY_KEYS</code> input mode is enabled, this function returns <code>GLFW_PRESS</code> the
+     * <p> If the {@code GLFW_STICKY_KEYS} input mode is enabled, this function returns {@code GLFW_PRESS} the
      * first time you call it for a key that was pressed, even if that key has already been released.</p>
      *
      * <p> The key methods deal with physical keys, with key tokens named after their use on the standard US keyboard
@@ -625,9 +625,9 @@ public class Window
      *
      * <p> The modifier key bit masks are not key tokens and cannot be used with this method.</p>
      *
-     * @param key The desired keyboard key. <code>GLFW_KEY_UNKNOWN</code> is not a valid key for this method.
+     * @param key The desired keyboard key. {@code GLFW_KEY_UNKNOWN} is not a valid key for this method.
      *
-     * @return One of <code>GLFW_PRESS</code> or <code>GLFW_RELEASE</code>.
+     * @return One of {@code GLFW_PRESS} or {@code GLFW_RELEASE}.
      */
     public int getKey(int key)
     {
@@ -636,15 +636,15 @@ public class Window
 
     /**
      * <p> This method returns the last state reported for the specified mouse button to the specified window. The
-     * returned state is one of <code>GLFW_PRESS</code> or <code>GLFW_RELEASE</code>.</p>
+     * returned state is one of {@code GLFW_PRESS} or {@code GLFW_RELEASE}.</p>
      *
-     * <p> If the <code>GLFW_STICKY_MOUSE_BUTTONS</code> input mode is enabled, this method <code>GLFW_PRESS</code> the
+     * <p> If the {@code GLFW_STICKY_MOUSE_BUTTONS} input mode is enabled, this method {@code GLFW_PRESS} the
      * first time you call it for a mouse button that was pressed, even if that mouse button has already been released.
      * </p>
      *
      * @param button The desired mouse button.
      *
-     * @return One of <code>GLFW_PRESS</code> or <code>GLFW_RELEASE</code>.
+     * @return One of {@code GLFW_PRESS} or {@code GLFW_RELEASE}.
      *
      * @see Window#setInputMode(int, int)
      */
@@ -657,7 +657,7 @@ public class Window
      * <p> This method returns the position of the cursor, in screen coordinates, relative to the upper-left corner of
      * the client area of the specified window.</p>
      *
-     * <p> If the cursor is disabled (with <code>GLFW_CURSOR_DISABLED</code>) then the cursor position is unbounded and
+     * <p> If the cursor is disabled (with {@code GLFW_CURSOR_DISABLED}) then the cursor position is unbounded and
      * limited only by the minimum and maximum values of a double.</p>
      *
      * @return The current position of the mouse cursor in screen coordinates, as a {@link Vector2} object.
@@ -676,10 +676,10 @@ public class Window
      * method is called, it fails silently.</p>
      *
      * <p> <b>Do not use this method</b> to implement things like camera controls. GLFW already provides the
-     * <code>GLFW_CURSOR_DISABLED</code> cursor mode that hides the cursor, transparently re-centers it and provides
+     * {@code GLFW_CURSOR_DISABLED} cursor mode that hides the cursor, transparently re-centers it and provides
      * unconstrained cursor motion. See {@link Window#setInputMode(int, int)} for more information.</p>
      *
-     * <p> If the cursor mode is <code>GLFW_CURSOR_DISABLED</code> then the cursor position is unconstrained and limited
+     * <p> If the cursor mode is {@code GLFW_CURSOR_DISABLED} then the cursor position is unconstrained and limited
      * only by the minimum and maximum values of a double.</p>
      *
      * @param pos The desired position of the cursor as a Vector2 object.
@@ -695,10 +695,10 @@ public class Window
      * method is called, it fails silently.</p>
      *
      * <p> <b>Do not use this method</b> to implement things like camera controls. GLFW already provides the
-     * <code>GLFW_CURSOR_DISABLED</code> cursor mode that hides the cursor, transparently re-centers it and provides
+     * {@code GLFW_CURSOR_DISABLED} cursor mode that hides the cursor, transparently re-centers it and provides
      * unconstrained cursor motion. See {@link Window#setInputMode(int, int)} for more information.</p>
      *
-     * <p> If the cursor mode is <code>GLFW_CURSOR_DISABLED</code> then the cursor position is unconstrained and limited
+     * <p> If the cursor mode is {@code GLFW_CURSOR_DISABLED} then the cursor position is unconstrained and limited
      * only by the minimum and maximum values of a double.</p>
      *
      * @param xPos The desired x-coordinate, relative to the left edge of the client area.
@@ -710,30 +710,30 @@ public class Window
     }
 
     /**
-     * <p> This method sets an input mode option for this window. The mode must be one of <code>GLFW_CURSOR</code>,
-     * <code>GLFW_STICKY_KEYS</code> or <code>GLFW_STICKY_MOUSE_BUTTONS</code>.</p>
+     * <p> This method sets an input mode option for this window. The mode must be one of {@code GLFW_CURSOR},
+     * {@code GLFW_STICKY_KEYS} or {@code GLFW_STICKY_MOUSE_BUTTONS}.</p>
      *
      * <p> If the mode is GLFW_CURSOR, the value must be one of the following cursor modes:</p>
      *
-     * <ul> <li><code>GLFW_CURSOR_NORMAL</code> makes the cursor visible and behaving normally.</li>
-     * <li><code>GLFW_CURSOR_HIDDEN</code> makes the cursor invisible when it is over the client area of the window but
-     * does not restrict the cursor from leaving.</li> <li><code>GLFW_CURSOR_DISABLED</code> hides and grabs the cursor,
+     * <ul> <li>{@code GLFW_CURSOR_NORMAL} makes the cursor visible and behaving normally.</li>
+     * <li>{@code GLFW_CURSOR_HIDDEN} makes the cursor invisible when it is over the client area of the window but
+     * does not restrict the cursor from leaving.</li> <li>{@code GLFW_CURSOR_DISABLED} hides and grabs the cursor,
      * providing virtual and unlimited cursor movement. This is useful for implementing for example 3D camera
      * controls.</li> </ul>
      *
-     * <p> If the mode is <code>GLFW_STICKY_KEYS</code>, the value must be either <code>GL_TRUE</code> to enable sticky
-     * keys, or <code>GL_FALSE</code> to disable it. If sticky keys are enabled, a key press will ensure that {@link
-     * Window#getKey(int)} returns <code>GLFW_PRESS</code> the next time it is called even if the key had been released
+     * <p> If the mode is {@code GLFW_STICKY_KEYS}, the value must be either {@code GL_TRUE} to enable sticky
+     * keys, or {@code GL_FALSE} to disable it. If sticky keys are enabled, a key press will ensure that {@link
+     * Window#getKey(int)} returns {@code GLFW_PRESS} the next time it is called even if the key had been released
      * before the call. This is useful when you are only interested in whether keys have been pressed but not when or in
      * which order.</p>
      *
-     * <p> If the mode is <code>GLFW_STICKY_MOUSE_BUTTONS</code>, the value must be either <code>GL_TRUE</code> to
-     * enable sticky mouse buttons, or <code>GL_FALSE</code> to disable it. If sticky mouse buttons are enabled, a mouse
-     * button press will ensure that {@link Window#getMouseButton(int)} returns <code>GLFW_PRESS</code> the next time it
+     * <p> If the mode is {@code GLFW_STICKY_MOUSE_BUTTONS}, the value must be either {@code GL_TRUE} to
+     * enable sticky mouse buttons, or {@code GL_FALSE} to disable it. If sticky mouse buttons are enabled, a mouse
+     * button press will ensure that {@link Window#getMouseButton(int)} returns {@code GLFW_PRESS} the next time it
      * is called even if the mouse button had been released before the call. This is useful when you are only interested
      * in whether mouse buttons have been pressed but not when or in which order.</p>
      *
-     * @param mode  One of <code>GLFW_CURSOR</code>, <code>GLFW_STICKY_KEYS</code> or <code>GLFW_STICKY_MOUSE_BUTTONS</code>.
+     * @param mode  One of {@code GLFW_CURSOR}, {@code GLFW_STICKY_KEYS} or {@code GLFW_STICKY_MOUSE_BUTTONS}.
      * @param value The new value of the specified input mode.
      */
     public void setInputMode(int mode, int value)
@@ -743,11 +743,11 @@ public class Window
 
     /**
      * <p> This method sets the cursor image to be used when the cursor is over the client area of the specified window.
-     * The set cursor will only be visible when the cursor mode of the window is <code>GLFW_CURSOR_NORMAL</code>.</p>
+     * The set cursor will only be visible when the cursor mode of the window is {@code GLFW_CURSOR_NORMAL}.</p>
      *
      * <p> On some platforms, the set cursor may not be visible unless the window also has input focus.</p>
      *
-     * @param cursor The cursor to set, or <code>null</code> to switch back to the default arrow cursor.
+     * @param cursor The cursor to set, or {@code null} to switch back to the default arrow cursor.
      */
     public void setCursor(Cursor cursor)
     {
@@ -759,8 +759,8 @@ public class Window
      * current on a single thread at a time and each thread can have only a single current context at a time.</p>
      *
      * <p> By default, making a context non-current implicitly forces a pipeline flush. On machines that support
-     * <code>GL_KHR_context_flush_control</code>, you can control whether a context performs this flush by setting the
-     * <code>GLFW_CONTEXT_RELEASE_BEHAVIOR</code> window hint.</p>
+     * {@code GL_KHR_context_flush_control}, you can control whether a context performs this flush by setting the
+     * {@code GLFW_CONTEXT_RELEASE_BEHAVIOR} window hint.</p>
      */
     public void makeCurrent()
     {
@@ -1091,7 +1091,7 @@ public class Window
 
     /**
      * This method resizes the window such that the framebuffer is fixed to the size specified. The difference to the
-     * <code>setSize()</code> methods is that this method accepts the input in pixels, while those methods accept the
+     * {@code setSize()} methods is that this method accepts the input in pixels, while those methods accept the
      * input in screen coordinates.
      *
      * @param fbSize The size of the framebuffer in pixels.
@@ -1114,7 +1114,7 @@ public class Window
 
     /**
      * This method resizes the window such that the framebuffer is fixed to the size specified. The difference to the
-     * <code>setSize()</code> methods is that this method accepts the input in pixels, while those methods accept the
+     * {@code setSize()} methods is that this method accepts the input in pixels, while those methods accept the
      * input in screen coordinates.
      *
      * @param width  The width of the window framebuffer, in pixels.
@@ -1164,7 +1164,7 @@ public class Window
 
     /**
      * This methods returns the monitor that this window is fullscreen upon. If this window is in windowed mode, then
-     * the monitor will be <code>null</code>.
+     * the monitor will be {@code null}.
      *
      * @return The monitor used by this window.
      */
@@ -1215,7 +1215,7 @@ public class Window
     /**
      * Returns the currently set {@link ICharacterCallback} of this window object.
      *
-     * @return The currently set character callback, or <code>null</code> if there is none.
+     * @return The currently set character callback, or {@code null} if there is none.
      */
     public ICharacterCallback getCharacterCallback()
     {
@@ -1228,7 +1228,7 @@ public class Window
      *
      * @param callback The callback instance which will be invoked when a character input event occurs.
      *
-     * @return The previously set callback, or <code>null</code> if there is no previously set callback.
+     * @return The previously set callback, or {@code null} if there is no previously set callback.
      */
     public ICharacterCallback setCharacterCallback(ICharacterCallback callback)
     {
@@ -1246,7 +1246,7 @@ public class Window
 
     /**
      * This method returns the currently set {@link ICharacterModsCallback} for this window. If there is no callback
-     * registered, this method returns <code>null</code>.
+     * registered, this method returns {@code null}.
      *
      * @return The currently set character mods callback on this window.
      */
@@ -1261,7 +1261,7 @@ public class Window
      *
      * @param callback The new {@link ICharacterModsCallback} to be used.
      *
-     * @return The previously used callback, or <code>null</code> if there is none.
+     * @return The previously used callback, or {@code null} if there is none.
      */
     public ICharacterModsCallback setCharacterModsCallback(ICharacterModsCallback callback)
     {
@@ -1279,9 +1279,9 @@ public class Window
 
     /**
      * This method returns the currently set {@link ICursorEnterCallback} on this window. If there is no callback, then
-     * this method returns <code>null</code>.
+     * this method returns {@code null}.
      *
-     * @return The currently set {@link ICursorEnterCallback}, or <code>null</code> if there is none.
+     * @return The currently set {@link ICursorEnterCallback}, or {@code null} if there is none.
      */
     public ICursorEnterCallback getCursorEnterCallback()
     {
@@ -1291,9 +1291,9 @@ public class Window
     /**
      * This method sets the {@link ICursorEnterCallback} on this window. Also, it returns the previously set callback.
      *
-     * @param callback The new {@link ICursorEnterCallback} to be used, or <code>null</code> to clear it.
+     * @param callback The new {@link ICursorEnterCallback} to be used, or {@code null} to clear it.
      *
-     * @return The previously used callback, or <code>null</code> if there is none.
+     * @return The previously used callback, or {@code null} if there is none.
      */
     public ICursorEnterCallback setCursorEnterCallback(ICursorEnterCallback callback)
     {
@@ -1312,7 +1312,7 @@ public class Window
     /**
      * This method returns the currently set {@link ICursorPositionCallback} on this window.
      *
-     * @return The currently set callback, or <code>null</code> if there is none set.
+     * @return The currently set callback, or {@code null} if there is none set.
      */
     public ICursorPositionCallback getCursorPositionCallback()
     {
@@ -1321,11 +1321,11 @@ public class Window
 
     /**
      * This method sets the {@link ICursorPositionCallback} to be used by this window. If you want to clear the existing
-     * callback, pass <code>null</code> as the argument.
+     * callback, pass {@code null} as the argument.
      *
      * @param callback The new {@link ICursorPositionCallback} to be used.
      *
-     * @return The previously set callback, or <code>null</code> if there is none set.
+     * @return The previously set callback, or {@code null} if there is none set.
      */
     public ICursorPositionCallback setCursorPositionCallback(ICursorPositionCallback callback)
     {
@@ -1343,9 +1343,9 @@ public class Window
 
     /**
      * This method returns the currently set {@link IDropCallback} on this window. If there is no callback set, then
-     * <code>null</code> is returned to you.
+     * {@code null} is returned to you.
      *
-     * @return The currently set callback, or <code>null</code> if there is none set.
+     * @return The currently set callback, or {@code null} if there is none set.
      */
     public IDropCallback getDropCallback()
     {
@@ -1354,11 +1354,11 @@ public class Window
 
     /**
      * This method sets a {@link IDropCallback} to be used by this Window. To clear the current callback, just pass
-     * <code>null</code> to the argument.
+     * {@code null} to the argument.
      *
-     * @param callback The new callback to be used by this window, or <code>null</code> to clear the existing one.
+     * @param callback The new callback to be used by this window, or {@code null} to clear the existing one.
      *
-     * @return The previously used callback, or <code>null</code> if there is none set.
+     * @return The previously used callback, or {@code null} if there is none set.
      */
     public IDropCallback setDropCallback(IDropCallback callback)
     {
@@ -1376,9 +1376,9 @@ public class Window
 
     /**
      * This method returns the currently used {@link IFramebufferSizeCallback} by this window. If there is no existing
-     * callback, then this method returns <code>null</code> to you.
+     * callback, then this method returns {@code null} to you.
      *
-     * @return The current callback, or <code>null</code> if none is set previously.
+     * @return The current callback, or {@code null} if none is set previously.
      */
     public IFramebufferSizeCallback getFramebufferSizeCallback()
     {
@@ -1387,11 +1387,11 @@ public class Window
 
     /**
      * This method sets the {@link IFramebufferSizeCallback} used by this window. If you want to clear the existing
-     * callback, simply pass <code>null</code> as the value for the argument.
+     * callback, simply pass {@code null} as the value for the argument.
      *
-     * @param callback The new callback to be used, or <code>null</code> to clear the existing one.
+     * @param callback The new callback to be used, or {@code null} to clear the existing one.
      *
-     * @return The previously used callback, or <code>null</code> if none exists before.
+     * @return The previously used callback, or {@code null} if none exists before.
      */
     public IFramebufferSizeCallback setFramebufferSizeCallback(IFramebufferSizeCallback callback)
     {
@@ -1409,7 +1409,7 @@ public class Window
 
     /**
      * This method returns the currently used {@link IKeyCallback} of this window. If there is no callback set before,
-     * this method returns <code>null</code> to you.
+     * this method returns {@code null} to you.
      *
      * @return The currently used key callback of this window.
      */
@@ -1420,11 +1420,11 @@ public class Window
 
     /**
      * This method sets the {@link IKeyCallback} used by this window object. If you want to clear the existing one, just
-     * pass <code>null</code> as the value of the argument.
+     * pass {@code null} as the value of the argument.
      *
-     * @param callback The new callback to be used, or <code>null</code> to clear the existing one.
+     * @param callback The new callback to be used, or {@code null} to clear the existing one.
      *
-     * @return The previously used key callback, or <code>null</code> if there is nothing previously set.
+     * @return The previously used key callback, or {@code null} if there is nothing previously set.
      */
     public IKeyCallback setKeyCallback(IKeyCallback callback)
     {
@@ -1442,9 +1442,9 @@ public class Window
 
     /**
      * This method returns the currently set {@link IMouseButtonCallback} of this Window object. If there is nothing set
-     * before, then this method returns <code>null</code> to you.
+     * before, then this method returns {@code null} to you.
      *
-     * @return The currently set mouse button callback, or <code>null</code> if there is nothing set previously.
+     * @return The currently set mouse button callback, or {@code null} if there is nothing set previously.
      */
     public IMouseButtonCallback getMouseButtonCallback()
     {
@@ -1453,11 +1453,11 @@ public class Window
 
     /**
      * This method sets the {@link IMouseButtonCallback} used by this window object. If you want to clear the existing
-     * callback, simply pass <code>null</code> as the value of the argument.
+     * callback, simply pass {@code null} as the value of the argument.
      *
-     * @param callback The new callback to be used, or <code>null</code> if you want to clear it.
+     * @param callback The new callback to be used, or {@code null} if you want to clear it.
      *
-     * @return The previously set mouse button callback, or <code>null</code> if there is nothing set previously.
+     * @return The previously set mouse button callback, or {@code null} if there is nothing set previously.
      */
     public IMouseButtonCallback setMouseButtonCallback(IMouseButtonCallback callback)
     {
@@ -1475,9 +1475,9 @@ public class Window
 
     /**
      * This method returns the {@link IScrollCallback} used by this window object. If there is no callback registered,
-     * then this method returns <code>null</code>.
+     * then this method returns {@code null}.
      *
-     * @return The current scroll callback, or <code>null</code> if there is nothing set previously.
+     * @return The current scroll callback, or {@code null} if there is nothing set previously.
      */
     public IScrollCallback getScrollCallback()
     {
@@ -1486,11 +1486,11 @@ public class Window
 
     /**
      * This method sets the {@link IScrollCallback} used by this window object. If you want to clear the existing
-     * callback, simply pass <code>null</code> to the argument.
+     * callback, simply pass {@code null} to the argument.
      *
-     * @param callback The new callback to be used, or <code>null</code> if you want to clear existing callback.
+     * @param callback The new callback to be used, or {@code null} if you want to clear existing callback.
      *
-     * @return The previously used scroll callback, or <code>null</code> if there isn't any.
+     * @return The previously used scroll callback, or {@code null} if there isn't any.
      */
     public IScrollCallback setScrollCallback(IScrollCallback callback)
     {
@@ -1508,9 +1508,9 @@ public class Window
 
     /**
      * This method returns the current {@link IWindowCloseCallback} of this window object. If there is no existing
-     * callback, this method returns <code>null</code> as the return value.
+     * callback, this method returns {@code null} as the return value.
      *
-     * @return The current window close callback, or <code>null</code> if there is nothing previously.
+     * @return The current window close callback, or {@code null} if there is nothing previously.
      */
     public IWindowCloseCallback getCloseCallback()
     {
@@ -1519,11 +1519,11 @@ public class Window
 
     /**
      * This method sets the {@link IWindowCloseCallback} used by this window object. If you want to clear the existing
-     * callback, then simply pass <code>null</code> to the value of the argument.
+     * callback, then simply pass {@code null} to the value of the argument.
      *
-     * @param callback The new callback to be used, or <code>null</code> if you want to clear the existing one.
+     * @param callback The new callback to be used, or {@code null} if you want to clear the existing one.
      *
-     * @return The previously set close callback, or <code>null</code> if nothing is set previously.
+     * @return The previously set close callback, or {@code null} if nothing is set previously.
      */
     public IWindowCloseCallback setCloseCallback(IWindowCloseCallback callback)
     {
@@ -1541,9 +1541,9 @@ public class Window
 
     /**
      * This method returns the currently set {@link IWindowFocusCallback} of this window object. If there is no existing
-     * callback, then <code>null</code> is returned to you.
+     * callback, then {@code null} is returned to you.
      *
-     * @return The currently set focus callback, or <code>null</code> if there is nothing set previously.
+     * @return The currently set focus callback, or {@code null} if there is nothing set previously.
      */
     public IWindowFocusCallback getFocusCallback()
     {
@@ -1552,11 +1552,11 @@ public class Window
 
     /**
      * This method sets the {@link IWindowFocusCallback} used by this window object. If you want to clear out the
-     * existing callback, then simply pass <code>null</code> as the value of the argument.
+     * existing callback, then simply pass {@code null} as the value of the argument.
      *
-     * @param callback The new callback to be used, or <code>null</code> to clear the existing one.
+     * @param callback The new callback to be used, or {@code null} to clear the existing one.
      *
-     * @return The previously used focus callback, or <code>null</code> if there is nothing set previously.
+     * @return The previously used focus callback, or {@code null} if there is nothing set previously.
      */
     public IWindowFocusCallback setFocusCallback(IWindowFocusCallback callback)
     {
@@ -1574,9 +1574,9 @@ public class Window
 
     /**
      * This method returns the {@link IWindowIconifyCallback} used by this window object. If there is no existing
-     * callback, then <code>null</code> is returned.
+     * callback, then {@code null} is returned.
      *
-     * @return The currently used iconify callback, or <code>null</code> if there is none set previously.
+     * @return The currently used iconify callback, or {@code null} if there is none set previously.
      */
     public IWindowIconifyCallback getIconifyCallback()
     {
@@ -1585,11 +1585,11 @@ public class Window
 
     /**
      * This method sets the {@link IWindowIconifyCallback} used by this window object. If you want to clear the existing
-     * callback, simply pass <code>null</code> as the value of the argument.
+     * callback, simply pass {@code null} as the value of the argument.
      *
-     * @param callback The new callback to be used, or <code>null</code> to clear the existing callback.
+     * @param callback The new callback to be used, or {@code null} to clear the existing callback.
      *
-     * @return The previously used iconify callback, or <code>null</code> if there is none set previously.
+     * @return The previously used iconify callback, or {@code null} if there is none set previously.
      */
     public IWindowIconifyCallback setIconifyCallback(IWindowIconifyCallback callback)
     {
@@ -1607,9 +1607,9 @@ public class Window
 
     /**
      * This method returns the currently set {@link IWindowPositionCallback} of this window object. If there is nothing
-     * set previously, then this method returns <code>null</code>.
+     * set previously, then this method returns {@code null}.
      *
-     * @return The current window position callback, or <code>null</code> if there is nothing previously set.
+     * @return The current window position callback, or {@code null} if there is nothing previously set.
      */
     public IWindowPositionCallback getPositionCallback()
     {
@@ -1618,11 +1618,11 @@ public class Window
 
     /**
      * This method sets the {@link IWindowPositionCallback} of this window object. If you want to clear the existing
-     * callback, then simply pass <code>null</code> to the value of the argument.
+     * callback, then simply pass {@code null} to the value of the argument.
      *
-     * @param callback The new callback to be used, or <code>null</code> to clear the existing one.
+     * @param callback The new callback to be used, or {@code null} to clear the existing one.
      *
-     * @return The previously used callback, or <code>null</code> if there is nothing previously set.
+     * @return The previously used callback, or {@code null} if there is nothing previously set.
      */
     public IWindowPositionCallback setPositionCallback(IWindowPositionCallback callback)
     {
@@ -1640,9 +1640,9 @@ public class Window
 
     /**
      * This method returns the currently set {@link IWindowRefreshCallback} on this window object. If there is no
-     * callback previously set, this method will return <code>null</code> to you.
+     * callback previously set, this method will return {@code null} to you.
      *
-     * @return The currently set window refresh callback, or <code>null</code> if there is nothing set previously.
+     * @return The currently set window refresh callback, or {@code null} if there is nothing set previously.
      */
     public IWindowRefreshCallback getRefreshCallback()
     {
@@ -1651,11 +1651,11 @@ public class Window
 
     /**
      * This method sets the {@link IWindowRefreshCallback} on this window object. If you want to clear out the existing
-     * callback, then simply pass <code>null</code> as the value to the argument.
+     * callback, then simply pass {@code null} as the value to the argument.
      *
-     * @param callback The new callback to be used, or <code>null</code> to clear the existing callback.
+     * @param callback The new callback to be used, or {@code null} to clear the existing callback.
      *
-     * @return The previously used callback, or <code>null</code> if there is nothing set previously.
+     * @return The previously used callback, or {@code null} if there is nothing set previously.
      */
     public IWindowRefreshCallback setRefreshCallback(IWindowRefreshCallback callback)
     {
@@ -1673,9 +1673,9 @@ public class Window
 
     /**
      * This method returns the currently used {@link IWindowSizeCallback} of this window object. If there is no existing
-     * callback, this method returns <code>null</code>.
+     * callback, this method returns {@code null}.
      *
-     * @return The currently set window size callback, or <code>null</code> if there is nothing set previously.
+     * @return The currently set window size callback, or {@code null} if there is nothing set previously.
      */
     public IWindowSizeCallback getSizeCallback()
     {
@@ -1684,11 +1684,11 @@ public class Window
 
     /**
      * This method sets the {@link IWindowSizeCallback} used by this window object. If you want to clear the existing
-     * callback, simply pass <code>null</code> as the argument.
+     * callback, simply pass {@code null} as the argument.
      *
-     * @param callback The new callback to be used, or <code>null</code> to clear the existing one.
+     * @param callback The new callback to be used, or {@code null} to clear the existing one.
      *
-     * @return The previously used callback, or <code>null</code> if there is nothing set previously.
+     * @return The previously used callback, or {@code null} if there is nothing set previously.
      */
     public IWindowSizeCallback setSizeCallback(IWindowSizeCallback callback)
     {

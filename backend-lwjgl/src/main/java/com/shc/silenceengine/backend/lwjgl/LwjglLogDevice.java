@@ -30,7 +30,7 @@ import com.shc.silenceengine.logging.Logger;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class LwjglLogDevice implements ILogDevice
+class LwjglLogDevice implements ILogDevice
 {
     private Logger rootLogger = new LwjglLogger("SilenceEngine");
 

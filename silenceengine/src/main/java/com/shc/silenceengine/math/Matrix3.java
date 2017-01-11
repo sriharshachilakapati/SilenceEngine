@@ -92,7 +92,7 @@ public class Matrix3
      *
      * $$ \begin{bmatrix} 1 &amp; 0 &amp; 0  \\ 0 &amp; 1 &amp; 0  \\ 0 &amp; 0 &amp; 1 \end{bmatrix} $$
      *
-     * @return This <code>Matrix3</code>
+     * @return This {@code Matrix3}
      */
     public Matrix3 initIdentity()
     {
