@@ -35,6 +35,7 @@
             android:label="SilenceEngine Tests"
             android:supportsRtl="true">
 
+        <activity android:name=".PolygonConvexHullTestActivity"/>
         <activity android:name=".EntityCollisionTest2DActivity"/>
         <activity android:name=".OpenGLTestActivity"/>
         <activity android:name=".GameTestActivity"/>

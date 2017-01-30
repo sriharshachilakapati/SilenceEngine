@@ -134,7 +134,7 @@ public class Vector2
 
     public float angle(Vector2 v)
     {
-        return MathUtils.acos(this.dot(v) / (length() * v.length()));
+        return MathUtils.atan2(y - v.y, x - v.x);
     }
 
     public float dot(Vector2 v)
@@ -204,6 +204,11 @@ public class Vector2
     public Vector2 reflect(Vector2 axis, Vector2 dest)
     {
         return dest.set(this).reflect(axis);
+    }
+
+    public float zCross(Vector2 other)
+    {
+        return x * other.y - y * other.x;
     }
 
     public Vector2 set(Vector2 v)

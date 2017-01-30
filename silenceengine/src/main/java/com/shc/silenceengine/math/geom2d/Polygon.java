@@ -25,9 +25,12 @@
 package com.shc.silenceengine.math.geom2d;
 
 import com.shc.silenceengine.collision.Collision2D;
+import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.graphics.Image;
 import com.shc.silenceengine.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -57,6 +60,140 @@ public class Polygon
         scaleX = scaleY = 1;
 
         clearVertices();
+    }
+
+    public static Polygon createConvexHull(Image image)
+    {
+        return createConvexHull(image, 0, 0, image.getWidth(), image.getHeight());
+    }
+
+    public static Polygon createConvexHull(Image image, Rectangle src)
+    {
+        return createConvexHull(image, (int) src.x, (int) src.y, (int) src.width, (int) src.height);
+    }
+
+    public static Polygon createConvexHull(Image image, int srcX, int srcY, int srcW, int srcH)
+    {
+        Polygon polygon = new Polygon();
+
+        List<Vector2> vertices = new ArrayList<>();
+        Color pixelOut = Color.REUSABLE_STACK.pop();
+
+        // Start scanning the image from left to right, and then from top to bottom
+        for (int y = srcY; y < Math.min(srcY + srcH, image.getHeight()); y++)
+        {
+            boolean found = false;
+
+            for (int x = srcX; x < Math.min(srcX + srcW, image.getWidth()); x++)
+            {
+                image.getPixel(x, y, pixelOut);
+
+                // Add the pixel if it is the corner of the src rect and is not transparent
+                if ((srcX == x || srcX + srcW - 1 == x) && pixelOut.a != 0)
+                {
+                    vertices.add(new Vector2(x, y));
+                    found = !found;
+                }
+
+                // Add the first non-transparent pixel
+                else if (!found && pixelOut.a != 0)
+                {
+                    vertices.add(new Vector2(x, y));
+                    found = true;
+                }
+                // Add the last non-transparent pixel
+                else if (found && pixelOut.a == 0)
+                {
+                    vertices.add(new Vector2(x - 1, y));
+                    found = false;
+                }
+            }
+        }
+
+        // We now have a concave polygon, It's time to compute a convex hull over it. This follows Andrew's
+        // algorithm (Page 65, Real-time Collision Detection by Christer Ericson). Code adapted from wiki at
+        // https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
+
+        List<Vector2> convexHull = new ArrayList<>();
+
+        // Sort the vertices lexicographically (x first, and y in case of tie)
+        Collections.sort(vertices, (v1, v2) -> v1.x == v2.x ? (int) (v1.y - v2.y) : (int) (v1.x - v2.x));
+
+        int k = 0;
+
+        Vector2 edge1 = Vector2.REUSABLE_STACK.pop();
+        Vector2 edge2 = Vector2.REUSABLE_STACK.pop();
+
+        // Calculate the lower hull
+        for (Vector2 vertex : vertices)
+        {
+            while (k >= 2)
+            {
+                Vector2 o = convexHull.get(k - 2);
+                Vector2 a = convexHull.get(k - 1);
+
+                edge1.set(o).subtract(a);
+                edge2.set(o).subtract(vertex);
+
+                if (edge1.zCross(edge2) <= 0)
+                    k--;
+                else
+                    break;
+            }
+
+            if (convexHull.size() <= k++)
+                convexHull.add(vertex);
+            else
+                convexHull.add(k - 1, vertex);
+        }
+
+        // Calculate the upper hull
+        for (int i = vertices.size() - 2, t = k + 1; i >= 0; i--)
+        {
+            while (k >= t)
+            {
+                Vector2 o = convexHull.get(k - 2);
+                Vector2 a = convexHull.get(k - 1);
+                Vector2 b = vertices.get(i);
+
+                edge1.set(o).subtract(a);
+                edge2.set(o).subtract(b);
+
+                if (edge1.zCross(edge2) <= 0)
+                    k--;
+                else
+                    break;
+            }
+
+            if (convexHull.size() <= k++)
+                convexHull.add(vertices.get(i));
+            else
+                convexHull.add(k - 1, vertices.get(i));
+        }
+
+        // Remove duplicate vertices
+        if (k > 1)
+            convexHull = convexHull.subList(0, k - 1);
+
+        vertices = convexHull;
+
+        Vector2.REUSABLE_STACK.push(edge1);
+        Vector2.REUSABLE_STACK.push(edge2);
+
+        // We got the vertices that surround the image, but they are in the order of the hull.
+        // Sort them into clock-wise order
+        Vector2 imgCenter = Vector2.REUSABLE_STACK.pop().set((srcX + srcW) / 2f, (srcY + srcH) / 2f);
+        Collections.sort(vertices, (v1, v2) -> (int) (v1.angle(imgCenter)) - (int) (v2.angle(imgCenter)));
+
+        Vector2.REUSABLE_STACK.push(imgCenter);
+        Color.REUSABLE_STACK.push(pixelOut);
+
+        for (Vector2 v : vertices)
+            polygon.addVertex(v);
+
+        polygon.translate(-imgCenter.x, -imgCenter.y);
+
+        return polygon;
     }
 
     public void clearVertices()

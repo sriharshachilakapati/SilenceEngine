@@ -98,6 +98,7 @@ public class TestLauncher implements EntryPoint
         tests.put("ResourceLoaderTest", ResourceLoaderTest::new);
         tests.put("SpriteRendererTest", SpriteRendererTest::new);
         tests.put("FontRendererTest", FontRendererTest::new);
+        tests.put("PolygonConvexHullTest", PolygonConvexHullTest::new);
         tests.put("TmxMapTestOrthogonal", () -> new TmxMapTest("test_resources/example.tmx"));
         tests.put("TmxMapTestIsometric", () -> new TmxMapTest("test_resources/example-isometric.tmx"));
         tests.put("ControllerTest", ControllerTest::new);
