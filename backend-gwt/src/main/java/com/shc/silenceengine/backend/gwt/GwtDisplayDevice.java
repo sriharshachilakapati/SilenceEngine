@@ -132,6 +132,12 @@ public class GwtDisplayDevice implements IDisplayDevice
                 "    margin: auto;                          \n" +
                 "    width: 100%   !important;              \n" +
                 "    height: 100%  !important;              \n" +
+                "}" +
+
+                // CSS to disable color composition through DOM
+                "canvas                                     \n" +
+                "{                                          \n" +
+                "    background-color: #000000;             \n" +
                 "}"
         );
 
