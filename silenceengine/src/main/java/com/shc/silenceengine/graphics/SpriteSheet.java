@@ -25,6 +25,7 @@
 package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.graphics.opengl.Texture;
+import com.shc.silenceengine.math.geom2d.Rectangle;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -67,6 +68,22 @@ public class SpriteSheet
         }
 
         return cells[column][row];
+    }
+
+    public Rectangle getCellRect(int row, int column, Rectangle dest)
+    {
+        if (row >= cells[0].length)
+            throw new ArithmeticException("Cannot get past the last row");
+
+        if (column >= cells.length)
+            throw new ArithmeticException("Cannot get past the last column");
+
+        if (dest == null)
+            dest = new Rectangle();
+
+        dest.set(column * cellWidth, row * cellHeight, cellWidth, cellHeight);
+
+        return dest;
     }
 
     public Texture getTexture()
