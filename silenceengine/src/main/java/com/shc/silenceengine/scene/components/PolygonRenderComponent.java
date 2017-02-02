@@ -29,35 +29,49 @@ import com.shc.silenceengine.graphics.DynamicRenderer;
 import com.shc.silenceengine.graphics.IGraphicsDevice;
 import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.geom2d.Polygon;
-import com.shc.silenceengine.scene.entity.Entity2D;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class PolygonRenderComponent implements IComponent2D
+public class PolygonRenderComponent extends Component2D
 {
     private DynamicRenderer renderer;
     private Polygon polygon;
 
-    public PolygonRenderComponent(Polygon polygon)
+    public final Color color = new Color();
+
+    public PolygonRenderComponent()
     {
-        this(polygon, IGraphicsDevice.Renderers.dynamic);
+        this(Color.RED);
     }
 
-    public PolygonRenderComponent(Polygon polygon, DynamicRenderer renderer)
+    public PolygonRenderComponent(Color color)
+    {
+        this(null, color);
+    }
+
+    public PolygonRenderComponent(Polygon polygon)
+    {
+        this(polygon, Color.RED);
+    }
+
+    public PolygonRenderComponent(Polygon polygon,  Color color)
+    {
+        this(polygon, color, IGraphicsDevice.Renderers.dynamic);
+    }
+
+    public PolygonRenderComponent(Polygon polygon, Color color, DynamicRenderer renderer)
     {
         this.polygon = polygon;
         this.renderer = renderer;
+        this.color.set(color);
     }
 
     @Override
-    public void init(Entity2D entity)
+    public void init()
     {
-    }
-
-    @Override
-    public void update(float deltaTime)
-    {
+        if (polygon == null)
+            polygon = entity.getComponent(CollisionComponent2D.class).polygon;
     }
 
     @Override
@@ -65,17 +79,18 @@ public class PolygonRenderComponent implements IComponent2D
     {
         Vector2 temp = Vector2.REUSABLE_STACK.pop();
 
-        for (Vector2 v : polygon.getVertices())
+        for (int i = 0; i < polygon.vertexCount(); i++)
         {
-            renderer.vertex(temp.set(v).add(polygon.getPosition()));
-            renderer.color(Color.RED);
+            Vector2 v0 = polygon.getVertex(i);
+            Vector2 v1 = polygon.getVertex((i + 1) % polygon.vertexCount());
+
+            renderer.vertex(temp.set(v0).add(polygon.getPosition()));
+            renderer.color(color);
+
+            renderer.vertex(temp.set(v1).add(polygon.getPosition()));
+            renderer.color(color);
         }
 
         Vector2.REUSABLE_STACK.push(temp);
-    }
-
-    @Override
-    public void dispose()
-    {
     }
 }

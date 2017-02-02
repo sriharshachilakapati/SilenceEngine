@@ -36,11 +36,10 @@ import com.shc.silenceengine.graphics.opengl.GLContext;
 import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Touch;
-import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.geom2d.Rectangle;
 import com.shc.silenceengine.scene.Scene2D;
 import com.shc.silenceengine.scene.components.CollisionComponent2D;
-import com.shc.silenceengine.scene.components.IComponent2D;
+import com.shc.silenceengine.scene.components.PolygonRenderComponent;
 import com.shc.silenceengine.scene.entity.Entity2D;
 
 /**
@@ -188,61 +187,6 @@ public class EntityCollisionTest2D extends SilenceTest
 
             renderComponent.color.set(Color.AQUA);
             subRenderComponent.color.set(Color.GREEN);
-        }
-    }
-
-    private static class PolygonRenderComponent implements IComponent2D
-    {
-        private CollisionComponent2D collisionComponent;
-
-        private Color color;
-
-        PolygonRenderComponent()
-        {
-            this(Color.RED);
-        }
-
-        PolygonRenderComponent(Color color)
-        {
-            this.color = color.copy();
-        }
-
-        @Override
-        public void init(Entity2D entity)
-        {
-            collisionComponent = entity.getComponent(CollisionComponent2D.class);
-        }
-
-        @Override
-        public void update(float deltaTime)
-        {
-        }
-
-        @Override
-        public void render(float deltaTime)
-        {
-            Vector2 temp = Vector2.REUSABLE_STACK.pop();
-
-            for (int i = 0, n = collisionComponent.polygon.getVertices().size(); i < n; i++)
-            {
-                Vector2 v1 = collisionComponent.polygon.getVertex(i);
-                Vector2 v2 = collisionComponent.polygon.getVertex((i + 1) % n);
-
-                DynamicRenderer renderer = IGraphicsDevice.Renderers.dynamic;
-
-                renderer.vertex(temp.set(v1).add(collisionComponent.polygon.getPosition()));
-                renderer.color(color);
-
-                renderer.vertex(temp.set(v2).add(collisionComponent.polygon.getPosition()));
-                renderer.color(color);
-            }
-
-            Vector2.REUSABLE_STACK.push(temp);
-        }
-
-        @Override
-        public void dispose()
-        {
         }
     }
 }

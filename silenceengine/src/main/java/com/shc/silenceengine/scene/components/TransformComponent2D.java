@@ -32,12 +32,10 @@ import com.shc.silenceengine.scene.entity.Entity2D;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class TransformComponent2D implements IComponent2D
+public class TransformComponent2D extends Component2D
 {
     public Transform transform;
     public boolean   transformed;
-
-    private Entity2D entity;
 
     private float   oldRotation;
     private Vector2 oldScale;
@@ -48,12 +46,6 @@ public class TransformComponent2D implements IComponent2D
         transform = new Transform();
         oldScale = new Vector2();
         oldPosition = new Vector2();
-    }
-
-    @Override
-    public void init(Entity2D entity)
-    {
-        this.entity = entity;
     }
 
     @Override
@@ -96,15 +88,5 @@ public class TransformComponent2D implements IComponent2D
         }
 
         transformed = true;
-    }
-
-    @Override
-    public void render(float deltaTime)
-    {
-    }
-
-    @Override
-    public void dispose()
-    {
     }
 }

@@ -25,17 +25,40 @@
 package com.shc.silenceengine.scene.components;
 
 import com.shc.silenceengine.scene.entity.Entity3D;
+import com.shc.silenceengine.utils.IDGenerator;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public interface IComponent3D
+public abstract class Component3D
 {
-    void init(Entity3D entity);
+    public final long id = IDGenerator.generate();
 
-    void update(float deltaTime);
+    protected Entity3D entity;
 
-    void render(float deltaTime);
+    public void create(Entity3D entity)
+    {
+        this.entity = entity;
+    }
 
-    void dispose();
+    public void init()
+    {
+    }
+
+    public void update(float deltaTime)
+    {
+    }
+
+    public void render(float deltaTime)
+    {
+    }
+
+    public void dispose()
+    {
+    }
+
+    public Entity3D getEntity()
+    {
+        return entity;
+    }
 }

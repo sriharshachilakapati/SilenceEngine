@@ -45,7 +45,7 @@ import com.shc.silenceengine.math.geom2d.Polygon;
 import com.shc.silenceengine.math.geom2d.Rectangle;
 import com.shc.silenceengine.scene.Scene2D;
 import com.shc.silenceengine.scene.components.CollisionComponent2D;
-import com.shc.silenceengine.scene.components.IComponent2D;
+import com.shc.silenceengine.scene.components.Component2D;
 import com.shc.silenceengine.scene.components.SpriteComponent;
 import com.shc.silenceengine.scene.entity.Entity2D;
 
@@ -238,20 +238,15 @@ public class SpriteRendererTest extends SilenceTest
         }
     }
 
-    private static class BoundsRenderComponent implements IComponent2D
+    private static class BoundsRenderComponent extends Component2D
     {
         private Polygon polygon;
 
         @Override
-        public void init(Entity2D entity)
+        public void init()
         {
             CollisionComponent2D collision = entity.getComponent(CollisionComponent2D.class);
             polygon = collision.polygon;
-        }
-
-        @Override
-        public void update(float deltaTime)
-        {
         }
 
         @Override
@@ -284,11 +279,6 @@ public class SpriteRendererTest extends SilenceTest
 
             dynamicRenderer.vertex(rect.x, rect.y);
             dynamicRenderer.color(Color.RED);
-        }
-
-        @Override
-        public void dispose()
-        {
         }
     }
 }

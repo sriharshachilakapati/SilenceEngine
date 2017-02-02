@@ -80,7 +80,7 @@ public class PolygonConvexHullTest extends SilenceTest
     {
         camera.apply();
 
-        IGraphicsDevice.Renderers.dynamic.begin(Primitive.LINE_LOOP);
+        IGraphicsDevice.Renderers.dynamic.begin(Primitive.LINES);
 
         batch.begin();
         scene.render(delta);

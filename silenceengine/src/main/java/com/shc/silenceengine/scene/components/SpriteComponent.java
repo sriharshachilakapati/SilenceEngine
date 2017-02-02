@@ -27,12 +27,11 @@ package com.shc.silenceengine.scene.components;
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Sprite;
 import com.shc.silenceengine.graphics.SpriteBatch;
-import com.shc.silenceengine.scene.entity.Entity2D;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class SpriteComponent implements IComponent2D
+public class SpriteComponent extends Component2D
 {
     public final Color tint = Color.BLACK.copy();
 
@@ -50,7 +49,7 @@ public class SpriteComponent implements IComponent2D
     }
 
     @Override
-    public void init(Entity2D entity)
+    public void init()
     {
         transformComponent = entity.transformComponent;
     }
@@ -65,10 +64,5 @@ public class SpriteComponent implements IComponent2D
     public void render(float deltaTime)
     {
         spriteBatch.render(sprite, transformComponent.transform, tint, opacity, layer);
-    }
-
-    @Override
-    public void dispose()
-    {
     }
 }

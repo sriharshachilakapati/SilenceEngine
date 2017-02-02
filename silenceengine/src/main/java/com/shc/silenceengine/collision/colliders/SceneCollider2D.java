@@ -29,7 +29,7 @@ import com.shc.silenceengine.collision.broadphase.DynamicTree2D;
 import com.shc.silenceengine.collision.broadphase.IBroadphase2D;
 import com.shc.silenceengine.scene.Scene2D;
 import com.shc.silenceengine.scene.components.CollisionComponent2D;
-import com.shc.silenceengine.scene.components.IComponent2D;
+import com.shc.silenceengine.scene.components.Component2D;
 import com.shc.silenceengine.scene.entity.Entity2D;
 
 import java.util.ArrayList;
@@ -140,7 +140,7 @@ public class SceneCollider2D
         // Update the broadphase for repositioned entities
         for (Entity2D entity : entities)
         {
-            for (IComponent2D component : entity.getComponents())
+            for (Component2D component : entity.getComponents())
             {
                 if (component instanceof CollisionComponent2D)
                 {
@@ -168,7 +168,7 @@ public class SceneCollider2D
                         for (CollisionComponent2D collidable : collidables)
                             if (collidable.tag == type2)
                                 if (collision.polygon.intersects(collidable.polygon))
-                                    collision.callback.handleCollision(collision.entity, collidable);
+                                    collision.callback.handleCollision(collision.getEntity(), collidable);
                     }
                 }
             }
@@ -179,7 +179,7 @@ public class SceneCollider2D
     {
         for (Entity2D entity : entities)
         {
-            for (IComponent2D component : entity.getComponents())
+            for (Component2D component : entity.getComponents())
             {
                 if (component instanceof CollisionComponent2D)
                 {

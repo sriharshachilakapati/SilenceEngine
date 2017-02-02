@@ -25,17 +25,40 @@
 package com.shc.silenceengine.scene.components;
 
 import com.shc.silenceengine.scene.entity.Entity2D;
+import com.shc.silenceengine.utils.IDGenerator;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public interface IComponent2D
+public abstract class Component2D
 {
-    void init(Entity2D entity);
+    public final long id = IDGenerator.generate();
 
-    void update(float deltaTime);
+    protected Entity2D entity;
 
-    void render(float deltaTime);
+    public void create(Entity2D entity)
+    {
+        this.entity = entity;
+    }
 
-    void dispose();
+    public void init()
+    {
+    }
+
+    public void update(float deltaTime)
+    {
+    }
+
+    public void render(float deltaTime)
+    {
+    }
+
+    public void dispose()
+    {
+    }
+
+    public Entity2D getEntity()
+    {
+        return entity;
+    }
 }

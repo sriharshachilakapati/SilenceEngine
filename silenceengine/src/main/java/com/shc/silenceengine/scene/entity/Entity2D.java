@@ -25,7 +25,7 @@
 package com.shc.silenceengine.scene.entity;
 
 import com.shc.silenceengine.math.Vector2;
-import com.shc.silenceengine.scene.components.IComponent2D;
+import com.shc.silenceengine.scene.components.Component2D;
 import com.shc.silenceengine.scene.components.TransformComponent2D;
 import com.shc.silenceengine.utils.IDGenerator;
 import com.shc.silenceengine.utils.ReflectionUtils;
@@ -38,17 +38,21 @@ import java.util.List;
  */
 public class Entity2D
 {
+    public final long id = IDGenerator.generate();
+
     public final Vector2 position = new Vector2();
     public final Vector2 scale    = new Vector2(1, 1);
 
-    public final long id = IDGenerator.generate();
     public final TransformComponent2D transformComponent;
 
-    private final List<Entity2D>     children   = new ArrayList<>();
-    private final List<IComponent2D> components = new ArrayList<>();
+    private final List<Entity2D>    children   = new ArrayList<>();
+    private final List<Component2D> components = new ArrayList<>();
 
-    public float    rotation;
+    public float rotation;
+
     public Entity2D parent;
+
+    private boolean initializedComponents = false;
 
     public Entity2D()
     {
@@ -59,7 +63,15 @@ public class Entity2D
     {
         onUpdate(deltaTime);
 
-        for (IComponent2D component : components)
+        if (!initializedComponents)
+        {
+            for (Component2D component : components)
+                component.init();
+
+            initializedComponents = true;
+        }
+
+        for (Component2D component : components)
             component.update(deltaTime);
 
         for (int i = 0; i < children.size(); i++)
@@ -74,7 +86,15 @@ public class Entity2D
     {
         onRender(deltaTime);
 
-        for (IComponent2D component : components)
+        if (!initializedComponents)
+        {
+            for (Component2D component : components)
+                component.init();
+
+            initializedComponents = true;
+        }
+
+        for (Component2D component : components)
             component.render(deltaTime);
 
         for (int i = 0; i < children.size(); i++)
@@ -91,13 +111,13 @@ public class Entity2D
         children.add(entity);
     }
 
-    public void addComponent(IComponent2D component)
+    public void addComponent(Component2D component)
     {
         components.add(component);
-        component.init(this);
+        component.create(this);
     }
 
-    public void removeComponent(IComponent2D component)
+    public void removeComponent(Component2D component)
     {
         components.remove(component);
         component.dispose();
@@ -110,9 +130,9 @@ public class Entity2D
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends IComponent2D> T getComponent(Class<T> type)
+    public <T extends Component2D> T getComponent(Class<T> type)
     {
-        for (IComponent2D component : components)
+        for (Component2D component : components)
             if (ReflectionUtils.isInstanceOf(type, component))
                 return (T) component;
 
@@ -124,7 +144,7 @@ public class Entity2D
         return children;
     }
 
-    public List<IComponent2D> getComponents()
+    public List<Component2D> getComponents()
     {
         return components;
     }

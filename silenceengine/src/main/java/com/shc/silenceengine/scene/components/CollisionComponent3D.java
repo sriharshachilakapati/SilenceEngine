@@ -33,15 +33,13 @@ import com.shc.silenceengine.utils.IDGenerator;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class CollisionComponent3D implements IComponent3D
+public class CollisionComponent3D extends Component3D
 {
     public final long id = IDGenerator.generate();
 
     public CollisionCallback callback;
     public CollisionTag      tag;
     public Polyhedron        polyhedron;
-
-    public Entity3D entity;
 
     public CollisionComponent3D(CollisionTag tag, Polyhedron polyhedron)
     {
@@ -54,12 +52,6 @@ public class CollisionComponent3D implements IComponent3D
         this.tag = tag;
         this.callback = callback;
         this.polyhedron = polyhedron;
-    }
-
-    @Override
-    public void init(Entity3D entity)
-    {
-        this.entity = entity;
     }
 
     @Override
@@ -94,16 +86,6 @@ public class CollisionComponent3D implements IComponent3D
         Vector3.REUSABLE_STACK.push(tPosition);
         Vector3.REUSABLE_STACK.push(tScale);
         Vector3.REUSABLE_STACK.push(tRotation);
-    }
-
-    @Override
-    public void render(float deltaTime)
-    {
-    }
-
-    @Override
-    public void dispose()
-    {
     }
 
     @FunctionalInterface

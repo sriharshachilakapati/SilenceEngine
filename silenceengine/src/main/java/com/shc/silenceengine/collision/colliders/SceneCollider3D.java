@@ -29,7 +29,7 @@ import com.shc.silenceengine.collision.broadphase.DynamicTree3D;
 import com.shc.silenceengine.collision.broadphase.IBroadphase3D;
 import com.shc.silenceengine.scene.Scene3D;
 import com.shc.silenceengine.scene.components.CollisionComponent3D;
-import com.shc.silenceengine.scene.components.IComponent3D;
+import com.shc.silenceengine.scene.components.Component3D;
 import com.shc.silenceengine.scene.entity.Entity3D;
 
 import java.util.ArrayList;
@@ -140,7 +140,7 @@ public class SceneCollider3D
         // Update the broadphase for repositioned entities
         for (Entity3D entity : entities)
         {
-            for (IComponent3D component : entity.getComponents())
+            for (Component3D component : entity.getComponents())
             {
                 if (component instanceof CollisionComponent3D)
                 {
@@ -168,7 +168,7 @@ public class SceneCollider3D
                         for (CollisionComponent3D collidable : collidables)
                             if (collidable.tag == type2)
                                 if (collision.polyhedron.intersects(collidable.polyhedron))
-                                    collision.callback.handleCollision(collision.entity, collidable);
+                                    collision.callback.handleCollision(collision.getEntity(), collidable);
                     }
                 }
             }
@@ -179,7 +179,7 @@ public class SceneCollider3D
     {
         for (Entity3D entity : entities)
         {
-            for (IComponent3D component : entity.getComponents())
+            for (Component3D component : entity.getComponents())
             {
                 if (component instanceof CollisionComponent3D)
                 {

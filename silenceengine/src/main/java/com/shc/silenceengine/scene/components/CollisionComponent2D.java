@@ -33,15 +33,13 @@ import com.shc.silenceengine.utils.IDGenerator;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class CollisionComponent2D implements IComponent2D
+public class CollisionComponent2D extends Component2D
 {
     public final long id = IDGenerator.generate();
 
     public CollisionCallback callback;
     public CollisionTag      tag;
     public Polygon           polygon;
-
-    public Entity2D entity;
 
     public CollisionComponent2D(CollisionTag tag, Polygon polygon)
     {
@@ -54,12 +52,6 @@ public class CollisionComponent2D implements IComponent2D
         this.tag = tag;
         this.polygon = polygon;
         this.callback = callback;
-    }
-
-    @Override
-    public void init(Entity2D entity)
-    {
-        this.entity = entity;
     }
 
     @Override
@@ -94,16 +86,6 @@ public class CollisionComponent2D implements IComponent2D
 
         Vector2.REUSABLE_STACK.push(tPosition);
         Vector2.REUSABLE_STACK.push(tScale);
-    }
-
-    @Override
-    public void render(float deltaTime)
-    {
-    }
-
-    @Override
-    public void dispose()
-    {
     }
 
     @FunctionalInterface

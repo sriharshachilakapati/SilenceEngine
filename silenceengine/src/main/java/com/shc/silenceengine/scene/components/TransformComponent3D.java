@@ -31,12 +31,10 @@ import com.shc.silenceengine.scene.entity.Entity3D;
 /**
  * @author Sri Harsha Chilakapati
  */
-public class TransformComponent3D implements IComponent3D
+public class TransformComponent3D extends Component3D
 {
     public Transform transform;
     public boolean   transformed;
-
-    private Entity3D entity;
 
     private Vector3 oldPosition;
     private Vector3 oldRotation;
@@ -48,12 +46,6 @@ public class TransformComponent3D implements IComponent3D
         oldPosition = new Vector3();
         oldRotation = new Vector3();
         oldScale = new Vector3();
-    }
-
-    @Override
-    public void init(Entity3D entity)
-    {
-        this.entity = entity;
     }
 
     @Override
@@ -98,15 +90,5 @@ public class TransformComponent3D implements IComponent3D
         }
 
         transformed = true;
-    }
-
-    @Override
-    public void render(float deltaTime)
-    {
-    }
-
-    @Override
-    public void dispose()
-    {
     }
 }

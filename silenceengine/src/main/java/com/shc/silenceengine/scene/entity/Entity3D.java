@@ -25,7 +25,7 @@
 package com.shc.silenceengine.scene.entity;
 
 import com.shc.silenceengine.math.Vector3;
-import com.shc.silenceengine.scene.components.IComponent3D;
+import com.shc.silenceengine.scene.components.Component3D;
 import com.shc.silenceengine.scene.components.TransformComponent3D;
 import com.shc.silenceengine.utils.IDGenerator;
 import com.shc.silenceengine.utils.ReflectionUtils;
@@ -45,10 +45,12 @@ public class Entity3D
     public final long id = IDGenerator.generate();
     public final TransformComponent3D transformComponent;
 
-    private final List<IComponent3D> components = new ArrayList<>();
-    private final List<Entity3D>     children   = new ArrayList<>();
+    private final List<Component3D> components = new ArrayList<>();
+    private final List<Entity3D>    children   = new ArrayList<>();
 
     public Entity3D parent;
+
+    private boolean initializedComponents = false;
 
     public Entity3D()
     {
@@ -59,7 +61,15 @@ public class Entity3D
     {
         onUpdate(deltaTime);
 
-        for (IComponent3D component : components)
+        if (!initializedComponents)
+        {
+            for (Component3D component : components)
+                component.init();
+
+            initializedComponents = true;
+        }
+
+        for (Component3D component : components)
             component.update(deltaTime);
 
         for (int i = 0; i < children.size(); i++)
@@ -74,7 +84,15 @@ public class Entity3D
     {
         onRender(deltaTime);
 
-        for (IComponent3D component : components)
+        if (!initializedComponents)
+        {
+            for (Component3D component : components)
+                component.init();
+
+            initializedComponents = true;
+        }
+
+        for (Component3D component : components)
             component.render(deltaTime);
 
         for (int i = 0; i < children.size(); i++)
@@ -97,22 +115,22 @@ public class Entity3D
         children.remove(entity);
     }
 
-    public void addComponent(IComponent3D component)
+    public void addComponent(Component3D component)
     {
         components.add(component);
-        component.init(this);
+        component.create(this);
     }
 
-    public void removeComponent(IComponent3D component)
+    public void removeComponent(Component3D component)
     {
         components.remove(component);
         component.dispose();
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends IComponent3D> T getComponent(Class<T> type)
+    public <T extends Component3D> T getComponent(Class<T> type)
     {
-        for (IComponent3D component : components)
+        for (Component3D component : components)
             if (ReflectionUtils.isInstanceOf(type, component))
                 return (T) component;
 
@@ -124,7 +142,7 @@ public class Entity3D
         return children;
     }
 
-    public List<IComponent3D> getComponents()
+    public List<Component3D> getComponents()
     {
         return components;
     }
