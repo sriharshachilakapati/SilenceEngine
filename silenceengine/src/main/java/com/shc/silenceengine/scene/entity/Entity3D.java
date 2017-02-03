@@ -119,6 +119,9 @@ public class Entity3D
     {
         components.add(component);
         component.create(this);
+
+        if (initializedComponents)
+            component.init();
     }
 
     public void removeComponent(Component3D component)

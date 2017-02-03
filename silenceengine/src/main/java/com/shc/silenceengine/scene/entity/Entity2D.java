@@ -115,6 +115,9 @@ public class Entity2D
     {
         components.add(component);
         component.create(this);
+
+        if (initializedComponents)
+            component.init();
     }
 
     public void removeComponent(Component2D component)
