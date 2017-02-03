@@ -157,18 +157,24 @@ public class SceneCollider3D
         {
             for (Entity3D entity : entities)
             {
-                CollisionComponent3D collision = entity.getComponent(CollisionComponent3D.class);
-
-                if (type1 == collision.tag)
+                for (Component3D component : entity.getComponents())
                 {
-                    List<CollisionComponent3D> collidables = broadphase.retrieve(collision);
-
-                    for (CollisionTag type2 : collisionMap.get(type1))
+                    if (component instanceof CollisionComponent3D)
                     {
-                        for (CollisionComponent3D collidable : collidables)
-                            if (collidable.tag == type2)
-                                if (collision.polyhedron.intersects(collidable.polyhedron))
-                                    collision.callback.handleCollision(collision.getEntity(), collidable);
+                        CollisionComponent3D collision = (CollisionComponent3D) component;
+
+                        if (type1 == collision.tag)
+                        {
+                            List<CollisionComponent3D> collidables = broadphase.retrieve(collision);
+
+                            for (CollisionTag type2 : collisionMap.get(type1))
+                            {
+                                for (CollisionComponent3D collidable : collidables)
+                                    if (collidable.tag == type2)
+                                        if (collision.polyhedron.intersects(collidable.polyhedron))
+                                            collision.callback.handleCollision(collision.getEntity(), collidable);
+                            }
+                        }
                     }
                 }
             }

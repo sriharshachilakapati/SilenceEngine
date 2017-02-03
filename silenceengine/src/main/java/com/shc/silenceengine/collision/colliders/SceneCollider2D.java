@@ -157,18 +157,24 @@ public class SceneCollider2D
         {
             for (Entity2D entity : entities)
             {
-                CollisionComponent2D collision = entity.getComponent(CollisionComponent2D.class);
-
-                if (type1 == collision.tag)
+                for (Component2D component : entity.getComponents())
                 {
-                    List<CollisionComponent2D> collidables = broadphase.retrieve(collision);
-
-                    for (CollisionTag type2 : collisionMap.get(type1))
+                    if (component instanceof CollisionComponent2D)
                     {
-                        for (CollisionComponent2D collidable : collidables)
-                            if (collidable.tag == type2)
-                                if (collision.polygon.intersects(collidable.polygon))
-                                    collision.callback.handleCollision(collision.getEntity(), collidable);
+                        CollisionComponent2D collision = (CollisionComponent2D) component;
+
+                        if (type1 == collision.tag)
+                        {
+                            List<CollisionComponent2D> collidables = broadphase.retrieve(collision);
+
+                            for (CollisionTag type2 : collisionMap.get(type1))
+                            {
+                                for (CollisionComponent2D collidable : collidables)
+                                    if (collidable.tag == type2)
+                                        if (collision.polygon.intersects(collidable.polygon))
+                                            collision.callback.handleCollision(collision.getEntity(), collidable);
+                            }
+                        }
                     }
                 }
             }
