@@ -61,7 +61,7 @@ public class PolygonConvexHullTest extends SilenceTest
         SilenceEngine.io.getImageReader().readImage(FilePath.getResourceFile("test_resources/tree2-final.png"), img ->
         {
             Polygon polygon = Polygon.createConvexHull(img);
-            scene.entities.add(new PolygonEntity(new Sprite(Texture.fromImage(img)), batch, polygon));
+            scene.addEntity(new PolygonEntity(new Sprite(Texture.fromImage(img)), batch, polygon));
             img.dispose();
         });
     }

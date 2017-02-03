@@ -84,8 +84,8 @@ public class EntityCollisionTest2D extends SilenceTest
             wall2.addComponent(new PolygonRenderComponent());
             wall2.position.set(i + 24, SilenceEngine.display.getHeight() - 24);
 
-            scene.entities.add(wall);
-            scene.entities.add(wall2);
+            scene.addEntity(wall);
+            scene.addEntity(wall2);
         }
 
         for (int i = 48; i < SilenceEngine.display.getHeight() - 48; i += 48)
@@ -100,11 +100,11 @@ public class EntityCollisionTest2D extends SilenceTest
             wall2.addComponent(new PolygonRenderComponent());
             wall2.position.set(SilenceEngine.display.getWidth() - 24, i + 24);
 
-            scene.entities.add(wall);
-            scene.entities.add(wall2);
+            scene.addEntity(wall);
+            scene.addEntity(wall2);
         }
 
-        scene.entities.add(new Hero());
+        scene.addEntity(new Hero());
     }
 
     @Override

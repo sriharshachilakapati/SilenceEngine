@@ -29,6 +29,7 @@ import com.shc.silenceengine.scene.components.Component2D;
 import com.shc.silenceengine.scene.components.TransformComponent2D;
 import com.shc.silenceengine.utils.IDGenerator;
 import com.shc.silenceengine.utils.ReflectionUtils;
+import com.shc.silenceengine.utils.TaskManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,7 @@ public class Entity2D
     public Entity2D parent;
 
     private boolean initializedComponents = false;
+    private boolean destroyed             = false;
 
     public Entity2D()
     {
@@ -61,6 +63,9 @@ public class Entity2D
 
     public final void update(float deltaTime)
     {
+        if (destroyed)
+            return;
+
         onUpdate(deltaTime);
 
         if (!initializedComponents)
@@ -74,8 +79,13 @@ public class Entity2D
         for (Component2D component : components)
             component.update(deltaTime);
 
-        for (int i = 0; i < children.size(); i++)
-            children.get(i).update(deltaTime);
+        for (Entity2D child : children)
+        {
+            if (child.destroyed)
+                removeChild(child);
+            else
+                child.update(deltaTime);
+        }
     }
 
     protected void onUpdate(float deltaTime)
@@ -84,52 +94,87 @@ public class Entity2D
 
     public final void render(float deltaTime)
     {
+        if (destroyed)
+            return;
+
         onRender(deltaTime);
-
-        if (!initializedComponents)
-        {
-            for (Component2D component : components)
-                component.init();
-
-            initializedComponents = true;
-        }
 
         for (Component2D component : components)
             component.render(deltaTime);
 
-        for (int i = 0; i < children.size(); i++)
-            children.get(i).render(deltaTime);
+        for (Entity2D child : children)
+            child.render(deltaTime);
     }
 
     protected void onRender(float deltaTime)
     {
     }
 
+    protected void onDestroy()
+    {
+    }
+
+    public void destroy()
+    {
+        if (destroyed)
+            return;
+
+        onDestroy();
+
+        for (Component2D component : components)
+            component.dispose();
+
+        for (Entity2D entity : children)
+            entity.destroy();
+
+        components.clear();
+        children.clear();
+
+        destroyed = true;
+    }
+
     public void addChild(Entity2D entity)
     {
-        entity.parent = this;
-        children.add(entity);
+        TaskManager.runOnUpdate(() ->
+        {
+            entity.parent = this;
+            children.add(entity);
+        });
     }
 
     public void addComponent(Component2D component)
     {
-        components.add(component);
-        component.create(this);
+        if (!initializedComponents)
+        {
+            components.add(component);
+            component.create(this);
+            return;
+        }
 
-        if (initializedComponents)
+        TaskManager.runOnUpdate(() ->
+        {
+            components.add(component);
+            component.create(this);
             component.init();
+        });
     }
 
     public void removeComponent(Component2D component)
     {
-        components.remove(component);
-        component.dispose();
+        TaskManager.runOnUpdate(() ->
+        {
+            components.remove(component);
+            component.dispose();
+        });
     }
 
     public void removeChild(Entity2D entity)
     {
-        entity.parent = null;
-        children.remove(entity);
+        TaskManager.runOnUpdate(() ->
+        {
+            entity.parent = null;
+            children.remove(entity);
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -150,5 +195,10 @@ public class Entity2D
     public List<Component2D> getComponents()
     {
         return components;
+    }
+
+    public boolean isDestroyed()
+    {
+        return destroyed;
     }
 }

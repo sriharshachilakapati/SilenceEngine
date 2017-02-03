@@ -25,6 +25,7 @@
 package com.shc.silenceengine.scene;
 
 import com.shc.silenceengine.scene.entity.Entity2D;
+import com.shc.silenceengine.utils.TaskManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,18 +35,22 @@ import java.util.List;
  */
 public class Scene2D
 {
-    public final List<Entity2D> entities = new ArrayList<>();
+    private List<Entity2D> entities = new ArrayList<>();
 
     public void update(float deltaTime)
     {
-        for (int i = 0; i < entities.size(); i++)
-            entities.get(i).update(deltaTime);
+        for (Entity2D entity : entities)
+        {
+            if (!entity.isDestroyed())
+                entity.update(deltaTime);
+            else
+                removeEntity(entity);
+        }
     }
 
     public void render(float deltaTime)
     {
-        for (int i = 0; i < entities.size(); i++)
-            entities.get(i).render(deltaTime);
+        for (Entity2D entity : entities) entity.render(deltaTime);
     }
 
     public int numEntities()
@@ -56,5 +61,26 @@ public class Scene2D
             count += entity.getChildren().size();
 
         return count;
+    }
+
+    public void addEntity(Entity2D entity)
+    {
+        TaskManager.runOnRender(() -> entities.add(entity));
+    }
+
+    public void removeEntity(Entity2D entity)
+    {
+        TaskManager.runOnUpdate(() ->
+        {
+            if (!entity.isDestroyed())
+                entity.destroy();
+
+            entities.remove(entity);
+        });
+    }
+
+    public List<Entity2D> getEntities()
+    {
+        return entities;
     }
 }

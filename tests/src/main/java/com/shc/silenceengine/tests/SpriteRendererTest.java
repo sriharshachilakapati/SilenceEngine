@@ -147,7 +147,7 @@ public class SpriteRendererTest extends SilenceTest
         wall.addComponent(new SpriteComponent(sprite, batch));
         wall.addComponent(new BoundsRenderComponent());
         wall.position.set(SilenceEngine.display.getWidth() / 2, SilenceEngine.display.getHeight() / 2);
-        scene.entities.add(wall);
+        scene.addEntity(wall);
 
         for (int i = 0; i < SilenceEngine.display.getWidth(); i += 48)
         {
@@ -163,8 +163,8 @@ public class SpriteRendererTest extends SilenceTest
             wall2.addComponent(new BoundsRenderComponent());
             wall2.position.set(i + 24, SilenceEngine.display.getHeight() - 24);
 
-            scene.entities.add(wall);
-            scene.entities.add(wall2);
+            scene.addEntity(wall);
+            scene.addEntity(wall2);
         }
 
         for (int i = 48; i < SilenceEngine.display.getHeight() - 48; i += 48)
@@ -181,11 +181,11 @@ public class SpriteRendererTest extends SilenceTest
             wall2.addComponent(new BoundsRenderComponent());
             wall2.position.set(SilenceEngine.display.getWidth() - 24, i + 24);
 
-            scene.entities.add(wall);
-            scene.entities.add(wall2);
+            scene.addEntity(wall);
+            scene.addEntity(wall2);
         }
 
-        scene.entities.add(new Hero(sprite, batch));
+        scene.addEntity(new Hero(sprite, batch));
     }
 
     private static class Hero extends Entity2D

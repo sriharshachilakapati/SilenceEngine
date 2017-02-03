@@ -121,7 +121,7 @@ public class SceneCollider2D
     public void checkCollisions()
     {
         // If there are no children in the scene, simply return
-        if (scene.entities.size() == 0)
+        if (scene.getEntities().size() == 0)
         {
             childrenInScene = 0;
             return;
@@ -134,7 +134,7 @@ public class SceneCollider2D
             broadphase.clear();
             childrenInScene = 0;
 
-            updateEntities(scene.entities);
+            updateEntities(scene.getEntities());
         }
 
         // Update the broadphase for repositioned entities

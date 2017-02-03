@@ -29,6 +29,7 @@ import com.shc.silenceengine.scene.components.Component3D;
 import com.shc.silenceengine.scene.components.TransformComponent3D;
 import com.shc.silenceengine.utils.IDGenerator;
 import com.shc.silenceengine.utils.ReflectionUtils;
+import com.shc.silenceengine.utils.TaskManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,7 @@ public class Entity3D
     public Entity3D parent;
 
     private boolean initializedComponents = false;
+    private boolean destroyed             = false;
 
     public Entity3D()
     {
@@ -59,6 +61,9 @@ public class Entity3D
 
     public final void update(float deltaTime)
     {
+        if (destroyed)
+            return;
+
         onUpdate(deltaTime);
 
         if (!initializedComponents)
@@ -72,8 +77,13 @@ public class Entity3D
         for (Component3D component : components)
             component.update(deltaTime);
 
-        for (int i = 0; i < children.size(); i++)
-            children.get(i).update(deltaTime);
+        for (Entity3D child : children)
+        {
+            if (child.destroyed)
+                removeChild(child);
+            else
+                child.update(deltaTime);
+        }
     }
 
     protected void onUpdate(float deltaTime)
@@ -82,52 +92,87 @@ public class Entity3D
 
     public final void render(float deltaTime)
     {
+        if (destroyed)
+            return;
+
         onRender(deltaTime);
-
-        if (!initializedComponents)
-        {
-            for (Component3D component : components)
-                component.init();
-
-            initializedComponents = true;
-        }
 
         for (Component3D component : components)
             component.render(deltaTime);
 
-        for (int i = 0; i < children.size(); i++)
-            children.get(i).render(deltaTime);
+        for (Entity3D child : children)
+            child.render(deltaTime);
     }
 
     protected void onRender(float deltaTime)
     {
     }
 
+    protected void onDestroy()
+    {
+    }
+
+    public void destroy()
+    {
+        if (destroyed)
+            return;
+
+        onDestroy();
+
+        for (Component3D component : components)
+            component.dispose();
+
+        for (Entity3D entity : children)
+            entity.destroy();
+
+        components.clear();
+        children.clear();
+
+        destroyed = true;
+    }
+
     public void addChild(Entity3D entity)
     {
-        entity.parent = this;
-        children.add(entity);
+        TaskManager.runOnUpdate(() ->
+        {
+            entity.parent = this;
+            children.add(entity);
+        });
     }
 
     public void removeChild(Entity3D entity)
     {
-        entity.parent = null;
-        children.remove(entity);
+        TaskManager.runOnUpdate(() ->
+        {
+            entity.parent = null;
+            children.remove(entity);
+        });
     }
 
     public void addComponent(Component3D component)
     {
-        components.add(component);
-        component.create(this);
+        if (!initializedComponents)
+        {
+            components.add(component);
+            component.create(this);
+            return;
+        }
 
-        if (initializedComponents)
+        TaskManager.runOnUpdate(() ->
+        {
+            components.add(component);
+            component.create(this);
             component.init();
+        });
     }
 
     public void removeComponent(Component3D component)
     {
-        components.remove(component);
-        component.dispose();
+        TaskManager.runOnUpdate(() ->
+        {
+            components.remove(component);
+            component.dispose();
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -148,5 +193,10 @@ public class Entity3D
     public List<Component3D> getComponents()
     {
         return components;
+    }
+
+    public boolean isDestroyed()
+    {
+        return destroyed;
     }
 }
