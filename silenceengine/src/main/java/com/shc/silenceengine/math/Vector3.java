@@ -36,6 +36,13 @@ public class Vector3
     public static final Vector3 AXIS_Y = new Vector3(0, 1, 0);
     public static final Vector3 AXIS_Z = new Vector3(0, 0, 1);
 
+    public static final Vector3 UP       = new Vector3(AXIS_Y);
+    public static final Vector3 DOWN     = new Vector3(AXIS_Y).negate();
+    public static final Vector3 LEFT     = new Vector3(AXIS_X).negate();
+    public static final Vector3 RIGHT    = new Vector3(AXIS_X);
+    public static final Vector3 FORWARD  = new Vector3(AXIS_Z).negate();
+    public static final Vector3 BACKWARD = new Vector3(AXIS_Z);
+
     public static final ReusableStack<Vector3> REUSABLE_STACK = new ReusableStack<>(Vector3::new);
 
     public float x, y, z;

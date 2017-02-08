@@ -36,6 +36,11 @@ public class Vector2
     public static final Vector2 AXIS_X = new Vector2(1, 0);
     public static final Vector2 AXIS_Y = new Vector2(0, 1);
 
+    public static final Vector2 LEFT  = new Vector2(AXIS_X).negate();
+    public static final Vector2 RIGHT = new Vector2(AXIS_X);
+    public static final Vector2 UP    = new Vector2(AXIS_Y).negate();
+    public static final Vector2 DOWN  = new Vector2(AXIS_Y);
+
     public static final ReusableStack<Vector2> REUSABLE_STACK = new ReusableStack<>(Vector2::new);
 
     public float x, y;
