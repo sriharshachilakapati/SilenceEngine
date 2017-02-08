@@ -165,12 +165,12 @@ public class EntityCollisionTest2D extends SilenceTest
             addChild(subHero);
         }
 
-        private void onHeroCollision(Entity2D other, CollisionComponent2D component)
+        private void onHeroCollision(CollisionComponent2D other)
         {
             renderComponent.color.set(Color.YELLOW_GREEN);
         }
 
-        private void onSubHeroCollision(Entity2D other, CollisionComponent2D component)
+        private void onSubHeroCollision(CollisionComponent2D other)
         {
             subRenderComponent.color.set(Color.WHITE);
         }

@@ -91,6 +91,6 @@ public class CollisionComponent2D extends Component2D
     @FunctionalInterface
     public interface CollisionCallback
     {
-        void handleCollision(Entity2D other, CollisionComponent2D component);
+        void handleCollision(CollisionComponent2D other);
     }
 }

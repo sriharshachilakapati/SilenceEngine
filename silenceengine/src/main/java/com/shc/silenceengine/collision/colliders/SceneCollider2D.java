@@ -172,7 +172,7 @@ public class SceneCollider2D
                                 for (CollisionComponent2D collidable : collidables)
                                     if (collidable.tag == type2)
                                         if (collision.polygon.intersects(collidable.polygon))
-                                            collision.callback.handleCollision(collision.getEntity(), collidable);
+                                            collision.callback.handleCollision(collidable);
                             }
                         }
                     }

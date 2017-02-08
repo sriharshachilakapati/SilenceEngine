@@ -213,12 +213,12 @@ public class SpriteRendererTest extends SilenceTest
             addChild(subHero);
         }
 
-        private void onHeroCollision(Entity2D other, CollisionComponent2D component)
+        private void onHeroCollision(CollisionComponent2D other)
         {
             renderComponent.tint.set(Color.YELLOW_GREEN);
         }
 
-        private void onSubHeroCollision(Entity2D other, CollisionComponent2D component)
+        private void onSubHeroCollision(CollisionComponent2D other)
         {
             subRenderComponent.tint.set(Color.RED);
         }

@@ -91,6 +91,6 @@ public class CollisionComponent3D extends Component3D
     @FunctionalInterface
     public interface CollisionCallback
     {
-        void handleCollision(Entity3D other, CollisionComponent3D component);
+        void handleCollision(CollisionComponent3D other);
     }
 }
