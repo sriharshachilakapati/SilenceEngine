@@ -28,3 +28,6 @@ out/
 .classpath
 bin/
 local.properties
+backend-android/backend-android.iml
+tests-android/gen/
+tests-android/tests-android.iml
