@@ -66,7 +66,7 @@ public interface IGraphicsDevice
         GLContext.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         // Initialize the empty texture
-        Texture.EMPTY = Texture.fromColor(Color.TRANSPARENT, 32, 32);
+        Texture.EMPTY = Texture.fromColor(Color.BLACK, 32, 32);
         Texture.EMPTY.bind(0);
 
         logger.info("Loading dynamic shader program");

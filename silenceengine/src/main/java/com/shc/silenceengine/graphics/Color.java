@@ -184,7 +184,7 @@ public class Color
     public static final Color WHITE_SMOKE         = new Color(0xF5F5F5);
     public static final Color YELLOW              = new Color(0xFFFF00);
     public static final Color YELLOW_GREEN        = new Color(0x9ACD32);
-    public static final Color TRANSPARENT         = new Color(0x00000000);
+    public static final Color TRANSPARENT         = new Color(0, 0, 0, 0);
 
     public float r, g, b, a;
 
@@ -368,5 +368,29 @@ public class Color
     public String toString()
     {
         return "Color [ r: " + r + ", g: " + g + ", b: " + b + ", a: " + a + " ]";
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Color color = (Color) o;
+
+        return Float.compare(color.r, r) == 0 &&
+               Float.compare(color.g, g) == 0 &&
+               Float.compare(color.b, b) == 0 &&
+               Float.compare(color.a, a) == 0;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = (r != +0.0f ? Float.floatToIntBits(r) : 0);
+        result = 31 * result + (g != +0.0f ? Float.floatToIntBits(g) : 0);
+        result = 31 * result + (b != +0.0f ? Float.floatToIntBits(b) : 0);
+        result = 31 * result + (a != +0.0f ? Float.floatToIntBits(a) : 0);
+        return result;
     }
 }
