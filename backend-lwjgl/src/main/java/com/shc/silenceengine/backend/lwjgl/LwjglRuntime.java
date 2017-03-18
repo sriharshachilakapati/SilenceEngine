@@ -33,6 +33,13 @@ import com.shc.silenceengine.utils.TaskManager;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
 import org.lwjgl.system.Configuration;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The LwjglRuntime initializes the LWJGL library, and starts the native event loop.
  *
@@ -40,12 +47,86 @@ import org.lwjgl.system.Configuration;
  */
 public final class LwjglRuntime
 {
+    private static SilenceEngine.Platform platform;
+
     private LwjglRuntime()
     {
     }
 
+    /**
+     * Useful utility to restart the JVM automatically with -XstartOnFirstThread argument on MacOSX as required by GLFW.
+     * Method originally written by <b>Kappa</b> on the Java-Gaming forums. This code was from shared code snippet which
+     * was copied from http://www.java-gaming.org/topics/starting-jvm-on-mac-with-xstartonfirstthread-programmatically/37697/view.html
+     */
+    private static void checkForXstartOnFirstThread()
+    {
+        // get current jvm process pid
+        String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+        // get environment variable on whether XstartOnFirstThread is enabled
+        String env = System.getenv("JAVA_STARTED_ON_FIRST_THREAD_" + pid);
+
+        // if environment variable is "1" then XstartOnFirstThread is enabled
+        if (env != null && env.equals("1"))
+            return;
+
+        SilenceEngine.log.getRootLogger().warn("Restarting the JVM to start with -XstartOnFirstThread flag");
+
+        // restart jvm with -XstartOnFirstThread
+        String separator = System.getProperty("file.separator");
+        String classpath = System.getProperty("java.class.path");
+        String mainClass = System.getenv("JAVA_MAIN_CLASS_" + pid);
+        String jvmPath = System.getProperty("java.home") + separator + "bin" + separator + "java";
+
+        if (mainClass == null)
+        {
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            StackTraceElement main = stack[stack.length - 1];
+            mainClass = main.getClassName();
+        }
+
+        List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+
+        List<String> jvmArgs = new ArrayList<>();
+
+        jvmArgs.add(jvmPath);
+        jvmArgs.add("-XstartOnFirstThread");
+        jvmArgs.addAll(inputArguments);
+        jvmArgs.add("-cp");
+        jvmArgs.add(classpath);
+        jvmArgs.add(mainClass);
+
+        try
+        {
+            ProcessBuilder processBuilder = new ProcessBuilder(jvmArgs);
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
+
+            InputStream is = process.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+
+            String line;
+
+            while ((line = br.readLine()) != null)
+                System.out.println(line);
+
+            process.waitFor();
+            System.exit(process.exitValue());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        System.exit(-1);
+    }
+
     public static void start(Game game)
     {
+        // Check for -XstartOnFirstThread on Mac OS X
+        if (getPlatform() == SilenceEngine.Platform.MACOSX)
+            checkForXstartOnFirstThread();
+
         Configuration.DEBUG.set(Game.DEVELOPMENT);
 
         SilenceEngine.log = new LwjglLogDevice();
@@ -56,7 +137,7 @@ public final class LwjglRuntime
         SilenceEngine.audio = new LwjglAudioDevice();
 
         // Set AWT fix on Mac OS X
-        if (SilenceEngine.display.getPlatform() == SilenceEngine.Platform.MACOSX)
+        if (getPlatform() == SilenceEngine.Platform.MACOSX)
             System.setProperty("java.awt.headless", "true");
 
         Window window = ((LwjglDisplayDevice) SilenceEngine.display).window;
@@ -106,5 +187,27 @@ public final class LwjglRuntime
 
         // Raise the dispose event finally
         SilenceEngine.eventManager.raiseDisposeEvent();
+    }
+
+    static SilenceEngine.Platform getPlatform()
+    {
+        if (platform == null)
+        {
+            final String OS = System.getProperty("os.name").toLowerCase();
+            final String ARCH = System.getProperty("os.arch").toLowerCase();
+
+            boolean isWindows = OS.contains("windows");
+            boolean isLinux = OS.contains("linux");
+            boolean isMac = OS.contains("mac");
+            boolean is64Bit = ARCH.equals("amd64") || ARCH.equals("x86_64");
+
+            platform = SilenceEngine.Platform.UNKNOWN;
+
+            if (isWindows) platform = is64Bit ? SilenceEngine.Platform.WINDOWS_64 : SilenceEngine.Platform.WINDOWS_32;
+            if (isLinux) platform = is64Bit ? SilenceEngine.Platform.LINUX_64 : SilenceEngine.Platform.UNKNOWN;
+            if (isMac) platform = SilenceEngine.Platform.MACOSX;
+        }
+
+        return platform;
     }
 }
