@@ -114,24 +114,7 @@ class LwjglDisplayDevice implements IDisplayDevice
     @Override
     public Platform getPlatform()
     {
-        if (platform == null)
-        {
-            final String OS = System.getProperty("os.name").toLowerCase();
-            final String ARCH = System.getProperty("os.arch").toLowerCase();
-
-            boolean isWindows = OS.contains("windows");
-            boolean isLinux = OS.contains("linux");
-            boolean isMac = OS.contains("mac");
-            boolean is64Bit = ARCH.equals("amd64") || ARCH.equals("x86_64");
-
-            platform = Platform.UNKNOWN;
-
-            if (isWindows) platform = is64Bit ? Platform.WINDOWS_64 : Platform.WINDOWS_32;
-            if (isLinux) platform = is64Bit ? Platform.LINUX_64 : Platform.UNKNOWN;
-            if (isMac) platform = Platform.MACOSX;
-        }
-
-        return platform;
+        return LwjglRuntime.getPlatform();
     }
 
     @Override
