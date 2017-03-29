@@ -131,7 +131,7 @@ public class Entity
     /**
      * Gets all the components in this entity into the list passed.
      *
-     * @return The same list that is passed into this method. If the passed list is {@code null} then a new lis is
+     * @return The same list that is passed into this method. If the passed list is {@code null} then a new list is
      * returned.
      */
     public List<Component> getComponents(List<Component> list)
