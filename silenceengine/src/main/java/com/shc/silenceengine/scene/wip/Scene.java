@@ -26,6 +26,7 @@ package com.shc.silenceengine.scene.wip;
 
 import com.shc.silenceengine.utils.TaskManager;
 import com.shc.silenceengine.utils.functional.BiCallback;
+import com.shc.silenceengine.utils.functional.SimpleCallback;
 import com.shc.silenceengine.utils.functional.UniCallback;
 
 import java.util.ArrayList;
@@ -55,12 +56,22 @@ public class Scene
      */
     private final List<BiCallback<Scene, Float>> renderSystems = new ArrayList<>();
 
+    /**
+     * Construct a new Scene object which contains the default component update system and the component render system.
+     */
     public Scene()
     {
-        registerUpdateSystem(Scene::updateSystem);
+        registerUpdateSystem(Scene::componentUpdateSystem);
+        registerRenderSystem(Scene::componentRenderSystem);
     }
 
-    private static void updateSystem(Scene scene, float elapsedTime)
+    /**
+     * A default update system that updates all the components in all the entities in the Scene.
+     *
+     * @param scene       The scene whose entity components should be updated.
+     * @param elapsedTime The time took in the last frame.
+     */
+    private static void componentUpdateSystem(Scene scene, float elapsedTime)
     {
         scene.forEachEntity(entity ->
         {
@@ -71,11 +82,39 @@ public class Scene
         });
     }
 
+    /**
+     * A default render system that renders all the components in all the entities in the Scene.
+     *
+     * @param scene       The scene whose entity components should be updated.
+     * @param elapsedTime The time took in the last frame.
+     */
+    private static void componentRenderSystem(Scene scene, float elapsedTime)
+    {
+        scene.forEachEntity(e ->
+        {
+            if (!e.isDestroyed())
+                e.forEachComponent(c -> c.onRender(elapsedTime));
+        });
+    }
+
+    /**
+     * Adds an entity to the scene. In case you want to add entities while the Scene is in use, wrap this call with the
+     * {@link TaskManager#runOnUpdate(SimpleCallback)} method.
+     *
+     * @param entity The new entity to be added to this scene.
+     */
     public void addEntity(Entity entity)
     {
         entities.add(entity);
     }
 
+    /**
+     * Removes an entity from the scene. In case you want to remove the entity while the Scene is in use, wrap this call
+     * with the {@link TaskManager#runOnUpdate(SimpleCallback)} method. This method does call {@link Entity#destroy()}
+     * if the entity is alive.
+     *
+     * @param entity The entity to be removed from this scene.
+     */
     public void removeEntity(Entity entity)
     {
         if (!entity.isDestroyed())
@@ -84,36 +123,99 @@ public class Scene
         entities.remove(entity);
     }
 
+    /**
+     * Initializes the scene. It loops over all the entities and calls init on all the components in them.
+     */
     public void init()
     {
         forEachEntity(e -> e.forEachComponent(Component::onInit));
     }
 
+    /**
+     * Updates the scene. This calls all the registered systems that are registered for update event. The order of
+     * invoking is the same as the order of registration. The components will however be updated before the systems
+     * start work.
+     *
+     * @param elapsedTime The time elapsed in the previous frame.
+     */
     public void update(float elapsedTime)
     {
         for (BiCallback<Scene, Float> system : updateSystems)
             system.invoke(this, elapsedTime);
     }
 
+    /**
+     * Renders the scene. This calls all the registered systems that are registered for render event. The order of
+     * invoking is the same as the order of registration. The components will however be rendered before the systems
+     * start work.
+     *
+     * @param elapsedTime The time elapsed in the previous frame.
+     */
     public void render(float elapsedTime)
     {
         for (BiCallback<Scene, Float> system : renderSystems)
             system.invoke(this, elapsedTime);
     }
 
+    /**
+     * Registers a system to act on the update event. A system is nothing but a {@link BiCallback} that accepts a Scene
+     * and the elapsed time as a float. In case you are calling this method while the scene is in use, wrap the call in
+     * {@link TaskManager#runOnUpdate(SimpleCallback)} method.
+     *
+     * @param system The system that is going to be registered for the update event.
+     */
     public void registerUpdateSystem(BiCallback<Scene, Float> system)
     {
         updateSystems.add(system);
     }
 
+    /**
+     * Registers a system to act on the render event. A system is nothing but a {@link BiCallback} that accepts a Scene
+     * and the elapsed time as a float. In case you are calling this method while the scene is in use, wrap the call in
+     * {@link TaskManager#runOnUpdate(SimpleCallback)} method.
+     *
+     * @param system The system that is going to be registered for the update event.
+     */
     public void registerRenderSystem(BiCallback<Scene, Float> system)
     {
         renderSystems.add(system);
     }
 
+    /**
+     * Runs a callback for all the active entities in this scene.
+     *
+     * @param callback The callback to be called for each of the active entity.
+     */
     public void forEachEntity(UniCallback<Entity> callback)
     {
         for (Entity e : entities)
-            callback.invoke(e);
+            if (!e.isDestroyed())
+                callback.invoke(e);
+    }
+
+    /**
+     * Finds all the entities in this scene that has a component which is an instance of {@code klass}. The found entities
+     * are then added to the passed in {@code list}.
+     *
+     * @param klass The class of the component.
+     * @param list  The list to add the found the entities into.
+     * @param <T>   The type of the component.
+     *
+     * @return The same list that is passed in. If {@code null} is passed, then a new list is created.
+     */
+    public <T extends Component> List<Entity> findAllWithComponent(Class<T> klass, List<Entity> list)
+    {
+        if (list == null)
+            list = new ArrayList<>();
+
+        List<Entity> elements = list;
+
+        forEachEntity(e ->
+        {
+            if (e.hasComponent(klass))
+                elements.add(e);
+        });
+
+        return list;
     }
 }
