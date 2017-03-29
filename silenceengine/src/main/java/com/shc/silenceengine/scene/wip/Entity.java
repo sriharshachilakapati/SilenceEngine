@@ -131,6 +131,8 @@ public class Entity
     /**
      * Gets all the components in this entity into the list passed.
      *
+     * @param list The list that should be used to add the components into.
+     *
      * @return The same list that is passed into this method. If the passed list is {@code null} then a new list is
      * returned.
      */
