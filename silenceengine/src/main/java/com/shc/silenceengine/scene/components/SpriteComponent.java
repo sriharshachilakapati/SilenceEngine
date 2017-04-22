@@ -26,43 +26,33 @@ package com.shc.silenceengine.scene.components;
 
 import com.shc.silenceengine.graphics.Color;
 import com.shc.silenceengine.graphics.Sprite;
-import com.shc.silenceengine.graphics.SpriteBatch;
+import com.shc.silenceengine.scene.Component;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class SpriteComponent extends Component2D
+public class SpriteComponent extends Component
 {
     public final Color tint = Color.BLACK.copy();
 
     public Sprite sprite;
+
     public float opacity = 1;
     public int   layer   = 0;
 
-    private TransformComponent2D transformComponent;
-    private SpriteBatch          spriteBatch;
+    public SpriteComponent()
+    {
+        this.sprite = null;
+    }
 
-    public SpriteComponent(Sprite sprite, SpriteBatch spriteBatch)
+    public SpriteComponent(Sprite sprite)
     {
         this.sprite = sprite;
-        this.spriteBatch = spriteBatch;
     }
 
     @Override
-    public void init()
+    protected void onUpdate(float elapsedTime)
     {
-        transformComponent = entity.transformComponent;
-    }
-
-    @Override
-    public void update(float deltaTime)
-    {
-        sprite.update(deltaTime);
-    }
-
-    @Override
-    public void render(float deltaTime)
-    {
-        spriteBatch.render(sprite, transformComponent.transform, tint, opacity, layer);
+        sprite.update(elapsedTime);
     }
 }

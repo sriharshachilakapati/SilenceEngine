@@ -25,20 +25,17 @@
 package com.shc.silenceengine.scene.components;
 
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.DynamicRenderer;
-import com.shc.silenceengine.graphics.IGraphicsDevice;
-import com.shc.silenceengine.math.Vector2;
 import com.shc.silenceengine.math.geom2d.Polygon;
+import com.shc.silenceengine.scene.Component;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class PolygonRenderComponent extends Component2D
+public class PolygonRenderComponent extends Component
 {
-    private DynamicRenderer renderer;
-    private Polygon polygon;
-
-    public final Color color = new Color();
+    public Polygon    polygon;
+    public Color      color;
+    public RenderType renderType;
 
     public PolygonRenderComponent()
     {
@@ -47,50 +44,40 @@ public class PolygonRenderComponent extends Component2D
 
     public PolygonRenderComponent(Color color)
     {
-        this(null, color);
+        this.color = color.copy();
+        this.renderType = RenderType.OUTLINE;
+    }
+
+    public PolygonRenderComponent(Color color, RenderType renderType)
+    {
+        this.color = color.copy();
+        this.renderType = renderType;
+    }
+
+    public PolygonRenderComponent(Polygon polygon, Color color)
+    {
+        this.polygon = polygon;
+        this.color = color.copy();
+        this.renderType = RenderType.OUTLINE;
+    }
+
+    public PolygonRenderComponent(Polygon polygon, Color color, RenderType renderType)
+    {
+        this.polygon = polygon;
+        this.color = color.copy();
+        this.renderType = renderType;
     }
 
     public PolygonRenderComponent(Polygon polygon)
     {
-        this(polygon, Color.RED);
-    }
-
-    public PolygonRenderComponent(Polygon polygon,  Color color)
-    {
-        this(polygon, color, IGraphicsDevice.Renderers.dynamic);
-    }
-
-    public PolygonRenderComponent(Polygon polygon, Color color, DynamicRenderer renderer)
-    {
         this.polygon = polygon;
-        this.renderer = renderer;
-        this.color.set(color);
+        this.color = Color.RED.copy();
+        renderType = RenderType.OUTLINE;
     }
 
-    @Override
-    public void init()
+    public enum RenderType
     {
-        if (polygon == null)
-            polygon = entity.getComponent(CollisionComponent2D.class).polygon;
-    }
-
-    @Override
-    public void render(float deltaTime)
-    {
-        Vector2 temp = Vector2.REUSABLE_STACK.pop();
-
-        for (int i = 0; i < polygon.vertexCount(); i++)
-        {
-            Vector2 v0 = polygon.getVertex(i);
-            Vector2 v1 = polygon.getVertex((i + 1) % polygon.vertexCount());
-
-            renderer.vertex(temp.set(v0).add(polygon.getPosition()));
-            renderer.color(color);
-
-            renderer.vertex(temp.set(v1).add(polygon.getPosition()));
-            renderer.color(color);
-        }
-
-        Vector2.REUSABLE_STACK.push(temp);
+        FILLED,
+        OUTLINE
     }
 }

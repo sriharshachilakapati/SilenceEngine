@@ -24,63 +24,42 @@
 
 package com.shc.silenceengine.scene;
 
-import com.shc.silenceengine.scene.entity.Entity3D;
-import com.shc.silenceengine.utils.TaskManager;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class Scene3D
+class ComponentType
 {
-    private List<Entity3D> entities = new ArrayList<>();
+    private static final Map<Class<? extends Component>, ComponentType> componentTypes = new HashMap<>();
 
-    public void update(float deltaTime)
+    private static int typeIndex = 0;
+
+    private int index;
+
+    private ComponentType()
     {
-        for (Entity3D entity : entities)
-        {
-            if (!entity.isDestroyed())
-                entity.update(deltaTime);
-            else
-                removeEntity(entity);
-        }
+        this.index = typeIndex++;
     }
 
-    public void render(float deltaTime)
+    static ComponentType of(Class<? extends Component> klass)
     {
-        for (Entity3D entity : entities) entity.render(deltaTime);
+        ComponentType cType = componentTypes.get(klass);
+
+        if (cType == null)
+            componentTypes.put(klass, cType = new ComponentType());
+
+        return cType;
     }
 
-    public int numEntities()
+    boolean equals(ComponentType other)
     {
-        int count = entities.size();
-
-        for (Entity3D entity : entities)
-            count += entity.getChildren().size();
-
-        return count;
+        return this.index == other.index;
     }
 
-    public void addEntity(Entity3D entity)
+    public int getIndex()
     {
-        TaskManager.runOnRender(() -> entities.add(entity));
-    }
-
-    public void removeEntity(Entity3D entity)
-    {
-        TaskManager.runOnUpdate(() ->
-        {
-            if (!entity.isDestroyed())
-                entity.destroy();
-
-            entities.remove(entity);
-        });
-    }
-
-    public List<Entity3D> getEntities()
-    {
-        return entities;
+        return index;
     }
 }

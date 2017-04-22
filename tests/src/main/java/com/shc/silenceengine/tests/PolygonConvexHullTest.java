@@ -26,44 +26,44 @@ package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.collision.CollisionTag;
 import com.shc.silenceengine.core.SilenceEngine;
-import com.shc.silenceengine.graphics.IGraphicsDevice;
+import com.shc.silenceengine.graphics.SceneRenderSystem;
 import com.shc.silenceengine.graphics.Sprite;
-import com.shc.silenceengine.graphics.SpriteBatch;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.opengl.GLContext;
-import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.io.FilePath;
 import com.shc.silenceengine.math.geom2d.Polygon;
-import com.shc.silenceengine.scene.Scene2D;
+import com.shc.silenceengine.scene.Entity;
+import com.shc.silenceengine.scene.Scene;
 import com.shc.silenceengine.scene.components.CollisionComponent2D;
 import com.shc.silenceengine.scene.components.PolygonRenderComponent;
 import com.shc.silenceengine.scene.components.SpriteComponent;
-import com.shc.silenceengine.scene.entity.Entity2D;
+import com.shc.silenceengine.utils.TaskManager;
 
 /**
  * @author Sri Harsha Chilakapati
  */
 public class PolygonConvexHullTest extends SilenceTest
 {
-    private Scene2D     scene;
-    private OrthoCam    camera;
-    private SpriteBatch batch;
+    private Scene    scene;
+    private OrthoCam camera;
 
     @Override
     public void init()
     {
-        scene = new Scene2D();
+        scene = new Scene();
         camera = new OrthoCam().initProjection(SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
-        batch = new SpriteBatch(IGraphicsDevice.Renderers.sprite);
 
         SilenceEngine.io.getImageReader().readImage(FilePath.getResourceFile("test_resources/tree2-final.png"), img ->
         {
             Polygon polygon = Polygon.createConvexHull(img);
-            scene.addEntity(new PolygonEntity(new Sprite(Texture.fromImage(img)), batch, polygon));
+            TaskManager.runOnUpdate(() ->
+                    scene.addEntity(new PolygonEntity(new Sprite(Texture.fromImage(img)), polygon)));
             img.dispose();
         });
+
+        scene.registerRenderSystem(new SceneRenderSystem());
     }
 
     @Override
@@ -79,16 +79,7 @@ public class PolygonConvexHullTest extends SilenceTest
     public void render(float delta)
     {
         camera.apply();
-
-        IGraphicsDevice.Renderers.dynamic.begin(Primitive.LINES);
-
-        batch.begin();
         scene.render(delta);
-        batch.end();
-
-        Texture.EMPTY.bind();
-        IGraphicsDevice.Programs.dynamic.use();
-        IGraphicsDevice.Renderers.dynamic.end();
     }
 
     @Override
@@ -98,12 +89,12 @@ public class PolygonConvexHullTest extends SilenceTest
         GLContext.viewport(0, 0, SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
     }
 
-    private static class PolygonEntity extends Entity2D
+    private static class PolygonEntity extends Entity
     {
-        PolygonEntity(Sprite sprite, SpriteBatch batch, Polygon polygon)
+        PolygonEntity(Sprite sprite, Polygon polygon)
         {
-            position.set(250, 250);
-            addComponent(new SpriteComponent(sprite, batch));
+            transformComponent.setPosition(250, 250);
+            addComponent(new SpriteComponent(sprite));
             addComponent(new CollisionComponent2D(new CollisionTag(), polygon));
             addComponent(new PolygonRenderComponent(polygon));
         }

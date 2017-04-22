@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.scene.wip;
+package com.shc.silenceengine.scene;
 
+import com.shc.silenceengine.scene.components.TransformComponent;
 import com.shc.silenceengine.utils.TaskManager;
 import com.shc.silenceengine.utils.functional.BiCallback;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
@@ -194,8 +195,39 @@ public class Scene
     }
 
     /**
-     * Finds all the entities in this scene that has a component which is an instance of {@code klass}. The found entities
-     * are then added to the passed in {@code list}.
+     * Runs a callback for all the active entities which have no parent in this scene.
+     *
+     * @param callback The callback to be called for each of the active entity.
+     */
+    public void forEachRootEntity(UniCallback<Entity> callback)
+    {
+        forEachEntityWithComponent(TransformComponent.class, e ->
+        {
+            if (e.getComponent(TransformComponent.class).getParent() != null)
+                callback.invoke(e);
+        });
+    }
+
+    /**
+     * Finds all the entities in this scene that has a component which is an instance of {@code klass}. The found
+     * entities are then processed by a callback.
+     *
+     * @param klass    The class of the component.
+     * @param callback The callback to be used to process each such entity.
+     * @param <T>      The type of the component.
+     */
+    public <T extends Component> void forEachEntityWithComponent(Class<T> klass, UniCallback<Entity> callback)
+    {
+        forEachEntity(e ->
+        {
+            if (e.hasComponent(klass))
+                callback.invoke(e);
+        });
+    }
+
+    /**
+     * Finds all the entities in this scene that has a component which is an instance of {@code klass}. The found
+     * entities are then added to the passed in {@code list}.
      *
      * @param klass The class of the component.
      * @param list  The list to add the found the entities into.
@@ -209,12 +241,7 @@ public class Scene
             list = new ArrayList<>();
 
         List<Entity> elements = list;
-
-        forEachEntity(e ->
-        {
-            if (e.hasComponent(klass))
-                elements.add(e);
-        });
+        forEachEntityWithComponent(klass, elements::add);
 
         return list;
     }

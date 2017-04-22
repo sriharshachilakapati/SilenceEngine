@@ -205,4 +205,13 @@ public class Transform
 
         return matrix.equals(transform.matrix);
     }
+
+    public Transform rotate(Quaternion rotation)
+    {
+        Matrix4 tMat = Matrix4.REUSABLE_STACK.pop();
+        matrix.set(Transforms.createRotation(rotation, tMat).multiply(matrix));
+        Matrix4.REUSABLE_STACK.push(tMat);
+
+        return this;
+    }
 }

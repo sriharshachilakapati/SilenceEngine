@@ -24,41 +24,60 @@
 
 package com.shc.silenceengine.scene.components;
 
-import com.shc.silenceengine.scene.entity.Entity2D;
-import com.shc.silenceengine.utils.IDGenerator;
+import com.shc.silenceengine.graphics.Color;
+import com.shc.silenceengine.math.geom2d.Rectangle;
+import com.shc.silenceengine.scene.Component;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public abstract class Component2D
+public class BoundsRenderComponent2D extends Component
 {
-    public final long id = IDGenerator.generate();
+    public Rectangle  bounds;
+    public Color      color;
+    public RenderType renderType;
 
-    protected Entity2D entity;
-
-    public void create(Entity2D entity)
+    public BoundsRenderComponent2D()
     {
-        this.entity = entity;
+        this(Color.RED);
     }
 
-    public void init()
+    public BoundsRenderComponent2D(Color color)
     {
+        this.color = color.copy();
+        this.renderType = RenderType.OUTLINE;
     }
 
-    public void update(float deltaTime)
+    public BoundsRenderComponent2D(Color color, RenderType renderType)
     {
+        this.color = color.copy();
+        this.renderType = renderType;
     }
 
-    public void render(float deltaTime)
+    public BoundsRenderComponent2D(Rectangle bounds, Color color)
     {
+        this.bounds = bounds;
+        this.color = color.copy();
+        this.renderType = RenderType.OUTLINE;
     }
 
-    public void dispose()
+    public BoundsRenderComponent2D(Rectangle bounds, Color color, RenderType renderType)
     {
+        this.bounds = bounds;
+        this.color = color.copy();
+        this.renderType = renderType;
     }
 
-    public Entity2D getEntity()
+    public BoundsRenderComponent2D(Rectangle bounds)
     {
-        return entity;
+        this.bounds = bounds;
+        this.color = Color.RED.copy();
+        renderType = RenderType.OUTLINE;
+    }
+
+    public enum RenderType
+    {
+        FILLED,
+        OUTLINE
     }
 }

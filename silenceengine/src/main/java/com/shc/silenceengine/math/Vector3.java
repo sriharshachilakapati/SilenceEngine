@@ -275,6 +275,11 @@ public class Vector3
         return scale(s, s, s);
     }
 
+    public Vector3 scale(Vector3 s)
+    {
+        return scale(s.x, s.y, s.z);
+    }
+
     public Vector3 set(Vector3 v)
     {
         return set(v.x, v.y, v.z);
