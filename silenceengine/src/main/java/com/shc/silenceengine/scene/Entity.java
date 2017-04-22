@@ -22,16 +22,18 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.scene.wip;
+package com.shc.silenceengine.scene;
 
+import com.shc.silenceengine.scene.components.TransformComponent;
 import com.shc.silenceengine.utils.IDGenerator;
-import com.shc.silenceengine.utils.ReflectionUtils;
 import com.shc.silenceengine.utils.TaskManager;
 import com.shc.silenceengine.utils.functional.SimpleCallback;
 import com.shc.silenceengine.utils.functional.UniCallback;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An Entity is the actor in a {@link Scene} that has a set of behaviours which are composed by adding different {@link
@@ -53,9 +55,24 @@ public class Entity
     private final List<Component> components = new ArrayList<>();
 
     /**
+     * A separated storage of components so that the components are easy to fetch and iterated.
+     */
+    private final Map<ComponentType, List<Component>> componentsByType = new HashMap<>();
+
+    /**
      * Flag used by the entity to keep itself whether it is destroyed or not.
      */
     private boolean destroyed = false;
+
+    /**
+     * The {@link TransformComponent} of this Entity.
+     */
+    public TransformComponent transformComponent;
+
+    public Entity()
+    {
+        addComponent(transformComponent = new TransformComponent());
+    }
 
     /**
      * Adds a component to this entity. You cannot call this method while in Update or Render events. If you need to do
@@ -69,6 +86,15 @@ public class Entity
             return;
 
         components.add(component);
+
+        ComponentType componentType = ComponentType.of(component.getClass());
+        List<Component> typedComponents = componentsByType.get(componentType);
+
+        if (typedComponents == null)
+            componentsByType.put(componentType, typedComponents = new ArrayList<>());
+
+        typedComponents.add(component);
+
         component.setup(this);
     }
 
@@ -84,6 +110,13 @@ public class Entity
             return;
 
         components.remove(component);
+
+        ComponentType componentType = ComponentType.of(component.getClass());
+        List<Component> typedComponents = componentsByType.get(componentType);
+
+        if (typedComponents != null)
+            typedComponents.remove(component);
+
         component.onDestroyed();
     }
 
@@ -98,11 +131,13 @@ public class Entity
     @SuppressWarnings("unchecked")
     public <T extends Component> T getComponent(Class<T> klass)
     {
-        for (Component c : components)
-            if (ReflectionUtils.isInstanceOf(klass, c))
-                return (T) c;
+        ComponentType componentType = ComponentType.of(klass);
+        List<Component> componentsOfType = componentsByType.get(componentType);
 
-        return null;
+        if (componentsOfType == null || componentsOfType.size() == 0)
+            return null;
+
+        return (T) componentsOfType.get(0);
     }
 
     /**
@@ -121,8 +156,11 @@ public class Entity
         if (list == null)
             list = new ArrayList<>();
 
-        for (Component c : components)
-            if (ReflectionUtils.isInstanceOf(klass, c))
+        ComponentType componentType = ComponentType.of(klass);
+        List<Component> componentsOfType = componentsByType.get(componentType);
+
+        if (componentsOfType != null)
+            for (Component c : componentsOfType)
                 list.add((T) c);
 
         return list;
@@ -155,11 +193,10 @@ public class Entity
      */
     public <T extends Component> boolean hasComponent(Class<T> klass)
     {
-        for (Component c : components)
-            if (ReflectionUtils.isInstanceOf(klass, c))
-                return true;
+        ComponentType componentType = ComponentType.of(klass);
+        List<Component> componentsOfType = componentsByType.get(componentType);
 
-        return false;
+        return !(componentsOfType == null || componentsOfType.size() == 0);
     }
 
     /**
@@ -172,6 +209,26 @@ public class Entity
     {
         for (Component c : components)
             callback.invoke(c);
+    }
+
+    /**
+     * Runs a callback for each of the component of the specified type in the Entity. Note that you cannot add
+     * components while iterating, you must enclose it with {@link TaskManager#runOnUpdate(SimpleCallback)} method to
+     * add before the next iteration.
+     *
+     * @param klass    The class of the component to find.
+     * @param callback A {@link UniCallback} that will accept a component.
+     * @param <T>      The type of component.
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends Component> void forEachComponentOfType(Class<T> klass, UniCallback<T> callback)
+    {
+        ComponentType componentType = ComponentType.of(klass);
+        List<Component> componentsOfType = componentsByType.get(componentType);
+
+        if (componentsOfType != null)
+            for (Component c : componentsOfType)
+                callback.invoke((T) c);
     }
 
     /**

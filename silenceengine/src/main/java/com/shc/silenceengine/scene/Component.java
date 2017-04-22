@@ -22,7 +22,9 @@
  * SOFTWARE.
  */
 
-package com.shc.silenceengine.scene.wip;
+package com.shc.silenceengine.scene;
+
+import com.shc.silenceengine.scene.components.TransformComponent;
 
 /**
  * A component defines the behaviour of an {@link Entity} in the game. Most of the time, components are only data
@@ -38,6 +40,11 @@ public abstract class Component
     protected Entity entity;
 
     /**
+     * The {@link TransformComponent} associated with this entity of the component.
+     */
+    protected TransformComponent transformComponent;
+
+    /**
      * Package-private method called by the Entity class to register itself with the component. All it does is to store
      * the reference to the entity which can be accessed by the child classes.
      *
@@ -46,6 +53,7 @@ public abstract class Component
     void setup(Entity entity)
     {
         this.entity = entity;
+        this.transformComponent = entity.getComponent(TransformComponent.class);
         onCreate();
     }
 

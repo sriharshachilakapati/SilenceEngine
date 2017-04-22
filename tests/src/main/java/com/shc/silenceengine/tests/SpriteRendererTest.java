@@ -26,28 +26,25 @@ package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.collision.CollisionTag;
 import com.shc.silenceengine.collision.broadphase.DynamicTree2D;
-import com.shc.silenceengine.collision.colliders.SceneCollider2D;
+import com.shc.silenceengine.collision.colliders.CollisionSystem2D;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.DynamicRenderer;
 import com.shc.silenceengine.graphics.IGraphicsDevice;
+import com.shc.silenceengine.graphics.SceneRenderSystem;
 import com.shc.silenceengine.graphics.Sprite;
-import com.shc.silenceengine.graphics.SpriteBatch;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.opengl.GLContext;
-import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.graphics.opengl.Texture;
-import com.shc.silenceengine.graphics.programs.DynamicProgram;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Touch;
 import com.shc.silenceengine.io.FilePath;
-import com.shc.silenceengine.math.geom2d.Polygon;
 import com.shc.silenceengine.math.geom2d.Rectangle;
-import com.shc.silenceengine.scene.Scene2D;
+import com.shc.silenceengine.scene.Component;
+import com.shc.silenceengine.scene.Entity;
+import com.shc.silenceengine.scene.Scene;
+import com.shc.silenceengine.scene.components.BoundsRenderComponent2D;
 import com.shc.silenceengine.scene.components.CollisionComponent2D;
-import com.shc.silenceengine.scene.components.Component2D;
 import com.shc.silenceengine.scene.components.SpriteComponent;
-import com.shc.silenceengine.scene.entity.Entity2D;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -58,19 +55,13 @@ public class SpriteRendererTest extends SilenceTest
     private static CollisionTag subHeroTag = new CollisionTag();
     private static CollisionTag wallsTag   = new CollisionTag();
 
-    private SceneCollider2D collider;
-
-    private Scene2D  scene;
+    private Scene    scene;
     private Sprite   sprite;
     private OrthoCam camera;
-
-    private SpriteBatch batch;
 
     @Override
     public void init()
     {
-        // Needed because static variables persist between launches
-        batch = null;
         IGraphicsDevice.Programs.dynamic.applyToRenderer(IGraphicsDevice.Renderers.dynamic);
 
         // Normal initialization
@@ -94,7 +85,6 @@ public class SpriteRendererTest extends SilenceTest
             return;
 
         scene.update(deltaTime);
-        collider.checkCollisions();
 
         SilenceEngine.display.setTitle("UPS: " + SilenceEngine.gameLoop.getUPS()
                                        + " | FPS: " + SilenceEngine.gameLoop.getFPS()
@@ -105,19 +95,11 @@ public class SpriteRendererTest extends SilenceTest
     @Override
     public void render(float deltaTime)
     {
-        DynamicRenderer dynamicRenderer = IGraphicsDevice.Renderers.dynamic;
-        DynamicProgram dynamicProgram = IGraphicsDevice.Programs.dynamic;
-
         if (scene == null)
             return;
 
         camera.apply();
-        batch.begin();
-        dynamicRenderer.begin(Primitive.LINES);
         scene.render(deltaTime);
-        batch.end();
-        dynamicProgram.use();
-        dynamicRenderer.end();
     }
 
     @Override
@@ -130,38 +112,38 @@ public class SpriteRendererTest extends SilenceTest
 
     private void initTest()
     {
-        batch = new SpriteBatch(IGraphicsDevice.Renderers.sprite);
-
         if (SilenceEngine.display.getPlatform() != SilenceEngine.Platform.ANDROID)
             SilenceEngine.input.setSimulateTouch(true);
 
-        scene = new Scene2D();
-        collider = new SceneCollider2D(new DynamicTree2D());
-        collider.setScene(scene);
+        scene = new Scene();
+        CollisionSystem2D collider = new CollisionSystem2D(new DynamicTree2D());
 
         collider.register(heroTag, wallsTag);
         collider.register(subHeroTag, wallsTag);
 
-        Entity2D wall = new Entity2D();
+        scene.registerUpdateSystem(collider);
+        scene.registerRenderSystem(new SceneRenderSystem());
+
+        Entity wall = new Entity();
         wall.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48).createPolygon()));
-        wall.addComponent(new SpriteComponent(sprite, batch));
-        wall.addComponent(new BoundsRenderComponent());
-        wall.position.set(SilenceEngine.display.getWidth() / 2, SilenceEngine.display.getHeight() / 2);
+        wall.addComponent(new SpriteComponent(sprite));
+        wall.addComponent(new BoundsRenderComponent2D());
+        wall.transformComponent.setPosition(SilenceEngine.display.getWidth() / 2, SilenceEngine.display.getHeight() / 2);
         scene.addEntity(wall);
 
         for (int i = 0; i < SilenceEngine.display.getWidth(); i += 48)
         {
-            wall = new Entity2D();
+            wall = new Entity();
             wall.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48).createPolygon()));
-            wall.addComponent(new SpriteComponent(sprite, batch));
-            wall.addComponent(new BoundsRenderComponent());
-            wall.position.set(i + 24, 24);
+            wall.addComponent(new SpriteComponent(sprite));
+            wall.addComponent(new BoundsRenderComponent2D());
+            wall.transformComponent.setPosition(i + 24, 24);
 
-            Entity2D wall2 = new Entity2D();
+            Entity wall2 = new Entity();
             wall2.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48).createPolygon()));
-            wall2.addComponent(new SpriteComponent(sprite, batch));
-            wall2.addComponent(new BoundsRenderComponent());
-            wall2.position.set(i + 24, SilenceEngine.display.getHeight() - 24);
+            wall2.addComponent(new SpriteComponent(sprite));
+            wall2.addComponent(new BoundsRenderComponent2D());
+            wall2.transformComponent.setPosition(i + 24, SilenceEngine.display.getHeight() - 24);
 
             scene.addEntity(wall);
             scene.addEntity(wall2);
@@ -169,48 +151,51 @@ public class SpriteRendererTest extends SilenceTest
 
         for (int i = 48; i < SilenceEngine.display.getHeight() - 48; i += 48)
         {
-            wall = new Entity2D();
+            wall = new Entity();
             wall.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48).createPolygon()));
-            wall.addComponent(new SpriteComponent(sprite, batch));
-            wall.addComponent(new BoundsRenderComponent());
-            wall.position.set(24, i + 24);
+            wall.addComponent(new SpriteComponent(sprite));
+            wall.addComponent(new BoundsRenderComponent2D());
+            wall.transformComponent.setPosition(24, i + 24);
 
-            Entity2D wall2 = new Entity2D();
+            Entity wall2 = new Entity();
             wall2.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48).createPolygon()));
-            wall2.addComponent(new SpriteComponent(sprite, batch));
-            wall2.addComponent(new BoundsRenderComponent());
-            wall2.position.set(SilenceEngine.display.getWidth() - 24, i + 24);
+            wall2.addComponent(new SpriteComponent(sprite));
+            wall2.addComponent(new BoundsRenderComponent2D());
+            wall2.transformComponent.setPosition(SilenceEngine.display.getWidth() - 24, i + 24);
 
             scene.addEntity(wall);
             scene.addEntity(wall2);
         }
 
-        scene.addEntity(new Hero(sprite, batch));
+        scene.addEntity(new Hero(sprite, scene));
     }
 
-    private static class Hero extends Entity2D
+    private static class Hero extends Entity
     {
-        private SpriteComponent renderComponent;
-        private SpriteComponent subRenderComponent;
+        private static SpriteComponent renderComponent;
+        private static SpriteComponent subRenderComponent;
 
-        private Entity2D subHero;
+        private static Entity subHero;
 
-        Hero(Sprite sprite, SpriteBatch batch)
+        Hero(Sprite sprite, Scene scene)
         {
-            position.set(SilenceEngine.display.getWidth() / 2 - 24, SilenceEngine.display.getHeight() / 2 - 24);
+            transformComponent.setPosition(SilenceEngine.display.getWidth() / 2 - 24, SilenceEngine.display.getHeight() / 2 - 24);
+
+            addComponent(new Behaviour());
 
             addComponent(new CollisionComponent2D(heroTag, new Rectangle(48, 48).createPolygon(), this::onHeroCollision));
-            addComponent(renderComponent = new SpriteComponent(sprite, batch));
-            addComponent(new BoundsRenderComponent());
+            addComponent(renderComponent = new SpriteComponent(sprite));
+            addComponent(new BoundsRenderComponent2D());
 
-            subHero = new Entity2D();
-            subHero.position.set(100, 30);
+            subHero = new Entity();
+            subHero.transformComponent.setPosition(100, 30);
 
             subHero.addComponent(new CollisionComponent2D(subHeroTag, new Rectangle(48, 48).createPolygon(), this::onSubHeroCollision));
-            subHero.addComponent(subRenderComponent = new SpriteComponent(sprite, batch));
-            subHero.addComponent(new BoundsRenderComponent());
+            subHero.addComponent(subRenderComponent = new SpriteComponent(sprite));
+            subHero.addComponent(new BoundsRenderComponent2D());
 
-            addChild(subHero);
+            subHero.transformComponent.setParent(transformComponent);
+            scene.addEntity(subHero);
         }
 
         private void onHeroCollision(CollisionComponent2D other)
@@ -223,62 +208,21 @@ public class SpriteRendererTest extends SilenceTest
             subRenderComponent.tint.set(Color.RED);
         }
 
-        @Override
-        public void onUpdate(float deltaTime)
+        private static class Behaviour extends Component
         {
-            rotation += 45 * deltaTime;
+            @Override
+            public void onUpdate(float deltaTime)
+            {
+                transformComponent.rotate(45 * deltaTime);
 
-            if (Touch.isFingerDown(Touch.FINGER_0))
-                position.set(Touch.getFingerPosition(Touch.FINGER_0));
+                if (Touch.isFingerDown(Touch.FINGER_0))
+                    transformComponent.setPosition(Touch.getFingerPosition(Touch.FINGER_0));
 
-            subHero.rotation += 45 * deltaTime;
+                subHero.transformComponent.rotate(45 * deltaTime);
 
-            renderComponent.tint.set(Color.AQUA);
-            subRenderComponent.tint.set(Color.GREEN);
-        }
-    }
-
-    private static class BoundsRenderComponent extends Component2D
-    {
-        private Polygon polygon;
-
-        @Override
-        public void init()
-        {
-            CollisionComponent2D collision = entity.getComponent(CollisionComponent2D.class);
-            polygon = collision.polygon;
-        }
-
-        @Override
-        public void render(float deltaTime)
-        {
-            Rectangle rect = polygon.getBounds();
-
-            DynamicRenderer dynamicRenderer = IGraphicsDevice.Renderers.dynamic;
-
-            dynamicRenderer.vertex(rect.x, rect.y);
-            dynamicRenderer.color(Color.RED);
-
-            dynamicRenderer.vertex(rect.x + rect.width, rect.y);
-            dynamicRenderer.color(Color.RED);
-
-            dynamicRenderer.vertex(rect.x + rect.width, rect.y);
-            dynamicRenderer.color(Color.RED);
-
-            dynamicRenderer.vertex(rect.x + rect.width, rect.y + rect.height);
-            dynamicRenderer.color(Color.RED);
-
-            dynamicRenderer.vertex(rect.x + rect.width, rect.y + rect.height);
-            dynamicRenderer.color(Color.RED);
-
-            dynamicRenderer.vertex(rect.x, rect.y + rect.height);
-            dynamicRenderer.color(Color.RED);
-
-            dynamicRenderer.vertex(rect.x, rect.y + rect.height);
-            dynamicRenderer.color(Color.RED);
-
-            dynamicRenderer.vertex(rect.x, rect.y);
-            dynamicRenderer.color(Color.RED);
+                renderComponent.tint.set(Color.AQUA);
+                subRenderComponent.tint.set(Color.GREEN);
+            }
         }
     }
 }

@@ -448,7 +448,7 @@ public class Polygon
         scale(scale.x / scaleX, scale.y / scaleY);
     }
 
-    public void setScale(int sx, int sy)
+    public void setScale(float sx, float sy)
     {
         scale(sx / scaleX, sy / scaleY);
     }

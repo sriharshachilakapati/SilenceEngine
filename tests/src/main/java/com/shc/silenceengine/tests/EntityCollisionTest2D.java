@@ -26,21 +26,21 @@ package com.shc.silenceengine.tests;
 
 import com.shc.silenceengine.collision.CollisionTag;
 import com.shc.silenceengine.collision.broadphase.DynamicTree2D;
-import com.shc.silenceengine.collision.colliders.SceneCollider2D;
+import com.shc.silenceengine.collision.colliders.CollisionSystem2D;
 import com.shc.silenceengine.core.SilenceEngine;
 import com.shc.silenceengine.graphics.Color;
-import com.shc.silenceengine.graphics.DynamicRenderer;
 import com.shc.silenceengine.graphics.IGraphicsDevice;
+import com.shc.silenceengine.graphics.SceneRenderSystem;
 import com.shc.silenceengine.graphics.cameras.OrthoCam;
 import com.shc.silenceengine.graphics.opengl.GLContext;
-import com.shc.silenceengine.graphics.opengl.Primitive;
 import com.shc.silenceengine.input.Keyboard;
 import com.shc.silenceengine.input.Touch;
 import com.shc.silenceengine.math.geom2d.Rectangle;
-import com.shc.silenceengine.scene.Scene2D;
+import com.shc.silenceengine.scene.Component;
+import com.shc.silenceengine.scene.Entity;
+import com.shc.silenceengine.scene.Scene;
 import com.shc.silenceengine.scene.components.CollisionComponent2D;
 import com.shc.silenceengine.scene.components.PolygonRenderComponent;
-import com.shc.silenceengine.scene.entity.Entity2D;
 
 /**
  * @author Sri Harsha Chilakapati
@@ -51,9 +51,8 @@ public class EntityCollisionTest2D extends SilenceTest
     private static CollisionTag subHeroTag = new CollisionTag();
     private static CollisionTag wallsTag   = new CollisionTag();
 
-    private OrthoCam        camera;
-    private Scene2D         scene;
-    private SceneCollider2D collider;
+    private OrthoCam camera;
+    private Scene    scene;
 
     @Override
     public void init()
@@ -65,24 +64,26 @@ public class EntityCollisionTest2D extends SilenceTest
 
         IGraphicsDevice.Programs.dynamic.applyToRenderer(IGraphicsDevice.Renderers.dynamic);
 
-        scene = new Scene2D();
-        collider = new SceneCollider2D(new DynamicTree2D());
-        collider.setScene(scene);
+        scene = new Scene();
+        CollisionSystem2D collider = new CollisionSystem2D(new DynamicTree2D());
 
         collider.register(heroTag, wallsTag);
         collider.register(subHeroTag, wallsTag);
 
+        scene.registerUpdateSystem(collider);
+        scene.registerRenderSystem(new SceneRenderSystem());
+
         for (int i = 0; i < SilenceEngine.display.getWidth(); i += 48)
         {
-            Entity2D wall = new Entity2D();
+            Entity wall = new Entity();
             wall.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48).createPolygon()));
             wall.addComponent(new PolygonRenderComponent());
-            wall.position.set(i + 24, 24);
+            wall.transformComponent.setPosition(i + 24, 24);
 
-            Entity2D wall2 = new Entity2D();
+            Entity wall2 = new Entity();
             wall2.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48).createPolygon()));
             wall2.addComponent(new PolygonRenderComponent());
-            wall2.position.set(i + 24, SilenceEngine.display.getHeight() - 24);
+            wall2.transformComponent.setPosition(i + 24, SilenceEngine.display.getHeight() - 24);
 
             scene.addEntity(wall);
             scene.addEntity(wall2);
@@ -90,21 +91,21 @@ public class EntityCollisionTest2D extends SilenceTest
 
         for (int i = 48; i < SilenceEngine.display.getHeight() - 48; i += 48)
         {
-            Entity2D wall = new Entity2D();
+            Entity wall = new Entity();
             wall.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48).createPolygon()));
             wall.addComponent(new PolygonRenderComponent());
-            wall.position.set(24, i + 24);
+            wall.transformComponent.setPosition(24, i + 24);
 
-            Entity2D wall2 = new Entity2D();
+            Entity wall2 = new Entity();
             wall2.addComponent(new CollisionComponent2D(wallsTag, new Rectangle(48, 48).createPolygon()));
             wall2.addComponent(new PolygonRenderComponent());
-            wall2.position.set(SilenceEngine.display.getWidth() - 24, i + 24);
+            wall2.transformComponent.setPosition(SilenceEngine.display.getWidth() - 24, i + 24);
 
             scene.addEntity(wall);
             scene.addEntity(wall2);
         }
 
-        scene.addEntity(new Hero());
+        scene.addEntity(new Hero(scene));
     }
 
     @Override
@@ -114,7 +115,6 @@ public class EntityCollisionTest2D extends SilenceTest
             SilenceEngine.display.close();
 
         scene.update(deltaTime);
-        collider.checkCollisions();
 
         SilenceEngine.display.setTitle("UPS: " + SilenceEngine.gameLoop.getUPS()
                                        + " | FPS: " + SilenceEngine.gameLoop.getFPS()
@@ -126,13 +126,7 @@ public class EntityCollisionTest2D extends SilenceTest
     public void render(float deltaTime)
     {
         camera.apply();
-
-        DynamicRenderer renderer = IGraphicsDevice.Renderers.dynamic;
-        renderer.begin(Primitive.LINES);
-        {
-            scene.render(deltaTime);
-        }
-        renderer.end();
+        scene.render(deltaTime);
     }
 
     @Override
@@ -142,27 +136,29 @@ public class EntityCollisionTest2D extends SilenceTest
         GLContext.viewport(0, 0, SilenceEngine.display.getWidth(), SilenceEngine.display.getHeight());
     }
 
-    private static class Hero extends Entity2D
+    private static class Hero extends Entity
     {
-        private PolygonRenderComponent renderComponent;
-        private PolygonRenderComponent subRenderComponent;
+        private static PolygonRenderComponent renderComponent;
+        private static PolygonRenderComponent subRenderComponent;
 
-        private Entity2D subHero;
+        private static Entity subHero;
 
-        Hero()
+        Hero(Scene scene)
         {
-            position.set(SilenceEngine.display.getWidth() / 2 - 24, SilenceEngine.display.getHeight() / 2 - 24);
+            transformComponent.setPosition(SilenceEngine.display.getWidth() / 2 - 24, SilenceEngine.display.getHeight() / 2 - 24);
 
+            addComponent(new Behaviour());
             addComponent(new CollisionComponent2D(heroTag, new Rectangle(48, 48).createPolygon(), this::onHeroCollision));
             addComponent(renderComponent = new PolygonRenderComponent(Color.AQUA));
 
-            subHero = new Entity2D();
-            subHero.position.set(100, 30);
+            subHero = new Entity();
+            subHero.transformComponent.setPosition(100, 30);
 
             subHero.addComponent(new CollisionComponent2D(subHeroTag, new Rectangle(48, 48).createPolygon(), this::onSubHeroCollision));
             subHero.addComponent(subRenderComponent = new PolygonRenderComponent(Color.GREEN));
 
-            addChild(subHero);
+            subHero.transformComponent.setParent(transformComponent);
+            scene.addEntity(subHero);
         }
 
         private void onHeroCollision(CollisionComponent2D other)
@@ -175,18 +171,21 @@ public class EntityCollisionTest2D extends SilenceTest
             subRenderComponent.color.set(Color.WHITE);
         }
 
-        @Override
-        public void onUpdate(float deltaTime)
+        private static class Behaviour extends Component
         {
-            rotation += 45 * deltaTime;
+            @Override
+            protected void onUpdate(float deltaTime)
+            {
+                transformComponent.rotate(45 * deltaTime);
 
-            if (Touch.isFingerDown(Touch.FINGER_0))
-                position.set(Touch.getFingerPosition(Touch.FINGER_0));
+                if (Touch.isFingerDown(Touch.FINGER_0))
+                    transformComponent.setPosition(Touch.getFingerPosition(Touch.FINGER_0));
 
-            subHero.rotation += 45 * deltaTime;
+                subHero.transformComponent.rotate(45 * deltaTime);
 
-            renderComponent.color.set(Color.AQUA);
-            subRenderComponent.color.set(Color.GREEN);
+                renderComponent.color.set(Color.AQUA);
+                subRenderComponent.color.set(Color.GREEN);
+            }
         }
     }
 }

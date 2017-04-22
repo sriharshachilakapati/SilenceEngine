@@ -26,7 +26,7 @@ package com.shc.silenceengine.math;
 
 import com.shc.silenceengine.utils.MathUtils;
 
-import static com.shc.silenceengine.utils.MathUtils.EPSILON;
+import static com.shc.silenceengine.utils.MathUtils.*;
 
 /**
  * <p>This class is the core of the SilenceEngine's GraphicsEngine, and does the job of creating transformation matrices
@@ -281,5 +281,60 @@ public final class Transforms
                 .set(2, 2, 1.0f - 2.0f * (x2 + y2));
 
         return result;
+    }
+
+    public static Vector3 getTranslation(Transform transform, Vector3 dest)
+    {
+        if (dest == null)
+            dest = new Vector3();
+
+        dest.set(transform.matrix.get(3, 0), transform.matrix.get(3, 1), transform.matrix.get(3, 2));
+
+        return dest;
+    }
+
+    public static Vector3 getScaling(Transform transform, Vector3 dest)
+    {
+        if (dest == null)
+            dest = new Vector3();
+
+        final float sx = dest.set(transform.matrix.get(0, 0), transform.matrix.get(0, 1), transform.matrix.get(0, 2)).length();
+        final float sy = dest.set(transform.matrix.get(1, 0), transform.matrix.get(1, 1), transform.matrix.get(1, 2)).length();
+        final float sz = dest.set(transform.matrix.get(2, 0), transform.matrix.get(2, 1), transform.matrix.get(2, 2)).length();
+
+        dest.set(sx, sy, sz);
+
+        return dest;
+    }
+
+    public static Vector3 getRotation(Transform transform, Vector3 dest)
+    {
+        if (dest == null)
+            dest = new Vector3();
+
+        // Assuming the angles are in radians.
+        if (transform.matrix.get(0, 2) > 0.9999)
+        {
+            // singularity at north pole
+            dest.x = -MathUtils.atan2(transform.matrix.get(2, 1), transform.matrix.get(1, 1));
+            dest.y = (float) Math.toDegrees(-Math.PI / 2);
+            dest.z = 0;
+            return dest;
+        }
+
+        if (transform.matrix.get(0, 2) < -0.9999)
+        {
+            // singularity at south pole
+            dest.x = -MathUtils.atan2(transform.matrix.get(2, 1), transform.matrix.get(1, 1));
+            dest.y = (float) Math.toDegrees(Math.PI / 2);
+            dest.z = 0;
+            return dest;
+        }
+
+        dest.x = -MathUtils.atan2(-transform.matrix.get(1, 2), transform.matrix.get(2, 2));
+        dest.y = -MathUtils.asin(transform.matrix.get(0, 2));
+        dest.z = -MathUtils.atan2(-transform.matrix.get(0, 1), transform.matrix.get(0, 0));
+
+        return dest;
     }
 }

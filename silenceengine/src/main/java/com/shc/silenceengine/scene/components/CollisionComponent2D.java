@@ -25,18 +25,17 @@
 package com.shc.silenceengine.scene.components;
 
 import com.shc.silenceengine.collision.CollisionTag;
-import com.shc.silenceengine.math.Vector2;
+import com.shc.silenceengine.math.Transform;
+import com.shc.silenceengine.math.Transforms;
+import com.shc.silenceengine.math.Vector3;
 import com.shc.silenceengine.math.geom2d.Polygon;
-import com.shc.silenceengine.scene.entity.Entity2D;
-import com.shc.silenceengine.utils.IDGenerator;
+import com.shc.silenceengine.scene.Component;
 
 /**
  * @author Sri Harsha Chilakapati
  */
-public class CollisionComponent2D extends Component2D
+public class CollisionComponent2D extends Component
 {
-    public final long id = IDGenerator.generate();
-
     public CollisionCallback callback;
     public CollisionTag      tag;
     public Polygon           polygon;
@@ -55,37 +54,23 @@ public class CollisionComponent2D extends Component2D
     }
 
     @Override
-    public void update(float deltaTime)
+    protected void onUpdate(float elapsedTime)
     {
-        if (!entity.transformComponent.transformed)
+        if (!transformComponent.hasChanged())
             return;
 
-        Vector2 tPosition = Vector2.REUSABLE_STACK.pop();
-        Vector2 tScale = Vector2.REUSABLE_STACK.pop();
+        Vector3 temp = Vector3.REUSABLE_STACK.pop();
 
-        float rotation = 0;
+        Transform worldTransform = transformComponent.getWorldTransform();
 
-        tPosition.set(entity.position);
-        tScale.set(entity.scale);
-        rotation += entity.rotation;
+        Transforms.getTranslation(worldTransform, temp);
+        polygon.setPosition(temp.x, temp.y);
+        Transforms.getScaling(worldTransform, temp);
+        polygon.setScale(temp.x, temp.y);
+        Transforms.getRotation(worldTransform, temp);
+        polygon.setRotation(temp.z);
 
-        Entity2D parent = entity.parent;
-
-        while (parent != null)
-        {
-            rotation += parent.rotation;
-            tScale.scale(parent.scale.x, parent.scale.y);
-            tPosition.rotate(parent.rotation).add(parent.position);
-
-            parent = parent.parent;
-        }
-
-        polygon.setPosition(tPosition);
-        polygon.setScale(tScale);
-        polygon.setRotation(rotation);
-
-        Vector2.REUSABLE_STACK.push(tPosition);
-        Vector2.REUSABLE_STACK.push(tScale);
+        Vector3.REUSABLE_STACK.push(temp);
     }
 
     @FunctionalInterface
