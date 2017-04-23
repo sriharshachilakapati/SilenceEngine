@@ -60,9 +60,6 @@ public class TransformComponent extends Component
 
             hasChanged = true;
             changed = false;
-
-            if (parent == null)
-                worldTransform.set(localTransform);
         }
 
         if (parent != null)
@@ -74,12 +71,6 @@ public class TransformComponent extends Component
     protected void onUpdate(float elapsedTime)
     {
         reComputeTransforms();
-    }
-
-    @Override
-    protected void onRender(float elapsedTime)
-    {
-        hasChanged = false;
     }
 
     public Vector3 getScale()
@@ -286,7 +277,7 @@ public class TransformComponent extends Component
 
     public Transform getWorldTransform()
     {
-        return worldTransform;
+        return parent == null ? localTransform : worldTransform;
     }
 
     public boolean hasChanged()
