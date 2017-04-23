@@ -173,12 +173,12 @@ public final class SilenceEngine
 
     public static String getVersionString()
     {
-        return "1.2.6";
+        return "1.3.6";
     }
 
     public static Vector3 getVersion()
     {
-        return new Vector3(1, 2, 6);
+        return new Vector3(1, 3, 6);
     }
 
     /**
