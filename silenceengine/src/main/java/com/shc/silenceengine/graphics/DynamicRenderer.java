@@ -349,7 +349,7 @@ public class DynamicRenderer implements IResource
     private void fillBuffers()
     {
         // Determine the fill color
-        Color col = texCoordCount == vertexCount ? Color.TRANSPARENT : Color.WHITE;
+        Color col = texCoordCount == vertexCount ? Color.BLACK : Color.WHITE;
 
         // Fill the color buffers
         while (colorCount < vertexCount)
