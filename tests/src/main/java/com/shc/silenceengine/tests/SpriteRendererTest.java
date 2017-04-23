@@ -115,7 +115,7 @@ public class SpriteRendererTest extends SilenceTest
         if (SilenceEngine.display.getPlatform() != SilenceEngine.Platform.ANDROID)
             SilenceEngine.input.setSimulateTouch(true);
 
-        scene = new Scene();
+        Scene scene = new Scene();
         CollisionSystem2D collider = new CollisionSystem2D(new DynamicTree2D());
 
         collider.register(heroTag, wallsTag);
@@ -168,6 +168,7 @@ public class SpriteRendererTest extends SilenceTest
         }
 
         scene.addEntity(new Hero(sprite, scene));
+        this.scene = scene;
     }
 
     private static class Hero extends Entity
