@@ -44,11 +44,13 @@ public class TransformComponent extends Component
 
     private TransformComponent parent = null;
 
-    private boolean changed = false;
+    private boolean hasChanged = false;
+    private boolean changed    = true;
 
-    @Override
-    protected void onUpdate(float elapsedTime)
+    protected void reComputeTransforms()
     {
+        hasChanged = false;
+
         if (changed)
         {
             localTransform.reset()
@@ -56,21 +58,28 @@ public class TransformComponent extends Component
                     .rotate(this.rotation)
                     .translate(this.position);
 
-            worldTransform.set(localTransform);
+            hasChanged = true;
+            changed = false;
+
+            if (parent == null)
+                worldTransform.set(localTransform);
         }
 
-        if (parent != null && (changed || parent.hasChanged()))
-        {
-            Transform temp = Transform.REUSABLE_STACK.pop();
-            worldTransform.apply(parent.getWorldTransform());   // This recursively applies all parent transforms
-            Transform.REUSABLE_STACK.push(temp);
-        }
+        if (parent != null)
+            worldTransform.set(localTransform)
+                    .apply(parent.getWorldTransform());
+    }
+
+    @Override
+    protected void onUpdate(float elapsedTime)
+    {
+        reComputeTransforms();
     }
 
     @Override
     protected void onRender(float elapsedTime)
     {
-        changed = false;
+        hasChanged = false;
     }
 
     public Vector3 getScale()
@@ -200,13 +209,6 @@ public class TransformComponent extends Component
         return rotation;
     }
 
-    public TransformComponent setRotation(float r)
-    {
-        changed = true;
-        this.rotation.set(0, 0, r);
-        return this;
-    }
-
     public TransformComponent setRotation(Vector3 rotation)
     {
         changed = true;
@@ -218,6 +220,13 @@ public class TransformComponent extends Component
     {
         changed = true;
         this.rotation.set(rotation);
+        return this;
+    }
+
+    public TransformComponent setRotation(float r)
+    {
+        changed = true;
+        this.rotation.set(0, 0, r);
         return this;
     }
 
@@ -282,6 +291,6 @@ public class TransformComponent extends Component
 
     public boolean hasChanged()
     {
-        return changed || (parent != null && parent.hasChanged());
+        return hasChanged || (parent != null && parent.hasChanged());
     }
 }
