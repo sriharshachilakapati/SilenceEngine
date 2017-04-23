@@ -102,7 +102,7 @@ public class CollisionSystem2D implements BiCallback<Scene, Float>
                 it.remove();
                 e.forEachComponentOfType(CollisionComponent2D.class, broadphase::remove);
             }
-            else
+            else if (e.transformComponent.hasChanged())
                 e.forEachComponentOfType(CollisionComponent2D.class, broadphase::update);
         }
 
