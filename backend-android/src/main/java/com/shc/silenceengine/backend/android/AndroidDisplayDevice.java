@@ -177,4 +177,10 @@ class AndroidDisplayDevice implements IDisplayDevice
     {
         BlockingDialogs.alert(message, activity);
     }
+
+    @Override
+    public float getAspectRatio()
+    {
+        return (float) getWidth() / (float) getHeight();
+    }
 }
