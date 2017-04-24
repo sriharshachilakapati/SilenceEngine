@@ -196,6 +196,12 @@ public class Polygon
         return polygon;
     }
 
+    public void saveTransform()
+    {
+        rotation = 0;
+        scaleX = scaleY = 1;
+    }
+
     public void clearVertices()
     {
         vertices.clear();

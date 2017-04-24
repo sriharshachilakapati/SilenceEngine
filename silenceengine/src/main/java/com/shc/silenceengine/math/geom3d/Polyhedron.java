@@ -79,6 +79,12 @@ public class Polyhedron
         clearVertices();
     }
 
+    public void saveTransformation()
+    {
+        scale.set(1, 1, 1);
+        rotationX = rotationY = rotationZ = 0;
+    }
+
     public void clearVertices()
     {
         vertices.clear();
