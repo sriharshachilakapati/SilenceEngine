@@ -98,4 +98,9 @@ public abstract class Component
     protected void onDestroyed()
     {
     }
+
+    public Entity getEntity()
+    {
+        return entity;
+    }
 }
