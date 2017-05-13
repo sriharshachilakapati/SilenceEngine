@@ -31,6 +31,7 @@ import com.shc.silenceengine.utils.functional.SimpleCallback;
 import com.shc.silenceengine.utils.functional.UniCallback;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -48,6 +49,11 @@ public class Scene
     private final List<Entity> entities = new ArrayList<>();
 
     /**
+     * The list of all newly added entities.
+     */
+    private final List<Entity> newEntities = new ArrayList<>();
+
+    /**
      * The list of systems that handle the updating of scene.
      */
     private final List<BiCallback<Scene, Float>> updateSystems = new ArrayList<>();
@@ -56,6 +62,11 @@ public class Scene
      * The list of systems that handle the rendering of scene.
      */
     private final List<BiCallback<Scene, Float>> renderSystems = new ArrayList<>();
+
+    /**
+     * A flag used to find whether to delay insertion of entities.
+     */
+    private boolean isOperationInProgress = false;
 
     /**
      * Construct a new Scene object which contains the default component update system and the component render system.
@@ -74,13 +85,7 @@ public class Scene
      */
     private static void componentUpdateSystem(Scene scene, float elapsedTime)
     {
-        scene.forEachEntity(entity ->
-        {
-            entity.forEachComponent(c -> c.onUpdate(elapsedTime));
-
-            if (entity.isDestroyed())
-                TaskManager.runOnUpdate(() -> scene.removeEntity(entity));
-        });
+        scene.forEachEntity(entity -> entity.forEachComponent(c -> c.onUpdate(elapsedTime)));
     }
 
     /**
@@ -91,45 +96,23 @@ public class Scene
      */
     private static void componentRenderSystem(Scene scene, float elapsedTime)
     {
-        scene.forEachEntity(e ->
-        {
-            if (!e.isDestroyed())
-                e.forEachComponent(c -> c.onRender(elapsedTime));
-        });
+        scene.forEachEntity(e -> e.forEachComponent(c -> c.onRender(elapsedTime)));
     }
 
     /**
-     * Adds an entity to the scene. In case you want to add entities while the Scene is in use, wrap this call with the
-     * {@link TaskManager#runOnUpdate(SimpleCallback)} method.
+     * Adds an entity to the scene. In case that this scene is currently updating or rendering, then this call will
+     * automatically delay the instantiation of the entities.
      *
      * @param entity The new entity to be added to this scene.
      */
     public void addEntity(Entity entity)
     {
-        entities.add(entity);
-    }
+        entity.forEachComponent(Component::onInit);
 
-    /**
-     * Removes an entity from the scene. In case you want to remove the entity while the Scene is in use, wrap this call
-     * with the {@link TaskManager#runOnUpdate(SimpleCallback)} method. This method does call {@link Entity#destroy()}
-     * if the entity is alive.
-     *
-     * @param entity The entity to be removed from this scene.
-     */
-    public void removeEntity(Entity entity)
-    {
-        if (!entity.isDestroyed())
-            entity.destroy();
-
-        entities.remove(entity);
-    }
-
-    /**
-     * Initializes the scene. It loops over all the entities and calls init on all the components in them.
-     */
-    public void init()
-    {
-        forEachEntity(e -> e.forEachComponent(Component::onInit));
+        if (isOperationInProgress)
+            newEntities.add(entity);
+        else
+            entities.add(entity);
     }
 
     /**
@@ -141,8 +124,25 @@ public class Scene
      */
     public void update(float elapsedTime)
     {
+        boolean isOperationInProgressOrig = isOperationInProgress;
+        isOperationInProgress = true;
+
+        // Process newly added entities
+        entities.addAll(newEntities);
+        newEntities.clear();
+
+        // Remove dead entities
+        for (Iterator<Entity> it = entities.iterator(); it.hasNext();)
+        {
+            if (it.next().isDestroyed())
+                it.remove();
+        }
+
+        // Run the update systems
         for (BiCallback<Scene, Float> system : updateSystems)
             system.invoke(this, elapsedTime);
+
+        isOperationInProgress = isOperationInProgressOrig;
     }
 
     /**
@@ -154,8 +154,13 @@ public class Scene
      */
     public void render(float elapsedTime)
     {
+        boolean isOperationInProgressOrig = isOperationInProgress;
+        isOperationInProgress = true;
+
         for (BiCallback<Scene, Float> system : renderSystems)
             system.invoke(this, elapsedTime);
+
+        isOperationInProgress = isOperationInProgressOrig;
     }
 
     /**
@@ -189,9 +194,13 @@ public class Scene
      */
     public void forEachEntity(UniCallback<Entity> callback)
     {
+        boolean isOperationInProgressOrig = isOperationInProgress;
+        isOperationInProgress = true;
+
         for (Entity e : entities)
-            if (!e.isDestroyed())
-                callback.invoke(e);
+            callback.invoke(e);
+
+        isOperationInProgress = isOperationInProgressOrig;
     }
 
     /**
