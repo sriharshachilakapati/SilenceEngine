@@ -183,7 +183,15 @@ class DynamicTree<AABBType extends DynamicTree.AABB, CollisionType>
 
     void updateProxy(int proxyID)
     {
+        Node<CollisionType, AABBType> node = nodes.get(proxyID);
+
         removeLeaf(proxyID);
+
+        node.parentOrNext = Node.NULL;
+        node.child1 = Node.NULL;
+        node.child2 = Node.NULL;
+        node.height = 0;
+
         insertLeaf(proxyID);
     }
 
