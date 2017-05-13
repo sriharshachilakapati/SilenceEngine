@@ -35,6 +35,12 @@ import com.shc.silenceengine.scene.components.TransformComponent;
 public abstract class Component
 {
     /**
+     * Whether this component is enabled or not. The systems will have to honour this flag and work only on the enabled
+     * components.
+     */
+    public boolean enabled = true;
+
+    /**
      * The entity that contains this component instance.
      */
     protected Entity entity;

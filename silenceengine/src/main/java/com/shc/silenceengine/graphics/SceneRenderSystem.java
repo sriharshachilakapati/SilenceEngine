@@ -67,13 +67,16 @@ public class SceneRenderSystem implements BiCallback<Scene, Float>
         scene.forEachEntityWithComponent(SpriteComponent.class, e ->
                 e.forEachComponentOfType(SpriteComponent.class, c ->
                 {
-                    final Sprite sprite = c.sprite;
-                    final Color tint = c.tint;
-                    final float opacity = c.opacity;
-                    final int layer = c.layer;
-                    final Transform transform = e.transformComponent.getWorldTransform();
+                    if (c.enabled)
+                    {
+                        final Sprite sprite = c.sprite;
+                        final Color tint = c.tint;
+                        final float opacity = c.opacity;
+                        final int layer = c.layer;
+                        final Transform transform = e.transformComponent.getWorldTransform();
 
-                    batch.render(sprite, transform, tint, opacity, layer);
+                        batch.render(sprite, transform, tint, opacity, layer);
+                    }
                 }));
 
         batch.end();
@@ -93,56 +96,59 @@ public class SceneRenderSystem implements BiCallback<Scene, Float>
         scene.forEachEntityWithComponent(PolygonRenderComponent.class, e ->
                 e.forEachComponentOfType(PolygonRenderComponent.class, c ->
                 {
-                    Polygon polygon = c.polygon;
-
-                    if (polygon == null)
+                    if (c.enabled)
                     {
-                        CollisionComponent2D c2 = e.getComponent(CollisionComponent2D.class);
-                        polygon = c2.polygon;
-                    }
+                        Polygon polygon = c.polygon;
 
-                    if (polygon != null)
-                    {
-                        if (renderType[0] != c.renderType)
+                        if (polygon == null)
                         {
-                            renderer.end();
-                            renderType[0] = c.renderType;
-                            renderer.begin(renderType[0] == PolygonRenderComponent.RenderType.OUTLINE ? LINES : TRIANGLES);
+                            CollisionComponent2D c2 = e.getComponent(CollisionComponent2D.class);
+                            polygon = c2.polygon;
                         }
 
-                        final int factor = c.renderType == PolygonRenderComponent.RenderType.OUTLINE ? 1 : 3;
-
-                        for (int i = 0; i < polygon.vertexCount(); i += factor)
+                        if (polygon != null)
                         {
-                            if (c.renderType == PolygonRenderComponent.RenderType.OUTLINE)
+                            if (renderType[0] != c.renderType)
                             {
-                                Vector2 v1 = polygon.getVertex(i);
-                                Vector2 v2 = polygon.getVertex((i + 1) % polygon.vertexCount());
-
-                                renderer.flushOnOverflow(2);
-
-                                renderer.vertex(temp.set(v1).add(polygon.getPosition()));
-                                renderer.color(c.color);
-
-                                renderer.vertex(temp.set(v2).add(polygon.getPosition()));
-                                renderer.color(c.color);
+                                renderer.end();
+                                renderType[0] = c.renderType;
+                                renderer.begin(renderType[0] == PolygonRenderComponent.RenderType.OUTLINE ? LINES : TRIANGLES);
                             }
-                            else
+
+                            final int factor = c.renderType == PolygonRenderComponent.RenderType.OUTLINE ? 1 : 3;
+
+                            for (int i = 0; i < polygon.vertexCount(); i += factor)
                             {
-                                Vector2 v1 = polygon.getVertex(i);
-                                Vector2 v2 = polygon.getVertex((i + 1) % polygon.vertexCount());
-                                Vector2 v3 = polygon.getVertex((i + 2) % polygon.vertexCount());
+                                if (c.renderType == PolygonRenderComponent.RenderType.OUTLINE)
+                                {
+                                    Vector2 v1 = polygon.getVertex(i);
+                                    Vector2 v2 = polygon.getVertex((i + 1) % polygon.vertexCount());
 
-                                renderer.flushOnOverflow(3);
+                                    renderer.flushOnOverflow(2);
 
-                                renderer.vertex(temp.set(v1).add(polygon.getPosition()));
-                                renderer.color(c.color);
+                                    renderer.vertex(temp.set(v1).add(polygon.getPosition()));
+                                    renderer.color(c.color);
 
-                                renderer.vertex(temp.set(v2).add(polygon.getPosition()));
-                                renderer.color(c.color);
+                                    renderer.vertex(temp.set(v2).add(polygon.getPosition()));
+                                    renderer.color(c.color);
+                                }
+                                else
+                                {
+                                    Vector2 v1 = polygon.getVertex(i);
+                                    Vector2 v2 = polygon.getVertex((i + 1) % polygon.vertexCount());
+                                    Vector2 v3 = polygon.getVertex((i + 2) % polygon.vertexCount());
 
-                                renderer.vertex(temp.set(v3).add(polygon.getPosition()));
-                                renderer.color(c.color);
+                                    renderer.flushOnOverflow(3);
+
+                                    renderer.vertex(temp.set(v1).add(polygon.getPosition()));
+                                    renderer.color(c.color);
+
+                                    renderer.vertex(temp.set(v2).add(polygon.getPosition()));
+                                    renderer.color(c.color);
+
+                                    renderer.vertex(temp.set(v3).add(polygon.getPosition()));
+                                    renderer.color(c.color);
+                                }
                             }
                         }
                     }
@@ -164,80 +170,83 @@ public class SceneRenderSystem implements BiCallback<Scene, Float>
         scene.forEachEntityWithComponent(BoundsRenderComponent2D.class, e ->
                 e.forEachComponentOfType(BoundsRenderComponent2D.class, c ->
                 {
-                    Rectangle bounds = c.bounds;
-
-                    if (bounds == null)
+                    if (c.enabled)
                     {
-                        CollisionComponent2D c2 = e.getComponent(CollisionComponent2D.class);
-                        bounds = c2.polygon.getBounds();
-                    }
+                        Rectangle bounds = c.bounds;
 
-                    if (bounds != null)
-                    {
-                        if (renderType[0] != c.renderType)
+                        if (bounds == null)
                         {
-                            renderer.end();
-                            renderType[0] = c.renderType;
-                            renderer.begin(renderType[0] == BoundsRenderComponent2D.RenderType.OUTLINE ? LINES : TRIANGLES);
+                            CollisionComponent2D c2 = e.getComponent(CollisionComponent2D.class);
+                            bounds = c2.polygon.getBounds();
                         }
 
-                        if (renderType[0] == BoundsRenderComponent2D.RenderType.OUTLINE)
+                        if (bounds != null)
                         {
-                            renderer.flushOnOverflow(2);
+                            if (renderType[0] != c.renderType)
+                            {
+                                renderer.end();
+                                renderType[0] = c.renderType;
+                                renderer.begin(renderType[0] == BoundsRenderComponent2D.RenderType.OUTLINE ? LINES : TRIANGLES);
+                            }
 
-                            renderer.vertex(temp.set(bounds.x, bounds.y));
-                            renderer.color(c.color);
+                            if (renderType[0] == BoundsRenderComponent2D.RenderType.OUTLINE)
+                            {
+                                renderer.flushOnOverflow(2);
 
-                            renderer.vertex(temp.set(bounds.x + bounds.width, bounds.y));
-                            renderer.color(c.color);
+                                renderer.vertex(temp.set(bounds.x, bounds.y));
+                                renderer.color(c.color);
 
-                            renderer.flushOnOverflow(2);
+                                renderer.vertex(temp.set(bounds.x + bounds.width, bounds.y));
+                                renderer.color(c.color);
 
-                            renderer.vertex(temp.set(bounds.x + bounds.width, bounds.y));
-                            renderer.color(c.color);
+                                renderer.flushOnOverflow(2);
 
-                            renderer.vertex(temp.set(bounds.x + bounds.width, bounds.y + bounds.height));
-                            renderer.color(c.color);
+                                renderer.vertex(temp.set(bounds.x + bounds.width, bounds.y));
+                                renderer.color(c.color);
 
-                            renderer.flushOnOverflow(2);
+                                renderer.vertex(temp.set(bounds.x + bounds.width, bounds.y + bounds.height));
+                                renderer.color(c.color);
 
-                            renderer.vertex(temp.set(bounds.x + bounds.width, bounds.y + bounds.height));
-                            renderer.color(c.color);
+                                renderer.flushOnOverflow(2);
 
-                            renderer.vertex(temp.set(bounds.x, bounds.y + bounds.height));
-                            renderer.color(c.color);
+                                renderer.vertex(temp.set(bounds.x + bounds.width, bounds.y + bounds.height));
+                                renderer.color(c.color);
 
-                            renderer.flushOnOverflow(2);
+                                renderer.vertex(temp.set(bounds.x, bounds.y + bounds.height));
+                                renderer.color(c.color);
 
-                            renderer.vertex(temp.set(bounds.x, bounds.y + bounds.height));
-                            renderer.color(c.color);
+                                renderer.flushOnOverflow(2);
 
-                            renderer.vertex(temp.set(bounds.x, bounds.y));
-                            renderer.color(c.color);
-                        }
-                        else
-                        {
-                            renderer.flushOnOverflow(3);
+                                renderer.vertex(temp.set(bounds.x, bounds.y + bounds.height));
+                                renderer.color(c.color);
 
-                            renderer.vertex(temp.set(bounds.x, bounds.y));
-                            renderer.color(c.color);
+                                renderer.vertex(temp.set(bounds.x, bounds.y));
+                                renderer.color(c.color);
+                            }
+                            else
+                            {
+                                renderer.flushOnOverflow(3);
 
-                            renderer.vertex(temp.set(bounds.x + bounds.width, bounds.y));
-                            renderer.color(c.color);
+                                renderer.vertex(temp.set(bounds.x, bounds.y));
+                                renderer.color(c.color);
 
-                            renderer.vertex(temp.set(bounds.x + bounds.width, bounds.y + bounds.height));
-                            renderer.color(c.color);
+                                renderer.vertex(temp.set(bounds.x + bounds.width, bounds.y));
+                                renderer.color(c.color);
 
-                            renderer.flushOnOverflow(3);
+                                renderer.vertex(temp.set(bounds.x + bounds.width, bounds.y + bounds.height));
+                                renderer.color(c.color);
 
-                            renderer.vertex(temp.set(bounds.x + bounds.width, bounds.y + bounds.height));
-                            renderer.color(c.color);
+                                renderer.flushOnOverflow(3);
 
-                            renderer.vertex(temp.set(bounds.x, bounds.y + bounds.height));
-                            renderer.color(c.color);
+                                renderer.vertex(temp.set(bounds.x + bounds.width, bounds.y + bounds.height));
+                                renderer.color(c.color);
 
-                            renderer.vertex(temp.set(bounds.x, bounds.y));
-                            renderer.color(c.color);
+                                renderer.vertex(temp.set(bounds.x, bounds.y + bounds.height));
+                                renderer.color(c.color);
+
+                                renderer.vertex(temp.set(bounds.x, bounds.y));
+                                renderer.color(c.color);
+                            }
                         }
                     }
                 }));

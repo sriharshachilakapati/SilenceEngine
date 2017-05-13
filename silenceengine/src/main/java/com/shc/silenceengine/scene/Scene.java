@@ -85,7 +85,11 @@ public class Scene
      */
     private static void componentUpdateSystem(Scene scene, float elapsedTime)
     {
-        scene.forEachEntity(entity -> entity.forEachComponent(c -> c.onUpdate(elapsedTime)));
+        scene.forEachEntity(entity -> entity.forEachComponent(c ->
+        {
+            if (c.enabled)
+                c.onUpdate(elapsedTime);
+        }));
     }
 
     /**
@@ -96,7 +100,11 @@ public class Scene
      */
     private static void componentRenderSystem(Scene scene, float elapsedTime)
     {
-        scene.forEachEntity(e -> e.forEachComponent(c -> c.onRender(elapsedTime)));
+        scene.forEachEntity(e -> e.forEachComponent(c ->
+        {
+            if (c.enabled)
+                c.onRender(elapsedTime);
+        }));
     }
 
     /**
@@ -132,7 +140,7 @@ public class Scene
         newEntities.clear();
 
         // Remove dead entities
-        for (Iterator<Entity> it = entities.iterator(); it.hasNext();)
+        for (Iterator<Entity> it = entities.iterator(); it.hasNext(); )
         {
             if (it.next().isDestroyed())
                 it.remove();
