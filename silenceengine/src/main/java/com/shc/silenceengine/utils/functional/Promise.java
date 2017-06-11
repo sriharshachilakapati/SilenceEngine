@@ -68,20 +68,27 @@ public class Promise<T>
         this.onRejected = onRejected;
     }
 
-    public static Promise<Void> all(Promise<?>... promises)
+    public static Promise<Void[]> all(Promise<?>... promises)
     {
         return new Promise<>((resolve, reject) ->
         {
             final int[] done = { 0 };
+            final Void[] values = new Void[promises.length];
 
-            for (Promise<?> promise : promises)
+            for (int i = 0; i < promises.length; i++)
+            {
+                Promise<?> promise = promises[i];
+
+                int index = i;
                 promise.then(v ->
                 {
                     done[0]++;
+                    values[index] = (Void) v;
 
                     if (done[0] == promises.length)
-                        resolve.invoke(null);
+                        resolve.invoke(values);
                 }, reject);
+            }
         });
     }
 
@@ -93,7 +100,7 @@ public class Promise<T>
                 promise.then(v ->
                 {
                     if (self.state != State.REJECTED)
-                        resolve.invoke(null);
+                        resolve.invoke((Void) v);
                 }, reject);
         });
     }
@@ -122,7 +129,7 @@ public class Promise<T>
             throw new PromiseException("Cannot reject more than once");
 
         if (state == State.FULFILLED)
-            throw new PromiseException("Cannot resolve an already fulfilled promise");
+            throw new PromiseException("Cannot reject an already fulfilled promise");
 
         this.value = null;
         this.state = State.REJECTED;
