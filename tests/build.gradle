@@ -22,10 +22,9 @@
  * SOFTWARE.
  */
 
-
-jar {
-    from project(":silenceengine").sourceSets.main.allSource
-    from project(":tests").sourceSets.main.allSource
+sourceSets.main.resources {
+    exclude "*.*"
+    exclude "**/"
 }
 
 javadoc {

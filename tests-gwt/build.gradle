@@ -38,10 +38,14 @@ apply plugin: 'gwt'
 apply plugin: 'war'
 apply plugin: 'org.akhikhl.gretty'
 
-import de.richsource.gradle.plugins.gwt.GwtSuperDev
+import org.wisepersist.gradle.plugins.gwt.GwtSuperDev
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+compileGwt {
+    jvmArgs '-Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory'
+}
 
 gwt {
     minHeapSize = "512M";
@@ -55,6 +59,10 @@ gwt {
     }
 
     eclipse.addGwtContainer = false;
+
+    src += files(project(":tests").sourceSets.main.allJava.srcDirs)
+    src += files(project(":backend-gwt").sourceSets.main.allJava.srcDirs)
+    src += files(project(":silenceengine").sourceSets.main.allJava.srcDirs)
 }
 
 gretty {
@@ -86,16 +94,6 @@ task superDev(type: GwtSuperDev) {
 }
 
 war {
-    from sourceSets.main.resources
-    from files(project(":silenceengine").sourceSets.main.output.resourcesDir)
-    from files(project(":tests").sourceSets.main.output.resourcesDir)
+    from files(project(":silenceengine").sourceSets.main.resources.srcDirs)
+    from files(project(":tests").sourceSets.main.resources.srcDirs)
 }
-
-task addSource {
-    sourceSets.main.compileClasspath += files(project(":silenceengine").sourceSets.main.allSource)
-    sourceSets.main.compileClasspath += files(project(":backend-gwt").sourceSets.main.allSource)
-    sourceSets.main.compileClasspath += files(project(":tests").sourceSets.main.allSource)
-}
-
-tasks.compileGwt.dependsOn(addSource)
-tasks.draftCompileGwt.dependsOn(addSource)

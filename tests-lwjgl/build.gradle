@@ -27,6 +27,11 @@ javadoc {
     options.addStringOption("sourcepath", "")
 }
 
+sourceSets.main.resources {
+	srcDirs = project(":silenceengine").sourceSets.main.resources.srcDirs
+	srcDirs += project(":tests").sourceSets.main.resources.srcDirs
+}
+
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
     from javadoc

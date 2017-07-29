@@ -52,8 +52,13 @@ class LwjglLogger extends Logger
 
     @Override
     public void error(Object... messages)
-    {
+    {	
         for (Object message : messages)
+        {
             System.err.println("[" + name + "] ERROR: " + message);
+            
+            if (message instanceof Exception)
+	            ((Exception) message).printStackTrace();
+        }
     }
 }

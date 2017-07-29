@@ -22,9 +22,7 @@
  * SOFTWARE.
  */
 
-
 jar {
-    from project(":silenceengine").sourceSets.main.allSource
     from project(":backend-gwt").sourceSets.main.allSource
 }
 
