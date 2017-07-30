@@ -49,7 +49,7 @@ buildscript {
 
     dependencies {
         classpath 'org.wisepersist:gwt-gradle-plugin:1.0.0'
-        classpath "com.android.tools.build:gradle:2.2.2"
+        classpath 'com.android.tools.build:gradle:2.3.0'
         classpath "me.tatarka:gradle-retrolambda:3.2.5"
         classpath "me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2"
     }
