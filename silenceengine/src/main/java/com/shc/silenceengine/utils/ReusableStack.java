@@ -28,8 +28,6 @@ import com.shc.silenceengine.core.SilenceException;
 import com.shc.silenceengine.utils.functional.Provider;
 
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -41,14 +39,14 @@ public final class ReusableStack<T>
 {
     private final Object lock = new Object();
 
-    private Deque<T> stack;
+    private List<T> stack;
     private List<T>  list;
 
     private Provider<T> objectProvider;
 
     public ReusableStack(Provider<T> objectProvider)
     {
-        stack = new LinkedList<>();
+        stack = new ArrayList<>();
         list = new ArrayList<>();
         this.objectProvider = objectProvider;
     }
@@ -63,14 +61,14 @@ public final class ReusableStack<T>
                     T object = objectProvider.provide();
 
                     list.add(object);
-                    stack.push(object);
+                    stack.add(object);
                 }
                 catch (Exception e)
                 {
                     SilenceException.reThrow(e);
                 }
 
-            return stack.pop();
+            return stack.remove(stack.size() - 1);
         }
     }
 
@@ -78,7 +76,7 @@ public final class ReusableStack<T>
     {
         synchronized (lock)
         {
-            stack.push(value);
+            stack.add(value);
         }
     }
 
