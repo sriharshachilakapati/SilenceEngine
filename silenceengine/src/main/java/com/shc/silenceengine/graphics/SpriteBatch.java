@@ -25,9 +25,9 @@
 package com.shc.silenceengine.graphics;
 
 import com.shc.silenceengine.math.Transform;
+import com.shc.silenceengine.utils.ReusableStack;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,28 +35,21 @@ import java.util.List;
  */
 public class SpriteBatch
 {
-    private List<Integer>   indices    = new ArrayList<>();
-    private List<Float>     opacities  = new ArrayList<>();
-    private List<Sprite>    sprites    = new ArrayList<>();
-    private List<Transform> transforms = new ArrayList<>();
-    private List<Integer>   layers     = new ArrayList<>();
-    private List<Color>     tints      = new ArrayList<>();
+    private static final ReusableStack<BatchEntry> REUSABLE_STACK = new ReusableStack<>(BatchEntry::new);
 
-    private SpriteRenderer spriteRenderer;
+    private final List<BatchEntry> entries;
+    private final SpriteRenderer   spriteRenderer;
 
     public SpriteBatch(SpriteRenderer spriteRenderer)
     {
+        this.entries = new ArrayList<>();
         this.spriteRenderer = spriteRenderer;
     }
 
     public void begin()
     {
-        opacities.clear();
-        indices.clear();
-        sprites.clear();
-        transforms.clear();
-        layers.clear();
-        tints.clear();
+        entries.forEach(REUSABLE_STACK::push);
+        entries.clear();
     }
 
     public void render(Sprite sprite, Transform transform)
@@ -76,44 +69,51 @@ public class SpriteBatch
 
     public void render(Sprite sprite, Transform transform, Color tint, float opacity, int layer)
     {
-        sprites.add(sprite);
-        transforms.add(transform);
-        tints.add(tint);
-        opacities.add(opacity);
-        layers.add(layer);
-        indices.add(indices.size());
+        BatchEntry entry = REUSABLE_STACK.pop();
+
+        entry.sprite = sprite;
+        entry.transform = transform;
+        entry.tint = tint;
+        entry.opacity = opacity;
+        entry.layer = layer;
+
+        entries.add(entry);
     }
 
     public void end()
     {
-        Collections.sort(indices, (i1, i2) ->
-        {
-            int layer1 = layers.get(i1);
-            int layer2 = layers.get(i2);
-
-            if (layer1 == layer2)
-            {
-                int texID1 = sprites.get(i1).getCurrentFrame().getID();
-                int texID2 = sprites.get(i2).getCurrentFrame().getID();
-
-                return texID1 - texID2;
-            }
-
-            return layer2 - layer1;
-        });
-
+        entries.sort(SpriteBatch::entryComparator);
         spriteRenderer.begin();
 
-        for (int i : indices)
+        entries.forEach(entry ->
         {
-            Sprite sprite = sprites.get(i);
-            Transform transform = transforms.get(i);
-            Color tint = tints.get(i);
-            float opacity = opacities.get(i);
+            Sprite sprite = entry.sprite;
+            Transform transform = entry.transform;
+            Color tint = entry.tint;
+            float opacity = entry.opacity;
 
             spriteRenderer.render(sprite, transform, tint, opacity);
-        }
+        });
 
         spriteRenderer.end();
+    }
+
+    private static int entryComparator(BatchEntry e1, BatchEntry e2)
+    {
+        if (e1.layer == e2.layer)
+            return e1.sprite.getCurrentFrame().getID() - e2.sprite.getCurrentFrame().getID();
+
+        return e2.layer - e1.layer;
+    }
+
+    private static class BatchEntry
+    {
+        Sprite sprite;
+        Color  tint;
+
+        float opacity;
+        int   layer;
+
+        Transform transform;
     }
 }
