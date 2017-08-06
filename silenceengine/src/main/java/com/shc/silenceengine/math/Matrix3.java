@@ -32,8 +32,6 @@ import java.util.Arrays;
 /**
  * A 3x3 Matrix.
  *
- * $$ \begin{bmatrix} m00 &amp; m10 &amp; m20  \\ m01 &amp; m11 &amp; m21  \\ m02 &amp; m12 &amp; m22 \end{bmatrix} $$
- *
  * @author Sri Harsha Chilakapati
  */
 public class Matrix3
@@ -57,7 +55,7 @@ public class Matrix3
     /**
      * Create a {@code Matrix3} using {@link #set(float)}.
      *
-     * @param diagonal The value to set Identity positions to
+     * @param diagonal The value to set identity positions to
      *
      * @see #set(float)
      */
@@ -76,13 +74,15 @@ public class Matrix3
      */
     public Matrix3 set(Matrix3 m)
     {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                this.m[i][j] = m.m[i][j];
-            }
-        }
+        this.m[0][0] = m.m[0][0];
+        this.m[1][0] = m.m[1][0];
+        this.m[2][0] = m.m[2][0];
+        this.m[0][1] = m.m[0][1];
+        this.m[1][1] = m.m[1][1];
+        this.m[2][1] = m.m[2][1];
+        this.m[0][2] = m.m[0][2];
+        this.m[1][2] = m.m[1][2];
+        this.m[2][2] = m.m[2][2];
 
         return this;
     }
@@ -90,24 +90,11 @@ public class Matrix3
     /**
      * Sets the Matrix to an Identity Matrix.
      *
-     * $$ \begin{bmatrix} 1 &amp; 0 &amp; 0  \\ 0 &amp; 1 &amp; 0  \\ 0 &amp; 0 &amp; 1 \end{bmatrix} $$
-     *
      * @return This {@code Matrix3}
      */
     public Matrix3 initIdentity()
     {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                if (i == j)
-                    m[i][j] = 1;
-                else
-                    m[i][j] = 0;
-            }
-        }
-
-        return this;
+        return set(1);
     }
 
     /**
@@ -126,21 +113,21 @@ public class Matrix3
     /**
      * Sets all Identity positions to {@code diagonal}.
      *
-     * $$ \begin{bmatrix} d &amp; 0 &amp; 0  \\ 0 &amp; d &amp; 0  \\ 0 &amp; 0 &amp; d \end{bmatrix} $$
-     *
-     * @param diagonal The value to set Identity positions to (d in the matrix)
+     * @param diagonal The value to set identity positions to.
      *
      * @return This {@code Matrix3}
      */
     public Matrix3 set(float diagonal)
     {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                m[i][j] = (i == j) ? diagonal : 0;
-            }
-        }
+        m[0][0] = diagonal;
+        m[1][0] = 0;
+        m[2][0] = 0;
+        m[0][1] = 0;
+        m[1][1] = diagonal;
+        m[2][1] = 0;
+        m[0][2] = 0;
+        m[1][2] = 0;
+        m[2][2] = diagonal;
 
         return this;
     }
@@ -154,47 +141,61 @@ public class Matrix3
      */
     public Matrix3 add(Matrix3 m)
     {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                this.m[i][j] += m.m[i][j];
-            }
-        }
+        this.m[0][0] += m.m[0][0];
+        this.m[1][0] += m.m[1][0];
+        this.m[2][0] += m.m[2][0];
+        this.m[0][1] += m.m[0][1];
+        this.m[1][1] += m.m[1][1];
+        this.m[2][1] += m.m[2][1];
+        this.m[0][2] += m.m[0][2];
+        this.m[1][2] += m.m[1][2];
+        this.m[2][2] += m.m[2][2];
 
         return this;
     }
 
     public Matrix3 subtract(Matrix3 m)
     {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                this.m[i][j] -= m.m[i][j];
-            }
-        }
+        this.m[0][0] -= m.m[0][0];
+        this.m[1][0] -= m.m[1][0];
+        this.m[2][0] -= m.m[2][0];
+        this.m[0][1] -= m.m[0][1];
+        this.m[1][1] -= m.m[1][1];
+        this.m[2][1] -= m.m[2][1];
+        this.m[0][2] -= m.m[0][2];
+        this.m[1][2] -= m.m[1][2];
+        this.m[2][2] -= m.m[2][2];
 
         return this;
     }
 
     public Matrix3 multiply(Matrix3 m)
     {
-        // Use a temporary matrix from the matrix stack instead of
-        // creating a temporary float array every frame.
-        Matrix3 temp = Matrix3.REUSABLE_STACK.pop().initZero();
+        float m00, m01, m02;
+        float m10, m11, m12;
+        float m20, m21, m22;
 
-        for (int r = 0; r < 3; r++)
-        {
-            for (int c = 0; c < 3; c++)
-            {
-                for (int k = 0; k < 3; k++)
-                    temp.m[c][r] += this.m[k][r] * m.m[c][k];
-            }
-        }
+        m00 = this.m[0][0] * m.m[0][0] + this.m[1][0] * m.m[0][1] + this.m[2][0] * m.m[0][2];
+        m10 = this.m[0][0] * m.m[1][0] + this.m[1][0] * m.m[1][1] + this.m[2][0] * m.m[1][2];
+        m20 = this.m[0][0] * m.m[2][0] + this.m[1][0] * m.m[2][1] + this.m[2][0] * m.m[2][2];
 
-        this.set(temp);
-        Matrix3.REUSABLE_STACK.push(temp);
+        m01 = this.m[0][1] * m.m[0][0] + this.m[1][1] * m.m[0][1] + this.m[2][1] * m.m[0][2];
+        m11 = this.m[0][1] * m.m[1][0] + this.m[1][1] * m.m[1][1] + this.m[2][1] * m.m[1][2];
+        m21 = this.m[0][1] * m.m[2][0] + this.m[1][1] * m.m[2][1] + this.m[2][1] * m.m[2][2];
+
+        m02 = this.m[0][2] * m.m[0][0] + this.m[1][2] * m.m[0][1] + this.m[2][2] * m.m[0][2];
+        m12 = this.m[0][2] * m.m[1][0] + this.m[1][2] * m.m[1][1] + this.m[2][2] * m.m[1][2];
+        m22 = this.m[0][2] * m.m[2][0] + this.m[1][2] * m.m[2][1] + this.m[2][2] * m.m[2][2];
+
+        this.m[0][0] = m00;
+        this.m[1][0] = m10;
+        this.m[2][0] = m20;
+        this.m[0][1] = m01;
+        this.m[1][1] = m11;
+        this.m[2][1] = m21;
+        this.m[0][2] = m02;
+        this.m[1][2] = m12;
+        this.m[2][2] = m22;
 
         return this;
     }
@@ -202,21 +203,11 @@ public class Matrix3
     /**
      * Set all positions in this {@code Matrix3} to 0.
      *
-     * $$ \begin{bmatrix} 0 &amp; 0 &amp; 0  \\ 0 &amp; 0 &amp; 0  \\ 0 &amp; 0 &amp; 0 \end{bmatrix} $$
-     *
      * @return This {@code Matrix3}
      */
     public Matrix3 initZero()
     {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                m[i][j] = 0;
-            }
-        }
-
-        return this;
+        return set(0);
     }
 
     public Matrix3 set(int x, int j, float val)
@@ -228,25 +219,28 @@ public class Matrix3
 
     public Matrix3 transpose()
     {
-        Matrix3 temp = Matrix3.REUSABLE_STACK.pop();
+        float m00 = this.m[0][0], m01 = this.m[1][0], m02 = this.m[2][0];
+        float m10 = this.m[0][1], m11 = this.m[1][1], m12 = this.m[2][1];
+        float m20 = this.m[0][2], m21 = this.m[1][2], m22 = this.m[2][2];
 
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                temp.set(i, j, m[j][i]);
-            }
-        }
-
-        this.set(temp);
-        Matrix3.REUSABLE_STACK.push(temp);
+        this.m[0][0] = m00;
+        this.m[1][0] = m10;
+        this.m[2][0] = m20;
+        this.m[0][1] = m01;
+        this.m[1][1] = m11;
+        this.m[2][1] = m21;
+        this.m[0][2] = m02;
+        this.m[1][2] = m12;
+        this.m[2][2] = m22;
 
         return this;
     }
 
     public Vector3 multiply(Vector3 v, Vector3 dest)
     {
-        return dest.set(m[0][0] * v.x, m[0][1] * v.y, m[0][2] * v.z);
+        return dest.set(m[0][0] * v.x + m[0][1] * v.y + m[0][2] * v.z,
+                m[1][0] * v.x + m[1][1] * v.y + m[1][2] * v.z,
+                m[2][0] * v.x + m[2][1] * v.y + m[2][2] * v.z);
     }
 
     public Matrix3 invert()
@@ -258,21 +252,30 @@ public class Matrix3
 
         s = 1f / s;
 
-        Matrix3 dest = Matrix3.REUSABLE_STACK.pop();
+        float m00, m01, m02;
+        float m10, m11, m12;
+        float m20, m21, m22;
 
-        dest.m[0][0] = +((m[1][1] * m[2][2]) - (m[2][1] * m[1][2])) * s;
-        dest.m[0][1] = -((m[0][1] * m[2][2]) - (m[2][1] * m[0][2])) * s;
-        dest.m[0][2] = +((m[0][1] * m[1][2]) - (m[1][1] * m[0][2])) * s;
-        dest.m[1][0] = -((m[1][0] * m[2][2]) - (m[2][0] * m[1][2])) * s;
-        dest.m[1][1] = +((m[0][0] * m[2][2]) - (m[2][0] * m[0][2])) * s;
-        dest.m[1][2] = -((m[0][0] * m[1][2]) - (m[1][0] * m[0][2])) * s;
-        dest.m[2][0] = +((m[1][0] * m[2][1]) - (m[2][0] * m[1][1])) * s;
-        dest.m[2][1] = -((m[0][0] * m[2][1]) - (m[2][0] * m[0][1])) * s;
-        dest.m[2][2] = +((m[0][0] * m[1][1]) - (m[1][0] * m[0][1])) * s;
+        m00 = +((m[1][1] * m[2][2]) - (m[2][1] * m[1][2])) * s;
+        m01 = -((m[0][1] * m[2][2]) - (m[2][1] * m[0][2])) * s;
+        m02 = +((m[0][1] * m[1][2]) - (m[1][1] * m[0][2])) * s;
+        m10 = -((m[1][0] * m[2][2]) - (m[2][0] * m[1][2])) * s;
+        m11 = +((m[0][0] * m[2][2]) - (m[2][0] * m[0][2])) * s;
+        m12 = -((m[0][0] * m[1][2]) - (m[1][0] * m[0][2])) * s;
+        m20 = +((m[1][0] * m[2][1]) - (m[2][0] * m[1][1])) * s;
+        m21 = -((m[0][0] * m[2][1]) - (m[2][0] * m[0][1])) * s;
+        m22 = +((m[0][0] * m[1][1]) - (m[1][0] * m[0][1])) * s;
 
-        set(dest);
+        this.m[0][0] = m00;
+        this.m[1][0] = m10;
+        this.m[2][0] = m20;
+        this.m[0][1] = m01;
+        this.m[1][1] = m11;
+        this.m[2][1] = m21;
+        this.m[0][2] = m02;
+        this.m[1][2] = m12;
+        this.m[2][2] = m22;
 
-        Matrix3.REUSABLE_STACK.push(dest);
         return this;
     }
 
@@ -293,13 +296,17 @@ public class Matrix3
 
     public DirectFloatBuffer storeInto(DirectFloatBuffer buffer)
     {
-        int index = 0;
+        buffer.write(0, this.m[0][0]);
+        buffer.write(1, this.m[0][1]);
+        buffer.write(2, this.m[0][2]);
 
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-                buffer.write(index++, get(i, j));
-        }
+        buffer.write(3, this.m[1][0]);
+        buffer.write(4, this.m[1][1]);
+        buffer.write(5, this.m[1][2]);
+
+        buffer.write(6, this.m[2][0]);
+        buffer.write(7, this.m[2][1]);
+        buffer.write(8, this.m[2][2]);
 
         return buffer;
     }

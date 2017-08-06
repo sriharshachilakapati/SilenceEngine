@@ -86,42 +86,42 @@ public class Matrix4
 
     public Matrix4 set(Matrix3 m)
     {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                this.m[i][j] = m.m[i][j];
-            }
-        }
+        this.m[0][0] = m.m[0][0];
+        this.m[1][0] = m.m[1][0];
+        this.m[2][0] = m.m[2][0];
+        this.m[0][1] = m.m[0][1];
+        this.m[1][1] = m.m[1][1];
+        this.m[2][1] = m.m[2][1];
+        this.m[0][2] = m.m[0][2];
+        this.m[1][2] = m.m[1][2];
+        this.m[2][2] = m.m[2][2];
 
         return this;
     }
 
     public Matrix4 initIdentity()
     {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                if (i == j)
-                    m[i][j] = 1;
-                else
-                    m[i][j] = 0;
-            }
-        }
-
-        return this;
+        return set(1);
     }
 
     public Matrix4 set(Matrix4 m)
     {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                this.m[i][j] = m.m[i][j];
-            }
-        }
+        this.m[0][0] = m.m[0][0];
+        this.m[1][0] = m.m[1][0];
+        this.m[2][0] = m.m[2][0];
+        this.m[3][0] = m.m[3][0];
+        this.m[0][1] = m.m[0][1];
+        this.m[1][1] = m.m[1][1];
+        this.m[2][1] = m.m[2][1];
+        this.m[3][1] = m.m[3][1];
+        this.m[0][2] = m.m[0][2];
+        this.m[1][2] = m.m[1][2];
+        this.m[2][2] = m.m[2][2];
+        this.m[3][2] = m.m[3][2];
+        this.m[0][3] = m.m[0][3];
+        this.m[1][3] = m.m[1][3];
+        this.m[2][3] = m.m[2][3];
+        this.m[3][3] = m.m[3][3];
 
         return this;
     }
@@ -133,75 +133,120 @@ public class Matrix4
 
     public Matrix4 set(float diagonal)
     {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                m[i][j] = (i == j) ? diagonal : 0;
-            }
-        }
+        m[0][0] = diagonal;
+        m[1][0] = 0;
+        m[2][0] = 0;
+        m[3][0] = 0;
+        m[0][1] = 0;
+        m[1][1] = diagonal;
+        m[2][1] = 0;
+        m[3][1] = 0;
+        m[0][2] = 0;
+        m[1][2] = 0;
+        m[2][2] = diagonal;
+        m[3][2] = 0;
+        m[0][3] = 0;
+        m[1][3] = 0;
+        m[2][3] = 0;
+        m[3][3] = diagonal;
 
         return this;
     }
 
     public Matrix4 add(Matrix4 m)
     {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                this.m[i][j] += m.m[i][j];
-            }
-        }
+        this.m[0][0] += m.m[0][0];
+        this.m[1][0] += m.m[1][0];
+        this.m[2][0] += m.m[2][0];
+        this.m[3][0] += m.m[3][0];
+        this.m[0][1] += m.m[0][1];
+        this.m[1][1] += m.m[1][1];
+        this.m[2][1] += m.m[2][1];
+        this.m[3][1] += m.m[3][1];
+        this.m[0][2] += m.m[0][2];
+        this.m[1][2] += m.m[1][2];
+        this.m[2][2] += m.m[2][2];
+        this.m[3][2] += m.m[3][2];
+        this.m[0][3] += m.m[0][3];
+        this.m[1][3] += m.m[1][3];
+        this.m[2][3] += m.m[2][3];
+        this.m[3][3] += m.m[3][3];
 
         return this;
     }
 
     public Matrix4 subtract(Matrix4 m)
     {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                this.m[i][j] -= m.m[i][j];
-            }
-        }
+        this.m[0][0] -= m.m[0][0];
+        this.m[1][0] -= m.m[1][0];
+        this.m[2][0] -= m.m[2][0];
+        this.m[3][0] -= m.m[3][0];
+        this.m[0][1] -= m.m[0][1];
+        this.m[1][1] -= m.m[1][1];
+        this.m[2][1] -= m.m[2][1];
+        this.m[3][1] -= m.m[3][1];
+        this.m[0][2] -= m.m[0][2];
+        this.m[1][2] -= m.m[1][2];
+        this.m[2][2] -= m.m[2][2];
+        this.m[3][2] -= m.m[3][2];
+        this.m[0][3] -= m.m[0][3];
+        this.m[1][3] -= m.m[1][3];
+        this.m[2][3] -= m.m[2][3];
+        this.m[3][3] -= m.m[3][3];
 
         return this;
     }
 
     public Matrix4 multiply(Matrix4 m)
     {
-        // Use a temporary matrix from the matrix stack instead of
-        // creating a temporary float array every frame.
-        Matrix4 temp = Matrix4.REUSABLE_STACK.pop().initZero();
+        float m00, m01, m02, m03;
+        float m10, m11, m12, m13;
+        float m20, m21, m22, m23;
+        float m30, m31, m32, m33;
 
-        for (int r = 0; r < 4; r++)
-        {
-            for (int c = 0; c < 4; c++)
-            {
-                for (int k = 0; k < 4; k++)
-                    temp.m[c][r] += this.m[k][r] * m.m[c][k];
-            }
-        }
+        m00 = this.m[0][0] * m.m[0][0] + this.m[1][0] * m.m[0][1] + this.m[2][0] * m.m[0][2] + this.m[3][0] * m.m[0][3];
+        m10 = this.m[0][0] * m.m[1][0] + this.m[1][0] * m.m[1][1] + this.m[2][0] * m.m[1][2] + this.m[3][0] * m.m[1][3];
+        m20 = this.m[0][0] * m.m[2][0] + this.m[1][0] * m.m[2][1] + this.m[2][0] * m.m[2][2] + this.m[3][0] * m.m[2][3];
+        m30 = this.m[0][0] * m.m[3][0] + this.m[1][0] * m.m[3][1] + this.m[2][0] * m.m[3][2] + this.m[3][0] * m.m[3][3];
 
-        this.set(temp);
-        Matrix4.REUSABLE_STACK.push(temp);
+        m01 = this.m[0][1] * m.m[0][0] + this.m[1][1] * m.m[0][1] + this.m[2][1] * m.m[0][2] + this.m[3][1] * m.m[0][3];
+        m11 = this.m[0][1] * m.m[1][0] + this.m[1][1] * m.m[1][1] + this.m[2][1] * m.m[1][2] + this.m[3][1] * m.m[1][3];
+        m21 = this.m[0][1] * m.m[2][0] + this.m[1][1] * m.m[2][1] + this.m[2][1] * m.m[2][2] + this.m[3][1] * m.m[2][3];
+        m31 = this.m[0][1] * m.m[3][0] + this.m[1][1] * m.m[3][1] + this.m[2][1] * m.m[3][2] + this.m[3][1] * m.m[3][3];
+
+        m02 = this.m[0][2] * m.m[0][0] + this.m[1][2] * m.m[0][1] + this.m[2][2] * m.m[0][2] + this.m[3][2] * m.m[0][3];
+        m12 = this.m[0][2] * m.m[1][0] + this.m[1][2] * m.m[1][1] + this.m[2][2] * m.m[1][2] + this.m[3][2] * m.m[1][3];
+        m22 = this.m[0][2] * m.m[2][0] + this.m[1][2] * m.m[2][1] + this.m[2][2] * m.m[2][2] + this.m[3][2] * m.m[2][3];
+        m32 = this.m[0][2] * m.m[3][0] + this.m[1][2] * m.m[3][1] + this.m[2][2] * m.m[3][2] + this.m[3][2] * m.m[3][3];
+
+        m03 = this.m[0][3] * m.m[0][0] + this.m[1][3] * m.m[0][1] + this.m[2][3] * m.m[0][2] + this.m[3][3] * m.m[0][3];
+        m13 = this.m[0][3] * m.m[1][0] + this.m[1][3] * m.m[1][1] + this.m[2][3] * m.m[1][2] + this.m[3][3] * m.m[1][3];
+        m23 = this.m[0][3] * m.m[2][0] + this.m[1][3] * m.m[2][1] + this.m[2][3] * m.m[2][2] + this.m[3][3] * m.m[2][3];
+        m33 = this.m[0][3] * m.m[3][0] + this.m[1][3] * m.m[3][1] + this.m[2][3] * m.m[3][2] + this.m[3][3] * m.m[3][3];
+
+        this.m[0][0] = m00;
+        this.m[1][0] = m10;
+        this.m[2][0] = m20;
+        this.m[3][0] = m30;
+        this.m[0][1] = m01;
+        this.m[1][1] = m11;
+        this.m[2][1] = m21;
+        this.m[3][1] = m31;
+        this.m[0][2] = m02;
+        this.m[1][2] = m12;
+        this.m[2][2] = m22;
+        this.m[3][2] = m32;
+        this.m[0][3] = m03;
+        this.m[1][3] = m13;
+        this.m[2][3] = m23;
+        this.m[3][3] = m33;
 
         return this;
     }
 
     public Matrix4 initZero()
     {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                m[i][j] = 0;
-            }
-        }
-
-        return this;
+        return set(0);
     }
 
     public Matrix4 set(int x, int j, float val)
@@ -211,6 +256,15 @@ public class Matrix4
         return this;
     }
 
+    /**
+     * Multiplies this matrix with a row matrix defined by the vector {@code v} from the right side, and stores the
+     * result in {@code dest}.
+     *
+     * @param v    The vector to multiply this matrix with.
+     * @param dest The vector to store the result.
+     *
+     * @return The destination vector, aka the result.
+     */
     public Vector3 multiply(Vector3 v, Vector3 dest)
     {
         float X = v.x;
@@ -235,16 +289,8 @@ public class Matrix4
     }
 
     /**
-     * Multiplies this matrix with a row matrix defined by the vector \( \vec {v} \) from the right side. The equation
-     * is as follows.
-     *
-     * <p> $$ \begin{bmatrix} a &amp; b &amp; c &amp; d \\ e &amp; f &amp; g &amp; h \\ i &amp; j &amp; k &amp; l \\ m
-     * &amp; n &amp; o &amp; p \end{bmatrix}
-     *
-     * \begin{bmatrix} x \\ y \\ z \\ w \end{bmatrix} =
-     *
-     * \begin{bmatrix} a\cdot x+b\cdot y+c\cdot z+d\cdot w \\ e\cdot x+f\cdot y+g\cdot z+h\cdot w \\ i\cdot x+j\cdot
-     * y+k\cdot z+l\cdot w \\ m\cdot x+n\cdot y+o\cdot z+p\cdot w \end{bmatrix} $$ </p>
+     * Multiplies this matrix with a row matrix defined by the vector {@code v} from the right side, and stores the
+     * result in {@code dest}.
      *
      * @param v    The vector to multiply this matrix with.
      * @param dest The vector to store the result.
@@ -278,18 +324,27 @@ public class Matrix4
 
     public Matrix4 transpose()
     {
-        Matrix4 temp = Matrix4.REUSABLE_STACK.pop();
+        float m00 = this.m[0][0], m01 = this.m[1][0], m02 = this.m[2][0], m03 = this.m[3][0];
+        float m10 = this.m[0][1], m11 = this.m[1][1], m12 = this.m[2][1], m13 = this.m[3][1];
+        float m20 = this.m[0][2], m21 = this.m[1][2], m22 = this.m[2][2], m23 = this.m[3][2];
+        float m30 = this.m[0][3], m31 = this.m[1][3], m32 = this.m[2][3], m33 = this.m[3][3];
 
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                temp.set(i, j, m[j][i]);
-            }
-        }
-
-        this.set(temp);
-        Matrix4.REUSABLE_STACK.push(temp);
+        this.m[0][0] = m00;
+        this.m[1][0] = m10;
+        this.m[2][0] = m20;
+        this.m[3][0] = m30;
+        this.m[0][1] = m01;
+        this.m[1][1] = m11;
+        this.m[2][1] = m21;
+        this.m[3][1] = m31;
+        this.m[0][2] = m02;
+        this.m[1][2] = m12;
+        this.m[2][2] = m22;
+        this.m[3][2] = m32;
+        this.m[0][3] = m03;
+        this.m[1][3] = m13;
+        this.m[2][3] = m23;
+        this.m[3][3] = m33;
 
         return this;
     }
@@ -303,27 +358,44 @@ public class Matrix4
 
         s = 1f / s;
 
-        Matrix4 dest = Matrix4.REUSABLE_STACK.pop();
+        float m00, m01, m02, m03;
+        float m10, m11, m12, m13;
+        float m20, m21, m22, m23;
+        float m30, m31, m32, m33;
 
-        dest.m[0][0] = (m[1][1] * (m[2][2] * m[3][3] - m[2][3] * m[3][2]) + m[1][2] * (m[2][3] * m[3][1] - m[2][1] * m[3][3]) + m[1][3] * (m[2][1] * m[3][2] - m[2][2] * m[3][1])) * s;
-        dest.m[0][1] = (m[2][1] * (m[0][2] * m[3][3] - m[0][3] * m[3][2]) + m[2][2] * (m[0][3] * m[3][1] - m[0][1] * m[3][3]) + m[2][3] * (m[0][1] * m[3][2] - m[0][2] * m[3][1])) * s;
-        dest.m[0][2] = (m[3][1] * (m[0][2] * m[1][3] - m[0][3] * m[1][2]) + m[3][2] * (m[0][3] * m[1][1] - m[0][1] * m[1][3]) + m[3][3] * (m[0][1] * m[1][2] - m[0][2] * m[1][1])) * s;
-        dest.m[0][3] = (m[0][1] * (m[1][3] * m[2][2] - m[1][2] * m[2][3]) + m[0][2] * (m[1][1] * m[2][3] - m[1][3] * m[2][1]) + m[0][3] * (m[1][2] * m[2][1] - m[1][1] * m[2][2])) * s;
-        dest.m[1][0] = (m[1][2] * (m[2][0] * m[3][3] - m[2][3] * m[3][0]) + m[1][3] * (m[2][2] * m[3][0] - m[2][0] * m[3][2]) + m[1][0] * (m[2][3] * m[3][2] - m[2][2] * m[3][3])) * s;
-        dest.m[1][1] = (m[2][2] * (m[0][0] * m[3][3] - m[0][3] * m[3][0]) + m[2][3] * (m[0][2] * m[3][0] - m[0][0] * m[3][2]) + m[2][0] * (m[0][3] * m[3][2] - m[0][2] * m[3][3])) * s;
-        dest.m[1][2] = (m[3][2] * (m[0][0] * m[1][3] - m[0][3] * m[1][0]) + m[3][3] * (m[0][2] * m[1][0] - m[0][0] * m[1][2]) + m[3][0] * (m[0][3] * m[1][2] - m[0][2] * m[1][3])) * s;
-        dest.m[1][3] = (m[0][2] * (m[1][3] * m[2][0] - m[1][0] * m[2][3]) + m[0][3] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) + m[0][0] * (m[1][2] * m[2][3] - m[1][3] * m[2][2])) * s;
-        dest.m[2][0] = (m[1][3] * (m[2][0] * m[3][1] - m[2][1] * m[3][0]) + m[1][0] * (m[2][1] * m[3][3] - m[2][3] * m[3][1]) + m[1][1] * (m[2][3] * m[3][0] - m[2][0] * m[3][3])) * s;
-        dest.m[2][1] = (m[2][3] * (m[0][0] * m[3][1] - m[0][1] * m[3][0]) + m[2][0] * (m[0][1] * m[3][3] - m[0][3] * m[3][1]) + m[2][1] * (m[0][3] * m[3][0] - m[0][0] * m[3][3])) * s;
-        dest.m[2][2] = (m[3][3] * (m[0][0] * m[1][1] - m[0][1] * m[1][0]) + m[3][0] * (m[0][1] * m[1][3] - m[0][3] * m[1][1]) + m[3][1] * (m[0][3] * m[1][0] - m[0][0] * m[1][3])) * s;
-        dest.m[2][3] = (m[0][3] * (m[1][1] * m[2][0] - m[1][0] * m[2][1]) + m[0][0] * (m[1][3] * m[2][1] - m[1][1] * m[2][3]) + m[0][1] * (m[1][0] * m[2][3] - m[1][3] * m[2][0])) * s;
-        dest.m[3][0] = (m[1][0] * (m[2][2] * m[3][1] - m[2][1] * m[3][2]) + m[1][1] * (m[2][0] * m[3][2] - m[2][2] * m[3][0]) + m[1][2] * (m[2][1] * m[3][0] - m[2][0] * m[3][1])) * s;
-        dest.m[3][1] = (m[2][0] * (m[0][2] * m[3][1] - m[0][1] * m[3][2]) + m[2][1] * (m[0][0] * m[3][2] - m[0][2] * m[3][0]) + m[2][2] * (m[0][1] * m[3][0] - m[0][0] * m[3][1])) * s;
-        dest.m[3][2] = (m[3][0] * (m[0][2] * m[1][1] - m[0][1] * m[1][2]) + m[3][1] * (m[0][0] * m[1][2] - m[0][2] * m[1][0]) + m[3][2] * (m[0][1] * m[1][0] - m[0][0] * m[1][1])) * s;
-        dest.m[3][3] = (m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) + m[0][1] * (m[1][2] * m[2][0] - m[1][0] * m[2][2]) + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0])) * s;
+        m00 = (m[1][1] * (m[2][2] * m[3][3] - m[2][3] * m[3][2]) + m[1][2] * (m[2][3] * m[3][1] - m[2][1] * m[3][3]) + m[1][3] * (m[2][1] * m[3][2] - m[2][2] * m[3][1])) * s;
+        m01 = (m[2][1] * (m[0][2] * m[3][3] - m[0][3] * m[3][2]) + m[2][2] * (m[0][3] * m[3][1] - m[0][1] * m[3][3]) + m[2][3] * (m[0][1] * m[3][2] - m[0][2] * m[3][1])) * s;
+        m02 = (m[3][1] * (m[0][2] * m[1][3] - m[0][3] * m[1][2]) + m[3][2] * (m[0][3] * m[1][1] - m[0][1] * m[1][3]) + m[3][3] * (m[0][1] * m[1][2] - m[0][2] * m[1][1])) * s;
+        m03 = (m[0][1] * (m[1][3] * m[2][2] - m[1][2] * m[2][3]) + m[0][2] * (m[1][1] * m[2][3] - m[1][3] * m[2][1]) + m[0][3] * (m[1][2] * m[2][1] - m[1][1] * m[2][2])) * s;
+        m10 = (m[1][2] * (m[2][0] * m[3][3] - m[2][3] * m[3][0]) + m[1][3] * (m[2][2] * m[3][0] - m[2][0] * m[3][2]) + m[1][0] * (m[2][3] * m[3][2] - m[2][2] * m[3][3])) * s;
+        m11 = (m[2][2] * (m[0][0] * m[3][3] - m[0][3] * m[3][0]) + m[2][3] * (m[0][2] * m[3][0] - m[0][0] * m[3][2]) + m[2][0] * (m[0][3] * m[3][2] - m[0][2] * m[3][3])) * s;
+        m12 = (m[3][2] * (m[0][0] * m[1][3] - m[0][3] * m[1][0]) + m[3][3] * (m[0][2] * m[1][0] - m[0][0] * m[1][2]) + m[3][0] * (m[0][3] * m[1][2] - m[0][2] * m[1][3])) * s;
+        m13 = (m[0][2] * (m[1][3] * m[2][0] - m[1][0] * m[2][3]) + m[0][3] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) + m[0][0] * (m[1][2] * m[2][3] - m[1][3] * m[2][2])) * s;
+        m20 = (m[1][3] * (m[2][0] * m[3][1] - m[2][1] * m[3][0]) + m[1][0] * (m[2][1] * m[3][3] - m[2][3] * m[3][1]) + m[1][1] * (m[2][3] * m[3][0] - m[2][0] * m[3][3])) * s;
+        m21 = (m[2][3] * (m[0][0] * m[3][1] - m[0][1] * m[3][0]) + m[2][0] * (m[0][1] * m[3][3] - m[0][3] * m[3][1]) + m[2][1] * (m[0][3] * m[3][0] - m[0][0] * m[3][3])) * s;
+        m22 = (m[3][3] * (m[0][0] * m[1][1] - m[0][1] * m[1][0]) + m[3][0] * (m[0][1] * m[1][3] - m[0][3] * m[1][1]) + m[3][1] * (m[0][3] * m[1][0] - m[0][0] * m[1][3])) * s;
+        m23 = (m[0][3] * (m[1][1] * m[2][0] - m[1][0] * m[2][1]) + m[0][0] * (m[1][3] * m[2][1] - m[1][1] * m[2][3]) + m[0][1] * (m[1][0] * m[2][3] - m[1][3] * m[2][0])) * s;
+        m30 = (m[1][0] * (m[2][2] * m[3][1] - m[2][1] * m[3][2]) + m[1][1] * (m[2][0] * m[3][2] - m[2][2] * m[3][0]) + m[1][2] * (m[2][1] * m[3][0] - m[2][0] * m[3][1])) * s;
+        m31 = (m[2][0] * (m[0][2] * m[3][1] - m[0][1] * m[3][2]) + m[2][1] * (m[0][0] * m[3][2] - m[0][2] * m[3][0]) + m[2][2] * (m[0][1] * m[3][0] - m[0][0] * m[3][1])) * s;
+        m32 = (m[3][0] * (m[0][2] * m[1][1] - m[0][1] * m[1][2]) + m[3][1] * (m[0][0] * m[1][2] - m[0][2] * m[1][0]) + m[3][2] * (m[0][1] * m[1][0] - m[0][0] * m[1][1])) * s;
+        m33 = (m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) + m[0][1] * (m[1][2] * m[2][0] - m[1][0] * m[2][2]) + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0])) * s;
 
-        set(dest);
-        Matrix4.REUSABLE_STACK.push(dest);
+        this.m[0][0] = m00;
+        this.m[1][0] = m10;
+        this.m[2][0] = m20;
+        this.m[3][0] = m30;
+        this.m[0][1] = m01;
+        this.m[1][1] = m11;
+        this.m[2][1] = m21;
+        this.m[3][1] = m31;
+        this.m[0][2] = m02;
+        this.m[1][2] = m12;
+        this.m[2][2] = m22;
+        this.m[3][2] = m32;
+        this.m[0][3] = m03;
+        this.m[1][3] = m13;
+        this.m[2][3] = m23;
+        this.m[3][3] = m33;
 
         return this;
     }
@@ -345,15 +417,25 @@ public class Matrix4
 
     public DirectFloatBuffer storeInto(DirectFloatBuffer buffer)
     {
-        int index = 0;
+        buffer.write(0, this.m[0][0]);
+        buffer.write(1, this.m[0][1]);
+        buffer.write(2, this.m[0][2]);
+        buffer.write(3, this.m[0][3]);
 
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                buffer.write(index++, get(i, j));
-            }
-        }
+        buffer.write(4, this.m[1][0]);
+        buffer.write(5, this.m[1][1]);
+        buffer.write(6, this.m[1][2]);
+        buffer.write(7, this.m[1][3]);
+
+        buffer.write(8, this.m[2][0]);
+        buffer.write(9, this.m[2][1]);
+        buffer.write(10, this.m[2][2]);
+        buffer.write(11, this.m[2][3]);
+
+        buffer.write(12, this.m[3][0]);
+        buffer.write(13, this.m[3][1]);
+        buffer.write(14, this.m[3][2]);
+        buffer.write(15, this.m[3][3]);
 
         return buffer;
     }
