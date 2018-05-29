@@ -123,13 +123,14 @@ public final class LwjglRuntime
 
     public static void start(Game game)
     {
+        SilenceEngine.log = new LwjglLogDevice();
+
         // Check for -XstartOnFirstThread on Mac OS X
         if (getPlatform() == SilenceEngine.Platform.MACOSX)
             checkForXstartOnFirstThread();
 
         Configuration.DEBUG.set(Game.DEVELOPMENT);
 
-        SilenceEngine.log = new LwjglLogDevice();
         SilenceEngine.io = new LwjglIODevice();
         SilenceEngine.display = new LwjglDisplayDevice();
         SilenceEngine.input = new LwjglInputDevice();
